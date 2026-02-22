@@ -583,6 +583,63 @@ This document tracks the remaining implementation tasks to complete the vision o
 - `docs/CI_FAILURE_PLAYBOOK.md` — CI failure playbook
 - `tests/test_create_atlas_project.py` — 7 tests for scaffolder and rules
 
+#### 22. Deterministic Scripting VM
+**Status**: Complete
+
+**Completed work**:
+- [x] Stack-based bytecode VM (ScriptVM) with 24 opcodes
+  - Arithmetic: ADD, SUB, MUL, DIV, MOD, NEG
+  - Comparison: EQ, NEQ, LT, GT, LTE, GTE
+  - Logic: AND, OR, NOT
+  - Stack: PUSH_INT, PUSH_FLOAT, PUSH_STRING
+  - Variables: LOAD_VAR, STORE_VAR
+  - Control flow: CALL, JMP, JMP_IF, RET, HALT
+- [x] Budget enforcement (configurable max steps, budget exceeded detection)
+- [x] Native function registration for sandboxed API
+- [x] Deterministic state hashing for replay safety
+- [x] ScriptSystem for tick-integrated execution
+  - Registration-order execution (deterministic)
+  - atlas_tick and atlas_seed variable injection
+  - Contract validation (deterministic, replay-safe)
+  - Combined hash across all scripts
+- [x] ScriptSandbox with 8 safe built-in functions
+  - atlas_abs, atlas_min, atlas_max, atlas_clamp
+  - atlas_floor, atlas_ceil, atlas_sqrt, atlas_strlen
+- [x] 28 tests for VM, system, and sandbox
+
+**Files created**:
+- `engine/script/ScriptVM.h` — VM header with opcodes, values, instructions
+- `engine/script/ScriptVM.cpp` — Full opcode implementation
+- `engine/script/ScriptSystem.h` — Tick-integrated script manager
+- `engine/script/ScriptSystem.cpp` — Registration and execution
+- `engine/script/ScriptSandbox.h` — Safe builtin declarations
+- `engine/script/ScriptSandbox.cpp` — Builtin implementations
+- `docs/19_SCRIPTING_VM.md` — Documentation
+
+#### 23. Binary Compatibility Layer (ABI Capsules)
+**Status**: Complete
+
+**Completed work**:
+- [x] ABIVersion with string parsing ("atlas_abi_v1_0") and compatibility checks
+- [x] ABIFunctionTable with 8 simulation-safe C ABI entry points
+  - RegisterSystem, StepSimulation, GetCurrentTick
+  - GetComponent, SetComponent
+  - SubmitInput, EmitEvent, GetWorldHash
+  - Completeness and bound-count queries
+- [x] ABICapsule with version, description, seal, and readiness tracking
+- [x] ABIRegistry for capsule discovery and project binding
+  - Exact version lookup
+  - Compatible version resolution (same major, highest minor ≤ requested)
+  - Project bind/unbind/query
+- [x] 20 tests for capsule, version, registry, and project binding
+
+**Files created**:
+- `engine/abi/ABICapsule.h` — Version, function table, capsule
+- `engine/abi/ABICapsule.cpp` — Full implementation
+- `engine/abi/ABIRegistry.h` — Registry header
+- `engine/abi/ABIRegistry.cpp` — Discovery and binding
+- `docs/21_BINARY_COMPATIBILITY.md` — Documentation
+
 ## References
 
 - Original gaps analysis: `gaps.txt`

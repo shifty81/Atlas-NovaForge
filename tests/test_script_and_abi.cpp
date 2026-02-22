@@ -365,10 +365,12 @@ void test_vm_call_native() {
     });
     // constants: [0]=Int(21), [1]=String("double_it")
     // CALL operand indexes the function name in constants.
+    // The instruction after CALL is a pseudo-instruction whose operand = arg count.
     auto s = make_script("call",
         {
             {Opcode::PUSH_INT, 0},
             {Opcode::CALL, 1},
+            {Opcode::HALT, 1},   // pseudo-instruction: arg count = 1 (opcode ignored, operand used)
             {Opcode::HALT, 0}
         },
         {ScriptValue(int64_t(21)), ScriptValue(std::string("double_it"))});
@@ -600,10 +602,12 @@ void test_sandbox_register_builtins() {
     ScriptVM vm;
     ScriptSandbox::RegisterBuiltins(vm);
     // After registration, calling atlas_abs from script should work
+    // CALL is followed by a pseudo-instruction with the arg count
     auto s = make_script("builtin_test",
         {
             {Opcode::PUSH_INT, 0},
             {Opcode::CALL, 1},
+            {Opcode::HALT, 1},   // pseudo-instruction: arg count = 1
             {Opcode::HALT, 0}
         },
         {ScriptValue(int64_t(-5)), ScriptValue(std::string("atlas_abs"))});
