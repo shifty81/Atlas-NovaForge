@@ -64,8 +64,12 @@ void Server::initializeGameWorld() {
              std::to_string(game_world_->getEntityCount()) + " entities");
     log.info("Systems: Capacitor, ShieldRecharge, AI, Targeting, Station, Movement, Weapon, Combat");
 
-    // Initialize PCG manager with universe seed
-    pcg_manager_.initialize(0xE0E0FF714E);
+    // Initialize PCG manager with deterministic universe seed.
+    // This seed anchors all procedural generation (ships, stations,
+    // salvage fields, asteroid belts) so that every server run
+    // produces identical content for the same seed.
+    static constexpr uint64_t DEFAULT_UNIVERSE_SEED = 0xE0E0FF714E;
+    pcg_manager_.initialize(DEFAULT_UNIVERSE_SEED);
     log.info("PCG Manager initialized (universe seed: 0xE0E0FF714E)");
 }
 

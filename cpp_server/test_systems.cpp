@@ -14044,7 +14044,7 @@ void testFleetDoctrineZeroShips() {
     assertTrue(fleet.slots.empty(), "Zero-ship fleet has no slots");
 }
 
-// ── new123 procedural systems tests ─────────────────────────────────
+// ── Procedural Generation Systems tests ─────────────────────────────────
 
 void testRoomGraphGeneration() {
     std::cout << "\n=== PCG: RoomGraph generation ===" << std::endl;
@@ -15205,7 +15205,7 @@ int main() {
     testFleetDoctrineRoles();
     testFleetDoctrineZeroShips();
 
-    // new123 Procedural Systems tests
+    // Procedural Generation Systems tests
     testRoomGraphGeneration();
     testRoomGraphDeterminism();
     testDeckGraphGeneration();
