@@ -86,8 +86,6 @@ public:
                                        const GeneratedShip& ship);
 
 private:
-    static constexpr float DEG_TO_RAD = 3.14159265358979323846f / 180.0f;
-
     /** Normalise an angle into [0, 360). */
     static float normalizeDeg(float deg);
 };

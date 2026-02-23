@@ -83,11 +83,12 @@ WeaponLayout WeaponSocketUtil::generateLayout(const PCGContext& ctx,
             break;
     }
 
-    // Distribute turrets evenly around the forward hemisphere.
+    // Distribute turrets evenly across the forward hemisphere (180°).
+    static constexpr float FORWARD_HEMISPHERE_DEG = 180.0f;
     float spacing = (totalTurrets > 1)
-                    ? 180.0f / static_cast<float>(totalTurrets - 1)
+                    ? FORWARD_HEMISPHERE_DEG / static_cast<float>(totalTurrets - 1)
                     : 0.0f;
-    float startAngle = -90.0f + (spacing * 0.5f);
+    float startAngle = -(FORWARD_HEMISPHERE_DEG * 0.5f) + (spacing * 0.5f);
     if (totalTurrets == 1) startAngle = 0.0f;
 
     float totalDPS   = 0.0f;
