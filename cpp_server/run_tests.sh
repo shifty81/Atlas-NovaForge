@@ -1,11 +1,11 @@
 #!/bin/bash
-# Test runner for EVE OFFLINE C++ Dedicated Server
+# Test runner for Nova Forge C++ Dedicated Server
 # Ensures tests are run from the repository root for correct data path resolution
 
 set -e
 
 echo "========================================="
-echo "EVE OFFLINE Server Test Runner"
+echo "Nova Forge Server Test Runner"
 echo "========================================="
 echo ""
 

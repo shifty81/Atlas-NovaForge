@@ -112,6 +112,24 @@ set(SERVER_SOURCES
     src/systems/fleet_progression_system.cpp
     src/systems/station_deployment_system.cpp
     src/systems/fleet_warp_formation_system.cpp
+    src/systems/warp_meditation_system.cpp
+    src/systems/rumor_questline_system.cpp
+    src/systems/captain_departure_system.cpp
+    src/systems/captain_transfer_system.cpp
+    src/systems/npc_rerouting_system.cpp
+    src/systems/local_reputation_system.cpp
+    src/systems/station_news_system.cpp
+    src/systems/wreck_persistence_system.cpp
+    src/systems/fleet_history_system.cpp
+    src/systems/rig_system.cpp
+    src/systems/legend_system.cpp
+    src/systems/ancient_tech_system.cpp
+    src/systems/docking_system.cpp
+    src/systems/survival_system.cpp
+    src/systems/menu_system.cpp
+    src/systems/crew_system.cpp
+    src/systems/salvage_exploration_system.cpp
+    src/systems/market_order_system.cpp
     src/data/ship_database.cpp
     src/data/npc_database.cpp
     src/data/wormhole_database.cpp
@@ -139,6 +157,11 @@ set(SERVER_SOURCES
     src/pcg/pcg_verify.cpp
     src/pcg/interior_budget.cpp
     src/pcg/interior_generator.cpp
+    src/pcg/character_mesh_system.cpp
+    src/pcg/turret_generator.cpp
+    src/pcg/planet_generator.cpp
+    src/pcg/habitat_generator.cpp
+    src/pcg/grav_bike_generator.cpp
 )
 
 set(SERVER_HEADERS
@@ -222,6 +245,24 @@ set(SERVER_HEADERS
     include/systems/fleet_progression_system.h
     include/systems/station_deployment_system.h
     include/systems/fleet_warp_formation_system.h
+    include/systems/warp_meditation_system.h
+    include/systems/rumor_questline_system.h
+    include/systems/captain_departure_system.h
+    include/systems/captain_transfer_system.h
+    include/systems/npc_rerouting_system.h
+    include/systems/local_reputation_system.h
+    include/systems/station_news_system.h
+    include/systems/wreck_persistence_system.h
+    include/systems/fleet_history_system.h
+    include/systems/rig_system.h
+    include/systems/legend_system.h
+    include/systems/ancient_tech_system.h
+    include/systems/docking_system.h
+    include/systems/survival_system.h
+    include/systems/menu_system.h
+    include/systems/crew_system.h
+    include/systems/salvage_exploration_system.h
+    include/systems/market_order_system.h
     include/data/ship_database.h
     include/data/npc_database.h
     include/data/wormhole_database.h
@@ -253,6 +294,11 @@ set(SERVER_HEADERS
     include/pcg/pcg_verify.h
     include/pcg/interior_budget.h
     include/pcg/interior_generator.h
+    include/pcg/character_mesh_system.h
+    include/pcg/turret_generator.h
+    include/pcg/planet_generator.h
+    include/pcg/habitat_generator.h
+    include/pcg/grav_bike_generator.h
 )
 
 # Steam SDK configuration
@@ -398,6 +444,24 @@ if(BUILD_TESTS)
         src/systems/fleet_progression_system.cpp
         src/systems/station_deployment_system.cpp
         src/systems/fleet_warp_formation_system.cpp
+        src/systems/warp_meditation_system.cpp
+        src/systems/rumor_questline_system.cpp
+        src/systems/captain_departure_system.cpp
+        src/systems/captain_transfer_system.cpp
+        src/systems/npc_rerouting_system.cpp
+        src/systems/local_reputation_system.cpp
+        src/systems/station_news_system.cpp
+        src/systems/wreck_persistence_system.cpp
+        src/systems/fleet_history_system.cpp
+        src/systems/rig_system.cpp
+        src/systems/legend_system.cpp
+        src/systems/ancient_tech_system.cpp
+        src/systems/docking_system.cpp
+        src/systems/survival_system.cpp
+        src/systems/menu_system.cpp
+        src/systems/crew_system.cpp
+        src/systems/salvage_exploration_system.cpp
+        src/systems/market_order_system.cpp
         src/data/world_persistence.cpp
         src/utils/logger.cpp
         src/utils/server_metrics.cpp
@@ -434,6 +498,11 @@ if(BUILD_TESTS)
         src/pcg/pcg_verify.cpp
         src/pcg/interior_budget.cpp
         src/pcg/interior_generator.cpp
+        src/pcg/character_mesh_system.cpp
+        src/pcg/turret_generator.cpp
+        src/pcg/planet_generator.cpp
+        src/pcg/habitat_generator.cpp
+        src/pcg/grav_bike_generator.cpp
     )
 
     add_executable(test_systems

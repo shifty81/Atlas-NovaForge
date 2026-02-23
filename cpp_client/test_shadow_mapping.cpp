@@ -137,7 +137,7 @@ std::unique_ptr<Mesh> createGroundPlane(float size, const glm::vec3& color) {
 
 int main() {
     // Initialize window
-    Window window("EVE OFFLINE - Shadow Mapping Test", SCR_WIDTH, SCR_HEIGHT);
+    Window window("Nova Forge - Shadow Mapping Test", SCR_WIDTH, SCR_HEIGHT);
     
     GLFWwindow* glfwWindow = window.getHandle();
     glfwSetCursorPosCallback(glfwWindow, mouse_callback);

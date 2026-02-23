@@ -1,4 +1,4 @@
-# Atlas - Makefile
+# Nova Forge - Makefile
 # Provides easy commands for common development tasks
 
 # Detect OS
@@ -15,8 +15,8 @@ endif
 
 .PHONY: help
 help: ## Show this help message
-	@echo "Atlas - Development Commands"
-	@echo "============================"
+	@echo "Nova Forge - Development Commands"
+	@echo "================================="
 	@echo ""
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
 	@echo ""

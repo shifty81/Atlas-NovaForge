@@ -107,8 +107,8 @@ See [Priority Areas](#priority-areas) for where help is most needed.
 
 ```bash
 # Fork the repository on GitHub, then:
-git clone https://github.com/YOUR_USERNAME/EVEOFFLINE.git
-cd EVEOFFLINE
+git clone https://github.com/YOUR_USERNAME/Nova Forge.git
+cd Nova Forge
 ```
 
 ### 2. Set Up Development Environment
@@ -357,7 +357,7 @@ Help is especially welcome in these areas:
 
 ## Thank You!
 
-Your contributions make EVE OFFLINE better for everyone. Thank you for taking the time to contribute! 🚀
+Your contributions make Nova Forge better for everyone. Thank you for taking the time to contribute! 🚀
 
 ---
 

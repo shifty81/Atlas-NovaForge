@@ -1,11 +1,11 @@
 # Atlas - Root CMakeLists.txt
-# Unified build: Atlas Engine core + EVEOFFLINE game project (client & server)
+# Unified build: Atlas Engine core + Nova Forge game project (client & server)
 #
 # Architecture:
 #   engine/       → AtlasEngine static library (generic, game-agnostic)
 #   editor/       → AtlasEditor executable (authoring tool)
-#   cpp_client/   → EVEOFFLINE game client (links AtlasEngine)
-#   cpp_server/   → EVEOFFLINE game server (links AtlasEngine)
+#   cpp_client/   → Nova Forge game client (links AtlasEngine)
+#   cpp_server/   → Nova Forge game server (links AtlasEngine)
 #   atlas_tests/  → Atlas engine unit tests
 
 cmake_minimum_required(VERSION 3.15)
@@ -42,13 +42,13 @@ if(BUILD_ATLAS_TESTS AND BUILD_ATLAS_ENGINE)
     add_subdirectory(atlas_tests)
 endif()
 
-# --- EVEOFFLINE Game Client ---
+# --- Nova Forge Game Client ---
 if(BUILD_CLIENT)
     message(STATUS "Adding C++ Client to solution...")
     add_subdirectory(cpp_client)
 endif()
 
-# --- EVEOFFLINE Game Server ---
+# --- Nova Forge Game Server ---
 if(BUILD_SERVER)
     message(STATUS "Adding C++ Server to solution...")
     add_subdirectory(cpp_server)

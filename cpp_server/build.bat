@@ -1,8 +1,8 @@
 @echo off
-REM Build script for EVE OFFLINE C++ Dedicated Server (Windows)
+REM Build script for Nova Forge C++ Dedicated Server (Windows)
 
 echo ==================================
-echo EVE OFFLINE Server Build Script
+echo Nova Forge Server Build Script
 echo ==================================
 echo.
 

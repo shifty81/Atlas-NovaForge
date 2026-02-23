@@ -23,7 +23,7 @@ void printEntity(const json& entity) {
 }
 
 int main(int argc, char* argv[]) {
-    std::cout << "=== EVE OFFLINE Network Test ===" << std::endl;
+    std::cout << "=== Nova Forge Network Test ===" << std::endl;
     std::cout << std::endl;
 
     // Parse arguments

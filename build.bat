@@ -1,9 +1,9 @@
 @echo off
-REM Atlas - Windows Build Script
+REM Nova Forge - Windows Build Script
 REM Builds the C++ client and server using CMake
 
 echo ================================================
-echo Atlas - Build
+echo Nova Forge - Build
 echo ================================================
 echo.
 

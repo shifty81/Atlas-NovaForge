@@ -1,6 +1,6 @@
-# EVE OFFLINE Documentation
+# Nova Forge Documentation
 
-Welcome to the EVE OFFLINE documentation! This directory contains all project documentation organized by subject.
+Welcome to the Nova Forge documentation! This directory contains all project documentation organized by subject.
 
 ## 📚 Documentation Structure
 

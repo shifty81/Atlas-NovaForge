@@ -22,7 +22,7 @@ class EmbeddedServer {
 public:
     struct Config {
         std::string server_name = "My Game";
-        std::string description = "EVE OFFLINE Game";
+        std::string description = "Nova Forge Game";
         int port = 8765;
         int max_players = 20;
         bool use_password = false;

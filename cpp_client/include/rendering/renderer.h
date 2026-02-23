@@ -52,7 +52,7 @@ struct EntityVisual {
 };
 
 /**
- * Main renderer class for EVE OFFLINE
+ * Main renderer class for Nova Forge
  * 
  * Handles all OpenGL rendering including:
  * - Starfield background rendering

@@ -1810,6 +1810,42 @@ public:
     COMPONENT_TYPE(WarpEvent)
 };
 
+// ==================== Phase 8: Warp Audio Enhancement Components ====================
+
+class WarpMeditationLayer : public ecs::Component {
+public:
+    bool active = false;
+    float fade_timer = 0.0f;
+    float fade_duration = 5.0f;
+    float volume = 0.0f;
+    float activation_delay = 15.0f;
+    float warp_cruise_time = 0.0f;
+
+    COMPONENT_TYPE(WarpMeditationLayer)
+};
+
+class WarpAudioProgression : public ecs::Component {
+public:
+    enum class Phase { Tension, Stabilize, Bloom, Meditative };
+
+    Phase current_phase = Phase::Tension;
+    float phase_timer = 0.0f;
+    float tension_duration = 3.0f;
+    float stabilize_duration = 5.0f;
+    float bloom_duration = 4.0f;
+    float blend_factor = 0.0f;
+
+    float computeOverallProgression() const {
+        float total = tension_duration + stabilize_duration + bloom_duration;
+        float elapsed = phase_timer;
+        if (elapsed >= total) return 1.0f;
+        if (elapsed <= 0.0f) return 0.0f;
+        return elapsed / total;
+    }
+
+    COMPONENT_TYPE(WarpAudioProgression)
+};
+
 // ==================== Phase 10: Tactical Overlay Components ====================
 
 class TacticalProjection : public ecs::Component {
@@ -2053,6 +2089,138 @@ public:
     COMPONENT_TYPE(SectorGrid)
 };
 
+// ==================== Phase 9: Rumor-to-Questline, Departure, Transfer ====================
+
+class RumorQuestline : public ecs::Component {
+public:
+    std::string rumor_id;
+    std::string questline_id;
+    int required_confirmations = 3;
+    bool graduated = false;
+    std::string quest_description;
+
+    COMPONENT_TYPE(RumorQuestline)
+};
+
+class CaptainDepartureState : public ecs::Component {
+public:
+    enum class DeparturePhase { None, Grumbling, FormalRequest, Departing };
+
+    DeparturePhase phase = DeparturePhase::None;
+    float disagreement_score = 0.0f;
+    float grumble_threshold = 5.0f;
+    float request_threshold = 10.0f;
+    float departure_timer = 0.0f;
+    float departure_delay = 120.0f;
+    bool player_acknowledged = false;
+
+    COMPONENT_TYPE(CaptainDepartureState)
+};
+
+class CaptainTransferRequest : public ecs::Component {
+public:
+    enum class TransferType { BiggerShip, EscortOnly, RoleChange };
+
+    TransferType request_type = TransferType::BiggerShip;
+    bool request_pending = false;
+    std::string requested_ship_class;
+    std::string requested_role;
+    float morale_at_request = 0.0f;
+
+    COMPONENT_TYPE(CaptainTransferRequest)
+};
+
+// ==================== Living Universe: NPC Rerouting, Reputation, News, Wrecks ====================
+
+class NPCRouteState : public ecs::Component {
+public:
+    std::string current_system_id;
+    std::string destination_system_id;
+    std::vector<std::string> planned_route;
+    bool rerouting = false;
+    float danger_threshold = 0.6f;
+    float reroute_cooldown = 0.0f;
+
+    COMPONENT_TYPE(NPCRouteState)
+};
+
+class LocalReputation : public ecs::Component {
+public:
+    std::map<std::string, float> player_reputation;
+    std::string system_id;
+    float reputation_decay_rate = 0.01f;
+
+    COMPONENT_TYPE(LocalReputation)
+};
+
+struct StationNewsEntry {
+    std::string headline;
+    std::string body;
+    float timestamp = 0.0f;
+    std::string category;
+};
+
+class StationNewsFeed : public ecs::Component {
+public:
+    std::vector<StationNewsEntry> entries;
+    int max_entries = 20;
+
+    void addEntry(const std::string& headline, const std::string& body,
+                  float ts, const std::string& category) {
+        StationNewsEntry entry;
+        entry.headline = headline;
+        entry.body = body;
+        entry.timestamp = ts;
+        entry.category = category;
+        entries.push_back(entry);
+        while (static_cast<int>(entries.size()) > max_entries) {
+            entries.erase(entries.begin());
+        }
+    }
+
+    COMPONENT_TYPE(StationNewsFeed)
+};
+
+class WreckPersistence : public ecs::Component {
+public:
+    float lifetime = 7200.0f;
+    float elapsed = 0.0f;
+    bool salvage_npc_assigned = false;
+    std::string assigned_npc_id;
+
+    COMPONENT_TYPE(WreckPersistence)
+};
+
+// ==================== Phase 11: Fleet History ====================
+
+struct FleetHistoryEntry {
+    std::string event_type;
+    std::string description;
+    float timestamp = 0.0f;
+    std::string involved_entity_id;
+};
+
+class FleetHistory : public ecs::Component {
+public:
+    std::vector<FleetHistoryEntry> events;
+    int max_events = 100;
+
+    void addEvent(const std::string& type, const std::string& desc,
+                  float ts, const std::string& entity_id) {
+        FleetHistoryEntry entry;
+        entry.event_type = type;
+        entry.description = desc;
+        entry.timestamp = ts;
+        entry.involved_entity_id = entity_id;
+        events.push_back(entry);
+        while (static_cast<int>(events.size()) > max_events) {
+            events.erase(events.begin());
+        }
+    }
+
+    COMPONENT_TYPE(FleetHistory)
+};
+
 // ==================== Phase 11: Fleet-as-Civilization ====================
 
 /**
@@ -2214,6 +2382,395 @@ public:
     }
 
     COMPONENT_TYPE(FleetCivilization)
+};
+
+// ==================== Rig & Equipment System ====================
+
+class RigModule : public ecs::Component {
+public:
+    enum class ModuleType {
+        LifeSupport,
+        PowerCore,
+        JetpackTank,
+        Sensor,
+        Shield,
+        EnvironFilter,
+        ToolMount,
+        WeaponMount,
+        DroneController,
+        ScannerSuite,
+        CargoPod,
+        BatteryPack,
+        SolarPanel
+    };
+
+    ModuleType type = ModuleType::LifeSupport;
+    int tier = 1;
+    float efficiency = 1.0f;
+    float durability = 100.0f;
+    float max_durability = 100.0f;
+    std::string module_name;
+
+    COMPONENT_TYPE(RigModule)
+};
+
+class RigLoadout : public ecs::Component {
+public:
+    int rack_width = 2;
+    int rack_height = 2;
+    int max_slots() const { return rack_width * rack_height; }
+    std::vector<std::string> installed_module_ids;
+
+    float total_oxygen = 0.0f;
+    float total_power = 0.0f;
+    float total_cargo = 0.0f;
+    float total_shield = 0.0f;
+    float jetpack_fuel = 0.0f;
+
+    bool canInstallModule() const {
+        return static_cast<int>(installed_module_ids.size()) < max_slots();
+    }
+
+    COMPONENT_TYPE(RigLoadout)
+};
+
+// ==================== Myth & Legend System ====================
+
+class PlayerLegend : public ecs::Component {
+public:
+    struct LegendEntry {
+        std::string event_type;
+        std::string description;
+        float timestamp;
+        std::string system_id;
+        int magnitude;
+    };
+
+    std::vector<LegendEntry> entries;
+    int legend_score = 0;
+    std::string title;
+    int max_entries = 50;
+
+    void addEntry(const std::string& type, const std::string& desc, float ts,
+                  const std::string& sys_id, int mag) {
+        LegendEntry entry{type, desc, ts, sys_id, mag};
+        entries.push_back(entry);
+        legend_score += mag;
+        if (static_cast<int>(entries.size()) > max_entries) {
+            entries.erase(entries.begin());
+        }
+    }
+
+    COMPONENT_TYPE(PlayerLegend)
+};
+
+class AncientTechModule : public ecs::Component {
+public:
+    enum class TechState { Broken, Repairing, Repaired, Upgraded };
+
+    TechState state = TechState::Broken;
+    std::string tech_type;
+    float repair_progress = 0.0f;
+    float repair_cost = 100.0f;
+    float power_multiplier = 1.5f;
+    bool reverse_engineered = false;
+    std::string blueprint_id;
+
+    bool isUsable() const { return state == TechState::Repaired || state == TechState::Upgraded; }
+
+    COMPONENT_TYPE(AncientTechModule)
+};
+
+class DockingPort : public ecs::Component {
+public:
+    enum class PortType { Airlock, DockingRing, HangarBay, RoverBay };
+
+    PortType type = PortType::Airlock;
+    bool is_extended = false;
+    bool is_pressurized = true;
+    std::string docked_entity_id;
+    float max_ship_mass = 0.0f;
+
+    bool isOccupied() const { return !docked_entity_id.empty(); }
+
+    COMPONENT_TYPE(DockingPort)
+};
+
+// ==================== Survival Module ====================
+
+class SurvivalNeeds : public ecs::Component {
+public:
+    float oxygen = 100.0f;
+    float hunger = 0.0f;
+    float fatigue = 0.0f;
+    float oxygen_drain_rate = 0.5f;
+    float hunger_rate = 0.1f;
+    float fatigue_rate = 0.05f;
+
+    bool isAlive() const { return oxygen > 0.0f; }
+    bool isStarving() const { return hunger >= 80.0f; }
+    bool isExhausted() const { return fatigue >= 80.0f; }
+
+    COMPONENT_TYPE(SurvivalNeeds)
+};
+
+class Fabricator : public ecs::Component {
+public:
+    bool is_active = false;
+    std::string current_recipe;
+    float progress = 0.0f;
+    float craft_speed = 1.0f;
+    std::vector<std::string> known_recipes;
+    int max_queue = 5;
+
+    COMPONENT_TYPE(Fabricator)
+};
+
+// ==================== Menu & Game Flow ====================
+
+class MenuState : public ecs::Component {
+public:
+    enum class Screen {
+        TitleScreen,
+        NewGame,
+        LoadGame,
+        ModMenu,
+        MultiplayerMenu,
+        CharacterCreation,
+        InGame,
+        PauseMenu
+    };
+
+    Screen current_screen = Screen::TitleScreen;
+    Screen previous_screen = Screen::TitleScreen;
+    float transition_timer = 0.0f;
+    bool transition_active = false;
+
+    COMPONENT_TYPE(MenuState)
+};
+
+class MultiplayerSession : public ecs::Component {
+public:
+    enum class Role { None, Host, Client };
+
+    Role role = Role::None;
+    std::string host_address;
+    int port = 7777;
+    int max_players = 20;
+    int connected_players = 0;
+    bool mod_validation_passed = false;
+    uint64_t world_seed = 0;
+
+    COMPONENT_TYPE(MultiplayerSession)
+};
+
+// ==================== NPC Crew Simulation ====================
+
+class CrewMember : public ecs::Component {
+public:
+    enum class CrewRole {
+        Engineer, Pilot, Gunner, Medic,
+        Scientist, Miner, Cook, Security
+    };
+    enum class Activity {
+        Idle, Working, Walking, Resting, Eating, Repairing, Manning
+    };
+
+    CrewRole role = CrewRole::Engineer;
+    Activity current_activity = Activity::Idle;
+    std::string assigned_room_id;
+    std::string current_room_id;
+    float skill_level = 1.0f;
+    float morale = 50.0f;
+    float efficiency_bonus = 0.0f;
+
+    COMPONENT_TYPE(CrewMember)
+};
+
+class ShipCrew : public ecs::Component {
+public:
+    int max_crew = 10;
+    int current_crew = 0;
+    std::vector<std::string> crew_member_ids;
+    float overall_efficiency = 1.0f;
+    float morale_average = 50.0f;
+
+    COMPONENT_TYPE(ShipCrew)
+};
+
+// ==================== Salvage Exploration ====================
+
+class SalvageSite : public ecs::Component {
+public:
+    enum class SiteType { ShipWreck, DerelictStation, Ruins, DebrisField, AncientSite };
+
+    SiteType type = SiteType::ShipWreck;
+    int total_loot_nodes = 0;
+    int discovered_nodes = 0;
+    int looted_nodes = 0;
+    float scan_difficulty = 0.5f;
+    bool has_hostiles = false;
+    int hostile_count = 0;
+    bool has_ancient_tech = false;
+
+    int trinket_count = 0;
+    bool has_rare_bobblehead = false;
+
+    COMPONENT_TYPE(SalvageSite)
+};
+
+class SalvageTool : public ecs::Component {
+public:
+    enum class ToolType { Cutter, GravGun, Scanner, RepairTool };
+
+    ToolType type = ToolType::Cutter;
+    float efficiency = 1.0f;
+    float power_usage = 5.0f;
+    float durability = 100.0f;
+    float max_durability = 100.0f;
+    int tier = 1;
+
+    COMPONENT_TYPE(SalvageTool)
+};
+
+// ==================== Interior-Exterior Coupling ====================
+
+class InteriorExteriorLink : public ecs::Component {
+public:
+    struct ExteriorEffect {
+        std::string module_type;
+        float hull_deformation = 0.0f;
+        bool visible_on_exterior = true;
+        float scale = 1.0f;
+    };
+
+    std::vector<ExteriorEffect> effects;
+    float total_hull_deformation = 0.0f;
+    int visible_module_count = 0;
+
+    void addEffect(const std::string& type, float deform, bool visible, float scale) {
+        effects.push_back({type, deform, visible, scale});
+        if (visible) visible_module_count++;
+        total_hull_deformation += deform;
+    }
+
+    void clearEffects() {
+        effects.clear();
+        total_hull_deformation = 0.0f;
+        visible_module_count = 0;
+    }
+
+    COMPONENT_TYPE(InteriorExteriorLink)
+};
+
+// ==================== Race & Lore ====================
+
+class RaceInfo : public ecs::Component {
+public:
+    enum class RaceName { TerranDescendant, SynthBorn, PureAlien, HybridEvolutionary };
+
+    RaceName race = RaceName::TerranDescendant;
+
+    float learning_rate = 1.0f;
+    float diplomacy_modifier = 0.0f;
+    float automation_bonus = 0.0f;
+    float environmental_resilience = 1.0f;
+    float mutation_rate = 0.0f;
+
+    std::string preferred_tech;
+    float faction_standing_modifier = 0.0f;
+
+    static void applyRaceDefaults(RaceInfo& info) {
+        switch (info.race) {
+            case RaceName::TerranDescendant:
+                info.learning_rate = 1.2f;
+                info.diplomacy_modifier = 0.15f;
+                info.preferred_tech = "balanced";
+                break;
+            case RaceName::SynthBorn:
+                info.automation_bonus = 0.25f;
+                info.environmental_resilience = 0.8f;
+                info.preferred_tech = "drone";
+                break;
+            case RaceName::PureAlien:
+                info.environmental_resilience = 1.3f;
+                info.preferred_tech = "exotic";
+                break;
+            case RaceName::HybridEvolutionary:
+                info.learning_rate = 1.1f;
+                info.environmental_resilience = 1.1f;
+                info.mutation_rate = 0.05f;
+                info.preferred_tech = "hybrid";
+                break;
+        }
+    }
+
+    COMPONENT_TYPE(RaceInfo)
+};
+
+class LoreEntry : public ecs::Component {
+public:
+    struct LogEntry {
+        std::string title;
+        std::string content;
+        float discovery_timestamp;
+        std::string source;
+    };
+
+    std::vector<LogEntry> discovered_lore;
+    int max_entries = 100;
+
+    void addLore(const std::string& title, const std::string& content,
+                 float ts, const std::string& source) {
+        LogEntry entry{title, content, ts, source};
+        discovered_lore.push_back(entry);
+        if (static_cast<int>(discovered_lore.size()) > max_entries) {
+            discovered_lore.erase(discovered_lore.begin());
+        }
+    }
+
+    int getLoreCount() const { return static_cast<int>(discovered_lore.size()); }
+
+    COMPONENT_TYPE(LoreEntry)
+};
+
+// ==================== Enhanced Market ====================
+
+class MarketOrder : public ecs::Component {
+public:
+    enum class OrderType { Buy, Sell };
+
+    OrderType type = OrderType::Buy;
+    std::string item_type;
+    int quantity = 0;
+    int quantity_remaining = 0;
+    float price_per_unit = 0.0f;
+    std::string region_id;
+    std::string station_id;
+    std::string owner_id;
+    float expiry_time = 86400.0f;
+    float elapsed_time = 0.0f;
+    bool is_npc_order = false;
+    bool is_filled = false;
+
+    COMPONENT_TYPE(MarketOrder)
+};
+
+class AIFleetDispatch : public ecs::Component {
+public:
+    enum class DispatchType { Mining, Hauling, Production };
+
+    DispatchType type = DispatchType::Mining;
+    std::string target_system_id;
+    std::string order_id;
+    bool dispatched = false;
+    float estimated_completion = 0.0f;
+    float elapsed = 0.0f;
+    int fleet_size = 1;
+
+    bool isComplete() const { return elapsed >= estimated_completion; }
+
+    COMPONENT_TYPE(AIFleetDispatch)
 };
 
 } // namespace components

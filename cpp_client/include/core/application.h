@@ -37,7 +37,7 @@ namespace atlas {
 namespace atlas {
 
 /**
- * Main application class for EVE OFFLINE client
+ * Main application class for Nova Forge client
  * 
  * Manages the game loop, window, and all core systems including:
  * - Rendering (3D graphics, UI)

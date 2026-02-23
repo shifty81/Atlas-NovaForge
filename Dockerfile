@@ -1,4 +1,4 @@
-# EVE OFFLINE - Dedicated Server Dockerfile
+# Nova Forge - Dedicated Server Dockerfile
 # Multi-stage build for minimal runtime image
 
 # --- Build stage ---
@@ -30,14 +30,14 @@ RUN apt-get update && apt-get install -y \
 
 RUN useradd -m -s /bin/bash eveserver
 
-WORKDIR /opt/eveoffline
+WORKDIR /opt/novaforge
 
 # Copy built server binary and config
 COPY --from=builder /build/cpp_server/build/bin/eve_dedicated_server .
 COPY --from=builder /build/cpp_server/build/bin/config/ config/
 COPY data/ data/
 
-RUN chown -R eveserver:eveserver /opt/eveoffline
+RUN chown -R eveserver:eveserver /opt/novaforge
 
 USER eveserver
 

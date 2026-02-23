@@ -73,7 +73,7 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 }
 
 int main() {
-    std::cout << "=== EVE OFFLINE - Star Map & Ship Physics Demo ===" << std::endl;
+    std::cout << "=== Nova Forge - Star Map & Ship Physics Demo ===" << std::endl;
     std::cout << "Controls:" << std::endl;
     std::cout << "  F10 - Toggle star map" << std::endl;
     std::cout << "  1 - Galaxy view" << std::endl;
@@ -95,7 +95,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "EVE OFFLINE - Star Map Demo", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "Nova Forge - Star Map Demo", nullptr, nullptr);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();

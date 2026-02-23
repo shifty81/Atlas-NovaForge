@@ -77,6 +77,24 @@
 #include "systems/fleet_progression_system.h"
 #include "systems/station_deployment_system.h"
 #include "systems/fleet_warp_formation_system.h"
+#include "systems/warp_meditation_system.h"
+#include "systems/rumor_questline_system.h"
+#include "systems/captain_departure_system.h"
+#include "systems/captain_transfer_system.h"
+#include "systems/npc_rerouting_system.h"
+#include "systems/local_reputation_system.h"
+#include "systems/station_news_system.h"
+#include "systems/wreck_persistence_system.h"
+#include "systems/fleet_history_system.h"
+#include "systems/rig_system.h"
+#include "systems/legend_system.h"
+#include "systems/ancient_tech_system.h"
+#include "systems/docking_system.h"
+#include "systems/survival_system.h"
+#include "systems/menu_system.h"
+#include "systems/crew_system.h"
+#include "systems/salvage_exploration_system.h"
+#include "systems/market_order_system.h"
 #include "network/protocol_handler.h"
 #include "ui/server_console.h"
 #include "utils/logger.h"
@@ -97,6 +115,11 @@
 #include "pcg/station_generator.h"
 #include "pcg/salvage_system.h"
 #include "pcg/rover_system.h"
+#include "pcg/character_mesh_system.h"
+#include "pcg/turret_generator.h"
+#include "pcg/planet_generator.h"
+#include "pcg/habitat_generator.h"
+#include "pcg/grav_bike_generator.h"
 #include "pcg/collision_manager.h"
 #include "pcg/asteroid_field_generator.h"
 #include "pcg/anomaly_generator.h"
@@ -15172,9 +15195,1337 @@ void testFleetCivilizationThresholdMet() {
     assertTrue(civ->isCivilizationThresholdMet(), "Threshold met when all criteria true");
 }
 
+// ==================== Warp Meditation System Tests ====================
+
+void testWarpMeditationDefaults() {
+    std::cout << "\n=== Warp Meditation Defaults ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("med1");
+    auto* med = addComp<components::WarpMeditationLayer>(e);
+    assertTrue(!med->active, "Meditation not active by default");
+    assertTrue(approxEqual(med->volume, 0.0f), "Volume is 0 by default");
+    assertTrue(approxEqual(med->activation_delay, 15.0f), "Activation delay default 15s");
+    assertTrue(approxEqual(med->fade_duration, 5.0f), "Fade duration default 5s");
+}
+
+void testMeditationActivatesAfterDelay() {
+    std::cout << "\n=== Meditation Activates After Delay ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("med2");
+    auto* med = addComp<components::WarpMeditationLayer>(e);
+    auto* warp = addComp<components::WarpState>(e);
+    warp->phase = components::WarpState::WarpPhase::Cruise;
+    med->activation_delay = 10.0f;
+
+    systems::WarpMeditationSystem sys(&world);
+    // Not enough time yet
+    sys.update(5.0f);
+    assertTrue(!med->active, "Not active before delay");
+    // Enough time
+    sys.update(6.0f);
+    assertTrue(med->active, "Active after delay reached");
+}
+
+void testMeditationFadesInDuringCruise() {
+    std::cout << "\n=== Meditation Fades In During Cruise ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("med3");
+    auto* med = addComp<components::WarpMeditationLayer>(e);
+    auto* warp = addComp<components::WarpState>(e);
+    warp->phase = components::WarpState::WarpPhase::Cruise;
+    med->activation_delay = 0.0f;
+    med->fade_duration = 10.0f;
+
+    systems::WarpMeditationSystem sys(&world);
+    sys.update(1.0f);
+    assertTrue(med->active, "Active after activation");
+    sys.update(5.0f);
+    assertTrue(med->volume > 0.0f && med->volume < 1.0f, "Volume ramping up");
+    sys.update(10.0f);
+    assertTrue(approxEqual(med->volume, 1.0f), "Volume reaches 1.0");
+}
+
+void testMeditationFadesOutOnExit() {
+    std::cout << "\n=== Meditation Fades Out On Exit ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("med4");
+    auto* med = addComp<components::WarpMeditationLayer>(e);
+    auto* warp = addComp<components::WarpState>(e);
+    warp->phase = components::WarpState::WarpPhase::Cruise;
+    med->activation_delay = 0.0f;
+    med->fade_duration = 5.0f;
+
+    systems::WarpMeditationSystem sys(&world);
+    sys.update(1.0f);
+    sys.update(10.0f); // fully faded in
+    assertTrue(approxEqual(med->volume, 1.0f), "Volume at 1.0");
+
+    warp->phase = components::WarpState::WarpPhase::None;
+    sys.update(2.0f);
+    assertTrue(med->volume < 1.0f, "Volume decreasing after exit");
+}
+
+void testMeditationResetOnNone() {
+    std::cout << "\n=== Meditation Reset On None ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("med5");
+    auto* med = addComp<components::WarpMeditationLayer>(e);
+    auto* warp = addComp<components::WarpState>(e);
+    warp->phase = components::WarpState::WarpPhase::Cruise;
+    med->activation_delay = 5.0f;
+
+    systems::WarpMeditationSystem sys(&world);
+    sys.update(6.0f);
+    assertTrue(med->warp_cruise_time > 0.0f, "Cruise time accumulated");
+
+    warp->phase = components::WarpState::WarpPhase::None;
+    sys.update(10.0f);
+    assertTrue(approxEqual(med->warp_cruise_time, 0.0f), "Cruise time reset to 0");
+}
+
+void testAudioProgressionPhases() {
+    std::cout << "\n=== Audio Progression Phases ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("prog1");
+    auto* prog = addComp<components::WarpAudioProgression>(e);
+    auto* warp = addComp<components::WarpState>(e);
+    warp->phase = components::WarpState::WarpPhase::Cruise;
+    prog->tension_duration = 3.0f;
+    prog->stabilize_duration = 5.0f;
+    prog->bloom_duration = 4.0f;
+
+    systems::WarpMeditationSystem sys(&world);
+    using Phase = components::WarpAudioProgression::Phase;
+
+    sys.update(1.0f);
+    assertTrue(prog->current_phase == Phase::Tension, "Phase is Tension at 1s");
+    sys.update(3.0f); // total 4s
+    assertTrue(prog->current_phase == Phase::Stabilize, "Phase is Stabilize at 4s");
+    sys.update(5.0f); // total 9s
+    assertTrue(prog->current_phase == Phase::Bloom, "Phase is Bloom at 9s");
+    sys.update(4.0f); // total 13s
+    assertTrue(prog->current_phase == Phase::Meditative, "Phase is Meditative at 13s");
+}
+
+void testAudioProgressionReset() {
+    std::cout << "\n=== Audio Progression Reset ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("prog2");
+    auto* prog = addComp<components::WarpAudioProgression>(e);
+    auto* warp = addComp<components::WarpState>(e);
+    warp->phase = components::WarpState::WarpPhase::Cruise;
+
+    systems::WarpMeditationSystem sys(&world);
+    sys.update(20.0f);
+    using Phase = components::WarpAudioProgression::Phase;
+    assertTrue(prog->current_phase == Phase::Meditative, "Reached Meditative");
+
+    warp->phase = components::WarpState::WarpPhase::None;
+    sys.update(0.1f);
+    assertTrue(prog->current_phase == Phase::Tension, "Reset to Tension on None");
+    assertTrue(approxEqual(prog->phase_timer, 0.0f), "Timer reset to 0");
+}
+
+void testAudioProgressionComputeOverall() {
+    std::cout << "\n=== Audio Progression Compute Overall ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("prog3");
+    auto* prog = addComp<components::WarpAudioProgression>(e);
+    prog->tension_duration = 3.0f;
+    prog->stabilize_duration = 5.0f;
+    prog->bloom_duration = 4.0f;
+
+    prog->phase_timer = 0.0f;
+    assertTrue(approxEqual(prog->computeOverallProgression(), 0.0f), "Overall 0 at start");
+
+    prog->phase_timer = 6.0f; // halfway through total 12s
+    assertTrue(approxEqual(prog->computeOverallProgression(), 0.5f), "Overall 0.5 at midpoint");
+
+    prog->phase_timer = 12.0f;
+    assertTrue(approxEqual(prog->computeOverallProgression(), 1.0f), "Overall 1.0 at end");
+
+    prog->phase_timer = 20.0f; // past end
+    assertTrue(approxEqual(prog->computeOverallProgression(), 1.0f), "Overall clamped to 1.0");
+}
+
+// ==================== Rumor Questline System Tests ====================
+
+void testRumorQuestlineNoGraduation() {
+    std::cout << "\n=== Rumor Questline No Graduation ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("rumor1");
+    auto* log = addComp<components::RumorLog>(e);
+    log->addRumor("r1", "Some rumor", false);
+    log->rumors[0].times_heard = 2;
+    log->rumors[0].belief_strength = 0.8f;
+
+    systems::RumorQuestlineSystem sys(&world);
+    sys.update(1.0f);
+    assertTrue(!sys.hasGraduatedRumor("rumor1", "r1"), "Rumor not graduated with < 3 hearings");
+}
+
+void testRumorQuestlineGraduates() {
+    std::cout << "\n=== Rumor Questline Graduates ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("rumor2");
+    auto* log = addComp<components::RumorLog>(e);
+    log->addRumor("r1", "A strong rumor", false);
+    log->rumors[0].times_heard = 3;
+    log->rumors[0].belief_strength = 0.8f;
+
+    systems::RumorQuestlineSystem sys(&world);
+    sys.update(1.0f);
+    assertTrue(sys.hasGraduatedRumor("rumor2", "r1"), "Rumor graduated with >= 3 hearings and belief >= 0.7");
+    auto quests = sys.getGraduatedQuestlines("rumor2");
+    assertTrue(quests.size() == 1, "One questline generated");
+}
+
+void testRumorQuestlineLowBeliefNoGraduation() {
+    std::cout << "\n=== Rumor Questline Low Belief ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("rumor3");
+    auto* log = addComp<components::RumorLog>(e);
+    log->addRumor("r1", "Weak rumor", false);
+    log->rumors[0].times_heard = 5;
+    log->rumors[0].belief_strength = 0.3f;
+
+    systems::RumorQuestlineSystem sys(&world);
+    sys.update(1.0f);
+    assertTrue(!sys.hasGraduatedRumor("rumor3", "r1"), "Low belief prevents graduation");
+}
+
+// ==================== Captain Departure System Tests ====================
+
+void testDeparturePhaseNone() {
+    std::cout << "\n=== Departure Phase None ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("dep1");
+    auto* state = addComp<components::CaptainDepartureState>(e);
+    state->disagreement_score = 2.0f;
+
+    systems::CaptainDepartureSystem sys(&world);
+    sys.update(1.0f);
+    using DP = components::CaptainDepartureState::DeparturePhase;
+    assertTrue(sys.getDeparturePhase("dep1") == DP::None, "Low disagreement stays None");
+}
+
+void testDeparturePhaseGrumbling() {
+    std::cout << "\n=== Departure Phase Grumbling ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("dep2");
+    auto* state = addComp<components::CaptainDepartureState>(e);
+    state->disagreement_score = 6.0f;
+
+    systems::CaptainDepartureSystem sys(&world);
+    sys.update(1.0f);
+    using DP = components::CaptainDepartureState::DeparturePhase;
+    assertTrue(sys.getDeparturePhase("dep2") == DP::Grumbling, "Score >= grumble_threshold transitions to Grumbling");
+}
+
+void testDeparturePhaseRequest() {
+    std::cout << "\n=== Departure Phase Request ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("dep3");
+    auto* state = addComp<components::CaptainDepartureState>(e);
+    state->disagreement_score = 11.0f;
+
+    systems::CaptainDepartureSystem sys(&world);
+    sys.update(1.0f);
+    using DP = components::CaptainDepartureState::DeparturePhase;
+    assertTrue(sys.getDeparturePhase("dep3") == DP::FormalRequest, "Score >= request_threshold transitions to FormalRequest");
+}
+
+void testDepartureAcknowledge() {
+    std::cout << "\n=== Departure Acknowledge ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("dep4");
+    auto* state = addComp<components::CaptainDepartureState>(e);
+    state->disagreement_score = 11.0f;
+
+    systems::CaptainDepartureSystem sys(&world);
+    sys.update(1.0f);
+    sys.acknowledgeRequest("dep4");
+    sys.update(0.1f);
+    using DP = components::CaptainDepartureState::DeparturePhase;
+    assertTrue(sys.getDeparturePhase("dep4") == DP::Departing, "Acknowledge causes transition to Departing");
+}
+
+void testDepartureTimerCountdown() {
+    std::cout << "\n=== Departure Timer Countdown ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("dep5");
+    auto* state = addComp<components::CaptainDepartureState>(e);
+    state->disagreement_score = 11.0f;
+    state->departure_delay = 10.0f;
+
+    systems::CaptainDepartureSystem sys(&world);
+    sys.update(1.0f); // transitions to FormalRequest
+    using DP = components::CaptainDepartureState::DeparturePhase;
+    assertTrue(sys.getDeparturePhase("dep5") == DP::FormalRequest, "In FormalRequest phase");
+    sys.update(5.0f);
+    assertTrue(state->departure_timer < 10.0f, "Timer counting down");
+    sys.update(6.0f);
+    assertTrue(sys.getDeparturePhase("dep5") == DP::Departing, "Timer expired, now Departing");
+}
+
+// ==================== Captain Transfer System Tests ====================
+
+void testTransferHighMorale() {
+    std::cout << "\n=== Transfer High Morale ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("xfer1");
+    auto* req = addComp<components::CaptainTransferRequest>(e);
+    auto* morale = addComp<components::FleetMorale>(e);
+    morale->morale_score = 85.0f;
+
+    systems::CaptainTransferSystem sys(&world);
+    sys.update(1.0f);
+    assertTrue(req->request_pending, "High morale triggers transfer request");
+    assertTrue(req->request_type == components::CaptainTransferRequest::TransferType::BiggerShip,
+               "High morale requests BiggerShip");
+}
+
+void testTransferLowMorale() {
+    std::cout << "\n=== Transfer Low Morale ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("xfer2");
+    auto* req = addComp<components::CaptainTransferRequest>(e);
+    auto* morale = addComp<components::FleetMorale>(e);
+    morale->morale_score = 20.0f;
+
+    systems::CaptainTransferSystem sys(&world);
+    sys.update(1.0f);
+    assertTrue(req->request_pending, "Low morale triggers transfer request");
+    assertTrue(req->request_type == components::CaptainTransferRequest::TransferType::EscortOnly,
+               "Low morale requests EscortOnly");
+}
+
+void testTransferApprove() {
+    std::cout << "\n=== Transfer Approve ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("xfer3");
+    auto* req = addComp<components::CaptainTransferRequest>(e);
+    auto* morale = addComp<components::FleetMorale>(e);
+    morale->morale_score = 90.0f;
+
+    systems::CaptainTransferSystem sys(&world);
+    sys.update(1.0f);
+    assertTrue(req->request_pending, "Request is pending");
+    sys.approveTransfer("xfer3");
+    assertTrue(!req->request_pending, "Approve clears pending");
+}
+
+// ==================== NPC Rerouting System Tests ====================
+
+void testNPCReroutingNoDanger() {
+    std::cout << "\n=== NPC Rerouting No Danger ===" << std::endl;
+    ecs::World world;
+    auto* sys_entity = world.createEntity("sys_safe");
+    auto* sys_state = addComp<components::SimStarSystemState>(sys_entity);
+    sys_state->threat_level = 0.2f;
+
+    auto* npc = world.createEntity("npc1");
+    auto* route = addComp<components::NPCRouteState>(npc);
+    route->planned_route = {"sys_safe"};
+
+    systems::NPCReroutingSystem sys(&world);
+    sys.update(1.0f);
+    assertTrue(!route->rerouting, "No rerouting when threat is low");
+    assertTrue(route->planned_route.size() == 1, "Route unchanged");
+}
+
+void testNPCReroutingDangerousSystem() {
+    std::cout << "\n=== NPC Rerouting Dangerous System ===" << std::endl;
+    ecs::World world;
+    auto* sys_entity = world.createEntity("sys_danger");
+    auto* sys_state = addComp<components::SimStarSystemState>(sys_entity);
+    sys_state->threat_level = 0.9f;
+
+    auto* npc = world.createEntity("npc2");
+    auto* route = addComp<components::NPCRouteState>(npc);
+    route->planned_route = {"sys_danger"};
+
+    systems::NPCReroutingSystem sys(&world);
+    sys.update(1.0f);
+    assertTrue(route->rerouting, "Rerouting triggered by dangerous system");
+    assertTrue(route->planned_route.empty(), "Dangerous system removed from route");
+}
+
+void testNPCReroutingCooldown() {
+    std::cout << "\n=== NPC Rerouting Cooldown ===" << std::endl;
+    ecs::World world;
+    auto* sys_entity = world.createEntity("sys_mid");
+    auto* sys_state = addComp<components::SimStarSystemState>(sys_entity);
+    sys_state->threat_level = 0.9f;
+
+    auto* npc = world.createEntity("npc3");
+    auto* route = addComp<components::NPCRouteState>(npc);
+    route->planned_route = {"sys_mid"};
+    route->reroute_cooldown = 100.0f;
+
+    systems::NPCReroutingSystem sys(&world);
+    sys.update(1.0f);
+    assertTrue(!route->rerouting, "Cooldown prevents rerouting");
+}
+
+// ==================== Local Reputation System Tests ====================
+
+void testLocalReputationDefaults() {
+    std::cout << "\n=== Local Reputation Defaults ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("sys1");
+    addComp<components::LocalReputation>(e);
+
+    systems::LocalReputationSystem sys(&world);
+    assertTrue(approxEqual(sys.getReputation("sys1", "player1"), 0.0f), "Default reputation is 0");
+    assertTrue(sys.getStanding("sys1", "player1") == "Neutral", "Default standing is Neutral");
+}
+
+void testLocalReputationModify() {
+    std::cout << "\n=== Local Reputation Modify ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("sys2");
+    addComp<components::LocalReputation>(e);
+
+    systems::LocalReputationSystem sys(&world);
+    sys.modifyReputation("sys2", "player1", 30.0f);
+    assertTrue(approxEqual(sys.getReputation("sys2", "player1"), 30.0f), "Reputation modified");
+    sys.modifyReputation("sys2", "player1", 200.0f);
+    assertTrue(approxEqual(sys.getReputation("sys2", "player1"), 100.0f), "Reputation clamped to 100");
+}
+
+void testLocalReputationDecay() {
+    std::cout << "\n=== Local Reputation Decay ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("sys3");
+    auto* rep = addComp<components::LocalReputation>(e);
+    rep->reputation_decay_rate = 1.0f;
+
+    systems::LocalReputationSystem sys(&world);
+    sys.modifyReputation("sys3", "player1", 10.0f);
+    sys.update(5.0f);
+    assertTrue(sys.getReputation("sys3", "player1") < 10.0f, "Reputation decayed toward 0");
+}
+
+void testLocalReputationStanding() {
+    std::cout << "\n=== Local Reputation Standing ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("sys4");
+    addComp<components::LocalReputation>(e);
+
+    systems::LocalReputationSystem sys(&world);
+    sys.modifyReputation("sys4", "p1", -60.0f);
+    assertTrue(sys.getStanding("sys4", "p1") == "Hostile", "Hostile at -60");
+    sys.modifyReputation("sys4", "p1", 30.0f); // now -30
+    assertTrue(sys.getStanding("sys4", "p1") == "Unfriendly", "Unfriendly at -30");
+
+    auto* e2 = world.createEntity("sys5");
+    addComp<components::LocalReputation>(e2);
+    sys.modifyReputation("sys5", "p2", 60.0f);
+    assertTrue(sys.getStanding("sys5", "p2") == "Allied", "Allied at 60");
+    sys.modifyReputation("sys5", "p3", 20.0f);
+    assertTrue(sys.getStanding("sys5", "p3") == "Friendly", "Friendly at 20");
+}
+
+// ==================== Station News System Tests ====================
+
+void testStationNewsEmpty() {
+    std::cout << "\n=== Station News Empty ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("station1");
+    addComp<components::StationNewsFeed>(e);
+
+    systems::StationNewsSystem sys(&world);
+    assertTrue(sys.getNewsCount("station1") == 0, "No news initially");
+    auto news = sys.getNews("station1");
+    assertTrue(news.empty(), "Empty news list");
+}
+
+void testStationNewsAddCombat() {
+    std::cout << "\n=== Station News Add Combat ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("station2");
+    addComp<components::StationNewsFeed>(e);
+
+    systems::StationNewsSystem sys(&world);
+    sys.reportCombatEvent("station2", "Pirates defeated", 100.0f);
+    assertTrue(sys.getNewsCount("station2") == 1, "One news entry");
+    auto news = sys.getNews("station2");
+    assertTrue(news[0].category == "combat", "Category is combat");
+}
+
+void testStationNewsMaxEntries() {
+    std::cout << "\n=== Station News Max Entries ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("station3");
+    auto* feed = addComp<components::StationNewsFeed>(e);
+    feed->max_entries = 5;
+
+    systems::StationNewsSystem sys(&world);
+    for (int i = 0; i < 10; i++) {
+        sys.reportCombatEvent("station3", "Event " + std::to_string(i), static_cast<float>(i));
+    }
+    assertTrue(sys.getNewsCount("station3") == 5, "Entries trimmed to max");
+}
+
+// ==================== Wreck Persistence System Tests ====================
+
+void testWreckPersistenceDefaults() {
+    std::cout << "\n=== Wreck Persistence Defaults ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("wreck1");
+    auto* wreck = addComp<components::WreckPersistence>(e);
+    assertTrue(approxEqual(wreck->lifetime, 7200.0f), "Default lifetime 7200s");
+    assertTrue(approxEqual(wreck->elapsed, 0.0f), "Elapsed starts at 0");
+    assertTrue(!wreck->salvage_npc_assigned, "No NPC assigned");
+}
+
+void testWreckPersistenceExpires() {
+    std::cout << "\n=== Wreck Persistence Expires ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("wreck2");
+    auto* wreck = addComp<components::WreckPersistence>(e);
+    wreck->lifetime = 10.0f;
+
+    systems::WreckPersistenceSystem sys(&world);
+    sys.update(5.0f);
+    assertTrue(!sys.isExpired("wreck2"), "Not expired at 5s");
+    sys.update(6.0f);
+    assertTrue(sys.isExpired("wreck2"), "Expired after lifetime");
+}
+
+void testWreckPersistenceAssignNPC() {
+    std::cout << "\n=== Wreck Persistence Assign NPC ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("wreck3");
+    auto* wreck = addComp<components::WreckPersistence>(e);
+
+    systems::WreckPersistenceSystem sys(&world);
+    sys.assignSalvageNPC("wreck3", "npc_salvager");
+    assertTrue(wreck->salvage_npc_assigned, "NPC assigned");
+    assertTrue(wreck->assigned_npc_id == "npc_salvager", "Correct NPC ID");
+}
+
+// ==================== Fleet History System Tests ====================
+
+void testFleetHistoryEmpty() {
+    std::cout << "\n=== Fleet History Empty ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("fleet1");
+    addComp<components::FleetHistory>(e);
+
+    systems::FleetHistorySystem sys(&world);
+    assertTrue(sys.getEventCount("fleet1") == 0, "No events initially");
+}
+
+void testFleetHistoryRecordEvent() {
+    std::cout << "\n=== Fleet History Record Event ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("fleet2");
+    addComp<components::FleetHistory>(e);
+
+    systems::FleetHistorySystem sys(&world);
+    sys.recordEvent("fleet2", "mission_complete", "Cleared pirates", 100.0f, "mission_1");
+    assertTrue(sys.getEventCount("fleet2") == 1, "One event recorded");
+    auto history = sys.getHistory("fleet2");
+    assertTrue(history[0].event_type == "mission_complete", "Correct event type");
+}
+
+void testFleetHistoryMaxEvents() {
+    std::cout << "\n=== Fleet History Max Events ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("fleet3");
+    auto* hist = addComp<components::FleetHistory>(e);
+    hist->max_events = 5;
+
+    systems::FleetHistorySystem sys(&world);
+    for (int i = 0; i < 10; i++) {
+        sys.recordEvent("fleet3", "event", "desc " + std::to_string(i), static_cast<float>(i));
+    }
+    assertTrue(sys.getEventCount("fleet3") == 5, "Events trimmed to max");
+}
+
+void testFleetHistoryByType() {
+    std::cout << "\n=== Fleet History By Type ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("fleet4");
+    addComp<components::FleetHistory>(e);
+
+    systems::FleetHistorySystem sys(&world);
+    sys.recordEvent("fleet4", "mission_complete", "Mission 1", 1.0f);
+    sys.recordEvent("fleet4", "ship_lost", "Lost a frigate", 2.0f);
+    sys.recordEvent("fleet4", "mission_complete", "Mission 2", 3.0f);
+
+    auto missions = sys.getEventsByType("fleet4", "mission_complete");
+    assertTrue(static_cast<int>(missions.size()) == 2, "Two mission_complete events");
+    auto losses = sys.getEventsByType("fleet4", "ship_lost");
+    assertTrue(static_cast<int>(losses.size()) == 1, "One ship_lost event");
+}
+
+// ==================== Character Mesh System Tests ====================
+
+void testCharacterMeshGeneration() {
+    std::cout << "\n=== Character Mesh Generation ===" << std::endl;
+    pcg::CharacterMeshSystem meshSys;
+    pcg::CharacterSliders sliders;
+    sliders.height = 0.5f;
+    auto character = meshSys.generate(12345, pcg::Race::TerranDescendant, sliders);
+    assertTrue(character.total_height >= 1.5f && character.total_height <= 2.2f, "Height in valid range");
+    assertTrue(character.arm_span > 0.0f, "Arm span positive");
+    assertTrue(character.head_radius >= 0.09f && character.head_radius <= 0.13f, "Head radius in range");
+}
+
+void testCharacterMeshDeterminism() {
+    std::cout << "\n=== Character Mesh Determinism ===" << std::endl;
+    pcg::CharacterMeshSystem meshSys;
+    pcg::CharacterSliders sliders;
+    auto c1 = meshSys.generate(99999, pcg::Race::SynthBorn, sliders);
+    auto c2 = meshSys.generate(99999, pcg::Race::SynthBorn, sliders);
+    assertTrue(approxEqual(c1.total_height, c2.total_height), "Same seed same height");
+    assertTrue(approxEqual(c1.arm_span, c2.arm_span), "Same seed same arm span");
+}
+
+void testCharacterRacialTraits() {
+    std::cout << "\n=== Character Racial Traits ===" << std::endl;
+    pcg::CharacterMeshSystem meshSys;
+    pcg::CharacterSliders sliders;
+
+    auto terran = meshSys.generate(1, pcg::Race::TerranDescendant, sliders);
+    assertTrue(approxEqual(terran.learning_rate, 1.2f), "Terran learning rate 1.2");
+    assertTrue(approxEqual(terran.diplomacy_bonus, 0.15f), "Terran diplomacy 0.15");
+
+    auto synth = meshSys.generate(2, pcg::Race::SynthBorn, sliders);
+    assertTrue(approxEqual(synth.automation_bonus, 0.25f), "SynthBorn automation 0.25");
+    assertTrue(approxEqual(synth.resilience, 0.8f), "SynthBorn resilience 0.8");
+
+    auto alien = meshSys.generate(3, pcg::Race::PureAlien, sliders);
+    assertTrue(approxEqual(alien.resilience, 1.3f), "PureAlien resilience 1.3");
+
+    auto hybrid = meshSys.generate(4, pcg::Race::HybridEvolutionary, sliders);
+    assertTrue(approxEqual(hybrid.learning_rate, 1.1f), "Hybrid learning rate 1.1");
+    assertTrue(approxEqual(hybrid.resilience, 1.1f), "Hybrid resilience 1.1");
+}
+
+// ==================== Rig System Tests ====================
+
+void testRigLoadoutDefaults() {
+    std::cout << "\n=== Rig Loadout Defaults ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("rig1");
+    auto* loadout = addComp<components::RigLoadout>(e);
+    assertTrue(loadout->rack_width == 2, "Default rack width 2");
+    assertTrue(loadout->rack_height == 2, "Default rack height 2");
+    assertTrue(loadout->max_slots() == 4, "Default max slots 4");
+}
+
+void testRigInstallModule() {
+    std::cout << "\n=== Rig Install Module ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("rig2");
+    addComp<components::RigLoadout>(e);
+    auto* mod = world.createEntity("mod1");
+    addComp<components::RigModule>(mod);
+
+    systems::RigSystem sys(&world);
+    assertTrue(sys.installModule("rig2", "mod1"), "Install module succeeds");
+    assertTrue(sys.getInstalledCount("rig2") == 1, "One module installed");
+}
+
+void testRigModuleFull() {
+    std::cout << "\n=== Rig Module Full ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("rig3");
+    auto* loadout = addComp<components::RigLoadout>(e);
+    loadout->rack_width = 1;
+    loadout->rack_height = 1;
+
+    systems::RigSystem sys(&world);
+    auto* m1 = world.createEntity("m1");
+    addComp<components::RigModule>(m1);
+    assertTrue(sys.installModule("rig3", "m1"), "First install succeeds");
+    assertTrue(!sys.installModule("rig3", "m2"), "Second install fails (full)");
+}
+
+void testRigDerivedStats() {
+    std::cout << "\n=== Rig Derived Stats ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("rig4");
+    addComp<components::RigLoadout>(e);
+    auto* mod = world.createEntity("mod_ls");
+    auto* rm = addComp<components::RigModule>(mod);
+    rm->type = components::RigModule::ModuleType::LifeSupport;
+    rm->tier = 2;
+    rm->efficiency = 1.0f;
+
+    systems::RigSystem sys(&world);
+    sys.installModule("rig4", "mod_ls");
+    sys.update(0.0f);
+
+    auto* loadout = e->getComponent<components::RigLoadout>();
+    assertTrue(approxEqual(loadout->total_oxygen, 200.0f), "LifeSupport tier 2 = 200 oxygen");
+}
+
+void testRigRemoveModule() {
+    std::cout << "\n=== Rig Remove Module ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("rig5");
+    addComp<components::RigLoadout>(e);
+
+    systems::RigSystem sys(&world);
+    auto* m1 = world.createEntity("rm1");
+    addComp<components::RigModule>(m1);
+    sys.installModule("rig5", "rm1");
+    assertTrue(sys.getInstalledCount("rig5") == 1, "One module before remove");
+    assertTrue(sys.removeModule("rig5", "rm1"), "Remove succeeds");
+    assertTrue(sys.getInstalledCount("rig5") == 0, "Zero modules after remove");
+}
+
+// ==================== Turret Generator Tests ====================
+
+void testTurretGeneration() {
+    std::cout << "\n=== Turret Generation ===" << std::endl;
+    pcg::TurretGenerator gen;
+    auto turret = gen.generate(42, pcg::TurretSize::Medium, pcg::TurretType::Energy, "Solari");
+    assertTrue(turret.profile.base_damage > 0.0f, "Turret has damage");
+    assertTrue(turret.optimal_range > 0.0f, "Turret has range");
+    assertTrue(turret.power_draw > 0.0f, "Turret has power draw");
+}
+
+void testTurretDeterminism() {
+    std::cout << "\n=== Turret Determinism ===" << std::endl;
+    pcg::TurretGenerator gen;
+    auto t1 = gen.generate(777, pcg::TurretSize::Small, pcg::TurretType::Projectile, "Veyren");
+    auto t2 = gen.generate(777, pcg::TurretSize::Small, pcg::TurretType::Projectile, "Veyren");
+    assertTrue(approxEqual(t1.profile.base_damage, t2.profile.base_damage), "Same seed same damage");
+    assertTrue(approxEqual(t1.optimal_range, t2.optimal_range), "Same seed same range");
+}
+
+void testTurretSizeScaling() {
+    std::cout << "\n=== Turret Size Scaling ===" << std::endl;
+    pcg::TurretGenerator gen;
+    auto small = gen.generate(100, pcg::TurretSize::Small, pcg::TurretType::Projectile, "");
+    auto large = gen.generate(100, pcg::TurretSize::Large, pcg::TurretType::Projectile, "");
+    assertTrue(large.profile.base_damage > small.profile.base_damage, "Large turret more damage than small");
+}
+
+// ==================== Planet Generator Tests ====================
+
+void testPlanetGeneration() {
+    std::cout << "\n=== Planet Generation ===" << std::endl;
+    pcg::PlanetGenerator gen;
+    auto planet = gen.generate(555, pcg::PlanetType::Rocky);
+    assertTrue(planet.radius >= 2000.0f && planet.radius <= 8000.0f, "Rocky radius in range");
+    assertTrue(planet.gravity > 0.0f, "Planet has gravity");
+}
+
+void testPlanetDeterminism() {
+    std::cout << "\n=== Planet Determinism ===" << std::endl;
+    pcg::PlanetGenerator gen;
+    auto p1 = gen.generate(888, pcg::PlanetType::Ice);
+    auto p2 = gen.generate(888, pcg::PlanetType::Ice);
+    assertTrue(approxEqual(p1.radius, p2.radius), "Same seed same radius");
+    assertTrue(approxEqual(p1.gravity, p2.gravity), "Same seed same gravity");
+}
+
+void testPlanetResources() {
+    std::cout << "\n=== Planet Resources ===" << std::endl;
+    pcg::PlanetGenerator gen;
+    auto planet = gen.generate(333, pcg::PlanetType::Rocky);
+    assertTrue(!planet.resources.empty(), "Rocky planet has resources");
+    assertTrue(static_cast<int>(planet.resources.size()) >= 3, "Rocky has at least 3 resources");
+}
+
+void testPlanetTerraformable() {
+    std::cout << "\n=== Planet Terraformable ===" << std::endl;
+    assertTrue(pcg::PlanetGenerator::isTerraformable(pcg::PlanetType::Rocky), "Rocky is terraformable");
+    assertTrue(pcg::PlanetGenerator::isTerraformable(pcg::PlanetType::Desert), "Desert is terraformable");
+    assertTrue(!pcg::PlanetGenerator::isTerraformable(pcg::PlanetType::Gas), "Gas is not terraformable");
+    assertTrue(!pcg::PlanetGenerator::isTerraformable(pcg::PlanetType::Lava), "Lava is not terraformable");
+}
+
+// ==================== Habitat Generator Tests ====================
+
+void testHabitatGeneration() {
+    std::cout << "\n=== Habitat Generation ===" << std::endl;
+    pcg::HabitatGenerator gen;
+    auto habitat = gen.generate(111, 5);
+    assertTrue(habitat.module_count > 0, "Habitat has modules");
+    assertTrue(habitat.total_levels == 5, "Habitat has 5 levels");
+}
+
+void testHabitatDeterminism() {
+    std::cout << "\n=== Habitat Determinism ===" << std::endl;
+    pcg::HabitatGenerator gen;
+    auto h1 = gen.generate(222, 3);
+    auto h2 = gen.generate(222, 3);
+    assertTrue(h1.module_count == h2.module_count, "Same seed same module count");
+    assertTrue(approxEqual(h1.total_power_draw, h2.total_power_draw), "Same seed same power draw");
+}
+
+void testHabitatPowerBalance() {
+    std::cout << "\n=== Habitat Power Balance ===" << std::endl;
+    pcg::HabitatGenerator gen;
+    auto habitat = gen.generate(444, 4);
+    assertTrue(habitat.total_power_draw >= 0.0f, "Power draw non-negative");
+    assertTrue(habitat.total_power_generation >= 0.0f, "Power generation non-negative");
+    assertTrue(habitat.is_self_sufficient == (habitat.total_power_generation >= habitat.total_power_draw),
+               "Self-sufficient flag matches calculation");
+}
+
+// ==================== Grav Bike Tests ====================
+
+void testGravBikeGeneration() {
+    std::cout << "\n=== Grav Bike Generation ===" << std::endl;
+    pcg::GravBikeGenerator gen;
+    auto bike = gen.generate(1000, "Solari");
+    assertTrue(bike.config.max_speed >= 30.0f, "Speed above minimum");
+    assertTrue(bike.config.fuel_capacity > 0.0f, "Has fuel capacity");
+}
+
+void testGravBikeDeterminism() {
+    std::cout << "\n=== Grav Bike Determinism ===" << std::endl;
+    pcg::GravBikeGenerator gen;
+    auto b1 = gen.generate(2000, "Veyren");
+    auto b2 = gen.generate(2000, "Veyren");
+    assertTrue(approxEqual(b1.config.max_speed, b2.config.max_speed), "Same seed same speed");
+    assertTrue(approxEqual(b1.hull_strength, b2.hull_strength), "Same seed same hull");
+}
+
+// ==================== Legend System Tests ====================
+
+void testLegendEmpty() {
+    std::cout << "\n=== Legend Empty ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("player1");
+    addComp<components::PlayerLegend>(e);
+
+    systems::LegendSystem sys(&world);
+    assertTrue(sys.getLegendScore("player1") == 0, "No score initially");
+    assertTrue(sys.getTitle("player1") == "Unknown", "Title is Unknown");
+}
+
+void testLegendRecord() {
+    std::cout << "\n=== Legend Record ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("player2");
+    addComp<components::PlayerLegend>(e);
+
+    systems::LegendSystem sys(&world);
+    sys.recordLegend("player2", "destroyed_capital", "Destroyed the Warlord", 100.0f, "sys_1", 25);
+    assertTrue(sys.getLegendScore("player2") == 25, "Score is 25 after event");
+    auto entries = sys.getLegendEntries("player2");
+    assertTrue(static_cast<int>(entries.size()) == 1, "One entry recorded");
+}
+
+void testLegendTitle() {
+    std::cout << "\n=== Legend Title ===" << std::endl;
+    assertTrue(systems::LegendSystem::computeTitle(0) == "Unknown", "Score 0 = Unknown");
+    assertTrue(systems::LegendSystem::computeTitle(10) == "Notable", "Score 10 = Notable");
+    assertTrue(systems::LegendSystem::computeTitle(50) == "Famous", "Score 50 = Famous");
+    assertTrue(systems::LegendSystem::computeTitle(100) == "Legendary", "Score 100 = Legendary");
+    assertTrue(systems::LegendSystem::computeTitle(500) == "Mythic", "Score 500 = Mythic");
+}
+
+// ==================== Ancient Tech Tests ====================
+
+void testAncientTechDefaults() {
+    std::cout << "\n=== Ancient Tech Defaults ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("tech1");
+    auto* tech = addComp<components::AncientTechModule>(e);
+    assertTrue(tech->state == components::AncientTechModule::TechState::Broken, "Starts Broken");
+    assertTrue(!tech->isUsable(), "Not usable when broken");
+}
+
+void testAncientTechRepair() {
+    std::cout << "\n=== Ancient Tech Repair ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("tech2");
+    auto* tech = addComp<components::AncientTechModule>(e);
+    tech->repair_cost = 10.0f;
+
+    systems::AncientTechSystem sys(&world);
+    assertTrue(sys.startRepair("tech2"), "Start repair succeeds");
+    assertTrue(sys.getState("tech2") == components::AncientTechModule::TechState::Repairing, "State is Repairing");
+
+    // Simulate enough time to complete (repair_cost * 0.5 = 5.0 seconds needed)
+    sys.update(6.0f);
+    assertTrue(sys.getState("tech2") == components::AncientTechModule::TechState::Repaired, "State is Repaired");
+    assertTrue(sys.isUsable("tech2"), "Usable after repair");
+}
+
+void testAncientTechReverseEngineer() {
+    std::cout << "\n=== Ancient Tech Reverse Engineer ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("tech3");
+    auto* tech = addComp<components::AncientTechModule>(e);
+    tech->state = components::AncientTechModule::TechState::Repaired;
+    tech->blueprint_id = "bp_ancient_weapon";
+
+    systems::AncientTechSystem sys(&world);
+    std::string bp = sys.reverseEngineer("tech3");
+    assertTrue(bp == "bp_ancient_weapon", "Returns correct blueprint");
+    assertTrue(tech->reverse_engineered, "Marked as reverse engineered");
+}
+
+// ==================== Docking System Tests ====================
+
+void testDockingPortDefaults() {
+    std::cout << "\n=== Docking Port Defaults ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("port1");
+    auto* port = addComp<components::DockingPort>(e);
+    assertTrue(!port->isOccupied(), "Not occupied by default");
+}
+
+void testDockingDock() {
+    std::cout << "\n=== Docking Dock ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("port2");
+    addComp<components::DockingPort>(e);
+
+    systems::DockingSystem sys(&world);
+    assertTrue(sys.dock("port2", "ship_1"), "Dock succeeds");
+    assertTrue(sys.isOccupied("port2"), "Port is occupied");
+    assertTrue(sys.getDockedEntity("port2") == "ship_1", "Correct docked entity");
+}
+
+void testDockingUndock() {
+    std::cout << "\n=== Docking Undock ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("port3");
+    addComp<components::DockingPort>(e);
+
+    systems::DockingSystem sys(&world);
+    sys.dock("port3", "ship_2");
+    std::string undocked = sys.undock("port3");
+    assertTrue(undocked == "ship_2", "Undocked correct entity");
+    assertTrue(!sys.isOccupied("port3"), "Port is empty after undock");
+}
+
+// ==================== Survival System Tests ====================
+
+void testSurvivalDefaults() {
+    std::cout << "\n=== Survival Defaults ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("surv1");
+    auto* needs = addComp<components::SurvivalNeeds>(e);
+    assertTrue(approxEqual(needs->oxygen, 100.0f), "Full oxygen");
+    assertTrue(approxEqual(needs->hunger, 0.0f), "No hunger");
+    assertTrue(approxEqual(needs->fatigue, 0.0f), "No fatigue");
+}
+
+void testSurvivalDrain() {
+    std::cout << "\n=== Survival Drain ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("surv2");
+    addComp<components::SurvivalNeeds>(e);
+
+    systems::SurvivalSystem sys(&world);
+    sys.update(10.0f);
+
+    auto [oxy, hun, fat] = sys.getNeeds("surv2");
+    assertTrue(oxy < 100.0f, "Oxygen drained");
+    assertTrue(approxEqual(oxy, 95.0f), "Oxygen at 95 after 10s");
+}
+
+void testSurvivalRefill() {
+    std::cout << "\n=== Survival Refill ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("surv3");
+    auto* needs = addComp<components::SurvivalNeeds>(e);
+    needs->oxygen = 50.0f;
+
+    systems::SurvivalSystem sys(&world);
+    float newOxy = sys.refillOxygen("surv3", 30.0f);
+    assertTrue(approxEqual(newOxy, 80.0f), "Oxygen refilled to 80");
+}
+
+void testSurvivalHunger() {
+    std::cout << "\n=== Survival Hunger ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("surv4");
+    addComp<components::SurvivalNeeds>(e);
+
+    systems::SurvivalSystem sys(&world);
+    sys.update(20.0f);
+
+    auto [oxy, hun, fat] = sys.getNeeds("surv4");
+    assertTrue(hun > 0.0f, "Hunger increased");
+    assertTrue(approxEqual(hun, 2.0f), "Hunger at 2.0 after 20s");
+}
+
+// ==================== Menu System Tests ====================
+
+void testMenuStateDefaults() {
+    std::cout << "\n=== Menu State Defaults ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("menu1");
+    auto* menu = addComp<components::MenuState>(e);
+    assertTrue(menu->current_screen == components::MenuState::Screen::TitleScreen, "Starts at TitleScreen");
+    assertTrue(menu->previous_screen == components::MenuState::Screen::TitleScreen, "Previous is TitleScreen");
+    assertTrue(!menu->transition_active, "No transition active");
+}
+
+void testMenuNavigateTo() {
+    std::cout << "\n=== Menu Navigate To ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("menu2");
+    addComp<components::MenuState>(e);
+
+    systems::MenuSystem sys(&world);
+    bool result = sys.navigateTo("menu2", components::MenuState::Screen::NewGame);
+    assertTrue(result, "Navigate succeeded");
+    assertTrue(sys.getCurrentScreen("menu2") == components::MenuState::Screen::NewGame, "Screen is NewGame");
+}
+
+void testMenuGoBack() {
+    std::cout << "\n=== Menu Go Back ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("menu3");
+    addComp<components::MenuState>(e);
+
+    systems::MenuSystem sys(&world);
+    sys.navigateTo("menu3", components::MenuState::Screen::NewGame);
+    bool result = sys.goBack("menu3");
+    assertTrue(result, "GoBack succeeded");
+    assertTrue(sys.getCurrentScreen("menu3") == components::MenuState::Screen::TitleScreen, "Back to TitleScreen");
+}
+
+void testMenuIsInGame() {
+    std::cout << "\n=== Menu IsInGame ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("menu4");
+    addComp<components::MenuState>(e);
+
+    systems::MenuSystem sys(&world);
+    assertTrue(!sys.isInGame("menu4"), "Not in game at title");
+    sys.navigateTo("menu4", components::MenuState::Screen::InGame);
+    assertTrue(sys.isInGame("menu4"), "In game after navigate");
+}
+
+// ==================== Crew System Tests ====================
+
+void testCrewDefaults() {
+    std::cout << "\n=== Crew Defaults ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("ship1");
+    auto* crew = addComp<components::ShipCrew>(e);
+    assertTrue(crew->current_crew == 0, "No crew initially");
+    assertTrue(crew->crew_member_ids.empty(), "Empty crew list");
+}
+
+void testCrewAssign() {
+    std::cout << "\n=== Crew Assign ===" << std::endl;
+    ecs::World world;
+    auto* ship = world.createEntity("ship2");
+    addComp<components::ShipCrew>(ship);
+    auto* member = world.createEntity("crew_a");
+    addComp<components::CrewMember>(member);
+
+    systems::CrewSystem sys(&world);
+    bool result = sys.assignCrew("ship2", "crew_a", "engine_room");
+    assertTrue(result, "Assign succeeded");
+    assertTrue(sys.getCrewCount("ship2") == 1, "Crew count is 1");
+}
+
+void testCrewEfficiency() {
+    std::cout << "\n=== Crew Efficiency ===" << std::endl;
+    ecs::World world;
+    auto* ship = world.createEntity("ship3");
+    addComp<components::ShipCrew>(ship);
+    auto* m1 = world.createEntity("crew_b");
+    auto* cm = addComp<components::CrewMember>(m1);
+    cm->skill_level = 3.0f;
+    cm->morale = 80.0f;
+
+    systems::CrewSystem sys(&world);
+    sys.assignCrew("ship3", "crew_b", "bridge");
+    sys.update(0.0f);
+
+    // efficiency_bonus = (3.0 * 0.1) + (80.0 / 200.0) = 0.3 + 0.4 = 0.7
+    assertTrue(approxEqual(cm->efficiency_bonus, 0.7f), "Efficiency bonus is 0.7");
+    assertTrue(approxEqual(sys.getOverallEfficiency("ship3"), 0.7f), "Overall efficiency is 0.7");
+}
+
+void testCrewRemove() {
+    std::cout << "\n=== Crew Remove ===" << std::endl;
+    ecs::World world;
+    auto* ship = world.createEntity("ship4");
+    addComp<components::ShipCrew>(ship);
+    auto* m1 = world.createEntity("crew_c");
+    addComp<components::CrewMember>(m1);
+
+    systems::CrewSystem sys(&world);
+    sys.assignCrew("ship4", "crew_c", "medbay");
+    assertTrue(sys.getCrewCount("ship4") == 1, "Crew count 1 after assign");
+    bool result = sys.removeCrew("ship4", "crew_c");
+    assertTrue(result, "Remove succeeded");
+    assertTrue(sys.getCrewCount("ship4") == 0, "Crew count 0 after remove");
+}
+
+// ==================== Salvage Exploration Tests ====================
+
+void testSalvageSiteDefaults() {
+    std::cout << "\n=== Salvage Site Defaults ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("site1");
+    auto* site = addComp<components::SalvageSite>(e);
+    assertTrue(site->discovered_nodes == 0, "No discovered nodes");
+    assertTrue(site->looted_nodes == 0, "No looted nodes");
+    assertTrue(site->total_loot_nodes == 0, "No total nodes");
+}
+
+void testSalvageDiscover() {
+    std::cout << "\n=== Salvage Discover ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("site2");
+    auto* site = addComp<components::SalvageSite>(e);
+    site->total_loot_nodes = 5;
+
+    systems::SalvageExplorationSystem sys(&world);
+    bool result = sys.discoverNode("site2");
+    assertTrue(result, "Discover succeeded");
+    assertTrue(sys.getDiscoveredNodes("site2") == 1, "Discovered 1 node");
+}
+
+void testSalvageLoot() {
+    std::cout << "\n=== Salvage Loot ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("site3");
+    auto* site = addComp<components::SalvageSite>(e);
+    site->total_loot_nodes = 5;
+
+    systems::SalvageExplorationSystem sys(&world);
+    sys.discoverNode("site3");
+    bool result = sys.lootNode("site3");
+    assertTrue(result, "Loot succeeded");
+    assertTrue(site->looted_nodes == 1, "Looted 1 node");
+
+    // Can't loot more than discovered
+    bool result2 = sys.lootNode("site3");
+    assertTrue(!result2, "Can't loot undiscovered");
+}
+
+void testSalvageFullyLooted() {
+    std::cout << "\n=== Salvage Fully Looted ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("site4");
+    auto* site = addComp<components::SalvageSite>(e);
+    site->total_loot_nodes = 2;
+
+    systems::SalvageExplorationSystem sys(&world);
+    sys.discoverNode("site4");
+    sys.discoverNode("site4");
+    sys.lootNode("site4");
+    sys.lootNode("site4");
+    assertTrue(sys.isFullyLooted("site4"), "Fully looted");
+    assertTrue(sys.getRemainingNodes("site4") == 0, "0 remaining");
+}
+
+void testSalvageTrinkets() {
+    std::cout << "\n=== Salvage Trinkets ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("site5");
+    addComp<components::SalvageSite>(e);
+
+    systems::SalvageExplorationSystem sys(&world);
+    int count = sys.generateTrinkets("site5", 42);
+    assertTrue(count >= 0 && count <= 5, "Trinket count 0-5");
+}
+
+// ==================== Interior-Exterior Coupling Tests ====================
+
+void testInteriorExteriorDefaults() {
+    std::cout << "\n=== Interior-Exterior Defaults ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("link1");
+    auto* link = addComp<components::InteriorExteriorLink>(e);
+    assertTrue(link->effects.empty(), "No effects");
+    assertTrue(link->visible_module_count == 0, "No visible modules");
+    assertTrue(approxEqual(link->total_hull_deformation, 0.0f), "No hull deformation");
+}
+
+void testInteriorExteriorAddEffect() {
+    std::cout << "\n=== Interior-Exterior Add Effect ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("link2");
+    auto* link = addComp<components::InteriorExteriorLink>(e);
+    link->addEffect("refinery", 0.3f, true, 1.5f);
+    link->addEffect("cargo_rack", 0.1f, false, 1.0f);
+    assertTrue(static_cast<int>(link->effects.size()) == 2, "Two effects");
+    assertTrue(link->visible_module_count == 1, "One visible module");
+    assertTrue(approxEqual(link->total_hull_deformation, 0.4f), "Total deformation 0.4");
+}
+
+void testInteriorExteriorClear() {
+    std::cout << "\n=== Interior-Exterior Clear ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("link3");
+    auto* link = addComp<components::InteriorExteriorLink>(e);
+    link->addEffect("solar_panel", 0.2f, true, 1.0f);
+    link->clearEffects();
+    assertTrue(link->effects.empty(), "Effects cleared");
+    assertTrue(link->visible_module_count == 0, "Visible count reset");
+    assertTrue(approxEqual(link->total_hull_deformation, 0.0f), "Deformation reset");
+}
+
+// ==================== Race & Lore Tests ====================
+
+void testRaceDefaults() {
+    std::cout << "\n=== Race Defaults ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("race1");
+    auto* info = addComp<components::RaceInfo>(e);
+    assertTrue(info->race == components::RaceInfo::RaceName::TerranDescendant, "Default TerranDescendant");
+    assertTrue(approxEqual(info->learning_rate, 1.0f), "Default learning rate 1.0");
+}
+
+void testRaceApplyDefaults() {
+    std::cout << "\n=== Race Apply Defaults ===" << std::endl;
+    ecs::World world;
+
+    auto* e1 = world.createEntity("race_td");
+    auto* td = addComp<components::RaceInfo>(e1);
+    td->race = components::RaceInfo::RaceName::TerranDescendant;
+    components::RaceInfo::applyRaceDefaults(*td);
+    assertTrue(approxEqual(td->learning_rate, 1.2f), "TD learning rate 1.2");
+    assertTrue(approxEqual(td->diplomacy_modifier, 0.15f), "TD diplomacy 0.15");
+
+    auto* e2 = world.createEntity("race_sb");
+    auto* sb = addComp<components::RaceInfo>(e2);
+    sb->race = components::RaceInfo::RaceName::SynthBorn;
+    components::RaceInfo::applyRaceDefaults(*sb);
+    assertTrue(approxEqual(sb->automation_bonus, 0.25f), "SB automation 0.25");
+
+    auto* e3 = world.createEntity("race_pa");
+    auto* pa = addComp<components::RaceInfo>(e3);
+    pa->race = components::RaceInfo::RaceName::PureAlien;
+    components::RaceInfo::applyRaceDefaults(*pa);
+    assertTrue(approxEqual(pa->environmental_resilience, 1.3f), "PA resilience 1.3");
+
+    auto* e4 = world.createEntity("race_he");
+    auto* he = addComp<components::RaceInfo>(e4);
+    he->race = components::RaceInfo::RaceName::HybridEvolutionary;
+    components::RaceInfo::applyRaceDefaults(*he);
+    assertTrue(approxEqual(he->mutation_rate, 0.05f), "HE mutation 0.05");
+}
+
+void testLoreAddEntry() {
+    std::cout << "\n=== Lore Add Entry ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("lore1");
+    auto* lore = addComp<components::LoreEntry>(e);
+    lore->addLore("Great Calamity", "Year 3355 event", 100.0f, "ship_log");
+    assertTrue(lore->getLoreCount() == 1, "One lore entry");
+    assertTrue(lore->discovered_lore[0].title == "Great Calamity", "Correct title");
+}
+
+void testLoreMaxEntries() {
+    std::cout << "\n=== Lore Max Entries ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("lore2");
+    auto* lore = addComp<components::LoreEntry>(e);
+    lore->max_entries = 3;
+    lore->addLore("A", "a", 1.0f, "ruin");
+    lore->addLore("B", "b", 2.0f, "ruin");
+    lore->addLore("C", "c", 3.0f, "ruin");
+    lore->addLore("D", "d", 4.0f, "ruin");
+    assertTrue(lore->getLoreCount() == 3, "Trimmed to max 3");
+    assertTrue(lore->discovered_lore[0].title == "B", "Oldest removed");
+}
+
+// ==================== Market Order Tests ====================
+
+void testMarketOrderComponentDefaults() {
+    std::cout << "\n=== Market Order Component Defaults ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("order1");
+    auto* order = addComp<components::MarketOrder>(e);
+    assertTrue(!order->is_filled, "Not filled");
+    assertTrue(approxEqual(order->elapsed_time, 0.0f), "No elapsed time");
+}
+
+void testMarketPlaceOrderSystem() {
+    std::cout << "\n=== Market Place Order System ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("order2");
+    addComp<components::MarketOrder>(e);
+
+    systems::MarketOrderSystem sys(&world);
+    sys.placeOrder("order2", components::MarketOrder::OrderType::Sell,
+                   "Tritanium", 1000, 5.0f, "region_a", "station_1", "player_1");
+
+    auto* order = e->getComponent<components::MarketOrder>();
+    assertTrue(order->item_type == "Tritanium", "Item is Tritanium");
+    assertTrue(order->quantity == 1000, "Quantity 1000");
+    assertTrue(order->quantity_remaining == 1000, "Remaining 1000");
+    assertTrue(approxEqual(order->price_per_unit, 5.0f), "Price 5.0");
+}
+
+void testMarketFillOrderSystem() {
+    std::cout << "\n=== Market Fill Order System ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("order3");
+    addComp<components::MarketOrder>(e);
+
+    systems::MarketOrderSystem sys(&world);
+    sys.placeOrder("order3", components::MarketOrder::OrderType::Buy,
+                   "Pyerite", 500, 10.0f, "region_b", "station_2", "player_2");
+
+    int filled = sys.fillOrder("order3", 200);
+    assertTrue(filled == 200, "Filled 200");
+    auto* order = e->getComponent<components::MarketOrder>();
+    assertTrue(order->quantity_remaining == 300, "300 remaining");
+    assertTrue(!order->is_filled, "Not fully filled yet");
+
+    int filled2 = sys.fillOrder("order3", 300);
+    assertTrue(filled2 == 300, "Filled remaining 300");
+    assertTrue(order->is_filled, "Now fully filled");
+}
+
+void testMarketOrderExpirySystem() {
+    std::cout << "\n=== Market Order Expiry System ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("order4");
+    auto* order = addComp<components::MarketOrder>(e);
+    order->expiry_time = 100.0f;
+
+    systems::MarketOrderSystem sys(&world);
+    sys.placeOrder("order4", components::MarketOrder::OrderType::Sell,
+                   "Mexallon", 100, 20.0f, "region_c", "station_3", "npc_1");
+
+    assertTrue(!sys.isOrderExpired("order4"), "Not expired initially");
+    sys.update(101.0f);
+    assertTrue(sys.isOrderExpired("order4"), "Expired after 101s");
+}
+
+void testAIFleetDispatchSystem() {
+    std::cout << "\n=== AI Fleet Dispatch ===" << std::endl;
+    ecs::World world;
+    auto* e = world.createEntity("order5");
+    addComp<components::MarketOrder>(e);
+
+    systems::MarketOrderSystem sys(&world);
+    std::string dispatch_id = sys.dispatchAIFleet("order5",
+        components::AIFleetDispatch::DispatchType::Hauling, "system_alpha", 2);
+    assertTrue(!dispatch_id.empty(), "Dispatch created");
+
+    auto dispatches = sys.getActiveDispatches();
+    assertTrue(static_cast<int>(dispatches.size()) == 1, "One active dispatch");
+
+    auto* de = world.getEntity(dispatch_id);
+    auto* dispatch = de->getComponent<components::AIFleetDispatch>();
+    assertTrue(!dispatch->isComplete(), "Not complete yet");
+
+    // Simulate enough time for completion
+    sys.update(dispatch->estimated_completion + 1.0f);
+    assertTrue(dispatch->isComplete(), "Complete after time");
+}
+
 int main() {
     std::cout << "========================================" << std::endl;
-    std::cout << "EVE OFFLINE C++ Server System Tests" << std::endl;
+    std::cout << "Nova Forge C++ Server System Tests" << std::endl;
     std::cout << "Capacitor, Shield, Weapon, Targeting," << std::endl;
     std::cout << "ShipDB, WormholeDB, Wormhole, Fleet," << std::endl;
     std::cout << "Mission, Skill, Module, Inventory," << std::endl;
@@ -15204,6 +16555,11 @@ int main() {
     std::cout << "AmbientTraffic, TacticalOverlayFleetExt," << std::endl;
     std::cout << "SnapshotReplication, InterestManagement," << std::endl;
     std::cout << "FleetProgression, StationDeployment, FleetWarpFormation, FleetCivilization," << std::endl;
+    std::cout << "WarpMeditation, RumorQuestline, CaptainDeparture, CaptainTransfer," << std::endl;
+    std::cout << "NPCRerouting, LocalReputation, StationNews, WreckPersistence, FleetHistory," << std::endl;
+    std::cout << "CharacterMesh, Rig, Turret, Planet, Habitat, GravBike," << std::endl;
+    std::cout << "Legend, AncientTech, Docking, Survival," << std::endl;
+    std::cout << "Menu, Crew, SalvageExploration, InteriorExterior, Race, Lore, MarketOrder," << std::endl;
     std::cout << "PCG Framework (DeterministicRNG, Hash, PCGManager, ShipGenerator, FleetDoctrine)" << std::endl;
     std::cout << "========================================" << std::endl;
     
@@ -16152,6 +17508,150 @@ int main() {
     // Phase 11: Fleet Civilization tests
     testFleetCivilizationThresholdNotMet();
     testFleetCivilizationThresholdMet();
+
+    // Warp Meditation System tests
+    testWarpMeditationDefaults();
+    testMeditationActivatesAfterDelay();
+    testMeditationFadesInDuringCruise();
+    testMeditationFadesOutOnExit();
+    testMeditationResetOnNone();
+    testAudioProgressionPhases();
+    testAudioProgressionReset();
+    testAudioProgressionComputeOverall();
+
+    // Rumor Questline System tests
+    testRumorQuestlineNoGraduation();
+    testRumorQuestlineGraduates();
+    testRumorQuestlineLowBeliefNoGraduation();
+
+    // Captain Departure System tests
+    testDeparturePhaseNone();
+    testDeparturePhaseGrumbling();
+    testDeparturePhaseRequest();
+    testDepartureAcknowledge();
+    testDepartureTimerCountdown();
+
+    // Captain Transfer System tests
+    testTransferHighMorale();
+    testTransferLowMorale();
+    testTransferApprove();
+
+    // NPC Rerouting System tests
+    testNPCReroutingNoDanger();
+    testNPCReroutingDangerousSystem();
+    testNPCReroutingCooldown();
+
+    // Local Reputation System tests
+    testLocalReputationDefaults();
+    testLocalReputationModify();
+    testLocalReputationDecay();
+    testLocalReputationStanding();
+
+    // Station News System tests
+    testStationNewsEmpty();
+    testStationNewsAddCombat();
+    testStationNewsMaxEntries();
+
+    // Wreck Persistence System tests
+    testWreckPersistenceDefaults();
+    testWreckPersistenceExpires();
+    testWreckPersistenceAssignNPC();
+
+    // Fleet History System tests
+    testFleetHistoryEmpty();
+    testFleetHistoryRecordEvent();
+    testFleetHistoryMaxEvents();
+    testFleetHistoryByType();
+
+    // Character Mesh System tests
+    testCharacterMeshGeneration();
+    testCharacterMeshDeterminism();
+    testCharacterRacialTraits();
+
+    // Rig System tests
+    testRigLoadoutDefaults();
+    testRigInstallModule();
+    testRigModuleFull();
+    testRigDerivedStats();
+    testRigRemoveModule();
+
+    // Turret Generator tests
+    testTurretGeneration();
+    testTurretDeterminism();
+    testTurretSizeScaling();
+
+    // Planet Generator tests
+    testPlanetGeneration();
+    testPlanetDeterminism();
+    testPlanetResources();
+    testPlanetTerraformable();
+
+    // Habitat Generator tests
+    testHabitatGeneration();
+    testHabitatDeterminism();
+    testHabitatPowerBalance();
+
+    // Grav Bike tests
+    testGravBikeGeneration();
+    testGravBikeDeterminism();
+
+    // Legend System tests
+    testLegendEmpty();
+    testLegendRecord();
+    testLegendTitle();
+
+    // Ancient Tech tests
+    testAncientTechDefaults();
+    testAncientTechRepair();
+    testAncientTechReverseEngineer();
+
+    // Docking System tests
+    testDockingPortDefaults();
+    testDockingDock();
+    testDockingUndock();
+
+    // Survival System tests
+    testSurvivalDefaults();
+    testSurvivalDrain();
+    testSurvivalRefill();
+    testSurvivalHunger();
+
+    // Menu System tests
+    testMenuStateDefaults();
+    testMenuNavigateTo();
+    testMenuGoBack();
+    testMenuIsInGame();
+
+    // Crew System tests
+    testCrewDefaults();
+    testCrewAssign();
+    testCrewEfficiency();
+    testCrewRemove();
+
+    // Salvage Exploration tests
+    testSalvageSiteDefaults();
+    testSalvageDiscover();
+    testSalvageLoot();
+    testSalvageFullyLooted();
+    testSalvageTrinkets();
+
+    // Interior-Exterior Coupling tests
+    testInteriorExteriorDefaults();
+    testInteriorExteriorAddEffect();
+    testInteriorExteriorClear();
+
+    // Race & Lore tests
+    testRaceDefaults();
+    testRaceApplyDefaults();
+    testLoreAddEntry();
+    testLoreMaxEntries();
+
+    // Market Order tests
+    testMarketOrderComponentDefaults();
+    testMarketPlaceOrderSystem();
+    testMarketFillOrderSystem();
+    testMarketOrderExpirySystem();
+    testAIFleetDispatchSystem();
 
     std::cout << "\n========================================" << std::endl;
     std::cout << "Results: " << testsPassed << "/" << testsRun << " tests passed" << std::endl;

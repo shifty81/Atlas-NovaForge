@@ -30,7 +30,7 @@ bool FileLogger::init(const std::string& logDir, const std::string& logFile) {
     // Write header with timestamp
     std::time_t now = std::time(nullptr);
     std::tm* tm = std::localtime(&now);
-    s_logFile << "=== EVE OFFLINE Client Log ===" << std::endl;
+    s_logFile << "=== Nova Forge Client Log ===" << std::endl;
     s_logFile << "Started: "
               << std::put_time(tm, "%Y-%m-%d %H:%M:%S")
               << std::endl;

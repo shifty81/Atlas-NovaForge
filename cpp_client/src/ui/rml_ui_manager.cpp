@@ -1,6 +1,6 @@
 /**
  * @file rml_ui_manager.cpp
- * @brief RmlUi-based UI manager implementation for EVE OFFLINE.
+ * @brief RmlUi-based UI manager implementation for Nova Forge.
  *
  * When built with -DUSE_RMLUI=ON, this uses RmlUi's official GLFW platform
  * and OpenGL 3 renderer backends for production-quality UI rendering.
