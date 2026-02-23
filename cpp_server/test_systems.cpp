@@ -125,6 +125,7 @@
 #include "pcg/turret_placement_system.h"
 #include "pcg/damage_state_generator.h"
 #include "pcg/economy_driven_generator.h"
+#include "pcg/whip_generator.h"
 #include "pcg/collision_manager.h"
 #include "pcg/asteroid_field_generator.h"
 #include "pcg/anomaly_generator.h"
@@ -16917,6 +16918,96 @@ void testEconomyStateNames() {
     assertTrue(pcg::EconomyDrivenGenerator::shipRoleName(pcg::EconomyShipRole::Pirate) == "Pirate", "Pirate role name");
 }
 
+// ==================== Whip Generator Tests ====================
+
+void testWhipGeneration() {
+    std::cout << "\n=== Whip Generation ===" << std::endl;
+    pcg::WhipGenerator gen;
+    auto whip = gen.generate(42, pcg::WhipStyle::Energy, "Solari");
+    assertTrue(whip.profile.base_damage > 0.0f, "Whip has damage");
+    assertTrue(whip.profile.reach > 0.0f, "Whip has reach");
+    assertTrue(whip.power_draw > 0.0f, "Whip has power draw");
+    assertTrue(whip.valid, "Whip is valid");
+}
+
+void testWhipDeterminism() {
+    std::cout << "\n=== Whip Determinism ===" << std::endl;
+    pcg::WhipGenerator gen;
+    auto w1 = gen.generate(777, pcg::WhipStyle::Kinetic, "Veyren");
+    auto w2 = gen.generate(777, pcg::WhipStyle::Kinetic, "Veyren");
+    assertTrue(approxEqual(w1.profile.base_damage, w2.profile.base_damage), "Same seed same damage");
+    assertTrue(approxEqual(w1.profile.reach, w2.profile.reach), "Same seed same reach");
+    assertTrue(w1.profile.tendril_count == w2.profile.tendril_count, "Same seed same tendrils");
+}
+
+void testWhipStyleScaling() {
+    std::cout << "\n=== Whip Style Scaling ===" << std::endl;
+    pcg::WhipGenerator gen;
+    auto energy = gen.generate(100, pcg::WhipStyle::Energy, "");
+    auto kinetic = gen.generate(100, pcg::WhipStyle::Kinetic, "");
+    auto grav = gen.generate(100, pcg::WhipStyle::Gravimetric, "");
+    assertTrue(kinetic.profile.base_damage > grav.profile.base_damage, "Kinetic more damage than gravimetric");
+    assertTrue(energy.profile.tracking_speed > grav.profile.tracking_speed, "Energy tracks faster than gravimetric");
+}
+
+void testWhipReach() {
+    std::cout << "\n=== Whip Reach ===" << std::endl;
+    float energyReach = pcg::WhipGenerator::computeBaseReach(pcg::WhipStyle::Energy);
+    float kineticReach = pcg::WhipGenerator::computeBaseReach(pcg::WhipStyle::Kinetic);
+    float thermalReach = pcg::WhipGenerator::computeBaseReach(pcg::WhipStyle::Thermal);
+    float gravReach = pcg::WhipGenerator::computeBaseReach(pcg::WhipStyle::Gravimetric);
+    assertTrue(energyReach > 0.0f, "Energy reach positive");
+    assertTrue(kineticReach > 0.0f, "Kinetic reach positive");
+    assertTrue(gravReach > thermalReach, "Gravimetric reaches further than thermal");
+    assertTrue(thermalReach > kineticReach, "Thermal reaches further than kinetic");
+}
+
+void testWhipTendrilCount() {
+    std::cout << "\n=== Whip Tendril Count ===" << std::endl;
+    int energyTendrils = pcg::WhipGenerator::computeTendrilCount(42, pcg::WhipStyle::Energy);
+    int kineticTendrils = pcg::WhipGenerator::computeTendrilCount(42, pcg::WhipStyle::Kinetic);
+    assertTrue(energyTendrils >= 1 && energyTendrils <= 3, "Energy tendrils in range [1,3]");
+    assertTrue(kineticTendrils >= 1 && kineticTendrils <= 2, "Kinetic tendrils in range [1,2]");
+}
+
+void testWhipRandomGeneration() {
+    std::cout << "\n=== Whip Random Generation ===" << std::endl;
+    pcg::WhipGenerator gen;
+    auto w1 = gen.generateRandom(12345, "Aurelian");
+    auto w2 = gen.generateRandom(12345, "Aurelian");
+    assertTrue(w1.valid, "Random whip is valid");
+    assertTrue(approxEqual(w1.profile.base_damage, w2.profile.base_damage), "Random deterministic damage");
+    assertTrue(approxEqual(w1.profile.reach, w2.profile.reach), "Random deterministic reach");
+}
+
+void testWhipFactionModifiers() {
+    std::cout << "\n=== Whip Faction Modifiers ===" << std::endl;
+    pcg::WhipGenerator gen;
+    auto base = gen.generate(500, pcg::WhipStyle::Thermal, "");
+    auto keldari = gen.generate(500, pcg::WhipStyle::Thermal, "Keldari");
+    assertTrue(keldari.profile.reach > base.profile.reach, "Keldari whips reach further");
+    assertTrue(keldari.power_draw < base.power_draw, "Keldari whips more efficient");
+}
+
+void testWhipStyleNames() {
+    std::cout << "\n=== Whip Style Names ===" << std::endl;
+    assertTrue(std::string(pcg::WhipGenerator::styleName(pcg::WhipStyle::Energy)) == "Energy", "Energy name");
+    assertTrue(std::string(pcg::WhipGenerator::styleName(pcg::WhipStyle::Kinetic)) == "Kinetic", "Kinetic name");
+    assertTrue(std::string(pcg::WhipGenerator::styleName(pcg::WhipStyle::Thermal)) == "Thermal", "Thermal name");
+    assertTrue(std::string(pcg::WhipGenerator::styleName(pcg::WhipStyle::Gravimetric)) == "Gravimetric", "Gravimetric name");
+}
+
+void testTurretWhipType() {
+    std::cout << "\n=== Turret Whip Type ===" << std::endl;
+    pcg::TurretGenerator gen;
+    auto whipTurret = gen.generate(42, pcg::TurretSize::Medium, pcg::TurretType::Whip, "Solari");
+    assertTrue(whipTurret.profile.base_damage > 0.0f, "Whip turret has damage");
+    assertTrue(whipTurret.optimal_range > 0.0f, "Whip turret has range");
+    // Whip turrets should have short range compared to energy
+    auto energyTurret = gen.generate(42, pcg::TurretSize::Medium, pcg::TurretType::Energy, "Solari");
+    assertTrue(whipTurret.optimal_range < energyTurret.optimal_range, "Whip shorter range than energy");
+}
+
 int main() {
     std::cout << "========================================" << std::endl;
     std::cout << "Nova Forge C++ Server System Tests" << std::endl;
@@ -18091,6 +18182,17 @@ int main() {
     testEconomyProsperousHighQuality();
     testEconomyLawlessHasPirates();
     testEconomyStateNames();
+
+    // Whip Generator tests
+    testWhipGeneration();
+    testWhipDeterminism();
+    testWhipStyleScaling();
+    testWhipReach();
+    testWhipTendrilCount();
+    testWhipRandomGeneration();
+    testWhipFactionModifiers();
+    testWhipStyleNames();
+    testTurretWhipType();
 
     std::cout << "\n========================================" << std::endl;
     std::cout << "Results: " << testsPassed << "/" << testsRun << " tests passed" << std::endl;
