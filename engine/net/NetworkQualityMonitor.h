@@ -48,8 +48,6 @@ private:
 
     // Packet loss tracking
     uint32_t m_expectedSeq     = 0;   // next expected sequence number
-    uint32_t m_packetsReceived = 0;
-    uint32_t m_packetsExpected = 0;
     bool     m_seqInitialized  = false;
 
     // Sliding window for loss rate

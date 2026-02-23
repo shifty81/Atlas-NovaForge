@@ -61,8 +61,8 @@ float NetworkQualityMonitor::getAdaptiveInterpolationTime() const {
     // Base = half RTT (one-way) + jitter safety margin
     float base = m_smoothedRTT * 0.5f + m_jitter * kJitterMultiplier;
 
-    // Add extra buffer when packets are being lost
-    float lossBonus = getPacketLossRate() * 0.1f;   // up to +100 ms at 100% loss
+    // Add extra buffer when packets are being lost (up to +0.1s at 100% loss)
+    float lossBonus = getPacketLossRate() * 0.1f;
 
     float result = base + lossBonus;
     return std::clamp(result, kMinInterpTime, kMaxInterpTime);
@@ -73,8 +73,6 @@ void NetworkQualityMonitor::reset() {
     m_jitter         = 0.0f;
     m_firstRTT       = true;
     m_expectedSeq    = 0;
-    m_packetsReceived = 0;
-    m_packetsExpected = 0;
     m_seqInitialized = false;
     m_seqWindow.clear();
 }
