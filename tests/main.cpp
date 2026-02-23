@@ -1940,6 +1940,9 @@ void test_ui_manager_colorpicker_integration();
 // Renderer backend tests
 void run_renderer_backend_tests();
 
+// Script VM and ABI capsule tests
+void run_script_and_abi_tests();
+
 int main() {
     std::cout << "=== Atlas Engine Tests ===" << std::endl;
 
@@ -4108,6 +4111,9 @@ int main() {
 
     // Renderer backend tests
     run_renderer_backend_tests();
+
+    // Script VM and ABI capsule tests
+    run_script_and_abi_tests();
 
     std::cout << "\n=== All tests passed! ===" << std::endl;
     return 0;

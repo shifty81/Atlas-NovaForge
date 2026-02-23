@@ -308,6 +308,23 @@ implementations** producing deferred draw commands via `UIDrawList`.
 - [x] `UIManager::SetViewportSize` triggers layout scaling
 - [x] `Engine::ProcessWindowEvents` propagates resize to UI
 
+### Deterministic Scripting VM (`engine/script/`)
+- [x] Stack-based bytecode VM with 24 opcodes
+- [x] Deterministic execution (no IO, no wall-clock, no OS randomness)
+- [x] Budget enforcement (configurable step limits)
+- [x] Native function registration (sandboxed API surface)
+- [x] Script contract validation (deterministic, replay-safe, migration-safe)
+- [x] Tick-integrated execution via ScriptSystem
+- [x] Safe built-in functions (abs, min, max, clamp, floor, ceil, sqrt, strlen)
+- [x] State hashing for replay safety
+
+### Binary Compatibility Layer (`engine/abi/`)
+- [x] ABIVersion with string parsing and compatibility checks
+- [x] ABIFunctionTable with 8 simulation-safe entry points
+- [x] ABICapsule with version, seal, and readiness tracking
+- [x] ABIRegistry for capsule discovery and project binding
+- [x] Compatible version resolution (same major, highest minor)
+
 ---
 
 ## Not Yet Implemented ❌
@@ -374,8 +391,9 @@ Testing            ✅ 100%   1067+ tests, all passing
 | World Gen | ~30 | ✅ All pass |
 | Tile Editor | ~40 | ✅ All pass |
 | Sim Mirror/Migration | ~18 | ✅ All pass |
+| Script VM & ABI | ~48 | ✅ All pass |
 | CI/Tooling | ~12 | ✅ All pass |
-| **Total** | **1093+** | **✅ All pass** |
+| **Total** | **2143+** | **✅ All pass** |
 
 ---
 

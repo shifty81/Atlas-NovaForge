@@ -168,6 +168,11 @@ add_library(AtlasEngine STATIC
     ai/LLMBackend.cpp
     production/BuildAuditLog.cpp
     tools/ProjectNamespaceRewriter.cpp
+    script/ScriptVM.cpp
+    script/ScriptSystem.cpp
+    script/ScriptSandbox.cpp
+    abi/ABICapsule.cpp
+    abi/ABIRegistry.cpp
 )
 
 # Conditionally add platform/render sources that require X11, Win32, or OpenGL
@@ -278,6 +283,8 @@ target_include_directories(AtlasSimulation INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/production>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/asset_graph>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/procedural>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/script>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/abi>
 )
 
 # --- Install / Export ---

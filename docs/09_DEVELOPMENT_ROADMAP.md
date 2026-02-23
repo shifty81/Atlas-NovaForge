@@ -273,3 +273,5 @@ One-command desync reproduction, priority-based packet scheduling, and server-si
 | CI, Build & Template System | 🔧 Functional | CI gates and build scripts work, certified build pipeline scaffolded |
 | Determinism Debug Tooling | ✅ Complete | TickStepDebugger, SimulationStateAuditor, FPDriftDetector — all tested |
 | Desync Reproduction & Network QoS | ✅ Complete | DesyncReproducer, QoSScheduler, ServerAssetValidator — all tested |
+| Deterministic Scripting VM | ✅ Complete | Stack-based bytecode VM, sandboxed builtins, tick-integrated execution, budget enforcement |
+| Binary Compatibility Layer | ✅ Complete | ABIVersion, ABICapsule, ABIRegistry, project binding, compatible version resolution |
