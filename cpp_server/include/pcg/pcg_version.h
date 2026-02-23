@@ -32,7 +32,6 @@ struct PCGVersion {
     uint32_t weapon_rules_version    = 1;
     uint32_t spine_hull_rules_version = 1;
     uint32_t terrain_rules_version   = 1;
-    uint32_t character_weapon_rules_version = 1;
 
     /** Quick equality check for save-file validation. */
     bool operator==(const PCGVersion& other) const {
@@ -46,8 +45,7 @@ struct PCGVersion {
             && capital_rules_version  == other.capital_rules_version
             && weapon_rules_version   == other.weapon_rules_version
             && spine_hull_rules_version == other.spine_hull_rules_version
-            && terrain_rules_version  == other.terrain_rules_version
-            && character_weapon_rules_version == other.character_weapon_rules_version;
+            && terrain_rules_version  == other.terrain_rules_version;
     }
 
     bool operator!=(const PCGVersion& other) const {
@@ -78,7 +76,6 @@ inline constexpr PCGVersion CURRENT_PCG_VERSION = {
     /* weapon     */ 1,
     /* spine_hull */ 1,
     /* terrain    */ 1,
-    /* character_weapon */ 1,
 };
 
 } // namespace pcg
