@@ -16525,7 +16525,7 @@ void testAIFleetDispatchSystem() {
 
 int main() {
     std::cout << "========================================" << std::endl;
-    std::cout << "EVE OFFLINE C++ Server System Tests" << std::endl;
+    std::cout << "Nova Forge C++ Server System Tests" << std::endl;
     std::cout << "Capacitor, Shield, Weapon, Targeting," << std::endl;
     std::cout << "ShipDB, WormholeDB, Wormhole, Fleet," << std::endl;
     std::cout << "Mission, Skill, Module, Inventory," << std::endl;

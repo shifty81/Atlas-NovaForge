@@ -14,7 +14,7 @@ namespace atlas {
 /**
  * Asteroid Field Renderer
  * Renders procedural asteroid fields using instanced rendering
- * Based on the EVE OFFLINE asteroid system mechanics
+ * Based on the Nova Forge asteroid system mechanics
  */
 class AsteroidFieldRenderer {
 public:

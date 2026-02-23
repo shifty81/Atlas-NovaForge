@@ -2,20 +2,20 @@
 
 A comprehensive Blender addon for procedurally generating spaceships with modular parts and interiors. Inspired by games like X4 Foundations, Elite Dangerous, and Eve Online.
 
-Built as the ship generator for the [EVEOFFLINE](https://github.com/shifty81/EVEOFFLINE) project — a PVE space simulator powered by the custom Atlas Engine and Atlas UI.
+Built as the ship generator for the [Nova Forge](https://github.com/shifty81/Nova Forge) project — a PVE space simulator powered by the custom Atlas Engine and Atlas UI.
 
-## EVEOFFLINE / Atlas Integration
+## Nova Forge / Atlas Integration
 
-This addon integrates directly with the EVEOFFLINE project:
+This addon integrates directly with the Nova Forge project:
 
-- **Import ships from EVEOFFLINE JSON** — reads `data/ships/*.json` and generates matching geometry using each ship's faction, class, seed, and hardpoint data.
+- **Import ships from Nova Forge JSON** — reads `data/ships/*.json` and generates matching geometry using each ship's faction, class, seed, and hardpoint data.
 - **Export OBJ for Atlas Engine** — one-click export with correct axis orientation for the Atlas rendering pipeline.
-- **Four faction styles** — Solari (elegant), Veyren (angular), Aurelian (organic), Keldari (rugged) map directly to EVEOFFLINE's four factions.
+- **Four faction styles** — Solari (elegant), Veyren (angular), Aurelian (organic), Keldari (rugged) map directly to Nova Forge's four factions.
 - **All ship classes** — Frigates through Titans, plus Industrials, Mining Barges, and Exhumers.
-- **Station generation** — procedural space stations matching EVEOFFLINE station types (Industrial, Military, Commercial, Research, Mining) and Upwell structures (Astrahus, Fortizar, Keepstar).
-- **Asteroid belt generation** — procedural asteroid belts with all 16 EVEOFFLINE ore types and 4 belt layouts (Semicircle, Sphere, Cluster, Ring).
+- **Station generation** — procedural space stations matching Nova Forge station types (Industrial, Military, Commercial, Research, Mining) and Upwell structures (Astrahus, Fortizar, Keepstar).
+- **Asteroid belt generation** — procedural asteroid belts with all 16 Nova Forge ore types and 4 belt layouts (Semicircle, Sphere, Cluster, Ring).
 
-**→ [Full EVEOFFLINE Integration Guide](EVEOFFLINE_GUIDE.md)** — start-to-finish instructions for generating and exporting ships into the Atlas engine.
+**→ [Full Nova Forge Integration Guide](Nova Forge_GUIDE.md)** — start-to-finish instructions for generating and exporting ships into the Atlas engine.
 
 **→ [Engine Integration Reference](ENGINE_INTEGRATION.md)** — data structures, JSON schemas, ECS mappings, and C++ pseudocode for implementing ship systems in the Atlas engine.
 
@@ -99,7 +99,7 @@ This addon integrates directly with the EVEOFFLINE project:
   - Elite Dangerous (Sleek, aerodynamic)
   - Eve Online (Organic, flowing)
   - Mixed (Combination of all styles)
-  - **EVEOFFLINE Factions**:
+  - **Nova Forge Factions**:
     - Solari (Golden, elegant — armor tanking)
     - Veyren (Angular, utilitarian — shield tanking)
     - Aurelian (Sleek, organic — drones)
@@ -112,7 +112,7 @@ This addon integrates directly with the EVEOFFLINE project:
   - Docking bays and hangars
 
 - **Asteroid Belt Generation**:
-  - 16 ore types from EVEOFFLINE (Dustite through Nexorite)
+  - 16 ore types from Nova Forge (Dustite through Nexorite)
   - 4 belt layouts: Semicircle, Sphere, Cluster, Ring
   - Procedural deformation for natural rocky shapes
   - PBR materials matching ore visual data

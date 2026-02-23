@@ -18,7 +18,7 @@ Welcome to the Atlas modding guide! This document will teach you how to create a
 
 ## Introduction
 
-EVE OFFLINE is fully data-driven, meaning all game content is defined in JSON files located in the `data/` directory. You can modify these files to:
+Nova Forge is fully data-driven, meaning all game content is defined in JSON files located in the `data/` directory. You can modify these files to:
 - Create new ships
 - Add or modify modules
 - Design custom missions
@@ -679,7 +679,7 @@ A durable cruiser with lower speed:
 
 ## Custom 3D Models
 
-EVE OFFLINE now supports loading custom 3D models in addition to the built-in procedural ship generation. This allows you to create unique ship designs using your favorite 3D modeling software.
+Nova Forge now supports loading custom 3D models in addition to the built-in procedural ship generation. This allows you to create unique ship designs using your favorite 3D modeling software.
 
 ### Supported Formats
 
@@ -850,7 +850,7 @@ After creating your model, validate it:
 
 ## Conclusion
 
-Modding EVE OFFLINE is designed to be accessible and powerful. Start small, test frequently, and don't be afraid to experiment!
+Modding Nova Forge is designed to be accessible and powerful. Start small, test frequently, and don't be afraid to experiment!
 
 **Remember**:
 - Always backup files before modifying

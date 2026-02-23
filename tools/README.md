@@ -63,7 +63,7 @@ The tool will prompt you for ship details and generate a complete JSON definitio
 
 ### BlenderSpaceshipGenerator/
 
-Blender addon for procedurally generating spaceships, stations, and asteroid belts with full EVEOFFLINE integration.
+Blender addon for procedurally generating spaceships, stations, and asteroid belts with full Nova Forge integration.
 
 **Requirements:** [Blender](https://www.blender.org/) 3.0+
 
@@ -74,18 +74,18 @@ Blender addon for procedurally generating spaceships, stations, and asteroid bel
 
 **Features:**
 - Procedural ship generation for 18 ship classes (Shuttle → Titan)
-- 4 faction styles matching EVEOFFLINE races (Solari, Veyren, Aurelian, Keldari)
+- 4 faction styles matching Nova Forge races (Solari, Veyren, Aurelian, Keldari)
 - Modular brick-based construction with 18 brick types
 - Interior generation with FPV-ready human-scale dimensions
 - Station and asteroid belt generation (16 ore types)
-- Import ships from EVEOFFLINE JSON data files
+- Import ships from Nova Forge JSON data files
 - Export OBJ models with correct Atlas engine axis orientation
 - Ship DNA serialization for reproducible generation
 
 **Documentation:**
 - [README](BlenderSpaceshipGenerator/README.md) — Overview and quick start
 - [Usage Guide](BlenderSpaceshipGenerator/USAGE.md) — Detailed usage instructions
-- [EVEOFFLINE Guide](BlenderSpaceshipGenerator/EVEOFFLINE_GUIDE.md) — Integration with EVEOFFLINE
+- [Nova Forge Guide](BlenderSpaceshipGenerator/Nova Forge_GUIDE.md) — Integration with Nova Forge
 - [Engine Integration](BlenderSpaceshipGenerator/ENGINE_INTEGRATION.md) — Technical reference for engine developers
 - [Examples](BlenderSpaceshipGenerator/EXAMPLES.md) — Usage examples
 

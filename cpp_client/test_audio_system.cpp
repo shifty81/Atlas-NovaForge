@@ -275,7 +275,7 @@ void test_combat_scenario(AudioManager& audio) {
 
 int main() {
     std::cout << "========================================" << std::endl;
-    std::cout << "  EVE OFFLINE - Audio System Test" << std::endl;
+    std::cout << "  Nova Forge - Audio System Test" << std::endl;
     std::cout << "========================================" << std::endl;
     
     // Asset directory

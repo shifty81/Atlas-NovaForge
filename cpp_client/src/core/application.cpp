@@ -821,7 +821,7 @@ bool Application::hostMultiplayerGame(const std::string& sessionName, int maxPla
     // Configure embedded server
     EmbeddedServer::Config serverConfig;
     serverConfig.server_name = sessionName;
-    serverConfig.description = "EVE OFFLINE Hosted Game";
+    serverConfig.description = "Nova Forge Hosted Game";
     serverConfig.port = 8765;
     serverConfig.max_players = maxPlayers;
     serverConfig.lan_only = true;

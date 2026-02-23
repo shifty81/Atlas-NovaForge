@@ -58,7 +58,7 @@ struct ShipDesignTraits {
 };
 
 /**
- * 3D Model class for rendering entities in EVE OFFLINE
+ * 3D Model class for rendering entities in Nova Forge
  * 
  * Supports both file-based model loading and procedural generation of ship models.
  * The procedural generation system creates faction-specific ships with distinctive

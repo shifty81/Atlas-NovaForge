@@ -492,7 +492,7 @@ Congratulations! You've mastered the basics. Here's what to do next:
 
 ## Final Tips
 
-1. **Take Your Time** - EVE OFFLINE is complex, don't rush
+1. **Take Your Time** - Nova Forge is complex, don't rush
 2. **Experiment** - Try different ships, fits, activities
 3. **Ask Questions** - Community is helpful
 4. **Have Fun** - It's a game, enjoy it!

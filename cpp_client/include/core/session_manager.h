@@ -41,7 +41,7 @@ public:
 
     struct SessionConfig {
         std::string session_name = "My Game";
-        std::string description = "EVE OFFLINE Session";
+        std::string description = "Nova Forge Session";
         int max_players = 20;
         bool use_password = false;
         std::string password = "";

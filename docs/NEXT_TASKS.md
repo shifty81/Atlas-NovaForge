@@ -1,4 +1,4 @@
-# Atlas — Next Tasks Recommendations
+# Nova Forge — Next Tasks Recommendations
 
 > **Update (February 23, 2026)**: **Phases 13-15 STARTED + Chatlog Feature Merge**. Merged features from design chatlog (chatlog1.txt) into project. New systems: CharacterMeshSystem (4 races, procedural generation), RigSystem (modular exo-suit with 13 module types), TurretGenerator (4 sizes × 5 types × 4 factions), PlanetGenerator (8 planet types with resources), HabitatGenerator (multi-level with power balance), GravBikeGenerator (faction-styled vehicles), LegendSystem (player fame with titles), AncientTechSystem (Broken→Repaired→Upgraded lifecycle), DockingSystem (4 port types), SurvivalSystem (oxygen/hunger/fatigue), MenuSystem (title→game flow state machine), CrewSystem (8 roles, efficiency), SalvageExplorationSystem (5 site types, trinket generation), MarketOrderSystem (buy/sell with AI dispatch). 26 new ECS components, 20 new source files. **2517 test assertions passing**.
 
@@ -648,7 +648,7 @@ When choosing what to work on next, consider:
 
 ## Conclusion
 
-The EVE OFFLINE project is in excellent shape with all major systems implemented and working. The next steps should focus on:
+The Nova Forge project is in excellent shape with all major systems implemented and working. The next steps should focus on:
 
 1. **Short term**: Content expansion (more ships, modules, missions)
 2. **Medium term**: Performance optimization and polish

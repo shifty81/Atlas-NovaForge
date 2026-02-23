@@ -1,4 +1,4 @@
-# Atlas — Project Roadmap
+# Nova Forge — Project Roadmap
 
 **Status**: In active R&D and development — actively testing until further notice
 
@@ -19,7 +19,7 @@
 
 ## Project Vision
 
-EVE OFFLINE is a PVE-focused space MMO inspired by EVE Online, designed for small groups of players (2-20). The project aims to recreate the EVE Online experience with:
+Nova Forge is a PVE-focused space simulator designed for solo play or small groups (2-20 players). The project delivers a deep space experience with:
 - C++ and OpenGL game engine with ECS architecture
 - Server-authoritative multiplayer for cooperative gameplay
 - EVE-like mechanics: ships, skills, fitting, combat, missions, exploration

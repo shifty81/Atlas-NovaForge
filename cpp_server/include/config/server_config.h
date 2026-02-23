@@ -19,7 +19,7 @@ struct ServerConfig {
     int max_connections = 100;
     
     // Server settings
-    std::string server_name = "EVE OFFLINE Dedicated Server";
+    std::string server_name = "Nova Forge Dedicated Server";
     std::string server_description = "A PVE-focused space MMO server";
     bool persistent_world = true;
     bool auto_save = true;

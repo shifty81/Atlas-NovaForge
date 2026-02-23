@@ -1,9 +1,9 @@
 #!/bin/bash
-# Atlas - Unix Build Script
+# Nova Forge - Unix Build Script
 # Builds the C++ client and server using CMake
 
 echo "================================================"
-echo "Atlas - Build"
+echo "Nova Forge - Build"
 echo "================================================"
 echo ""
 

@@ -13,7 +13,7 @@ class Camera;
 class Shader;
 
 /**
- * 3D Interactive Star Map for EVE OFFLINE
+ * 3D Interactive Star Map for Nova Forge
  * 
  * Mimics EVE Online's F10 map interface with:
  * - Galaxy view showing all solar systems

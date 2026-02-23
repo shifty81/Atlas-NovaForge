@@ -95,7 +95,7 @@ jobs:
       with:
         name: eve-client-linux
         path: |
-          cpp_client/build/bin/eve_client
+          cpp_client/build/bin/nova_forge
           cpp_client/build/bin/shaders/
           cpp_client/build/bin/assets/
         retention-days: 7
@@ -140,7 +140,7 @@ jobs:
       with:
         name: eve-client-windows
         path: |
-          cpp_client/build/bin/Release/eve_client.exe
+          cpp_client/build/bin/Release/nova_forge.exe
           cpp_client/build/bin/shaders/
           cpp_client/build/bin/assets/
         retention-days: 7
@@ -184,7 +184,7 @@ jobs:
       with:
         name: eve-client-macos
         path: |
-          cpp_client/build/bin/eve_client
+          cpp_client/build/bin/nova_forge
           cpp_client/build/bin/shaders/
           cpp_client/build/bin/assets/
         retention-days: 7

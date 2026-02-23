@@ -1,8 +1,8 @@
-# EVE OFFLINE C++ Dedicated Server
+# Nova Forge C++ Dedicated Server
 
 ## Overview
 
-The EVE OFFLINE C++ Dedicated Server is a high-performance, cross-platform server implementation designed for 24/7 uptime with Steam integration support.
+The Nova Forge C++ Dedicated Server is a high-performance, cross-platform server implementation designed for 24/7 uptime with Steam integration support.
 
 ## Features
 
@@ -74,7 +74,7 @@ make
   "host": "0.0.0.0",
   "port": 8765,
   "max_connections": 100,
-  "server_name": "My EVE OFFLINE Server",
+  "server_name": "My Nova Forge Server",
   "server_description": "A PVE-focused space MMO server",
   "persistent_world": true,
   "auto_save": true,
@@ -117,35 +117,35 @@ Enable whitelist in `server.json` with `"use_whitelist": true`, then configure:
 
 ```bash
 cd build/bin
-./eve_dedicated_server
+./nova_forge_server
 ```
 
 ### With Custom Config
 
 ```bash
-./eve_dedicated_server /path/to/server.json
+./nova_forge_server /path/to/server.json
 ```
 
 ### Background (Linux)
 
 ```bash
-nohup ./eve_dedicated_server > server.log 2>&1 &
+nohup ./nova_forge_server > server.log 2>&1 &
 ```
 
 ### As a Service (systemd)
 
-Create `/etc/systemd/system/eve-server.service`:
+Create `/etc/systemd/system/nova-forge-server.service`:
 
 ```ini
 [Unit]
-Description=EVE OFFLINE Dedicated Server
+Description=Nova Forge Dedicated Server
 After=network.target
 
 [Service]
 Type=simple
 User=gameserver
-WorkingDirectory=/opt/eve-offline/cpp_server/build/bin
-ExecStart=/opt/eve-offline/cpp_server/build/bin/eve_dedicated_server
+WorkingDirectory=/opt/nova-forge/cpp_server/build/bin
+ExecStart=/opt/nova-forge/cpp_server/build/bin/nova_forge_server
 Restart=on-failure
 RestartSec=10
 
@@ -156,9 +156,9 @@ WantedBy=multi-user.target
 Enable and start:
 
 ```bash
-sudo systemctl enable eve-server
-sudo systemctl start eve-server
-sudo systemctl status eve-server
+sudo systemctl enable nova-forge-server
+sudo systemctl start nova-forge-server
+sudo systemctl status nova-forge-server
 ```
 
 ## Steam Integration
@@ -235,8 +235,8 @@ By default, clients connect to `localhost:8765`. To connect to a dedicated serve
 1. Edit client connection settings
 2. Or use environment variables:
    ```bash
-   export EVE_SERVER_HOST=your.server.ip
-   export EVE_SERVER_PORT=8765
+   export NOVA_FORGE_SERVER_HOST=your.server.ip
+   export NOVA_FORGE_SERVER_PORT=8765
    ```
 
 ## Administration
@@ -330,8 +330,8 @@ Adjust based on server capacity:
 ### Building from Source
 
 ```bash
-git clone https://github.com/shifty81/EVEOFFLINE.git
-cd EVEOFFLINE/cpp_server
+git clone https://github.com/shifty81/NovaForge.git
+cd NovaForge/cpp_server
 mkdir build && cd build
 cmake ..
 make
@@ -355,7 +355,7 @@ The `run_tests.sh` script ensures tests are run from the repository root for cor
 **Manual test execution:**
 ```bash
 # From repository root
-cd /path/to/EVEOFFLINE
+cd /path/to/NovaForge
 ./cpp_server/build/bin/test_systems
 
 # All 832 test assertions should pass
@@ -430,7 +430,7 @@ cpp_server/
 ## Support
 
 For issues and support:
-- GitHub Issues: https://github.com/shifty81/EVEOFFLINE/issues
+- GitHub Issues: https://github.com/shifty81/NovaForge/issues
 - Discord: [TBD]
 
 ## Roadmap

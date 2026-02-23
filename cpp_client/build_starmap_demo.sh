@@ -1,7 +1,7 @@
 #!/bin/bash
 # Build script for Star Map Demo
 
-echo "Building EVE OFFLINE Star Map Demo..."
+echo "Building Nova Forge Star Map Demo..."
 
 # Create build directory
 mkdir -p build_starmap_demo

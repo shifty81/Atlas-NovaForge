@@ -37,7 +37,7 @@ static void glfwErrorCallback(int error, const char* description) {
 }
 
 int main() {
-    std::cout << "=== EVE OFFLINE — RmlUi Atlas UI Test ===" << std::endl;
+    std::cout << "=== Nova Forge — RmlUi Atlas UI Test ===" << std::endl;
     std::cout << "Controls:" << std::endl;
     std::cout << "  F1  - Toggle fitting panel" << std::endl;
     std::cout << "  F2  - Toggle inventory panel" << std::endl;
@@ -63,7 +63,7 @@ int main() {
 
     // Create window
     GLFWwindow* window = glfwCreateWindow(1440, 900,
-        "EVE OFFLINE — Atlas UI (RmlUi)", nullptr, nullptr);
+        "Nova Forge — Atlas UI (RmlUi)", nullptr, nullptr);
     if (!window) {
         std::cerr << "Failed to create GLFW window\n";
         glfwTerminate();

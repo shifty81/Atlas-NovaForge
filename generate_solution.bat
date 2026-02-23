@@ -1,9 +1,9 @@
 @echo off
-REM EVE OFFLINE - Generate Root-Level Visual Studio Solution
+REM Nova Forge - Generate Root-Level Visual Studio Solution
 REM This script creates a solution that includes both C++ client and server
 
 echo ================================================
-echo EVE OFFLINE - Visual Studio Solution Generator
+echo Nova Forge - Visual Studio Solution Generator
 echo ================================================
 echo.
 

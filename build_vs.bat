@@ -1,9 +1,9 @@
 @echo off
-REM EVE OFFLINE C++ Client - Visual Studio Build Script
+REM Nova Forge C++ Client - Visual Studio Build Script
 REM Generates Visual Studio solution and builds the project
 
 echo ================================================
-echo EVE OFFLINE C++ Client - Visual Studio Build
+echo Nova Forge C++ Client - Visual Studio Build
 echo ================================================
 echo.
 
@@ -218,13 +218,13 @@ echo ================================================
 echo BUILD SUCCESSFUL
 echo ================================================
 echo.
-echo Executable location: build_vs\bin\%BUILD_TYPE%\eve_client.exe
+echo Executable location: build_vs\bin\%BUILD_TYPE%\nova_forge.exe
 echo.
 
 REM Open Visual Studio if requested
 if %OPEN_VS% EQU 1 (
     echo Opening Visual Studio...
-    start EVEOfflineClient.sln
+    start NovaForge.sln
 )
 
 REM List built executables
@@ -233,7 +233,7 @@ dir /b bin\%BUILD_TYPE%\*.exe 2>nul
 
 echo.
 echo To open the project in Visual Studio, run:
-echo   build_vs\EVEOfflineClient.sln
+echo   build_vs\NovaForge.sln
 echo.
 echo Or rebuild using this script with:
 echo   build_vs.bat --clean          # Clean rebuild

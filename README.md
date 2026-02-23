@@ -1,39 +1,65 @@
 <p align="center">
-  <img src="docs/images/banner.svg" alt="Atlas — PVE Space Simulator" width="900"/>
+  <img src="docs/images/banner.svg" alt="Nova Forge — PVE Space Simulator" width="900"/>
 </p>
 
-A PVE-focused space simulator for small groups (2–20 players) or solo play with AI wingmates.
-Built with **C++ / OpenGL** and the custom **Atlas UI** framework — an immediate-mode, GPU-accelerated UI system designed for sci-fi cockpit interfaces.
+<p align="center">
+  <strong>A PVE-focused space simulator for solo play or small groups (2–20 players) with AI wingmates.</strong><br/>
+  Built with <strong>C++ / OpenGL</strong> and the custom <strong>Atlas Engine</strong> — featuring procedural ships, FPS interiors, fleet AI, and a living universe.
+</p>
 
-> **Status** — Active R&D · Builds on Linux, macOS, Windows
+<p align="center">
+  <a href="docs/ROADMAP.md"><img src="https://img.shields.io/badge/roadmap-phases_1--15-blue?style=flat-square" alt="Roadmap"/></a>
+  <a href="#-quick-start"><img src="https://img.shields.io/badge/build-linux_%7C_macOS_%7C_windows-green?style=flat-square" alt="Build"/></a>
+  <a href="docs/MODDING_GUIDE.md"><img src="https://img.shields.io/badge/moddable-JSON_data-orange?style=flat-square" alt="Moddable"/></a>
+</p>
 
 ---
 
 ## ✨ At a Glance
 
 <p align="center">
-  <img src="docs/images/concept-style-guide.png" alt="EVEOFFLINE — Procedural 3D Style Guide" width="900"/>
+  <img src="docs/images/concept-style-guide.png" alt="Nova Forge — Procedural 3D Style Guide" width="900"/>
 </p>
 
-<p align="center">
-  <img src="docs/images/concept-modular-ships.png" alt="Modular Ships & Interiors" width="900"/>
-</p>
-
-<p align="center">
-  <img src="docs/images/concept-interiors.png" alt="Ship Interiors & Room Generation" width="900"/>
-</p>
-
-<p align="center">
-  <img src="docs/images/concept-factions.png" alt="Faction Designs & Paint Jobs" width="900"/>
-</p>
-
-<p align="center">
-  <img src="docs/images/concept-fleet-combat.png" alt="Fleet Combat & Formations" width="900"/>
-</p>
+<table>
+<tr>
+<td width="50%">
+<img src="docs/images/concept-modular-ships.png" alt="Modular Ships & Interiors" width="100%"/>
+</td>
+<td width="50%">
+<img src="docs/images/concept-interiors.png" alt="Ship Interiors & Room Generation" width="100%"/>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<img src="docs/images/concept-factions.png" alt="Faction Designs & Paint Jobs" width="100%"/>
+</td>
+<td width="50%">
+<img src="docs/images/concept-fleet-combat.png" alt="Fleet Combat & Formations" width="100%"/>
+</td>
+</tr>
+</table>
 
 <p align="center">
   <img src="docs/images/concept-environments.png" alt="Environments & Asteroids" width="900"/>
 </p>
+
+---
+
+## 🌌 What Is Nova Forge?
+
+Nova Forge is a **PVE space simulation** where you command ships, build fleets, explore procedurally generated star systems, and forge your legend across a living universe. Every ship has walkable interiors. Every captain has a personality. Every star system remembers what happened there.
+
+### Core Pillars
+
+| | Pillar | Description |
+|:-:|--------|-------------|
+| 🚀 | **Command** | Pilot ships from frigate to titan — undock, fight, mine, trade, explore |
+| 🛠️ | **Build** | Modular ships, stations, habitats, and rigs with snap-grid construction |
+| 🤖 | **Lead** | AI fleet captains with personalities, morale, friendships, and grudges |
+| 🔭 | **Discover** | Scan anomalies, salvage wrecks, decode ancient tech, build your legend |
+| 🏭 | **Forge** | Manufacture, refine, research — drive a living NPC economy |
+| 🎯 | **Survive** | FPS interiors, EVA, oxygen management, and planetary exploration |
 
 ---
 
@@ -58,7 +84,7 @@ brew install cmake glfw glm glew nlohmann-json openal-soft freetype
 
 # Build & run
 ./build.sh
-cd build/bin && ./eve_client "YourName"
+cd build/bin && ./nova_forge "YourName"
 ```
 
 ### Windows (Visual Studio)
@@ -85,7 +111,7 @@ cmake --build . --config Release
 ## 🗂️ Project Structure
 
 ```
-Atlas/
+NovaForge/
 ├── engine/                # ★ Atlas Engine — generic, game-agnostic core
 │   ├── core/              #   Engine bootstrap, logging, config
 │   ├── ecs/               #   Entity/Component/System framework
@@ -132,7 +158,7 @@ Atlas/
 
 ## 🎨 Atlas UI Framework
 
-Atlas is both the game **and** its UI framework. The Atlas UI system is a custom, immediate-mode, GPU-accelerated UI toolkit built specifically for sci-fi game interfaces — and designed to be reusable in other projects.
+The **Atlas UI** system is a custom, immediate-mode, GPU-accelerated UI toolkit built for sci-fi cockpit interfaces — and designed to be reusable in other projects.
 
 **→ [Full Atlas UI Documentation](docs/atlas-ui/README.md)**
 
@@ -140,7 +166,7 @@ Atlas is both the game **and** its UI framework. The Atlas UI system is a custom
 
 - **Immediate-mode API** — no retained widget trees; simple `if (button(...))` pattern
 - **Single draw-call batching** — all UI rendered in one GPU pass
-- **EVE-style widget set** — panels, status arcs, capacitor rings, module racks, overview tables
+- **Sci-fi widget set** — panels, status arcs, capacitor rings, module racks, overview tables
 - **Interactive** — drag-to-move panels, click buttons, tab switching, scrolling
 - **Themeable** — full color scheme support (default teal, classic amber, colorblind-safe)
 - **Zero dependencies** beyond OpenGL 3.3
@@ -175,7 +201,7 @@ ctx.endFrame();
 
 ## 🔩 Atlas Engine
 
-This project includes the **Atlas Engine** — a modular, data-driven game engine core that powers both the client and server. **EVEOFFLINE remains a standalone game project where gameplay features are developed and tested first**; stable, game-agnostic pieces can then be implemented in [Atlas](https://github.com/shifty81/Atlas) for further engine-level development.
+This project includes the **Atlas Engine** — a modular, data-driven game engine core that powers both the client and server. **Nova Forge is the game built on top of Atlas**; stable, game-agnostic pieces are developed in the engine for reuse.
 
 **→ [Atlas Integration Guide](ATLAS_INTEGRATION.md)**
 
@@ -215,19 +241,34 @@ cmake --build .
 | **Aurelian** | Sleek / organic | Speed, drones, electronic warfare |
 | **Keldari** | Rugged / industrial | Missiles, shields, ECM |
 
+### Four Races
+
+| Race | Traits | Tech Preference |
+|------|--------|-----------------|
+| **Terran Descendant** | Balanced, fast learner, diplomat | Balanced |
+| **Synth-Born** | Human–AI hybrid, automation bonus | Drones |
+| **Pure Alien** | Environmental resilience, exotic modules | Exotic |
+| **Hybrid Evolutionary** | High-risk/high-reward, mutating traits | Hybrid |
+
 ### Ship Classes
+
 Frigates · Destroyers · Cruisers · Battlecruisers · Battleships · Capitals
 Tech I · Tech II (Interceptors, Covert Ops, Assault Frigs, Stealth Bombers, Marauders, Logistics, Recon, Command Ships)
 Industrials · Mining Barges · Exhumers · Carriers · Dreadnoughts · Titans
 
 ### Game Systems
-- **Combat** — Module activation, target locking, damage types, electronic warfare
-- **Movement** — Approach, orbit, keep-at-range, warp, align (EVE-style)
-- **Fleet** — Party system with AI or human wingmates
-- **Skills** — 137 skills across 20 categories with attribute-based training
-- **Industry** — Mining, manufacturing, market, contracts
-- **Exploration** — Probe scanning, deadspace complexes, wormholes
-- **Missions** — 5 levels × 7 types (combat, mining, courier, trade, scenario, exploration, storyline)
+
+| System | Description |
+|--------|-------------|
+| **Combat** | Module activation, target locking, damage types, electronic warfare |
+| **Movement** | Approach, orbit, keep-at-range, warp, cinematic warp with meditation audio |
+| **Fleet** | AI captains with personalities, morale, friendships, departure mechanics |
+| **Skills** | 137 skills across 20 categories with attribute-based training |
+| **Industry** | Mining, refining, manufacturing, market orders, AI fleet dispatch |
+| **Exploration** | Probe scanning, deadspace complexes, wormholes, ancient tech salvage |
+| **Missions** | 5 levels × 7 types — combat, mining, courier, trade, scenario, exploration, storyline |
+| **Survival** | Oxygen, hunger, fatigue — fabricators, medical bays, rig loadouts |
+| **Legends** | Player fame tracking, earned titles, NPC dialogue references |
 
 ---
 
@@ -276,37 +317,37 @@ See the [Modding Guide](docs/MODDING_GUIDE.md) for details.
 </td>
 <td width="50%" valign="top">
 
-### 🚧 Next Up
+### 🚧 In Progress
 
 | Phase | Milestone | Focus |
 |:-----:|-----------|:-----:|
 | 🎯 | **Vertical Slice** — One full star system, playable loop | 🔜 |
-| 8 | **Cinematic Warp** — Tunnel shaders, audio, anomalies, meditation | 🔄 |
-| 9 | **Fleet AI** — Captain personalities, morale, departure, transfers | 🔄 |
+| 8 | **Cinematic Warp** — Tunnel shaders, audio, meditation | 🔄 |
+| 9 | **Fleet AI** — Captain personalities, morale, departure | 🔄 |
 | 10 | **Tactical Overlay** — 2.5D strategy view, distance rings | 🔄 |
-| 11 | **Fleet Civilization** — 25-ship fleets, station deployment, history | 🔄 |
-| 12 | **Ship Gen v2** — Spine-based hulls, silhouette-first design | 📋 |
-| 13 | **FPS & Interiors** — Rigs, survival, crews, salvage, ancient tech | 🔄 |
-| 14 | **Vehicles & Planets** — Rovers, grav bikes, planet generation | 🔄 |
-| 15 | **Turrets, Market, Legends** — Procedural weapons, economy, myths | 🔄 |
+| 11 | **Fleet Civilization** — 25-ship fleets, station deployment | 🔄 |
+| 12 | **Ship Gen v2** — Spine-based hulls, silhouette-first | 📋 |
+| 13 | **FPS & Interiors** — Rigs, survival, crews, ancient tech | 🔄 |
+| 14 | **Vehicles & Planets** — Rovers, grav bikes, planet gen | 🔄 |
+| 15 | **Turrets, Market, Legends** — Procedural weapons, myths | 🔄 |
 
 </td>
 </tr>
 </table>
 
 <details>
-<summary><strong>🔭 Vision — Where This Is Going</strong></summary>
+<summary><strong>🔭 Vision — Where Nova Forge Is Going</strong></summary>
 <br>
 
 **Warp as ritual, not loading screen** — Long warps become meditative experiences with layered audio, visual anomalies, and fleet chatter. Ships warp in formation; captains talk about victories, losses, and rumors.
 
 **Fleet members are people** — AI captains have personality axes (aggression, optimism, humor), form friendships and grudges, track morale, and may leave if conditions worsen. Their chatter shifts across mining, combat, exploration, and idle states.
 
-**Tactical overlay for spatial mastery** — A passive 2.5D strategy view shows true distances, tool ranges, and entity positions without clutter or interaction. Information > spectacle.
+**Ships you can walk inside** — Every ship from frigate to titan has procedurally generated interiors with rooms, corridors, elevators, workbenches, and a cockpit. Interior modules affect exterior appearance.
 
-**Traveling civilizations** — At 25 ships with titans and capitals, your fleet becomes a moving polity with distributed economy, station deployment, and fleet-scale industry. Titan is a civilizational threshold, not just the next ship.
+**Forge your legend** — Your actions echo across the universe. NPCs reference your deeds, statues appear in stations, and myths form around what you've done. Ancient tech waits to be reverse-engineered in forgotten ruins.
 
-**Ships that read in silhouette** — Procedural generation overhaul: spine-based hull grammar (Needle, Wedge, Hammer, Slab, Ring) with functional zones and faction shape language, replacing blob-assembly.
+**A universe that reacts** — Background simulation drives NPC traffic, pirate surges, economic shifts, and security responses. Star systems remember player impact. The economy is real — AI fleets mine, haul, and trade.
 
 </details>
 
@@ -335,4 +376,4 @@ Contributions are welcome! See [CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
 ---
 
-<sub>Atlas is an indie PVE space simulator. All in-game content uses original naming conventions. Not affiliated with CCP Games.</sub>
+<sub>Nova Forge is an indie PVE space simulator built on the Atlas Engine. All in-game content uses original naming conventions.</sub>

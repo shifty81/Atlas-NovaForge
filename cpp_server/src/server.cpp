@@ -80,7 +80,7 @@ bool Server::initialize() {
     log.init(config_->log_path);
 
     log.info("==================================");
-    log.info("EVE OFFLINE Dedicated Server");
+    log.info("Nova Forge Dedicated Server");
     log.info("==================================");
     log.info("Version: 1.0.0");
     

@@ -1,10 +1,10 @@
 #!/bin/bash
-# Build script for EVE OFFLINE C++ Dedicated Server
+# Build script for Nova Forge C++ Dedicated Server
 
 set -e
 
 echo "=================================="
-echo "EVE OFFLINE Server Build Script"
+echo "Nova Forge Server Build Script"
 echo "=================================="
 echo ""
 

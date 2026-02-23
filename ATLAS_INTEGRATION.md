@@ -1,12 +1,12 @@
 # Atlas Engine Integration
 
-This document explains the relationship between the **EVEOFFLINE** game project and the **Atlas Engine**, and how the two repositories work together.
+This document explains the relationship between the **Nova Forge** game project and the **Atlas Engine**, and how the two repositories work together.
 
 ## Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    EVEOFFLINE Repository                    │
+│                    Nova Forge Repository                    │
 │                  (This Repo — Game Project)                 │
 │                                                             │
 │  ┌───────────────────────────────────────────────────────┐  │
@@ -51,22 +51,22 @@ The plan is to eventually split into two repositories:
 | Repository | Purpose |
 |------------|---------|
 | **[Atlas](https://github.com/shifty81/Atlas)** | Standalone engine — generic, game-agnostic |
-| **EVEOFFLINE** | Game project — uses Atlas as a dependency |
+| **Nova Forge** | Game project — uses Atlas as a dependency |
 
 When the split happens:
 1. The `engine/` and `editor/` directories move to the Atlas repo
 2. This repo pulls Atlas as a submodule or external dependency
 3. Game-specific code (`cpp_client/`, `cpp_server/`, `data/`) stays here
 
-## Keeping EVEOFFLINE Standalone While Atlas Evolves
+## Keeping Nova Forge Standalone While Atlas Evolves
 
-If you want day-to-day EVEOFFLINE work to stay focused on the game project while Atlas evolves separately, use this workflow:
+If you want day-to-day Nova Forge work to stay focused on the game project while Atlas evolves separately, use this workflow:
 
-1. Treat `cpp_client/`, `cpp_server/`, `data/`, `docs/`, and `tools/` as EVEOFFLINE-owned scope
-2. Develop and validate gameplay features in EVEOFFLINE first
+1. Treat `cpp_client/`, `cpp_server/`, `data/`, `docs/`, and `tools/` as Nova Forge-owned scope
+2. Develop and validate gameplay features in Nova Forge first
 3. Move only stable, game-agnostic parts into Atlas for further engine/framework development
 4. Keep Atlas sync intentional rather than automatic
-5. Build EVEOFFLINE-only targets when you do not need Atlas engine/editor work:
+5. Build Nova Forge-only targets when you do not need Atlas engine/editor work:
 
 ```bash
 mkdir -p build && cd build
@@ -75,12 +75,12 @@ cmake .. -DBUILD_CLIENT=ON -DBUILD_SERVER=ON \
 cmake --build . --config Release
 ```
 
-This keeps EVEOFFLINE as a standalone game project while still allowing proven features to be implemented in Atlas when appropriate.
+This keeps Nova Forge as a standalone game project while still allowing proven features to be implemented in Atlas when appropriate.
 
 ## Directory Structure
 
 ```
-EVEOFFLINE/
+Nova Forge/
 ├── engine/                 # ★ Atlas Engine (will move to Atlas repo)
 │   ├── core/               #   Engine bootstrap, logging, config
 │   ├── ecs/                #   Entity/Component/System framework
@@ -98,8 +98,8 @@ EVEOFFLINE/
 │
 ├── atlas_tests/            # ★ Atlas Engine unit tests
 │
-├── cpp_client/             # EVEOFFLINE game client (stays here)
-├── cpp_server/             # EVEOFFLINE game server (stays here)
+├── cpp_client/             # Nova Forge game client (stays here)
+├── cpp_server/             # Nova Forge game server (stays here)
 ├── data/                   # Game data — moddable JSON (stays here)
 ├── docs/                   # Documentation (stays here)
 ├── tools/                  # Modding tools (stays here)
@@ -139,8 +139,8 @@ make build
 | `BUILD_ATLAS_ENGINE` | `ON` | Build the Atlas Engine static library |
 | `BUILD_ATLAS_EDITOR` | `OFF` | Build the Atlas Editor executable |
 | `BUILD_ATLAS_TESTS` | `ON` | Build and register Atlas Engine tests |
-| `BUILD_CLIENT` | `ON` | Build the EVEOFFLINE game client |
-| `BUILD_SERVER` | `ON` | Build the EVEOFFLINE game server |
+| `BUILD_CLIENT` | `ON` | Build the Nova Forge game client |
+| `BUILD_SERVER` | `ON` | Build the Nova Forge game server |
 
 ## Atlas Engine Design Principles
 
@@ -193,12 +193,12 @@ The `engine/` and `editor/` directories in this repo mirror the Atlas repo struc
 
 ```bash
 # From Atlas repo, copy engine changes
-cp -r Atlas/engine/* EVEOFFLINE/engine/
-cp -r Atlas/editor/* EVEOFFLINE/editor/
+cp -r Atlas/engine/* Nova Forge/engine/
+cp -r Atlas/editor/* Nova Forge/editor/
 
-# Or from EVEOFFLINE to Atlas
-cp -r EVEOFFLINE/engine/* Atlas/engine/
-cp -r EVEOFFLINE/editor/* Atlas/editor/
+# Or from Nova Forge to Atlas
+cp -r Nova Forge/engine/* Atlas/engine/
+cp -r Nova Forge/editor/* Atlas/editor/
 ```
 
 Once the split is complete, this will be replaced with a git submodule or CMake `FetchContent`.
@@ -207,8 +207,8 @@ Once the split is complete, this will be replaced with a git submodule or CMake 
 
 - [Atlas Engine README](https://github.com/shifty81/Atlas/blob/main/README.md)
 - [Atlas Development Roadmap](https://github.com/shifty81/Atlas/blob/main/docs/09_DEVELOPMENT_ROADMAP.md)
-- [Atlas Future Plans](https://github.com/shifty81/EVEOFFLINE/commit/033f2f8e222e7bfa0f853123ed902c23d98c307a) — Detailed design discussion covering WorldGraph APIs, API cleanup, editor tools, and documentation tracks
+- [Atlas Future Plans](https://github.com/shifty81/Nova Forge/commit/033f2f8e222e7bfa0f853123ed902c23d98c307a) — Detailed design discussion covering WorldGraph APIs, API cleanup, editor tools, and documentation tracks
 - [Atlas Contributing Guide](https://github.com/shifty81/Atlas/blob/main/CONTRIBUTING.md)
-- [EVEOFFLINE Roadmap](docs/ROADMAP.md)
-- [EVEOFFLINE Modding Guide](docs/MODDING_GUIDE.md)
-- [EVEOFFLINE Development Guidance](docs/DEVELOPMENT_GUIDANCE.md)
+- [Nova Forge Roadmap](docs/ROADMAP.md)
+- [Nova Forge Modding Guide](docs/MODDING_GUIDE.md)
+- [Nova Forge Development Guidance](docs/DEVELOPMENT_GUIDANCE.md)

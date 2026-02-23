@@ -16,13 +16,13 @@ int main(int argc, char** argv) {
             characterName = argv[1];
         }
 
-        std::cout << "EVE OFFLINE C++ Client" << std::endl;
+        std::cout << "Nova Forge C++ Client" << std::endl;
         std::cout << "=======================" << std::endl;
         std::cout << "Character: " << characterName << std::endl;
         std::cout << std::endl;
 
         // Create and run application
-        atlas::Application app("EVE OFFLINE - " + characterName, 1280, 720);
+        atlas::Application app("Nova Forge - " + characterName, 1280, 720);
         app.run();
 
         std::cout << "Client shutting down gracefully." << std::endl;
