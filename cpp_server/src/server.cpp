@@ -63,6 +63,10 @@ void Server::initializeGameWorld() {
     log.info("Game world initialized with " +
              std::to_string(game_world_->getEntityCount()) + " entities");
     log.info("Systems: Capacitor, ShieldRecharge, AI, Targeting, Station, Movement, Weapon, Combat");
+
+    // Initialize PCG manager with universe seed
+    pcg_manager_.initialize(0xE0E0FF714E);
+    log.info("PCG Manager initialized (universe seed: 0xE0E0FF714E)");
 }
 
 bool Server::initialize() {
@@ -142,6 +146,7 @@ bool Server::initialize() {
     game_session_->setStationSystem(station_system_);
     game_session_->setMovementSystem(movement_system_);
     game_session_->setCombatSystem(combat_system_);
+    game_session_->setPCGManager(&pcg_manager_);
     game_session_->initialize();
     
     // Load persisted world state if enabled
