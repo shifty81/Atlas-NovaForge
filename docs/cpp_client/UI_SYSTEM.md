@@ -203,7 +203,7 @@ cmake .. -DUSE_RMLUI=ON
 
 Potential additions (not yet implemented):
 - Draggable/resizable windows (built into RmlUi)
-- Neocom menu (left sidebar) — RML template ready
+- Nexcom menu (left sidebar) — RML template ready
 - Module rack (bottom center) — RML template ready
 - Capacitor ring display (circular) — custom RmlUi element
 - Target lock displays — custom RmlUi element

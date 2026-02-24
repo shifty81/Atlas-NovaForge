@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_GALAXY_GENERATOR_H
-#define EVE_PCG_GALAXY_GENERATOR_H
+#ifndef NOVAFORGE_PCG_GALAXY_GENERATOR_H
+#define NOVAFORGE_PCG_GALAXY_GENERATOR_H
 
 #include "pcg_context.h"
 #include "deterministic_rng.h"
@@ -12,7 +12,7 @@ namespace pcg {
 
 // ── Security zones ──────────────────────────────────────────────────
 enum class SecurityZone : uint32_t {
-    HighSec = 0,   ///< Empire-controlled, CONCORD-protected.
+    HighSec = 0,   ///< Empire-controlled, AEGIS-protected.
     LowSec  = 1,   ///< Faction sovereignty, limited policing.
     NullSec = 2,   ///< Lawless, player-controlled.
 };
@@ -90,4 +90,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_GALAXY_GENERATOR_H
+#endif // NOVAFORGE_PCG_GALAXY_GENERATOR_H

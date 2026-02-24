@@ -33,8 +33,8 @@ double BountySystem::processKill(const std::string& killer_id,
         entity->addComponent(std::move(newLedger));
     }
 
-    // Award bounty ISK
-    player->isk += bounty_amount;
+    // Award bounty Credits
+    player->credits += bounty_amount;
 
     // Update ledger
     ledger->total_bounty_earned += bounty_amount;

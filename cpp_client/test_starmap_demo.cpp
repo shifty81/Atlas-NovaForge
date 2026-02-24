@@ -14,7 +14,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             glfwSetWindowShouldClose(window, GLFW_TRUE);
         }
         else if (key == GLFW_KEY_F10) {
-            // Toggle star map (EVE's default key)
+            // Toggle star map (Astralis's default key)
             if (g_starMap) {
                 g_starMap->toggle();
                 std::cout << "Star map " << (g_starMap->isVisible() ? "opened" : "closed") << std::endl;

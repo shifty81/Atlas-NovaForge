@@ -7,7 +7,7 @@
 #include <vector>
 #include <cmath>
 
-namespace EVE {
+namespace novaforge {
 
 /**
  * Simple audio generator for creating placeholder WAV files
@@ -94,7 +94,7 @@ private:
     static int16_t float_to_int16(float sample);
 };
 
-} // namespace EVE
+} // namespace novaforge
 
 #endif // USE_OPENAL
 

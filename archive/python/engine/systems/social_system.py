@@ -1,7 +1,7 @@
 """
 Social System
 Handles contacts, standings, mail, and chat channels
-Based on EVE Online's social features
+Based on Astralis's social features
 """
 
 from typing import Optional, Dict, List

@@ -123,7 +123,7 @@ Celestials in System:
 
 #### 7. Mission Tracking
 - Mission objectives and completion status
-- Mission rewards (ISK, LP, items)
+- Mission rewards (Credits, LP, items)
 - Mission location and distance
 - Time remaining (if timed)
 
@@ -135,7 +135,7 @@ ACTIVE MISSIONS
    Type: Combat
    Location: Jita IV
    Objective: Destroy 5 Serpentis ships (3/5 completed)
-   Reward: 500,000 ISK + 1,000 LP
+   Reward: 500,000 Credits + 1,000 LP
 ```
 
 #### 8. Scanning and Detection

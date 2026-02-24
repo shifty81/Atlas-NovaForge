@@ -196,7 +196,7 @@ std::vector<SessionManager::SessionInfo> SessionManager::scanLAN() {
     broadcastAddr.sin_addr.s_addr = INADDR_BROADCAST;
     
     // Send discovery packet
-    const char* discoverMsg = "EVE_OFFLINE_DISCOVER";
+    const char* discoverMsg = "NOVAFORGE_OFFLINE_DISCOVER";
     sendto(sock, discoverMsg, strlen(discoverMsg), 0, (sockaddr*)&broadcastAddr, sizeof(broadcastAddr));
     
     // Wait for responses (with 1 second timeout)
@@ -214,9 +214,9 @@ std::vector<SessionManager::SessionInfo> SessionManager::scanLAN() {
         if (received > 0) {
             buffer[received] = '\0';
             
-            // Parse response (format: "EVE_OFFLINE_SESSION:name:port:players:maxplayers")
+            // Parse response (format: "NOVAFORGE_OFFLINE_SESSION:name:port:players:maxplayers")
             std::string response(buffer);
-            if (response.find("EVE_OFFLINE_SESSION:") == 0) {
+            if (response.find("NOVAFORGE_OFFLINE_SESSION:") == 0) {
                 // Parse session info
                 SessionInfo info;
                 info.host_address = inet_ntoa(senderAddr.sin_addr);
@@ -259,7 +259,7 @@ std::vector<SessionManager::SessionInfo> SessionManager::scanLAN() {
     broadcastAddr.sin_addr.s_addr = INADDR_BROADCAST;
     
     // Send discovery packet
-    const char* discoverMsg = "EVE_OFFLINE_DISCOVER";
+    const char* discoverMsg = "NOVAFORGE_OFFLINE_DISCOVER";
     sendto(sock, discoverMsg, strlen(discoverMsg), 0, 
            (struct sockaddr*)&broadcastAddr, sizeof(broadcastAddr));
     
@@ -278,9 +278,9 @@ std::vector<SessionManager::SessionInfo> SessionManager::scanLAN() {
         if (received > 0) {
             buffer[received] = '\0';
             
-            // Parse response (format: "EVE_OFFLINE_SESSION:name:port:players:maxplayers")
+            // Parse response (format: "NOVAFORGE_OFFLINE_SESSION:name:port:players:maxplayers")
             std::string response(buffer);
-            if (response.find("EVE_OFFLINE_SESSION:") == 0) {
+            if (response.find("NOVAFORGE_OFFLINE_SESSION:") == 0) {
                 // Parse session info
                 SessionInfo info;
                 char addrStr[INET_ADDRSTRLEN];

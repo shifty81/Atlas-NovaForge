@@ -1048,7 +1048,7 @@
   "negotiation": {
     "id": "negotiation",
     "name": "Negotiation",
-    "description": "Improved bargaining skills. Increases mission ISK rewards by 5% per level.",
+    "description": "Improved bargaining skills. Increases mission Credits rewards by 5% per level.",
     "category": "Social",
     "primary_attribute": "charisma",
     "secondary_attribute": "intelligence",
@@ -1313,7 +1313,7 @@
   "infomorph_psychology": {
     "id": "infomorph_psychology",
     "name": "Infomorph Psychology",
-    "description": "Understanding of clone technology. Allows use of jump clones. Maximum jump clones equals skill level.",
+    "description": "Understanding of clone technology. Allows use of relay clones. Maximum relay clones equals skill level.",
     "category": "Science",
     "primary_attribute": "intelligence",
     "secondary_attribute": "memory",

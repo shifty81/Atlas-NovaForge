@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_HULL_MESHER_H
-#define EVE_PCG_HULL_MESHER_H
+#ifndef NOVAFORGE_PCG_HULL_MESHER_H
+#define NOVAFORGE_PCG_HULL_MESHER_H
 
 #include "deck_graph.h"
 #include <cstdint>
@@ -35,4 +35,4 @@ HullMesh generateHullMesh(const std::vector<Deck>& decks, float padding);
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_HULL_MESHER_H
+#endif // NOVAFORGE_PCG_HULL_MESHER_H

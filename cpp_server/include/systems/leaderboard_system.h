@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_LEADERBOARD_SYSTEM_H
-#define EVE_SYSTEMS_LEADERBOARD_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_LEADERBOARD_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_LEADERBOARD_SYSTEM_H
 
 #include "ecs/system.h"
 #include <string>
@@ -31,7 +31,7 @@ public:
                     const std::string& player_name);
 
     /**
-     * @brief Record ISK earned by a player
+     * @brief Record Credits earned by a player
      */
     void recordIskEarned(const std::string& entity_id,
                          const std::string& player_id,
@@ -67,7 +67,7 @@ public:
                        const std::string& player_id);
 
     /**
-     * @brief Get total ISK earned by a player
+     * @brief Get total Credits earned by a player
      */
     double getPlayerIskEarned(const std::string& entity_id,
                               const std::string& player_id);
@@ -132,4 +132,4 @@ private:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_LEADERBOARD_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_LEADERBOARD_SYSTEM_H

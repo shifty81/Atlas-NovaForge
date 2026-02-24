@@ -51,7 +51,7 @@ Successfully continued work on the EVEOFFLINE project by:
 **Coverage**: Comprehensive test suite for market/economy mechanics
 
 **Tests Created** (23 functions, 27 test cases, 1,146 lines):
-- Wallet ISK management
+- Wallet Credits management
 - Market order placement (buy/sell with escrow)
 - Instant transactions
 - Order cancellation with refunds

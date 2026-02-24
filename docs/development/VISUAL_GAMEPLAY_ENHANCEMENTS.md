@@ -155,7 +155,7 @@ t_align = -ln(0.25) * agility / 1000000
 "asteroid_belts": [
   {
     "id": "belt_1",
-    "ore_types": ["veldspar", "scordite"],
+    "ore_types": ["ferrite", "galvite"],
     "spawn_rate": 0.1
   }
 ]
@@ -165,10 +165,10 @@ t_align = -ln(0.25) * agility / 1000000
 - Random rotation for each asteroid
 - Size variation (10m - 500m)
 - Ore-specific textures:
-  - Veldspar: Brown/orange
-  - Scordite: Gray metallic
-  - Pyroxeres: Red-brown
-  - Plagioclase: Green-gray
+  - Ferrite: Brown/orange
+  - Galvite: Gray metallic
+  - Cryolite: Red-brown
+  - Silvane: Green-gray
   - etc.
 
 ## Research References
@@ -187,7 +187,7 @@ t_align = -ln(0.25) * agility / 1000000
 - Faction-specific architecture
 - Orbital placement rules
 - Upwell structure system
-- Interior zones (capsuleer vs general population)
+- Interior zones (voidrunner vs general population)
 
 **Asteroid Belts**:
 - EVE University Wiki: [Asteroids and Ore](https://wiki.eveuniversity.org/Asteroids_and_Ore)

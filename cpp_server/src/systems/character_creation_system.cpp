@@ -135,7 +135,7 @@ bool CharacterCreationSystem::setCloneGrade(const std::string& entity_id,
     auto* sheet = entity->getComponent<components::CharacterSheet>();
     if (!sheet) return false;
 
-    if (grade != "alpha" && grade != "omega") return false;
+    if (grade != "foundry" && grade != "apex") return false;
 
     sheet->clone_grade = grade;
     return true;

@@ -51,7 +51,7 @@
 
 ## Component Specifications
 
-### 1. Neocom (Main Menu Bar)
+### 1. Nexcom (Main Menu Bar)
 
 **Position**: Top-left corner, vertical orientation  
 **Width**: 56px (collapsed), 200px (expanded)  
@@ -268,7 +268,7 @@
 
 ---
 
-### 8. D-Scan Window
+### 8. Proxscan Window
 
 **Position**: Movable, default right side  
 **Size**: 350x500px
@@ -351,7 +351,7 @@
 - 3840x2160: 150%
 
 **Anchoring**:
-- **Neocom**: Top-left, full height
+- **Nexcom**: Top-left, full height
 - **HUD**: Bottom-center, fixed position
 - **Overview**: Top-right, resizable
 - **Target List**: Top-center, horizontal

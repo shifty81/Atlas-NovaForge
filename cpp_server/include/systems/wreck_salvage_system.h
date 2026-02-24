@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_WRECK_SALVAGE_SYSTEM_H
-#define EVE_SYSTEMS_WRECK_SALVAGE_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_WRECK_SALVAGE_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_WRECK_SALVAGE_SYSTEM_H
 
 #include "ecs/system.h"
 #include <string>
@@ -15,7 +15,7 @@ namespace systems {
  * ship's LootTable (if any) and has a configurable lifetime before
  * despawning.
  *
- * Players can salvage wrecks to collect items and ISK.  Salvage
+ * Players can salvage wrecks to collect items and Credits.  Salvage
  * requires proximity (within salvage range) and takes one cycle.
  */
 class WreckSalvageSystem : public ecs::System {
@@ -57,4 +57,4 @@ public:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_WRECK_SALVAGE_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_WRECK_SALVAGE_SYSTEM_H

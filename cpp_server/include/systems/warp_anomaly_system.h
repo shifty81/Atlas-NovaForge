@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_WARP_ANOMALY_SYSTEM_H
-#define EVE_SYSTEMS_WARP_ANOMALY_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_WARP_ANOMALY_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_WARP_ANOMALY_SYSTEM_H
 
 #include "ecs/system.h"
 #include <string>
@@ -37,4 +37,4 @@ private:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_WARP_ANOMALY_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_WARP_ANOMALY_SYSTEM_H

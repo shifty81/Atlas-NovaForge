@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_MANAGER_H
-#define EVE_PCG_MANAGER_H
+#ifndef NOVAFORGE_PCG_MANAGER_H
+#define NOVAFORGE_PCG_MANAGER_H
 
 #include "pcg_context.h"
 #include "hash_utils.h"
@@ -61,4 +61,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_MANAGER_H
+#endif // NOVAFORGE_PCG_MANAGER_H

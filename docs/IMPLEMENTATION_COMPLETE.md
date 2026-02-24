@@ -92,14 +92,14 @@ EVE Online Features Implemented:
 Features:
 - Buy and sell market orders
 - Instant buy/sell transactions
-- ISK wallet management
+- Credits wallet management
 - Market order book (sorted by price)
 - Transaction history
 - Broker fees (3%) and sales tax (2%)
 - NPC base prices
 
 Components:
-- `Wallet` - ISK currency storage
+- `Wallet` - Credits currency storage
 - `MarketAccess` - Location and active orders
 - `MarketOrder` - Individual buy/sell orders
 
@@ -122,7 +122,7 @@ Features:
 - Scanner probe formation and positioning
 - Scan strength based on probe coverage
 - Site completion with rewards
-- Directional scanner (D-Scan)
+- Directional scanner (Proxscan)
 
 Components:
 - `ProbeScanner` - Scanner probes and capability
@@ -148,7 +148,7 @@ Features:
 - Loot containers (wrecks, cargo cans)
 - Weighted loot tables
 - Guaranteed + random loot
-- ISK drops
+- Credits drops
 - Wreck salvaging
 - Container despawning
 
@@ -224,7 +224,7 @@ EVE Online Features Implemented:
 - 6 signature templates
 - Loot tables
 - NPC spawns
-- ISK rewards
+- Credits rewards
 
 ---
 
@@ -277,7 +277,7 @@ Phase 3 (This PR):
 - ✅ Manufacturing
 - ✅ Blueprint research (ME/TE)
 - ✅ Market orders
-- ✅ ISK economy
+- ✅ Credits economy
 - ✅ Exploration scanning
 - ✅ Cosmic signatures
 - ✅ Loot drops

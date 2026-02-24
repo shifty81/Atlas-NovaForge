@@ -246,14 +246,14 @@ void test_market_panel_set_data() {
     mkt.activeTab = 1;
 
     AtlasHUD::MarketOrder sell;
-    sell.itemName = "Tritanium";
+    sell.itemName = "Stellium";
     sell.price = 4.50f;
     sell.quantity = 10000;
     sell.location = "Jita IV-4";
     mkt.sellOrders.push_back(sell);
 
     AtlasHUD::MarketOrder buy;
-    buy.itemName = "Tritanium";
+    buy.itemName = "Stellium";
     buy.price = 4.20f;
     buy.quantity = 50000;
     buy.location = "Jita IV-4";
@@ -264,7 +264,7 @@ void test_market_panel_set_data() {
     const auto& d = hud.getMarketData();
     assert(d.activeTab == 1);
     assert(d.sellOrders.size() == 1);
-    assert(d.sellOrders[0].itemName == "Tritanium");
+    assert(d.sellOrders[0].itemName == "Stellium");
     assert(d.sellOrders[0].price == 4.50f);
     assert(d.sellOrders[0].quantity == 10000);
     assert(d.buyOrders.size() == 1);
@@ -310,7 +310,7 @@ void test_fleet_panel_set_data() {
 
     AtlasHUD::FleetData fleet;
     fleet.inFleet = true;
-    fleet.fleetName = "Mining Ops Alpha";
+    fleet.fleetName = "Mining Ops Foundry";
     fleet.memberCount = 3;
 
     AtlasHUD::FleetMember m1;
@@ -323,7 +323,7 @@ void test_fleet_panel_set_data() {
     fleet.members.push_back(m1);
 
     AtlasHUD::FleetMember m2;
-    m2.name = "Wingman Alpha";
+    m2.name = "Wingman Foundry";
     m2.shipType = "Vexor";
     m2.isCommander = false;
     m2.shieldPct = 0.6f;
@@ -342,7 +342,7 @@ void test_fleet_panel_set_data() {
 
     const auto& d = hud.getFleetData();
     assert(d.inFleet == true);
-    assert(d.fleetName == "Mining Ops Alpha");
+    assert(d.fleetName == "Mining Ops Foundry");
     assert(d.memberCount == 3);
     assert(d.members.size() == 3);
     assert(d.members[0].name == "Commander Shepard");
@@ -381,9 +381,9 @@ void test_existing_panel_toggles() {
     hud.toggleMission();
     assert(hud.isMissionOpen());
 
-    assert(!hud.isDScanOpen());
-    hud.toggleDScan();
-    assert(hud.isDScanOpen());
+    assert(!hud.isProxscanOpen());
+    hud.toggleProxscan();
+    assert(hud.isProxscanOpen());
 
     assert(!hud.isChatOpen());
     hud.toggleChat();

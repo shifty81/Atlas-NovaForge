@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_TARGETING_SYSTEM_H
-#define EVE_SYSTEMS_TARGETING_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_TARGETING_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_TARGETING_SYSTEM_H
 
 #include "ecs/system.h"
 #include "ecs/entity.h"
@@ -11,7 +11,7 @@ namespace systems {
 /**
  * @brief Handles target locking mechanics
  * 
- * Implements EVE Online's target locking system where targets must be
+ * Implements Astralis's target locking system where targets must be
  * locked before they can be attacked. Lock time depends on scan resolution.
  */
 class TargetingSystem : public ecs::System {
@@ -49,4 +49,4 @@ public:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_TARGETING_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_TARGETING_SYSTEM_H

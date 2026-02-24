@@ -118,7 +118,7 @@ bool RmlUiManager::Initialize(GLFWwindow* window, const std::string& resourcePat
 
     std::string fontsDir = resourcePath_ + "/fonts/";
 
-    // Try to load Lato (EVE Online's UI font), then common system fallbacks
+    // Try to load Lato (Astralis's UI font), then common system fallbacks
     FontCandidate regularFonts[] = {
         {fontsDir + "Lato-Regular.ttf", true},
         {"/usr/share/fonts/truetype/lato/Lato-Regular.ttf", true},
@@ -513,7 +513,7 @@ bool RmlUiManager::LoadDocuments() {
         {"inventory",    resourcePath_ + "/rml/inventory.rml",     false},
         {"market",       resourcePath_ + "/rml/market.rml",        false},
         {"mission",      resourcePath_ + "/rml/mission.rml",       false},
-        {"dscan",        resourcePath_ + "/rml/dscan.rml",         false},
+        {"proxscan",        resourcePath_ + "/rml/proxscan.rml",         false},
         {"sidebar",      resourcePath_ + "/rml/sidebar.rml",        false},
         {"chat",         resourcePath_ + "/rml/chat.rml",          false},
         {"context_menu", resourcePath_ + "/rml/context_menu.rml",  false},
@@ -763,14 +763,14 @@ void RmlUiManager::UpdateInventoryData(
     body->SetInnerRML(rowsRml);
 }
 
-void RmlUiManager::UpdateDScanResults(
+void RmlUiManager::UpdateProxscanResults(
     const std::vector<std::string>& names,
     const std::vector<std::string>& types,
     const std::vector<float>& distances)
 {
     if (!initialized_ || !context_) return;
 
-    auto it = documents_.find("dscan");
+    auto it = documents_.find("proxscan");
     if (it == documents_.end() || !it->second) return;
 
     // Update results count
@@ -783,7 +783,7 @@ void RmlUiManager::UpdateDScanResults(
     }
 
     // Update results table
-    auto* body = it->second->GetElementById("dscan-body");
+    auto* body = it->second->GetElementById("proxscan-body");
     if (!body) return;
 
     std::string rowsRml;
@@ -1027,7 +1027,7 @@ void RmlUiManager::UpdateMarketData(
         std::string rowsRml;
         for (const auto& o : orders) {
             char priceStr[32];
-            std::snprintf(priceStr, sizeof(priceStr), "%.2f ISK", o.price);
+            std::snprintf(priceStr, sizeof(priceStr), "%.2f Credits", o.price);
             char qtyStr[16];
             std::snprintf(qtyStr, sizeof(qtyStr), "%d", o.quantity);
 
@@ -1127,14 +1127,14 @@ void RmlUiManager::UpdateMissionDetail(const MissionRmlInfo& mission) {
     // Rewards
     detailRml += "<div class=\"section-label\">Rewards</div>";
     char buf[64];
-    std::snprintf(buf, sizeof(buf), "%.0f ISK", mission.iskReward);
-    detailRml += "<div class=\"reward-row\"><span class=\"reward-label\">ISK Reward:</span>"
-                 "<span class=\"reward-value reward-isk\">" + std::string(buf) + "</span></div>";
+    std::snprintf(buf, sizeof(buf), "%.0f Credits", mission.iskReward);
+    detailRml += "<div class=\"reward-row\"><span class=\"reward-label\">Credits Reward:</span>"
+                 "<span class=\"reward-value reward-credits\">" + std::string(buf) + "</span></div>";
 
     if (mission.bonusIsk > 0.0f) {
-        std::snprintf(buf, sizeof(buf), "%.0f ISK", mission.bonusIsk);
-        detailRml += "<div class=\"reward-row\"><span class=\"reward-label\">Bonus ISK:</span>"
-                     "<span class=\"reward-value reward-isk\">" + std::string(buf) + "</span></div>";
+        std::snprintf(buf, sizeof(buf), "%.0f Credits", mission.bonusIsk);
+        detailRml += "<div class=\"reward-row\"><span class=\"reward-label\">Bonus Credits:</span>"
+                     "<span class=\"reward-value reward-credits\">" + std::string(buf) + "</span></div>";
     }
 
     if (!mission.standingReward.empty()) {
@@ -1356,7 +1356,7 @@ void RmlUiManager::UpdateStationServices(const StationServiceInfo& info) {
     auto* repairRate = doc->GetElementById("repair-rate");
     if (repairRate) {
         char buf[32];
-        snprintf(buf, sizeof(buf), "%.1f ISK/HP", info.repairCostPerHp);
+        snprintf(buf, sizeof(buf), "%.1f Credits/HP", info.repairCostPerHp);
         repairRate->SetInnerRML(buf);
     }
 
@@ -1400,7 +1400,7 @@ void RmlUiManager::UpdateStationServices(const StationServiceInfo& info) {
     auto* costText = doc->GetElementById("repair-cost");
     if (costText) {
         char buf[64];
-        snprintf(buf, sizeof(buf), "%.0f ISK", repairCost);
+        snprintf(buf, sizeof(buf), "%.0f Credits", repairCost);
         costText->SetInnerRML(buf);
     }
 
@@ -1494,7 +1494,7 @@ void RmlUiManager::AddCombatLogMessage(const std::string&) {}
 void RmlUiManager::UpdateInventoryData(
     const std::vector<std::string>&, const std::vector<std::string>&,
     const std::vector<int>&, const std::vector<float>&, float, float) {}
-void RmlUiManager::UpdateDScanResults(
+void RmlUiManager::UpdateProxscanResults(
     const std::vector<std::string>&, const std::vector<std::string>&,
     const std::vector<float>&) {}
 void RmlUiManager::UpdateDroneBayData(

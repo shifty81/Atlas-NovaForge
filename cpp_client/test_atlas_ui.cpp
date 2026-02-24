@@ -923,8 +923,8 @@ void testRmlUiManagerStub() {
     mgr.UpdateInventoryData({}, {}, {}, {}, 0.0f, 0.0f);
     assertTrue(true, "UpdateInventoryData stub callable");
 
-    mgr.UpdateDScanResults({}, {}, {});
-    assertTrue(true, "UpdateDScanResults stub callable");
+    mgr.UpdateProxscanResults({}, {}, {});
+    assertTrue(true, "UpdateProxscanResults stub callable");
 
     mgr.UpdateDroneBayData({}, {}, 0, 0, 0.0f, 0.0f);
     assertTrue(true, "UpdateDroneBayData stub callable");
@@ -1298,9 +1298,9 @@ void testSidebarCallback() {
     hud.toggleMission();
     assertTrue(hud.isMissionOpen(), "Mission open after toggle");
 
-    assertTrue(!hud.isDScanOpen(), "DScan starts closed");
-    hud.toggleDScan();
-    assertTrue(hud.isDScanOpen(), "DScan open after toggle");
+    assertTrue(!hud.isProxscanOpen(), "Proxscan starts closed");
+    hud.toggleProxscan();
+    assertTrue(hud.isProxscanOpen(), "Proxscan open after toggle");
 
     assertTrue(!hud.isChatOpen(), "Chat starts closed");
     hud.toggleChat();
@@ -1492,7 +1492,7 @@ void testTabBar() {
         input.windowH = 720;
         input.mousePos = {500.0f, 500.0f}; // away from tabs
         ctx.beginFrame(input);
-        std::vector<std::string> tabs = {"Alpha", "Beta", "Gamma"};
+        std::vector<std::string> tabs = {"Foundry", "Beta", "Gamma"};
         int clicked = atlas::tabBar(ctx, {10.0f, 10.0f, 300.0f, 24.0f}, tabs, 0);
         assertTrue(clicked == -1, "tabBar: no click returns -1");
         ctx.endFrame();
@@ -1507,7 +1507,7 @@ void testTabBar() {
         input.mouseDown[0] = true;
         input.mouseClicked[0] = true;
         ctx.beginFrame(input);
-        std::vector<std::string> tabs = {"Alpha", "Beta", "Gamma"};
+        std::vector<std::string> tabs = {"Foundry", "Beta", "Gamma"};
         atlas::tabBar(ctx, {10.0f, 10.0f, 300.0f, 24.0f}, tabs, 1);
         ctx.endFrame();
     }
@@ -1518,7 +1518,7 @@ void testTabBar() {
         input.mousePos = {30.0f, 18.0f};
         input.mouseReleased[0] = true;
         ctx.beginFrame(input);
-        std::vector<std::string> tabs = {"Alpha", "Beta", "Gamma"};
+        std::vector<std::string> tabs = {"Foundry", "Beta", "Gamma"};
         int clicked = atlas::tabBar(ctx, {10.0f, 10.0f, 300.0f, 24.0f}, tabs, 1);
         assertTrue(clicked == 0, "tabBar: click on first tab returns 0");
         ctx.endFrame();
@@ -2002,45 +2002,45 @@ void testKeyboardModuleActivation() {
     ctx.shutdown();
 }
 
-// ─── D-Scan data test ───────────────────────────────────────────────────
+// ─── Proxscan data test ───────────────────────────────────────────────────
 
-void testDScanData() {
-    std::cout << "\n=== D-Scan Data ===" << std::endl;
+void testProxscanData() {
+    std::cout << "\n=== Proxscan Data ===" << std::endl;
 
     atlas::AtlasHUD hud;
     hud.init(1920, 1080);
 
     // Default values
-    assertClose(hud.getDScanAngle(), 360.0f, "D-Scan angle defaults to 360");
-    assertClose(hud.getDScanRange(), 14.3f, "D-Scan range defaults to 14.3 AU");
-    assertTrue(hud.getDScanResults().empty(), "D-Scan results start empty");
+    assertClose(hud.getProxscanAngle(), 360.0f, "Proxscan angle defaults to 360");
+    assertClose(hud.getProxscanRange(), 14.3f, "Proxscan range defaults to 14.3 AU");
+    assertTrue(hud.getProxscanResults().empty(), "Proxscan results start empty");
 
     // Set custom values
-    hud.setDScanAngle(90.0f);
-    hud.setDScanRange(5.0f);
-    assertClose(hud.getDScanAngle(), 90.0f, "D-Scan angle set to 90");
-    assertClose(hud.getDScanRange(), 5.0f, "D-Scan range set to 5.0 AU");
+    hud.setProxscanAngle(90.0f);
+    hud.setProxscanRange(5.0f);
+    assertClose(hud.getProxscanAngle(), 90.0f, "Proxscan angle set to 90");
+    assertClose(hud.getProxscanRange(), 5.0f, "Proxscan range set to 5.0 AU");
 
     // Add results
-    std::vector<atlas::AtlasHUD::DScanEntry> results;
+    std::vector<atlas::AtlasHUD::ProxscanEntry> results;
     results.push_back({"Rifter", "Frigate", 2.3f});
     results.push_back({"Stargate", "Structure", 8.1f});
-    hud.setDScanResults(results);
-    assertTrue(hud.getDScanResults().size() == 2, "D-Scan has 2 results");
-    assertTrue(hud.getDScanResults()[0].name == "Rifter", "Result 0 name is Rifter");
-    assertTrue(hud.getDScanResults()[1].type == "Structure", "Result 1 type is Structure");
-    assertClose(hud.getDScanResults()[1].distance, 8.1f, "Result 1 distance is 8.1 AU");
+    hud.setProxscanResults(results);
+    assertTrue(hud.getProxscanResults().size() == 2, "Proxscan has 2 results");
+    assertTrue(hud.getProxscanResults()[0].name == "Rifter", "Result 0 name is Rifter");
+    assertTrue(hud.getProxscanResults()[1].type == "Structure", "Result 1 type is Structure");
+    assertClose(hud.getProxscanResults()[1].distance, 8.1f, "Result 1 distance is 8.1 AU");
 
-    // D-Scan callback
+    // Proxscan callback
     bool scanFired = false;
-    hud.setDScanCallback([&]() { scanFired = true; });
-    assertTrue(!scanFired, "D-Scan callback not fired before trigger");
+    hud.setProxscanCallback([&]() { scanFired = true; });
+    assertTrue(!scanFired, "Proxscan callback not fired before trigger");
 }
 
-// ─── D-Scan panel rendering test ────────────────────────────────────────
+// ─── Proxscan panel rendering test ────────────────────────────────────────
 
-void testDScanPanelRendering() {
-    std::cout << "\n=== D-Scan Panel Rendering ===" << std::endl;
+void testProxscanPanelRendering() {
+    std::cout << "\n=== Proxscan Panel Rendering ===" << std::endl;
 
     atlas::AtlasContext ctx;
     ctx.init();
@@ -2048,13 +2048,13 @@ void testDScanPanelRendering() {
     atlas::AtlasHUD hud;
     hud.init(1920, 1080);
 
-    // Set up D-Scan data
-    hud.setDScanAngle(180.0f);
-    hud.setDScanRange(7.5f);
-    std::vector<atlas::AtlasHUD::DScanEntry> results;
-    results.push_back({"Veldspar", "Asteroid", 0.5f});
-    hud.setDScanResults(results);
-    hud.toggleDScan();
+    // Set up Proxscan data
+    hud.setProxscanAngle(180.0f);
+    hud.setProxscanRange(7.5f);
+    std::vector<atlas::AtlasHUD::ProxscanEntry> results;
+    results.push_back({"Ferrite", "Asteroid", 0.5f});
+    hud.setProxscanResults(results);
+    hud.toggleProxscan();
 
     atlas::ShipHUDData ship;
     std::vector<atlas::TargetCardInfo> targets;
@@ -2067,7 +2067,7 @@ void testDScanPanelRendering() {
     ctx.beginFrame(input);
     hud.update(ctx, ship, targets, overview, selectedItem);
     ctx.endFrame();
-    assertTrue(true, "D-Scan panel with results renders without crash");
+    assertTrue(true, "Proxscan panel with results renders without crash");
 
     ctx.shutdown();
 }
@@ -2103,7 +2103,7 @@ void testMissionData() {
     assertTrue(hud.getMissionInfo().type == "combat", "Mission type correct");
     assertTrue(hud.getMissionInfo().agentName == "Agent Karde", "Agent name correct");
     assertTrue(hud.getMissionInfo().level == 3, "Mission level correct");
-    assertClose(hud.getMissionInfo().iskReward, 500000.0f, "ISK reward correct");
+    assertClose(hud.getMissionInfo().iskReward, 500000.0f, "Credits reward correct");
     assertClose(hud.getMissionInfo().lpReward, 350.0f, "LP reward correct");
     assertTrue(hud.getMissionInfo().objectives.size() == 2, "2 objectives");
     assertTrue(!hud.getMissionInfo().objectives[0].completed, "Objective 0 incomplete");
@@ -2216,7 +2216,7 @@ void testProbeScannerRendering() {
 
     hud.toggleProbeScanner();
     std::vector<atlas::AtlasHUD::ProbeScanEntry> results;
-    results.push_back({"AAA-111", "Site Alpha", "Cosmic Signature", "Data Site", 85.0f, 2.0f});
+    results.push_back({"AAA-111", "Site Foundry", "Cosmic Signature", "Data Site", 85.0f, 2.0f});
     results.push_back({"BBB-222", "Unknown", "Cosmic Signature", "???", 10.0f, 7.8f});
     hud.setProbeScanResults(results);
 
@@ -2656,7 +2656,7 @@ void testOverviewMultipleTabs() {
     atlas::AtlasHUD hud;
     hud.init(1280, 720);
 
-    // Default tabs: Travel, Combat, Industry (PvE-focused, EVE-style)
+    // Default tabs: Travel, Combat, Industry (PvE-focused, Astralis-style)
     const auto& tabs = hud.getOverviewTabs();
     assertTrue(tabs.size() == 3, "Default 3 overview tabs");
     assertTrue(tabs[0] == "Travel", "First tab is Travel");
@@ -2741,7 +2741,7 @@ void testOverviewColumnSorting() {
     atlas::ShipHUDData ship;
     std::vector<atlas::TargetCardInfo> targets;
     std::vector<atlas::OverviewEntry> overview;
-    overview.push_back({"npc_1", "Alpha", "Frigate", 5000.0f, 100.0f, {}, false});
+    overview.push_back({"npc_1", "Foundry", "Frigate", 5000.0f, 100.0f, {}, false});
     overview.push_back({"npc_2", "Bravo", "Cruiser", 2000.0f, 200.0f, {}, false});
     overview.push_back({"npc_3", "Charlie", "Battleship", 8000.0f, 50.0f, {}, false});
 
@@ -3306,8 +3306,8 @@ int main() {
     testKeyConstants();
     testInputStateKeyboard();
     testKeyboardModuleActivation();
-    testDScanData();
-    testDScanPanelRendering();
+    testProxscanData();
+    testProxscanPanelRendering();
     testMissionData();
     testMissionPanelRendering();
     testProbeScannerData();
@@ -3327,7 +3327,7 @@ int main() {
     testContextMenuTypes();
     testOverviewBgRightClickCallback();
 
-    // EVE UI reproduction tests
+    // Astralis UI reproduction tests
     testWindowSnappingMagnetism();
     testOverviewMultipleTabs();
     testOverviewTabFiltering();

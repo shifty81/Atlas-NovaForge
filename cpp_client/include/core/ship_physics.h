@@ -8,7 +8,7 @@ namespace atlas {
 /**
  * Ship Physics System
  * 
- * Implements EVE Online-style ship movement:
+ * Implements Astralis-style ship movement:
  * - Exponential acceleration toward max velocity
  * - Mass and inertia-based agility
  * - Align time mechanics
@@ -88,7 +88,7 @@ public:
     void removePropulsionBonus();
 
     /**
-     * Warp phase enum for proper EVE-style warp (4 phases)
+     * Warp phase enum for proper Astralis-style warp (4 phases)
      */
     enum class WarpPhase {
         NONE,           // Not warping
@@ -211,7 +211,7 @@ private:
     glm::vec3 m_navTarget;
     float m_navRange;
     
-    // Warp state (EVE-style 4-phase warp)
+    // Warp state (Astralis-style 4-phase warp)
     WarpPhase m_warpPhase;
     float m_warpProgress;           // 0.0 to 1.0
     float m_warpDistanceTotal;      // Total warp distance in meters

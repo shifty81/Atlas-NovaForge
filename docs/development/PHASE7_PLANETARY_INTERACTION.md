@@ -1,4 +1,4 @@
-# Phase 7: Planetary Interaction (PI) System
+# Phase 7: Planetary Operations (PI) System
 
 **Status**: ✅ COMPLETE  
 **Date**: February 6, 2026  
@@ -8,7 +8,7 @@
 
 ## Overview
 
-The Planetary Interaction (PI) system allows players to establish colonies on planets, extract raw resources, process them into valuable materials, and export finished products. This system is based on EVE Online's PI mechanics with some simplifications for ease of use.
+The Planetary Operations (PI) system allows players to establish colonies on planets, extract raw resources, process them into valuable materials, and export finished products. This system is based on EVE Online's PI mechanics with some simplifications for ease of use.
 
 ## Features
 
@@ -85,7 +85,7 @@ High-value products for advanced manufacturing:
 - Cryoprotectant Solution, Data Chips, Gel-Matrix Biopaste
 - Guidance Systems, Hazmat Detection Systems, Hermetic Membranes
 - High-Tech Transmitters, Industrial Explosives, Livestock
-- Mechanical Parts (Advanced), Neocoms, Nuclear Reactors
+- Mechanical Parts (Advanced), Nexcoms, Nuclear Reactors
 - Planetary Vehicles, Rocket Fuel (Advanced), Smartfab Units
 - Supercomputers, Synthetic Oil*, Transcranial Microcontrollers
 - Ukomi Superconductors, Vaccines, Water-Cooled CPU
@@ -143,7 +143,7 @@ Ultra high-value products used in advanced ship/module manufacturing:
 ### Creating a Colony
 
 ```python
-from engine.systems.planetary_interaction_system import PlanetaryInteractionSystem
+from engine.systems.planetary_operations_system import PlanetaryInteractionSystem
 
 # Create PI system
 pi_system = PlanetaryInteractionSystem(world)
@@ -346,14 +346,14 @@ Contains all planetary resources and recipes:
 }
 ```
 
-Located at: `data/planetary_interaction/resources.json`
+Located at: `data/planetary_operations/resources.json`
 
 ---
 
 ## Testing
 
 ### Test Suite
-File: `test_planetary_interaction.py`
+File: `test_planetary_operations.py`
 
 **13 Test Cases:**
 1. `test_colony_creation` - Colony establishment
@@ -372,7 +372,7 @@ File: `test_planetary_interaction.py`
 
 **Run Tests:**
 ```bash
-python test_planetary_interaction.py -v
+python test_planetary_operations.py -v
 ```
 
 **Results:** 13/13 tests passing (100% pass rate)
@@ -418,7 +418,7 @@ The PI system integrates with:
 
 ## Summary
 
-The Planetary Interaction system provides a deep, engaging economic activity for players:
+The Planetary Operations system provides a deep, engaging economic activity for players:
 
 - **84 unique materials** across 5 tiers
 - **8 planet types** with varied resources

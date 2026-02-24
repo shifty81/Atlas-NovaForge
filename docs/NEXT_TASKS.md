@@ -1,6 +1,6 @@
 # Nova Forge — Next Tasks Recommendations
 
-> **Update (February 24, 2026)**: **Social & Territorial Systems**. AllianceSystem: corporation alliance management with create/join/leave/disband, executor transfers, max corp limits. SovereigntySystem: territory control with claim/relinquish/contest, military/industrial index tracking, infrastructure upgrades (0-5), time-based control level decay for contested systems. WarDeclarationSystem: war lifecycle with declare/activate/mutual/surrender/retract states, ISK cost enforcement, kill/ISK-destroyed tracking, automatic war expiry after duration. 3 new systems, 3 new components, 6 new source files, 52 new test assertions. **2995 test assertions passing**.
+> **Update (February 24, 2026)**: **Social & Territorial Systems**. AllianceSystem: corporation alliance management with create/join/leave/disband, executor transfers, max corp limits. SovereigntySystem: territory control with claim/relinquish/contest, military/industrial index tracking, infrastructure upgrades (0-5), time-based control level decay for contested systems. WarDeclarationSystem: war lifecycle with declare/activate/mutual/surrender/retract states, Credits cost enforcement, kill/Credits-destroyed tracking, automatic war expiry after duration. 3 new systems, 3 new components, 6 new source files, 52 new test assertions. **2995 test assertions passing**.
 
 > **Update (February 23, 2026)**: **Living Universe + Phase 15 CONTINUED**. AIEconomicActorSystem: NPCs as real economic participants with wallets, ship ownership (owned_ship_type + ship_value), ship destruction/replacement lifecycle, permanent death when broke. Extends SimNPCIntent wallet for economic transactions via earnISK/spendISK. TurretAISystem (Phase 15): automated turret targeting with firing arc validation (isWithinArc), tracking penalty computation (sigmoid falloff), cooldown management, damage accumulation. TurretAIState component per turret with arc_degrees, direction_deg, tracking_speed, engagement state. 2 new systems, 2 new components, 4 new source files, 55 new test assertions. **2674 test assertions passing**.
 
@@ -24,7 +24,7 @@
 
 > **Update (February 15, 2026)**: **Vertical Slice Phase 3 STARTED**. Scanner/Anomaly protocol messages added (SCAN_START, SCAN_STOP, SCAN_RESULT, ANOMALY_LIST). GameSession handlers wired to ScannerSystem and AnomalySystem. Client-side ProtocolHandler and NetworkManager updated with scanner operations and ScannerResponse callback. 19 new test assertions. **1689 test assertions passing**.
 
-> **Update (February 14, 2026)**: **Vertical Slice Phase 2 NEARLY COMPLETE**. AI Mining behavior implemented — AISystem now handles Mining state with full deposit discovery, approach, and mining lifecycle. RefiningSystem added to convert ore into refined minerals (Veldspar→Tritanium, Scordite→Tritanium+Pyerite, etc.) with efficiency and tax support. Market ore/mineral pricing validated. 35 new test assertions. **1287 test assertions passing**.
+> **Update (February 14, 2026)**: **Vertical Slice Phase 2 NEARLY COMPLETE**. AI Mining behavior implemented — AISystem now handles Mining state with full deposit discovery, approach, and mining lifecycle. RefiningSystem added to convert ore into refined minerals (Ferrite→Stellium, Galvite→Stellium+Vanthium, etc.) with efficiency and tax support. Market ore/mineral pricing validated. 35 new test assertions. **1287 test assertions passing**.
 
 > **Update (February 14, 2026)**: **Ship generation JSON data COMPLETE**. All 102 ship JSON files updated with `model_data` block containing per-ship `turret_hardpoints`, `launcher_hardpoints`, `drone_bays`, `engine_count`, and `generation_seed` for deterministic procedural variation. ShipTemplate extended with ModelData sub-struct. ShipDatabase parser reads model_data. 6 new test functions, 24 new assertions. **1139 test assertions passing**.
 
@@ -216,7 +216,7 @@ From ROADMAP.md "In Progress" section:
 - ✅ Leaderboards and achievements — LeaderboardSystem with stat tracking, rankings, achievement unlocks (23 assertions)
 - ✅ Alliance system — AllianceSystem with create/join/leave/disband, executor transfers, max corp limits (17 assertions)
 - ✅ Sovereignty system — SovereigntySystem with territory control, military/industrial indices, infrastructure upgrades (19 assertions)
-- ✅ War declarations — WarDeclarationSystem with war lifecycle, ISK costs, kill tracking, auto-expiry (16 assertions)
+- ✅ War declarations — WarDeclarationSystem with war lifecycle, Credits costs, kill tracking, auto-expiry (16 assertions)
 - In-game web browser (dotlan-style maps)
 
 #### 3.4 Community & Modding
@@ -311,7 +311,7 @@ From ROADMAP.md "In Progress" section:
 
 9. ✅ **Add Mining Missions** (COMPLETED - February 2026)
    - ✅ 10 mining missions across levels 1-4
-   - ✅ Progressive difficulty from highsec Veldspar to nullsec Mercoxit
+   - ✅ Progressive difficulty from highsec Ferrite to nullsec Mercoxit
    - ✅ NPC defense spawns in higher level missions
 
 10. ✅ **Add Leadership Skills** (COMPLETED - February 2026)
@@ -339,7 +339,7 @@ From ROADMAP.md "In Progress" section:
     - ✅ Influence mechanic with system-wide effects (cyno jamming, security penalty, bounty reduction)
     - ✅ Scaled fleet size requirements (10-pilot vanguard to 80-pilot mothership)
     - ✅ Multi-wave encounters with progressive difficulty
-    - ✅ ISK, loyalty points, CONCORD LP, and standing rewards
+    - ✅ Credits, loyalty points, AEGIS LP, and standing rewards
 
 14. ✅ **Add Mining Crystals** (COMPLETED - February 2026)
     - ✅ 30 mining crystal types (Tech I and Tech II for all 15 ore types)
@@ -423,10 +423,10 @@ From ROADMAP.md "In Progress" section:
     - ✅ 19 test assertions, 100% pass rate
 
 26. ✅ **Add C++ Server LootSystem** (COMPLETED - February 2026)
-    - ✅ LootTable component with entries and ISK bounty
+    - ✅ LootTable component with entries and Credits bounty
     - ✅ LootSystem with wreck entity creation from LootTable
     - ✅ Deterministic random loot generation (seeded RNG)
-    - ✅ Loot collection: item transfer + ISK payout to player
+    - ✅ Loot collection: item transfer + Credits payout to player
     - ✅ WorldPersistence serialization/deserialization support
     - ✅ 11 test assertions, 100% pass rate
 
@@ -451,7 +451,7 @@ From ROADMAP.md "In Progress" section:
 29. ✅ **Add C++ Server InsuranceSystem** (COMPLETED - February 2026)
     - ✅ InsurancePolicy component with tier, coverage, premium, payout, duration
     - ✅ Three tiers: Basic (50% coverage, 10% premium), Standard (70%/20%), Platinum (100%/30%)
-    - ✅ Purchase deducts premium from Player ISK
+    - ✅ Purchase deducts premium from Player Credits
     - ✅ Claim pays out and marks policy as claimed (no double claims)
     - ✅ Duration-based expiry with per-tick countdown
     - ✅ Insufficient funds check on purchase
@@ -459,7 +459,7 @@ From ROADMAP.md "In Progress" section:
 
 30. ✅ **Add C++ Server BountySystem** (COMPLETED - February 2026)
     - ✅ BountyLedger component with kill tracking and recent kills history
-    - ✅ processKill awards ISK bounty and records kill details
+    - ✅ processKill awards Credits bounty and records kill details
     - ✅ Recent kills capped at 50 entries (total kills tracked separately)
     - ✅ Auto-creates BountyLedger component on first kill
     - ✅ 14 test assertions, 100% pass rate
@@ -467,14 +467,14 @@ From ROADMAP.md "In Progress" section:
 31. ✅ **Add C++ Server MarketSystem** (COMPLETED - February 2026)
     - ✅ MarketHub component with buy/sell orders, broker fees, sales tax
     - ✅ Place sell orders with broker fee deduction
-    - ✅ Place buy orders with ISK escrow
+    - ✅ Place buy orders with Credits escrow
     - ✅ Buy from market matching lowest sell price
     - ✅ Price queries (lowest sell, highest buy)
     - ✅ Order duration expiry with cleanup
     - ✅ 11 test assertions, 100% pass rate
 
 32. ✅ **Add EVE-Style UI Theme** (COMPLETED - February 2026)
-    - ✅ Comprehensive dark theme in data/ui/eve_dark_theme.json
+    - ✅ Comprehensive dark theme in data/ui/novaforge_dark_theme.json
     - ✅ Color palette: backgrounds, text, accent, status, faction colors
     - ✅ Ship HUD colors: shield (blue), armor (yellow), hull (red), capacitor
     - ✅ Targeting colors: hostile, neutral, friendly, selected
@@ -505,7 +505,7 @@ From ROADMAP.md "In Progress" section:
     - ✅ ContractBoard component with item exchange, courier, and auction contract types
     - ✅ ContractSystem with create/accept/complete contract lifecycle
     - ✅ Duration-based contract expiry with per-tick countdown
-    - ✅ ISK reward payout on contract completion
+    - ✅ Credits reward payout on contract completion
     - ✅ Contract status tracking (outstanding, in_progress, completed, expired)
     - ✅ WorldPersistence serialization/deserialization support
     - ✅ 36 test assertions, 100% pass rate
@@ -522,7 +522,7 @@ From ROADMAP.md "In Progress" section:
     - ✅ ManufacturingFacility component with job tracking, material requirements
     - ✅ ManufacturingSystem with start/cancel jobs, multi-run support
     - ✅ Job slot limit enforcement
-    - ✅ ISK install cost deduction from player wallet
+    - ✅ Credits install cost deduction from player wallet
     - ✅ Per-tick time countdown with run completion tracking
     - ✅ 21 test assertions, 100% pass rate
 
@@ -531,7 +531,7 @@ From ROADMAP.md "In Progress" section:
     - ✅ ResearchSystem with ME research, TE research, and T2 invention
     - ✅ Deterministic RNG for invention success/failure
     - ✅ Job slot limit enforcement
-    - ✅ ISK install cost deduction from player wallet
+    - ✅ Credits install cost deduction from player wallet
     - ✅ Datacore tracking for invention jobs
     - ✅ 18 test assertions, 100% pass rate
 
@@ -567,7 +567,7 @@ From ROADMAP.md "In Progress" section:
 
 42. ✅ **Add C++ Server LeaderboardSystem** (COMPLETED - February 2026)
     - ✅ Leaderboard component with player entries, achievements, and unlock tracking
-    - ✅ LeaderboardSystem with kill/ISK/mission/tournament/damage stat recording
+    - ✅ LeaderboardSystem with kill/Credits/mission/tournament/damage stat recording
     - ✅ Achievement definition with category, stat_key, and requirement threshold
     - ✅ Achievement unlock checking with duplicate prevention
     - ✅ Player ranking by kills (sortable leaderboard)
@@ -581,7 +581,7 @@ From ROADMAP.md "In Progress" section:
     - ✅ createStation with position, docking range, repair cost
     - ✅ dockAtStation with proximity range check and velocity zeroing
     - ✅ undockFromStation with docked count tracking
-    - ✅ repairShip restores shield/armor/hull for ISK cost
+    - ✅ repairShip restores shield/armor/hull for Credits cost
     - ✅ Double-dock prevention and not-docked repair rejection
     - ✅ 29 test assertions, 100% pass rate
 

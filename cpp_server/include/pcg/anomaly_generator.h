@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_ANOMALY_GENERATOR_H
-#define EVE_PCG_ANOMALY_GENERATOR_H
+#ifndef NOVAFORGE_PCG_ANOMALY_GENERATOR_H
+#define NOVAFORGE_PCG_ANOMALY_GENERATOR_H
 
 #include "pcg_context.h"
 #include "deterministic_rng.h"
@@ -33,7 +33,7 @@ struct AnomalyNode {
     int   nodeId;
     float posX, posY, posZ;
     int   contentType;   ///< 0=hostile, 1=container, 2=cloud, 3=debris.
-    float value;         ///< Estimated ISK value.
+    float value;         ///< Estimated Credits value.
 };
 
 // ── Full generated anomaly site ─────────────────────────────────────
@@ -91,4 +91,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_ANOMALY_GENERATOR_H
+#endif // NOVAFORGE_PCG_ANOMALY_GENERATOR_H

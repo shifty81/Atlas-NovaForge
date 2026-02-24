@@ -1,7 +1,7 @@
 """
 Bookmark System
 Allows players to save locations in space for quick navigation.
-Based on EVE Online's bookmark mechanic where players can bookmark
+Based on Astralis's bookmark mechanic where players can bookmark
 any location, station, or celestial for future reference.
 """
 

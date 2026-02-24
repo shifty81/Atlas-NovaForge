@@ -158,10 +158,10 @@ double StationSystem::repairShip(const std::string& entity_id) {
 
     // Check if player can afford
     auto* player = entity->getComponent<components::Player>();
-    if (player && player->isk < cost) return 0.0; // can't afford
+    if (player && player->credits < cost) return 0.0; // can't afford
 
-    // Deduct ISK
-    if (player) player->isk -= cost;
+    // Deduct Credits
+    if (player) player->credits -= cost;
 
     // Repair to full
     hp->shield_hp = hp->shield_max;

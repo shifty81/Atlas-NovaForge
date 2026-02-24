@@ -299,14 +299,14 @@ void LayoutManager::CreateDefaultPresets(int windowW, int windowH) {
         panels["fitting"]       = pl("fitting",       420,     300, 400, 450, false);
         panels["mission"]       = pl("mission",       50,      50,  400, 350, false);
         panels["market"]        = pl("market",        420,     50,  450, 500, false);
-        panels["dscan"]         = pl("dscan",         W - 360, 460, 350, 300, false);
+        panels["proxscan"]         = pl("proxscan",         W - 360, 460, 350, 300, false);
         panels["chat"]          = pl("chat",          60,      420, 380, 300, false);
         panels["drones"]        = pl("drones",        60,      300, 320, 400, false);
         panels["probe_scanner"] = pl("probe_scanner", 420,     50,  400, 350, false);
         SaveLayout("default", panels);
     }
 
-    // ---- Combat layout — overview + dscan visible, compact ----
+    // ---- Combat layout — overview + proxscan visible, compact ----
     {
         std::unordered_map<std::string, PanelLayout> panels;
         panels["overview"]      = pl("overview",      W - 340, 40,  330, 360, true,  0.85f);
@@ -314,7 +314,7 @@ void LayoutManager::CreateDefaultPresets(int windowW, int windowH) {
         panels["fitting"]       = pl("fitting",       420,     300, 400, 450, false);
         panels["mission"]       = pl("mission",       50,      50,  400, 350, false);
         panels["market"]        = pl("market",        420,     50,  450, 500, false);
-        panels["dscan"]         = pl("dscan",         W - 340, 410, 330, 250, true,  0.80f);
+        panels["proxscan"]         = pl("proxscan",         W - 340, 410, 330, 250, true,  0.80f);
         panels["chat"]          = pl("chat",          60,      H - 220, 350, 200, true, 0.70f);
         panels["drones"]        = pl("drones",        60,      300, 280, 350, true,  0.80f);
         panels["probe_scanner"] = pl("probe_scanner", 420,     50,  400, 350, false);
@@ -329,7 +329,7 @@ void LayoutManager::CreateDefaultPresets(int windowW, int windowH) {
         panels["fitting"]       = pl("fitting",       420,     300, 400, 450, false);
         panels["mission"]       = pl("mission",       50,      50,  400, 350, false);
         panels["market"]        = pl("market",        420,     50,  450, 500, false);
-        panels["dscan"]         = pl("dscan",         W - 360, 460, 350, 300, false);
+        panels["proxscan"]         = pl("proxscan",         W - 360, 460, 350, 300, false);
         panels["chat"]          = pl("chat",          60,      520, 380, 200, true, 0.75f);
         panels["drones"]        = pl("drones",        50,      510, 320, 200, true, 0.85f);
         panels["probe_scanner"] = pl("probe_scanner", 420,     50,  400, 350, false);

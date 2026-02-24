@@ -4,7 +4,7 @@
  * @file atlas_types.h
  * @brief Core types for the Atlas UI system
  *
- * Atlas UI is a custom EVE-style UI framework for EVEOFFLINE.
+ * Atlas UI is a custom Astralis-style UI framework for NovaForge.
  * It renders translucent dark panels with teal accent highlights using
  * raw OpenGL for in-game HUD and panel rendering.
  */
@@ -60,7 +60,7 @@ struct Color {
 
 // ── Photon Motion Timing Constants ───────────────────────────────
 //
-// EVE Photon UI principle: nothing snaps instantly. All transitions
+// Astralis Photon UI principle: nothing snaps instantly. All transitions
 // use these locked timings so the UI feels calm and predictable.
 // Widgets MUST use these values — never invent custom durations.
 
@@ -80,7 +80,7 @@ namespace MotionTiming {
     constexpr float RowSelect      = 0.12f;   // list row selection
 }
 
-// ── Atlas Theme (Photon Dark — EVE Online palette) ──────────────
+// ── Atlas Theme (Photon Dark — Astralis palette) ──────────────
 //
 // Based on the Photon UI design principles:
 //   - Dark sci-fi panels with translucent overlays
@@ -134,7 +134,7 @@ struct Theme {
     Color danger  {0.86f, 0.26f, 0.26f, 1.0f};
 
     // Panel metrics (Photon: sharp edges, tight spacing, thin frames)
-    float panelCornerRadius  = 0.0f;     // sharp corners (EVE-style)
+    float panelCornerRadius  = 0.0f;     // sharp corners (Astralis-style)
     float borderWidth        = 1.0f;     // thin frame edges
     float headerHeight       = 22.0f;    // compact Photon headers
     float scrollbarWidth     = 6.0f;
@@ -165,7 +165,7 @@ namespace Key {
     constexpr int F10 = 299;
     constexpr int F11 = 300;
     constexpr int F12 = 301;
-    constexpr int V   = 86;   // D-Scan shortcut
+    constexpr int V   = 86;   // Proxscan shortcut
     constexpr int LeftControl = 341;  // GLFW_KEY_LEFT_CONTROL
 }
 

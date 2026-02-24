@@ -11,7 +11,7 @@
 #include <memory>
 #include <vector>
 
-namespace EVE {
+namespace novaforge {
 
 /**
  * Audio buffer resource - loaded audio data
@@ -145,7 +145,7 @@ private:
                       ALenum& format, ALsizei& frequency);
 };
 
-} // namespace EVE
+} // namespace novaforge
 
 #endif // USE_OPENAL
 

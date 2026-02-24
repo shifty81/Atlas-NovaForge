@@ -309,7 +309,7 @@ std::string WorldPersistence::serializeEntity(
         json << ",\"player\":{"
              << "\"player_id\":\"" << escapeJson(player->player_id) << "\""
              << ",\"character_name\":\"" << escapeJson(player->character_name) << "\""
-             << ",\"isk\":" << player->isk
+             << ",\"credits\":" << player->credits
              << ",\"corporation\":\"" << escapeJson(player->corporation) << "\""
              << "}";
     }
@@ -1059,7 +1059,7 @@ bool WorldPersistence::deserializeEntity(ecs::World* world,
         auto player = std::make_unique<components::Player>();
         player->player_id      = extractString(player_json, "player_id");
         player->character_name = extractString(player_json, "character_name");
-        player->isk            = extractDouble(player_json, "\"isk\":", 1000000.0);
+        player->credits            = extractDouble(player_json, "\"credits\":", 1000000.0);
         player->corporation    = extractString(player_json, "corporation");
         entity->addComponent(std::move(player));
     }
@@ -1677,7 +1677,7 @@ bool WorldPersistence::deserializeEntity(ecs::World* world,
     if (!md_json.empty()) {
         auto md = std::make_unique<components::MineralDeposit>();
         md->mineral_type       = extractString(md_json, "mineral_type");
-        if (md->mineral_type.empty()) md->mineral_type = "Veldspar";
+        if (md->mineral_type.empty()) md->mineral_type = "Ferrite";
         md->quantity_remaining = extractFloat(md_json, "\"quantity_remaining\":", 10000.0f);
         md->max_quantity       = extractFloat(md_json, "\"max_quantity\":", 10000.0f);
         md->yield_rate         = extractFloat(md_json, "\"yield_rate\":", 1.0f);

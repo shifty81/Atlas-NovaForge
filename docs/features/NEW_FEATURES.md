@@ -93,7 +93,7 @@ bonus = skill_sys.get_skill_bonus(character, 'Gunnery', 'damage')
 - Mission acceptance from agents
 - Objective tracking (kill, reach location, courier)
 - Automatic objective completion detection
-- Reward distribution (ISK, Loyalty Points)
+- Reward distribution (Credits, Loyalty Points)
 - Mission status management (active, completed, failed)
 - Mission abandonment
 
@@ -241,7 +241,7 @@ The `EWAREffect` component is in place and ready for active EWAR module implemen
 4. **Accept Missions**
    - Take missions from agents
    - Track objectives
-   - Complete for ISK rewards
+   - Complete for Credits rewards
 
 5. **Navigate Space**
    - Warp across solar systems
@@ -283,7 +283,7 @@ The `EWAREffect` component is in place and ready for active EWAR module implemen
    - Market system
    - Loot drops
    - Item trading
-   - ISK transactions
+   - Credits transactions
 
 5. **Fleet Mechanics**
    - Fleet formation

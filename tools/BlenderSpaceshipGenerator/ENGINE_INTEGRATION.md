@@ -1,4 +1,4 @@
-# EVEOFFLINE / Atlas Engine Integration Reference
+# NOVAFORGE / Atlas Engine Integration Reference
 
 > **Audience:** Engine developers implementing the ship, station, and brick
 > systems in C++.  This document is the single source of truth for every data
@@ -33,7 +33,7 @@
 ## 1. Overview & Purpose
 
 The BlenderSpaceshipGenerator produces game-ready 3D assets for the
-EVEOFFLINE project.  It is both a Blender add-on (procedural generation at
+NOVAFORGE project.  It is both a Blender add-on (procedural generation at
 author time) and a specification for the Atlas game engine (runtime systems).
 The key principle is:
 
@@ -111,7 +111,7 @@ the hull object.
   "style": "SOLARI",
 
   // Naming prefix applied to all Blender objects during generation.
-  "naming_prefix": "EVEOFFLINE",
+  "naming_prefix": "NOVAFORGE",
 
   // Grid size in metres used for brick snapping (derived from ship class).
   "grid_size": 2.0,
@@ -762,15 +762,15 @@ Each export produces:
 
 ### Naming Convention
 
-The OBJ file name must match the ship `id` from EVEOFFLINE JSON for the
+The OBJ file name must match the ship `id` from NOVAFORGE JSON for the
 Atlas engine to find it:
 
 ```
-EVEOFFLINE/data/ships/obj_models/{ship_id}.obj
-EVEOFFLINE/data/ships/obj_models/{ship_id}.mtl
+NOVAFORGE/data/ships/obj_models/{ship_id}.obj
+NOVAFORGE/data/ships/obj_models/{ship_id}.mtl
 ```
 
-### EVEOFFLINE JSON → Generator Mapping
+### NOVAFORGE JSON → Generator Mapping
 
 | JSON Field                          | Generator Param   |
 |------------------------------------|-------------------|
@@ -826,10 +826,10 @@ float getHullWeight(BrickType type) {
 
 ## 18. Data File Conventions
 
-### EVEOFFLINE Directory Structure
+### NOVAFORGE Directory Structure
 
 ```
-EVEOFFLINE/
+NOVAFORGE/
 ├── data/
 │   └── ships/
 │       ├── frigates.json
@@ -881,7 +881,7 @@ Ship DNA JSON files can be saved independently:
 │       └── ...
 ```
 
-The `[PREFIX_]` is applied when `naming_prefix` is set (e.g., `EVEOFFLINE_Hull`).
+The `[PREFIX_]` is applied when `naming_prefix` is set (e.g., `NOVAFORGE_Hull`).
 
 ---
 

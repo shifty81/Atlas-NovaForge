@@ -1,16 +1,16 @@
 """
-EVE Online UI Style Configuration
-Mimics the Photon UI color scheme and styling from EVE Online
+Astralis UI Style Configuration
+Mimics the Photon UI color scheme and styling from Astralis
 """
 
 from panda3d.core import Vec4
 from typing import Dict, Tuple
 
 
-class EVEColorScheme:
+class AstralisColorScheme:
     """
-    EVE Online Photon UI color scheme
-    Based on the official EVE Online interface design
+    Astralis Photon UI color scheme
+    Based on the official Astralis interface design
     """
     
     # Primary UI Colors (RGBA normalized 0-1)
@@ -19,7 +19,7 @@ class EVEColorScheme:
     BACKGROUND_SECONDARY = Vec4(0.08, 0.12, 0.16, 0.75)    # Lighter variant
     BACKGROUND_PANEL = Vec4(0.02, 0.04, 0.08, 0.9)          # Very dark blue-black
     
-    # Accent colors - Teal/Cyan (EVE's signature color)
+    # Accent colors - Teal/Cyan (Astralis's signature color)
     ACCENT_PRIMARY = Vec4(0.2, 0.6, 0.8, 1.0)              # Bright teal
     ACCENT_SECONDARY = Vec4(0.15, 0.45, 0.65, 1.0)         # Darker teal
     ACCENT_GLOW = Vec4(0.3, 0.8, 1.0, 0.5)                 # Glowing cyan
@@ -73,9 +73,9 @@ class EVEColorScheme:
     BUTTON_DISABLED = Vec4(0.1, 0.12, 0.15, 0.5)
 
 
-class EVEPanelStyle:
+class AstralisPanelStyle:
     """
-    Panel styling configuration for EVE-style UI
+    Panel styling configuration for Astralis-style UI
     """
     
     # Panel dimensions (normalized coordinates)
@@ -115,9 +115,9 @@ class EVEPanelStyle:
     GLOW_RADIUS = 0.02
 
 
-class EVELayoutPresets:
+class AstralisLayoutPresets:
     """
-    Common layout presets matching EVE Online's interface
+    Common layout presets matching Astralis's interface
     """
     
     # HUD Center (Ship status and capacitor)
@@ -161,8 +161,8 @@ class EVELayoutPresets:
         'anchor': 'bottom',
     }
     
-    # Neocom (Left sidebar)
-    NEOCOM = {
+    # Nexcom (Left sidebar)
+    NEXCOM = {
         'pos': (-1.0, 0, 0.0),
         'size': (0.12, 1.8),
         'anchor': 'left',
@@ -184,9 +184,9 @@ class EVELayoutPresets:
     }
 
 
-class EVEIconPaths:
+class AstralisIconPaths:
     """
-    Placeholder paths for EVE-style icons
+    Placeholder paths for Astralis-style icons
     In a full implementation, these would reference actual icon files
     """
     
@@ -203,7 +203,7 @@ class EVEIconPaths:
     ICON_SHIP_DESTROYER = "icons/destroyer.png"
     ICON_SHIP_CRUISER = "icons/cruiser.png"
     
-    # Neocom menu items
+    # Nexcom menu items
     ICON_INVENTORY = "icons/inventory.png"
     ICON_FITTING = "icons/fitting.png"
     ICON_MAP = "icons/map.png"
@@ -229,27 +229,27 @@ def get_health_color(current: float, maximum: float, health_type: str = 'shield'
         Vec4 color for the health bar
     """
     if maximum <= 0:
-        return EVEColorScheme.TEXT_DISABLED
+        return AstralisColorScheme.TEXT_DISABLED
     
     percent = current / maximum
     
     if health_type == 'shield':
         if percent > 0.5:
-            return EVEColorScheme.SHIELD_COLOR
+            return AstralisColorScheme.SHIELD_COLOR
         else:
-            return EVEColorScheme.SHIELD_DAMAGED
+            return AstralisColorScheme.SHIELD_DAMAGED
     elif health_type == 'armor':
         if percent > 0.3:
-            return EVEColorScheme.ARMOR_COLOR
+            return AstralisColorScheme.ARMOR_COLOR
         else:
-            return EVEColorScheme.ARMOR_DAMAGED
+            return AstralisColorScheme.ARMOR_DAMAGED
     elif health_type == 'hull':
         if percent > 0.25:
-            return EVEColorScheme.HULL_COLOR
+            return AstralisColorScheme.HULL_COLOR
         else:
-            return EVEColorScheme.HULL_CRITICAL
+            return AstralisColorScheme.HULL_CRITICAL
     
-    return EVEColorScheme.TEXT_PRIMARY
+    return AstralisColorScheme.TEXT_PRIMARY
 
 
 def get_capacitor_color(current: float, maximum: float) -> Vec4:
@@ -264,16 +264,16 @@ def get_capacitor_color(current: float, maximum: float) -> Vec4:
         Vec4 color for the capacitor gauge
     """
     if maximum <= 0:
-        return EVEColorScheme.CAPACITOR_CRITICAL
+        return AstralisColorScheme.CAPACITOR_CRITICAL
     
     percent = current / maximum
     
     if percent > 0.5:
-        return EVEColorScheme.CAPACITOR_FULL
+        return AstralisColorScheme.CAPACITOR_FULL
     elif percent > 0.25:
-        return EVEColorScheme.CAPACITOR_LOW
+        return AstralisColorScheme.CAPACITOR_LOW
     else:
-        return EVEColorScheme.CAPACITOR_CRITICAL
+        return AstralisColorScheme.CAPACITOR_CRITICAL
 
 
 def lerp_color(color1: Vec4, color2: Vec4, t: float) -> Vec4:
@@ -299,10 +299,10 @@ def lerp_color(color1: Vec4, color2: Vec4, t: float) -> Vec4:
 
 # Export commonly used items
 __all__ = [
-    'EVEColorScheme',
-    'EVEPanelStyle',
-    'EVELayoutPresets',
-    'EVEIconPaths',
+    'AstralisColorScheme',
+    'AstralisPanelStyle',
+    'AstralisLayoutPresets',
+    'AstralisIconPaths',
     'get_health_color',
     'get_capacitor_color',
     'lerp_color',

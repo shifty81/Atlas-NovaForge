@@ -128,8 +128,8 @@ Generates a disc-shaped asteroid belt with mineral types determined by security 
 
 | Security    | Common Ores                | Rare Ores              |
 |-------------|----------------------------|------------------------|
-| High (≥0.5) | Veldspar, Scordite (75 %)  | Pyroxeres, Plagioclase |
-| Low (0.2-0.5)| Mixed (40 % common)       | Omber, Kernite         |
+| High (≥0.5) | Ferrite, Galvite (75 %)  | Cryolite, Silvane |
+| Low (0.2-0.5)| Mixed (40 % common)       | Duskite, Heliore         |
 | Null (≤0.2) | Sparse common (20 %)       | Jaspet, Mercoxit       |
 
 Asteroids are scattered in a disc (XZ plane) with slight vertical spread.  Radius and mineral yield scale with ore rarity.

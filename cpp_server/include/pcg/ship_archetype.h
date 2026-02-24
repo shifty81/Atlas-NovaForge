@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_SHIP_ARCHETYPE_H
-#define EVE_PCG_SHIP_ARCHETYPE_H
+#ifndef NOVAFORGE_PCG_SHIP_ARCHETYPE_H
+#define NOVAFORGE_PCG_SHIP_ARCHETYPE_H
 
 #include "pcg_context.h"
 #include "pcg_manager.h"
@@ -63,7 +63,7 @@ struct HardpointDefinition {
 // ═══════════════════════════════════════════════════════════════════
 
 /**
- * @brief Subsystem categories (inspired by EVE T3 Strategic Cruisers).
+ * @brief Subsystem categories (inspired by Astralis T3 Strategic Cruisers).
  *
  * Each subsystem type controls a different region of the ship's
  * hull geometry and stat profile.
@@ -144,7 +144,7 @@ struct ModuleVisualRule {
  * All ships generated from this archetype will share the same
  * "family resemblance" while varying within the allowed bounds.
  * In-game, the ship's appearance further morphs based on the
- * player's fitting (like EVE T3 ships — every ship in this game
+ * player's fitting (like Astralis T3 ships — every ship in this game
  * works this way).
  */
 struct ShipArchetype {
@@ -272,4 +272,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_SHIP_ARCHETYPE_H
+#endif // NOVAFORGE_PCG_SHIP_ARCHETYPE_H

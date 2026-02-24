@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_NPC_ENCOUNTER_GENERATOR_H
-#define EVE_PCG_NPC_ENCOUNTER_GENERATOR_H
+#ifndef NOVAFORGE_PCG_NPC_ENCOUNTER_GENERATOR_H
+#define NOVAFORGE_PCG_NPC_ENCOUNTER_GENERATOR_H
 
 #include "pcg_context.h"
 #include "deterministic_rng.h"
@@ -33,7 +33,7 @@ struct NPCEncounter {
     NPCFaction                   faction;
     std::vector<EncounterWave>   waves;
     int                          totalShips;
-    float                        estimatedBounty; ///< Total ISK reward.
+    float                        estimatedBounty; ///< Total Credits reward.
     float                        difficultyRating; ///< 0.0 – 1.0 normalized.
     bool                         valid;
 };
@@ -78,4 +78,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_NPC_ENCOUNTER_GENERATOR_H
+#endif // NOVAFORGE_PCG_NPC_ENCOUNTER_GENERATOR_H

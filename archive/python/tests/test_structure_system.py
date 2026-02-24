@@ -27,7 +27,7 @@ class TestStructureSystem(unittest.TestCase):
         self.player_id = player_entity.id
         player_comp = Player(
             character_name="TestPilot",
-            isk=1000000000.0
+            credits=1000000000.0
         )
         player_entity.add_component(player_comp)
         
@@ -100,7 +100,7 @@ class TestStructureSystem(unittest.TestCase):
         """Test deploying a Metenox Moon Drill"""
         structure_id = self.structure_system.deploy_structure(self.player_id,
             "metenox_moon_drill",
-            "Moon Drill Alpha",
+            "Moon Drill Foundry",
             "nullsec_system",
             1000.0, 2000.0, 3000.0
         )
@@ -411,9 +411,9 @@ class TestStructureSystem(unittest.TestCase):
         structure_entity = self.world.get_entity(structure_id)
         inventory_comp = Inventory(cargo_capacity=100000.0)
         inventory_comp.items = {
-            "tritanium": 10000,
-            "pyerite": 5000,
-            "megacyte": 100
+            "stellium": 10000,
+            "vanthium": 5000,
+            "novarite": 100
         }
         structure_entity.add_component(inventory_comp)
         
@@ -454,9 +454,9 @@ class TestStructureSystem(unittest.TestCase):
         self.assertEqual(container.owner_id, "test_corp")
         
         # Verify items are in the container
-        self.assertEqual(container.contents["tritanium"], 10000)
-        self.assertEqual(container.contents["pyerite"], 5000)
-        self.assertEqual(container.contents["megacyte"], 100)
+        self.assertEqual(container.contents["stellium"], 10000)
+        self.assertEqual(container.contents["vanthium"], 5000)
+        self.assertEqual(container.contents["novarite"], 100)
         
         # Verify loot container has position near the structure
         pos_comp = loot_container_entity.get_component(Position)
@@ -478,7 +478,7 @@ class TestStructureSystem(unittest.TestCase):
         structure_entity = self.world.get_entity(structure_id)
         inventory_comp = Inventory(cargo_capacity=100000.0)
         inventory_comp.items = {
-            "tritanium": 10000
+            "stellium": 10000
         }
         structure_entity.add_component(inventory_comp)
         

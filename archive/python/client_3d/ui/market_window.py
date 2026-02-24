@@ -279,7 +279,7 @@ class MarketWindow(EVEListPanel):
             quantity = order.get('quantity', 0)
             location = order.get('location', 'Unknown')
             
-            order_text = f"{item_id} - {price:.2f} ISK x{quantity} @ {location}"
+            order_text = f"{item_id} - {price:.2f} Credits x{quantity} @ {location}"
             self.add_list_item(order_text, data=order)
     
     def refresh_orders(self):

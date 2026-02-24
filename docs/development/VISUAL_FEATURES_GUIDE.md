@@ -33,8 +33,8 @@
 - **Contains**: Complete visual specifications for 16 ore types
 - **Next Step**: Create renderer using instanced rendering
 - **Visual Details**:
-  - Veldspar: Brown-orange (0.6, 0.4, 0.2)
-  - Scordite: Gray metallic (0.5, 0.5, 0.55)
+  - Ferrite: Brown-orange (0.6, 0.4, 0.2)
+  - Galvite: Gray metallic (0.5, 0.5, 0.55)
   - Mercoxit: Bright cyan with glow (0.2, 0.9, 0.9)
   - LOD system: 4 levels (2000→500→100→20 triangles)
 
@@ -118,8 +118,8 @@ Color Coding:
 ### Asteroid Belts (When Rendered)
 ```
 Common Ores (Highsec):
-  Veldspar: 🟤 Brown-orange, rough texture
-  Scordite: ⚪ Gray metallic, shiny
+  Ferrite: 🟤 Brown-orange, rough texture
+  Galvite: ⚪ Gray metallic, shiny
   
 Rare Ores (Nullsec):
   Bistot: 🟢 Bright green-cyan, glowing

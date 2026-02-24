@@ -1,8 +1,8 @@
 """
 Ship Insurance System
 Handles ship insurance policies, payouts on ship destruction, and insurance management.
-Based on EVE Online's insurance mechanic where players can insure ship hulls
-to recover partial ISK when their ship is destroyed.
+Based on Astralis's insurance mechanic where players can insure ship hulls
+to recover partial Credits when their ship is destroyed.
 """
 
 from typing import Optional, Dict, List
@@ -12,7 +12,7 @@ import time
 
 
 class InsuranceLevel(Enum):
-    """Insurance tiers matching EVE Online's system"""
+    """Insurance tiers matching Astralis's system"""
     NONE = "none"           # Free default insurance
     BASIC = "basic"
     STANDARD = "standard"
@@ -45,9 +45,9 @@ class InsurancePolicy:
     ship_type: str
     owner_id: str
     level: InsuranceLevel
-    base_hull_value: float      # The base value of the ship hull in ISK
-    payout_amount: float        # ISK paid out on destruction
-    premium_paid: float         # ISK paid for the policy
+    base_hull_value: float      # The base value of the ship hull in Credits
+    payout_amount: float        # Credits paid out on destruction
+    premium_paid: float         # Credits paid for the policy
     issued_time: float          # Timestamp when policy was purchased
     expiry_time: float          # Timestamp when policy expires
     is_active: bool = True
@@ -66,7 +66,7 @@ class InsuranceRecord:
     cause: str = "destruction"  # destruction, self_destruct
 
 
-# Base hull values for ship classes (ISK)
+# Base hull values for ship classes (Credits)
 # These represent the material cost to build the hull
 BASE_HULL_VALUES = {
     # Frigates
@@ -151,7 +151,7 @@ SHIP_HULL_VALUES = {
 class InsuranceSystem:
     """
     Manages ship insurance policies and claims.
-    Based on EVE Online's insurance system.
+    Based on Astralis's insurance system.
     """
 
     def __init__(self):
@@ -220,7 +220,7 @@ class InsuranceSystem:
             owner_id: Owner player ID
             level: Insurance tier to purchase
             current_time: Current game timestamp
-            wallet_isk: Current ISK in player's wallet
+            wallet_isk: Current Credits in player's wallet
 
         Returns:
             InsurancePolicy if successful, None if failed
@@ -236,7 +236,7 @@ class InsuranceSystem:
         quote = self.get_insurance_quote(ship_type, ship_class, level)
         premium = quote["premium"]
 
-        # Free default insurance doesn't need ISK check
+        # Free default insurance doesn't need Credits check
         if level != InsuranceLevel.NONE and wallet_isk < premium:
             return None
 

@@ -1,5 +1,5 @@
-#ifndef EVE_TCP_SERVER_H
-#define EVE_TCP_SERVER_H
+#ifndef NOVAFORGE_TCP_SERVER_H
+#define NOVAFORGE_TCP_SERVER_H
 
 #include <string>
 #include <vector>
@@ -89,4 +89,4 @@ private:
 } // namespace network
 } // namespace atlas
 
-#endif // EVE_TCP_SERVER_H
+#endif // NOVAFORGE_TCP_SERVER_H

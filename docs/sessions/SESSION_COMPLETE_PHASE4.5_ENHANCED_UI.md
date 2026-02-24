@@ -85,7 +85,7 @@ Created an active mission tracking interface:
   - [ ] Pending objectives (gray)
   - Scrollable list for long missions
 - **Rewards Display**:
-  - ISK reward (gold)
+  - Credits reward (gold)
   - LP reward (cyan)
   - Item rewards (bullet list)
 - **Progress Visualization**:

@@ -176,7 +176,7 @@ When `drop_loot=True`:
 - Transfers all items from structure's hangar (Inventory component) to the container
 - Container is owned by the structure's owner corporation
 - Container despawns after 1 hour if not looted
-- ISK in structure wallet is not dropped (handled separately by corp wallet system)
+- Credits in structure wallet is not dropped (handled separately by corp wallet system)
 
 ## Lifecycle
 
@@ -216,7 +216,7 @@ When `drop_loot=True`:
   - Container position: Offset 10 units from structure location
   - Container despawn time: 1 hour (3600 seconds)
   - All hangar items are transferred to the container
-  - ISK is stored separately in corporation wallet (not dropped)
+  - Credits is stored separately in corporation wallet (not dropped)
   - Loot dropping can be disabled for safe unanchoring scenarios
 - Entity removed from world
 
@@ -338,7 +338,7 @@ structure_system = StructureSystem(world)
 structure_id = structure_system.deploy_structure(
     player_entity_id=player_id,
     structure_type="astrahus",
-    structure_name="Trade Hub Alpha",
+    structure_name="Trade Hub Foundry",
     system_id="jita",
     x=1000.0, y=2000.0, z=3000.0
 )

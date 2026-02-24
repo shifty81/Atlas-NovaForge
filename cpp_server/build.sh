@@ -3,6 +3,15 @@
 
 set -e
 
+# --- Logging Setup ---
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+LOG_DIR="$SCRIPT_DIR/logs"
+mkdir -p "$LOG_DIR"
+LOG_FILE="$LOG_DIR/server_build_$(date '+%Y%m%d_%H%M%S').log"
+exec > >(tee -a "$LOG_FILE") 2>&1
+echo "Log file: $LOG_FILE"
+echo ""
+
 echo "=================================="
 echo "Nova Forge Server Build Script"
 echo "=================================="
@@ -42,8 +51,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Get script directory
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# Change to script directory
 cd "$SCRIPT_DIR"
 
 # Clean build directory if requested
@@ -84,13 +92,13 @@ echo "=================================="
 echo "Build complete!"
 echo "=================================="
 echo ""
-echo "Executable: build/bin/eve_dedicated_server"
+echo "Executable: build/bin/novaforge_server"
 echo "Tests: build/bin/test_systems"
 echo "Config: build/bin/config/server.json"
 echo ""
 echo "To run the server:"
 echo "  cd build/bin"
-echo "  ./eve_dedicated_server"
+echo "  ./novaforge_server"
 echo ""
 echo "To run tests:"
 echo "  ./run_tests.sh"

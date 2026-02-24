@@ -115,14 +115,14 @@ class SpaceshipGeneratorProperties(bpy.types.PropertyGroup):
         default='MIXED'
     )
 
-    eveoffline_json_path: StringProperty(
+    novaforge_json_path: StringProperty(
         name="Ship JSON",
         description="Path to an EVEOFFLINE ship JSON file to import",
         subtype='FILE_PATH',
         default=""
     )
 
-    eveoffline_export_path: StringProperty(
+    novaforge_export_path: StringProperty(
         name="Export Path",
         description="Directory to export OBJ files for the EVEOFFLINE asset pipeline",
         subtype='DIR_PATH',
@@ -281,15 +281,15 @@ class SPACESHIP_OT_generate(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class SPACESHIP_OT_import_eveoffline(bpy.types.Operator):
+class SPACESHIP_OT_import_novaforge(bpy.types.Operator):
     """Import ships from EVEOFFLINE JSON data and generate them"""
-    bl_idname = "mesh.import_eveoffline_ships"
+    bl_idname = "mesh.import_novaforge_ships"
     bl_label = "Import from EVEOFFLINE JSON"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
         props = context.scene.spaceship_props
-        json_path = bpy.path.abspath(props.eveoffline_json_path)
+        json_path = bpy.path.abspath(props.novaforge_json_path)
 
         if not json_path or not json_path.endswith('.json'):
             self.report({'ERROR'}, "Select a valid EVEOFFLINE ship JSON file")
@@ -326,13 +326,13 @@ class SPACESHIP_OT_import_eveoffline(bpy.types.Operator):
 
 class SPACESHIP_OT_export_obj(bpy.types.Operator):
     """Export the selected ship as OBJ for the EVEOFFLINE/Atlas engine"""
-    bl_idname = "mesh.export_eveoffline_obj"
+    bl_idname = "mesh.export_novaforge_obj"
     bl_label = "Export OBJ for Atlas"
     bl_options = {'REGISTER'}
 
     def execute(self, context):
         props = context.scene.spaceship_props
-        export_dir = bpy.path.abspath(props.eveoffline_export_path)
+        export_dir = bpy.path.abspath(props.novaforge_export_path)
 
         if not export_dir:
             self.report({'ERROR'}, "Set an export directory first")
@@ -469,10 +469,10 @@ class SPACESHIP_PT_main_panel(bpy.types.Panel):
 
         layout.separator()
         layout.label(text="EVEOFFLINE / Atlas Integration:")
-        layout.prop(props, "eveoffline_json_path")
-        layout.operator("mesh.import_eveoffline_ships", icon='IMPORT')
-        layout.prop(props, "eveoffline_export_path")
-        layout.operator("mesh.export_eveoffline_obj", icon='EXPORT')
+        layout.prop(props, "novaforge_json_path")
+        layout.operator("mesh.import_novaforge_ships", icon='IMPORT')
+        layout.prop(props, "novaforge_export_path")
+        layout.operator("mesh.export_novaforge_obj", icon='EXPORT')
 
         layout.separator()
         layout.label(text="Station Generation:")
@@ -497,7 +497,7 @@ class SPACESHIP_PT_main_panel(bpy.types.Panel):
 classes = (
     SpaceshipGeneratorProperties,
     SPACESHIP_OT_generate,
-    SPACESHIP_OT_import_eveoffline,
+    SPACESHIP_OT_import_novaforge,
     SPACESHIP_OT_export_obj,
     SPACESHIP_OT_generate_station,
     SPACESHIP_OT_generate_asteroid_belt,

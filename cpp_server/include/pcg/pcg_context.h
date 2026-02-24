@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_CONTEXT_H
-#define EVE_PCG_CONTEXT_H
+#ifndef NOVAFORGE_PCG_CONTEXT_H
+#define NOVAFORGE_PCG_CONTEXT_H
 
 #include <cstdint>
 
@@ -50,4 +50,4 @@ struct PCGContext {
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_CONTEXT_H
+#endif // NOVAFORGE_PCG_CONTEXT_H

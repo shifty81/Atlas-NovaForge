@@ -1,7 +1,7 @@
 """
 Fleet System
 Handles fleet mechanics, fleet bonuses, and fleet coordination
-Based on EVE Online's fleet system
+Based on Astralis's fleet system
 """
 
 from typing import Optional, Dict, List, Set

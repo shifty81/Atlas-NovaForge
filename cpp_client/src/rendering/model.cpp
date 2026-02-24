@@ -614,7 +614,7 @@ struct HullParams {
  * More sides = smoother silhouette.
  */
 static int getFactionSides(const std::string& faction) {
-    // Original EVE factions — higher side counts for better visual quality
+    // Original Astralis factions — higher side counts for better visual quality
     if (faction.find("Veyren") != std::string::npos) return 8;    // Blocky/angular but not too jagged
     if (faction.find("Keldari") != std::string::npos) return 10;   // Industrial/angular
     if (faction.find("Solari") != std::string::npos) return 14;    // Refined/ornate
@@ -1070,7 +1070,7 @@ bool Model::isAsteroid(const std::string& shipType) {
 
 FactionColors Model::getFactionColors(const std::string& faction) {
     static const std::map<std::string, FactionColors> colorMap = {
-        // === Original EVE Online factions ===
+        // === Original Astralis factions ===
         {"Keldari", {
             glm::vec4(0.5f, 0.35f, 0.25f, 1.0f),  // Rust brown
             glm::vec4(0.3f, 0.2f, 0.15f, 1.0f),   // Dark brown
@@ -1448,7 +1448,7 @@ std::unique_ptr<Model> Model::createTech2CruiserModel(const FactionColors& color
     // - More angular plating (already achieved through base model variations)
     // - Additional sensor arrays and equipment visible on hull
     // - Slight variation in proportions (already handled by procedural generation)
-    // Tech 2 ships in EVE have sharper angles and more refined details
+    // Tech 2 ships in Astralis have sharper angles and more refined details
     // This is represented through the faction-specific color schemes and base geometry
     
     return model;

@@ -78,9 +78,9 @@ class MissionSystem(System):
         # Grant rewards
         rewards_granted = {}
         
-        if 'isk' in mission.rewards:
-            player.isk += mission.rewards['isk']
-            rewards_granted['isk'] = mission.rewards['isk']
+        if 'credits' in mission.rewards:
+            player.credits += mission.rewards['credits']
+            rewards_granted['credits'] = mission.rewards['credits']
         
         if 'lp' in mission.rewards:
             # Loyalty points would go here

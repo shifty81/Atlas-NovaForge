@@ -147,9 +147,9 @@ language designed for space gameplay:
 - Cycling animation when active
 - Grouped by rack: High slots, Mid slots, Low slots
 
-## 6. Neocom Bar (Left Sidebar)
+## 6. Nexcom Bar (Left Sidebar)
 
-EVE's Neocom is a vertical toolbar on the left edge:
+EVE's Nexcom is a vertical toolbar on the left edge:
 - Dark, narrow vertical strip
 - Small square icons for each system (Inventory, Fitting, Market, etc.)
 - Tooltip on hover showing the system name

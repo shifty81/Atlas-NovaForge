@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_CREW_SYSTEM_H
-#define EVE_SYSTEMS_CREW_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_CREW_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_CREW_SYSTEM_H
 
 #include "ecs/system.h"
 #include "ecs/entity.h"
@@ -27,4 +27,4 @@ public:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_CREW_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_CREW_SYSTEM_H

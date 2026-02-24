@@ -54,8 +54,8 @@ std::string ManufacturingSystem::startJob(const std::string& facility_entity_id,
     if (owner) {
         auto* player = owner->getComponent<components::Player>();
         if (player) {
-            if (player->isk < install_cost) return "";
-            player->isk -= install_cost;
+            if (player->credits < install_cost) return "";
+            player->credits -= install_cost;
         }
     }
 

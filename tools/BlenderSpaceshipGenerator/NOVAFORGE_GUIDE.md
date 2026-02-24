@@ -1,7 +1,7 @@
-# EVEOFFLINE / Atlas Engine Integration Guide
+# NOVAFORGE / Atlas Engine Integration Guide
 
 Complete start-to-finish guide for using the Blender Spaceship Generator with the
-[EVEOFFLINE](https://github.com/shifty81/EVEOFFLINE) project and its custom Atlas engine.
+[NOVAFORGE](https://github.com/shifty81/NOVAFORGE) project and its custom Atlas engine.
 
 ---
 
@@ -10,9 +10,9 @@ Complete start-to-finish guide for using the Blender Spaceship Generator with th
 1. [Prerequisites](#prerequisites)
 2. [Install the Addon in Blender](#install-the-addon-in-blender)
 3. [Generate a Ship Manually](#generate-a-ship-manually)
-4. [Import Ships from EVEOFFLINE JSON Data](#import-ships-from-eveoffline-json-data)
+4. [Import Ships from NOVAFORGE JSON Data](#import-ships-from-novaforge-json-data)
 5. [Export OBJ Files for the Atlas Engine](#export-obj-files-for-the-atlas-engine)
-6. [Place the Models in EVEOFFLINE](#place-the-models-in-eveoffline)
+6. [Place the Models in NOVAFORGE](#place-the-models-in-novaforge)
 7. [Generate Stations](#generate-stations)
 8. [Generate Asteroid Belts](#generate-asteroid-belts)
 9. [Test in Engine](#test-in-engine)
@@ -27,10 +27,10 @@ Complete start-to-finish guide for using the Blender Spaceship Generator with th
 | Requirement | Version |
 |------------|---------|
 | **Blender** | 2.80 or higher (3.x / 4.x recommended) |
-| **EVEOFFLINE** | Latest `main` branch from [GitHub](https://github.com/shifty81/EVEOFFLINE) |
+| **NOVAFORGE** | Latest `main` branch from [GitHub](https://github.com/shifty81/NOVAFORGE) |
 | **This addon** | Clone or download this repository |
 
-Make sure your EVEOFFLINE project is built and the `data/ships/` directory
+Make sure your NOVAFORGE project is built and the `data/ships/` directory
 contains the ship JSON files (frigates.json, destroyers.json, etc.).
 
 ---
@@ -64,7 +64,7 @@ Or download as a ZIP from the GitHub releases page.
 1. In the 3D Viewport, press **N** to open the sidebar.
 2. Click the **Spaceship** tab.
 3. You should see the full panel with Ship Configuration, Generation Options,
-   and the **EVEOFFLINE / Atlas Integration** section at the bottom.
+   and the **NOVAFORGE / Atlas Integration** section at the bottom.
 
 ---
 
@@ -76,10 +76,10 @@ This is the simplest path — generate a ship from the UI and export it.
 
 In the **Spaceship** sidebar panel:
 
-| Setting | Recommended for EVEOFFLINE |
+| Setting | Recommended for NOVAFORGE |
 |---------|---------------------------|
 | **Ship Class** | Pick any (Frigate, Cruiser, Titan, etc.) |
-| **Style** | Pick an EVEOFFLINE faction: **Solari**, **Veyren**, **Aurelian**, or **Keldari** |
+| **Style** | Pick an NOVAFORGE faction: **Solari**, **Veyren**, **Aurelian**, or **Keldari** |
 | **Random Seed** | Use the `generation_seed` from your ship JSON, or any number |
 | **Generate Interior** | Enable for FPV testing, disable for faster export |
 | **Module Slots** | 2–5 for subcapitals, 5–10 for capitals |
@@ -99,18 +99,18 @@ Click **Generate Spaceship**. The ship appears at the 3D cursor.
 
 ---
 
-## Import Ships from EVEOFFLINE JSON Data
+## Import Ships from NOVAFORGE JSON Data
 
 Instead of configuring each ship manually, you can import directly from
-EVEOFFLINE's ship data files. The addon reads the JSON, extracts the faction,
+NOVAFORGE's ship data files. The addon reads the JSON, extracts the faction,
 class, seed, slot counts, and hardpoint data, and generates matching ships.
 
 ### Step 1 — Locate Your Ship JSON
 
-Your EVEOFFLINE project structure:
+Your NOVAFORGE project structure:
 
 ```
-EVEOFFLINE/
+NOVAFORGE/
 └── data/
     └── ships/
         ├── frigates.json
@@ -131,15 +131,15 @@ EVEOFFLINE/
 
 ### Step 2 — Set the JSON Path
 
-In the **EVEOFFLINE / Atlas Integration** section of the sidebar panel:
+In the **NOVAFORGE / Atlas Integration** section of the sidebar panel:
 
 1. Click the folder icon next to **Ship JSON**.
-2. Browse to your EVEOFFLINE project's `data/ships/` directory.
+2. Browse to your NOVAFORGE project's `data/ships/` directory.
 3. Select one JSON file (e.g., `frigates.json`).
 
 ### Step 3 — Import
 
-Click **Import from EVEOFFLINE JSON**.
+Click **Import from NOVAFORGE JSON**.
 
 This will:
 - Parse every ship definition in that file.
@@ -154,7 +154,7 @@ Each ship is generated and placed in its own Blender collection named
 
 ### What Gets Mapped
 
-| EVEOFFLINE JSON field | Generator parameter |
+| NOVAFORGE JSON field | Generator parameter |
 |-----------------------|--------------------|
 | `class` (Frigate, Titan, etc.) | `ship_class` |
 | `race` (Solari, Veyren, etc.) | `style` |
@@ -174,12 +174,12 @@ want to export. The hull is the parent object in the collection.
 
 ### Step 2 — Set Export Path
 
-In the **EVEOFFLINE / Atlas Integration** section:
+In the **NOVAFORGE / Atlas Integration** section:
 
 1. Click the folder icon next to **Export Path**.
-2. Browse to your EVEOFFLINE project's model output directory:
+2. Browse to your NOVAFORGE project's model output directory:
    ```
-   EVEOFFLINE/data/ships/obj_models/
+   NOVAFORGE/data/ships/obj_models/
    ```
    Or any other directory you prefer.
 
@@ -201,7 +201,7 @@ The exported file is named after the hull object, e.g., `Hull.obj`.
 Check that the files exist:
 
 ```bash
-ls -la EVEOFFLINE/data/ships/obj_models/
+ls -la NOVAFORGE/data/ships/obj_models/
 # Should see:
 #   Hull.obj
 #   Hull.mtl
@@ -209,14 +209,14 @@ ls -la EVEOFFLINE/data/ships/obj_models/
 
 ---
 
-## Place the Models in EVEOFFLINE
+## Place the Models in NOVAFORGE
 
 ### Directory Structure
 
-EVEOFFLINE expects ship models in:
+NOVAFORGE expects ship models in:
 
 ```
-EVEOFFLINE/data/ships/obj_models/
+NOVAFORGE/data/ships/obj_models/
 ```
 
 The existing `obj_models.7z` archive contains the base models. Place your
@@ -242,10 +242,10 @@ mv Hull.mtl fang.mtl
 
 ## Test in Engine
 
-### Step 1 — Build EVEOFFLINE
+### Step 1 — Build NOVAFORGE
 
 ```bash
-cd EVEOFFLINE
+cd NOVAFORGE
 ./build.sh          # Linux/macOS
 # or
 build.bat           # Windows
@@ -277,7 +277,7 @@ procedurally generated geometry.
 
 ## Batch Generation Script
 
-To generate and export every ship in your EVEOFFLINE data at once, run this
+To generate and export every ship in your NOVAFORGE data at once, run this
 script inside Blender's **Scripting** workspace (or paste into Blender's
 Python console):
 
@@ -292,9 +292,9 @@ import sys
 from BlenderSpaceshipGenerator import ship_generator, atlas_exporter
 
 # === CONFIGURATION ===
-EVEOFFLINE_DIR = '/path/to/EVEOFFLINE'
-SHIPS_DIR = os.path.join(EVEOFFLINE_DIR, 'data', 'ships')
-EXPORT_DIR = os.path.join(EVEOFFLINE_DIR, 'data', 'ships', 'obj_models')
+NOVAFORGE_DIR = '/path/to/NOVAFORGE'
+SHIPS_DIR = os.path.join(NOVAFORGE_DIR, 'data', 'ships')
+EXPORT_DIR = os.path.join(NOVAFORGE_DIR, 'data', 'ships', 'obj_models')
 # =====================
 
 os.makedirs(EXPORT_DIR, exist_ok=True)
@@ -310,7 +310,7 @@ for ship_id, ship_data in all_ships.items():
     bpy.ops.object.select_all(action='SELECT')
     bpy.ops.object.delete()
 
-    # Parse EVEOFFLINE config
+    # Parse NOVAFORGE config
     config = atlas_exporter.parse_ship_config(ship_data)
 
     # Generate the ship
@@ -349,7 +349,7 @@ print("Done! All ships exported.")
 2. Switch to the **Scripting** workspace (tab at the top).
 3. Click **New** to create a new text block.
 4. Paste the script above.
-5. Edit `EVEOFFLINE_DIR` to point to your EVEOFFLINE clone.
+5. Edit `NOVAFORGE_DIR` to point to your NOVAFORGE clone.
 6. Click **Run Script** (▶ button).
 
 **Option B — From the command line** (headless):
@@ -365,7 +365,7 @@ Save the script as `batch_generate.py` and run it. Blender runs headless
 
 ## Faction Style Reference
 
-Each EVEOFFLINE faction has a distinct visual style applied to the hull
+Each NOVAFORGE faction has a distinct visual style applied to the hull
 geometry:
 
 | Faction | Style | Visual Character | Tank Focus |
@@ -375,7 +375,7 @@ geometry:
 | **Aurelian** | Sleek, organic | Organic subdivision, spherical cast | Armor/Drones |
 | **Keldari** | Rugged, industrial | Heavy bevels, blocky construction | Balanced |
 
-The style is automatically selected when importing from EVEOFFLINE JSON based
+The style is automatically selected when importing from NOVAFORGE JSON based
 on the ship's `race` field.
 
 You can also manually select these styles from the **Style** dropdown in the
@@ -385,7 +385,7 @@ Blender panel.
 
 ## Generate Stations
 
-The addon can generate procedural space stations matching EVEOFFLINE's station
+The addon can generate procedural space stations matching NOVAFORGE's station
 types and faction architectures.
 
 ### Station Types
@@ -422,7 +422,7 @@ Each faction produces a distinct station visual:
 
 The station appears at the 3D cursor, organized in its own collection.
 
-### Export for EVEOFFLINE
+### Export for NOVAFORGE
 
 Select the station hub object, set the export path, and click
 **Export OBJ for Atlas** — the same workflow as ships.
@@ -431,7 +431,7 @@ Select the station hub object, set the export path, and click
 
 ## Generate Asteroid Belts
 
-The addon generates asteroid belts with all 16 EVEOFFLINE ore types and
+The addon generates asteroid belts with all 16 NOVAFORGE ore types and
 multiple belt configurations.
 
 ### Ore Types
@@ -480,7 +480,7 @@ Each asteroid gets:
 - Random rotation and size variation
 - PBR material matching the ore's color, roughness, and metallic values
 
-### Export for EVEOFFLINE
+### Export for NOVAFORGE
 
 Select the belt root empty, set the export path, and click
 **Export OBJ for Atlas**.
@@ -489,7 +489,7 @@ Select the belt root empty, set the export path, and click
 
 ## Troubleshooting
 
-### "Select a valid EVEOFFLINE ship JSON file"
+### "Select a valid NOVAFORGE ship JSON file"
 
 The **Ship JSON** path must point to a `.json` file. Use the folder icon
 to browse to the file. Make sure the path ends with `.json`.
@@ -499,7 +499,7 @@ to browse to the file. Make sure the path ends with `.json`.
 Check that the path is correct. Blender uses `//` for relative paths.
 Use an absolute path to be safe.
 
-### Ship looks wrong compared to EVEOFFLINE data
+### Ship looks wrong compared to NOVAFORGE data
 
 The generator creates procedural geometry — it won't exactly replicate a
 hand-modeled ship. The purpose is to produce a **consistent, seed-based

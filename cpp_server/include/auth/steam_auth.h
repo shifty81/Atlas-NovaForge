@@ -1,5 +1,5 @@
-#ifndef EVE_STEAM_AUTH_H
-#define EVE_STEAM_AUTH_H
+#ifndef NOVAFORGE_STEAM_AUTH_H
+#define NOVAFORGE_STEAM_AUTH_H
 
 #include <string>
 #include <cstdint>
@@ -55,4 +55,4 @@ private:
 } // namespace auth
 } // namespace atlas
 
-#endif // EVE_STEAM_AUTH_H
+#endif // NOVAFORGE_STEAM_AUTH_H

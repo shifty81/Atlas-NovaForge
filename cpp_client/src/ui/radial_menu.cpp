@@ -107,7 +107,7 @@ void RadialMenu::UpdateMousePosition(float mouseX, float mouseY) {
         m_highlightedAction = Action::NONE;
     }
 
-    // EVE-style drag-to-range: dragging further from center selects
+    // Astralis-style drag-to-range: dragging further from center selects
     // a larger distance for Orbit and Keep at Range actions
     UpdateRangeDistance(dist);
 }
@@ -187,7 +187,7 @@ void RadialMenu::RenderAtlas(atlas::AtlasContext& ctx) {
 
     atlas::Vec2 center(m_centerX, m_centerY);
 
-    // EVE-style teal accent color
+    // Astralis-style teal accent color
     atlas::Color accentTeal  = t.accentPrimary;
     atlas::Color accentDim   = t.accentDim;
     atlas::Color bgDark      = atlas::Color(0.04f, 0.06f, 0.09f, 0.85f);

@@ -240,7 +240,7 @@ This is the most important next step for the project. All foundational systems a
 - ✅ Approach behavior transitions to Mining state when NPC reaches a mineral deposit
 - ✅ Mineral refining system: RefiningFacility component + RefiningSystem converts ore batches to refined minerals
 - ✅ Refining supports efficiency multiplier and tax rate
-- ✅ Default recipes: Veldspar→Tritanium, Scordite→Tritanium+Pyerite, Pyroxeres→Pyerite+Nocxidium, Plagioclase→Tritanium+Pyerite+Mexallon
+- ✅ Default recipes: Ferrite→Stellium, Galvite→Stellium+Vanthium, Cryolite→Vanthium+Nocxidium, Silvane→Stellium+Vanthium+Cydrium
 - ✅ Market ore pricing validated: NPC sell orders for ores, buy orders for minerals
 - ✅ 35 new test assertions (1287/1287 total passing)
 

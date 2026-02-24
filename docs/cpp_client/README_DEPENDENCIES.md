@@ -1,8 +1,8 @@
-# EVE Offline C++ Client - Dependencies Setup Guide
+# Nova Forge C++ Client - Dependencies Setup Guide
 
 ## Overview
 
-The C++ client for EVE Offline has been configured with all required dependencies for successful compilation and execution. This guide documents the setup and provides quick start instructions.
+The C++ client for Nova Forge has been configured with all required dependencies for successful compilation and execution. This guide documents the setup and provides quick start instructions.
 
 ## What Was Done
 

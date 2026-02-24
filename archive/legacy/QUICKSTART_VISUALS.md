@@ -53,8 +53,8 @@ Exponential curve visible in output
 - `🔴 Nullsec` - RGB(1.0, 0.2, 0.2)
 
 **Ore Colors** (16 types):
-- Veldspar: Brown-orange
-- Scordite: Gray metallic
+- Ferrite: Brown-orange
+- Galvite: Gray metallic
 - Mercoxit: Bright cyan with glow
 
 **Station Styles**:

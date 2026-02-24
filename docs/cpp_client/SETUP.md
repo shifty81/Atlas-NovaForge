@@ -16,7 +16,7 @@ sudo apt-get install -y \
     libxcursor-dev \
     libxi-dev \
     libxkbcommon-dev \
-    wayland-scanner++ \
+    waylanproxscanner++ \
     libwayland-dev
 ```
 
@@ -137,11 +137,11 @@ sudo apt-get install libgl1-mesa-dev
 sudo dnf install mesa-libGL-devel
 ```
 
-### "Failed to find wayland-scanner"
+### "Failed to find waylanproxscanner"
 Install Wayland development packages:
 ```bash
 # Ubuntu/Debian
-sudo apt-get install wayland-scanner++ libwayland-dev
+sudo apt-get install waylanproxscanner++ libwayland-dev
 
 # Fedora
 sudo dnf install wayland-devel wayland-protocols-devel

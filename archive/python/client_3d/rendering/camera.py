@@ -1,6 +1,6 @@
 """
 Camera System for 3D Client
-EVE Online-style camera controls
+Astralis-style camera controls
 """
 
 from panda3d.core import Vec3, Point3
@@ -9,7 +9,7 @@ import math
 
 class CameraSystem:
     """
-    EVE-style camera system with orbit, zoom, and pan
+    Astralis-style camera system with orbit, zoom, and pan
     """
     
     # Camera mode enum

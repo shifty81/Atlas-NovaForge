@@ -91,7 +91,7 @@ callsign = NameGenerator.generate_pilot_callsign()
 
 ```python
 asteroid = NameGenerator.generate_asteroid_designation()
-# Example: "Veldspar-4472"
+# Example: "Ferrite-4472"
 ```
 
 ## Integration Examples
@@ -146,7 +146,7 @@ def generate_dynamic_mission(difficulty_level):
         'name': mission_name,
         'level': difficulty_level,
         'description': f'Complete the {mission_name} operation',
-        'reward': difficulty_level * 100000  # ISK
+        'reward': difficulty_level * 100000  # Credits
     }
     
     return mission
@@ -235,7 +235,7 @@ def generate_asteroid_belt(system_id, belt_index):
         
         asteroid = world.create_entity()
         asteroid.add_component(Name(designation))
-        asteroid.add_component(Asteroid(ore_type='Veldspar'))
+        asteroid.add_component(Asteroid(ore_type='Ferrite'))
         asteroid.add_component(Position(
             x=random.uniform(-5000, 5000),
             y=random.uniform(-1000, 1000),

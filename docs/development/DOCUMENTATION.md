@@ -209,7 +209,7 @@ python client/client.py "Pilot3"
       }
     ],
     "rewards": {
-      "isk": 100000,
+      "credits": 100000,
       "loyalty_points": 500
     }
   }

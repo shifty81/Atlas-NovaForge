@@ -78,7 +78,7 @@ bool WeaponSystem::fireWeapon(const std::string& shooter_id, const std::string& 
     auto* target_health = target->getComponent<components::Health>();
     if (!target_health) return false;
     
-    // Apply damage to shields first, then armor, then hull (EVE damage cascade)
+    // Apply damage to shields first, then armor, then hull (Astralis damage cascade)
     float remaining = effective_damage;
     
     // Shield layer

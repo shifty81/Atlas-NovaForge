@@ -1,5 +1,5 @@
 """
-Tests for new EVE OFFLINE systems:
+Tests for new Nova Forge systems:
 - Insurance System
 - Bounty System
 - NPC Damage Reference
@@ -76,7 +76,7 @@ class TestInsuranceSystem(unittest.TestCase):
         self.assertEqual(policy.level, InsuranceLevel.PLATINUM)
 
     def test_purchase_insufficient_isk(self):
-        """Test that purchasing fails with insufficient ISK"""
+        """Test that purchasing fails with insufficient Credits"""
         policy = self.insurance.purchase_insurance(
             ship_entity_id="ship_1",
             ship_type="rifter",
@@ -391,7 +391,7 @@ class TestWingCommanderSystem(unittest.TestCase):
         self.assertEqual(pilot.status, PilotStatus.AVAILABLE)
 
     def test_hire_insufficient_isk(self):
-        """Test hiring fails with insufficient ISK"""
+        """Test hiring fails with insufficient Credits"""
         pilot = self.wing.hire_pilot(
             "player_1", "Test", PilotSpecialization.COMBAT,
             skill_level=1, wallet_isk=50.0  # Not enough
@@ -491,8 +491,8 @@ class TestWingCommanderSystem(unittest.TestCase):
             owner_id="player_1",
             name="Jita-Amarr Run",
             stops=[
-                {"station_id": "jita_4_4", "action": "buy", "item_id": "tritanium", "quantity": 10000},
-                {"station_id": "amarr_trade_hub", "action": "sell", "item_id": "tritanium", "quantity": 10000},
+                {"station_id": "jita_4_4", "action": "buy", "item_id": "stellium", "quantity": 10000},
+                {"station_id": "amarr_trade_hub", "action": "sell", "item_id": "stellium", "quantity": 10000},
             ]
         )
         self.assertIsNotNone(route)
@@ -548,7 +548,7 @@ class TestWingCommanderSystem(unittest.TestCase):
             wallet_isk=500000.0, current_time=0.0
         )
         initial_loyalty = pilot.loyalty
-        # After 1 hour with no ISK
+        # After 1 hour with no Credits
         result = self.wing.process_salaries(
             "player_1", current_time=3600.0, wallet_isk=0.0
         )

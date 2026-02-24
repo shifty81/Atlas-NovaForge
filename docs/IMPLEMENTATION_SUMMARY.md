@@ -46,7 +46,7 @@
 - Accept missions from agents
 - Track multiple objective types (kill, location, courier)
 - Automatic completion detection
-- Reward distribution (ISK, Loyalty Points)
+- Reward distribution (Credits, Loyalty Points)
 - Mission status management
 
 **Impact**: PVE content loop is now complete
@@ -166,7 +166,7 @@
 4. **Run Missions**
    - Accept from agents
    - Complete objectives
-   - Earn ISK and LP
+   - Earn Credits and LP
 
 5. **Navigate Space**
    - Warp between locations

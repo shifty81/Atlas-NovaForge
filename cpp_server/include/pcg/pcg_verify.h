@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_VERIFY_H
-#define EVE_PCG_VERIFY_H
+#ifndef NOVAFORGE_PCG_VERIFY_H
+#define NOVAFORGE_PCG_VERIFY_H
 
 #include "hash_utils.h"
 #include "ship_generator.h"
@@ -50,4 +50,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_VERIFY_H
+#endif // NOVAFORGE_PCG_VERIFY_H

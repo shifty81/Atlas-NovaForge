@@ -3,7 +3,7 @@
  * @brief Test program for the RmlUi-based Atlas UI implementation.
  *
  * This test creates a GLFW window with OpenGL 3.3 core profile and
- * renders the EVE Atlas UI panels using RmlUi. It demonstrates:
+ * renders the Atlas UI panels using RmlUi. It demonstrates:
  *   - Ship HUD with animated health bars, speed readout, module rack
  *   - Overview panel with entity table
  *   - Dynamic ship status updates (animated)
@@ -29,7 +29,7 @@
 
 static bool g_showFitting = false;
 static bool g_showInventory = false;
-static bool g_showDScan = false;
+static bool g_showProxscan = false;
 static bool g_showDebugger = false;
 
 static void glfwErrorCallback(int error, const char* description) {
@@ -41,7 +41,7 @@ int main() {
     std::cout << "Controls:" << std::endl;
     std::cout << "  F1  - Toggle fitting panel" << std::endl;
     std::cout << "  F2  - Toggle inventory panel" << std::endl;
-    std::cout << "  F3  - Toggle D-Scan panel" << std::endl;
+    std::cout << "  F3  - Toggle Proxscan panel" << std::endl;
     std::cout << "  F8  - Toggle RmlUi debugger" << std::endl;
     std::cout << "  ESC - Exit" << std::endl;
     std::cout << std::endl;
@@ -158,14 +158,14 @@ int main() {
     });
 
     std::cout << "\nRmlUi initialized successfully!" << std::endl;
-    std::cout << "Displaying EVE Atlas UI panels:" << std::endl;
+    std::cout << "Displaying Atlas UI panels:" << std::endl;
     std::cout << "  - Ship HUD (bottom center) with health bars, speed, modules" << std::endl;
     std::cout << "  - Overview (top right) with entity table" << std::endl;
     std::cout << "  - Target List (top center) with locked target cards" << std::endl;
     std::cout << "  - Sidebar (left sidebar) with service icons" << std::endl;
     std::cout << "  - Fitting (hidden, toggle with F1)" << std::endl;
     std::cout << "  - Inventory (hidden, toggle with F2)" << std::endl;
-    std::cout << "  - D-Scan (hidden, toggle with F3)" << std::endl;
+    std::cout << "  - Proxscan (hidden, toggle with F3)" << std::endl;
     std::cout << std::endl;
 
     // Add initial combat log messages
@@ -196,12 +196,12 @@ int main() {
         rmlUi->UpdateInventoryData(names, types, quantities, volumes, 42.0f, 100.0f);
     }
 
-    // Demo D-Scan results
+    // Demo Proxscan results
     {
         std::vector<std::string> names = {"Venom Syndicate Hideaway", "Asteroid Belt II", "Stargate (Thyrkstad)"};
         std::vector<std::string> types = {"Combat Site", "Asteroid Belt", "Stargate"};
         std::vector<float> distances = {0.5f, 2.3f, 8.1f};
-        rmlUi->UpdateDScanResults(names, types, distances);
+        rmlUi->UpdateProxscanResults(names, types, distances);
     }
 
     float startTime = static_cast<float>(glfwGetTime());
@@ -236,9 +236,9 @@ int main() {
         static bool f3WasPressed = false;
         bool f3Pressed = glfwGetKey(window, GLFW_KEY_F3) == GLFW_PRESS;
         if (f3Pressed && !f3WasPressed) {
-            g_showDScan = !g_showDScan;
-            rmlUi->SetDocumentVisible("dscan", g_showDScan);
-            std::cout << "[UI] D-Scan panel " << (g_showDScan ? "shown" : "hidden") << "\n";
+            g_showProxscan = !g_showProxscan;
+            rmlUi->SetDocumentVisible("proxscan", g_showProxscan);
+            std::cout << "[UI] Proxscan panel " << (g_showProxscan ? "shown" : "hidden") << "\n";
         }
         f3WasPressed = f3Pressed;
 
@@ -268,7 +268,7 @@ int main() {
             rmlUi->AddCombatLogMessage(msg);
         }
 
-        // Clear screen with EVE-style dark background
+        // Clear screen with Astralis-style dark background
         glClearColor(0.01f, 0.015f, 0.025f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 

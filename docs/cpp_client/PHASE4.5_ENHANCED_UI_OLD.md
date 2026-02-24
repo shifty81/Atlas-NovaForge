@@ -126,7 +126,7 @@ struct ModuleInfo {
   - [ ] Pending objectives (gray)
   - Scrollable for long lists
 - Rewards section:
-  - ISK reward (gold text)
+  - Credits reward (gold text)
   - LP reward (cyan text)
   - Item rewards (bullet list)
 - Progress bar (visual completion percentage)
@@ -201,7 +201,7 @@ UI::InventoryData invData;
 invData.cargo_capacity = 100.0f;
 invData.cargo_used = 45.5f;
 invData.cargo_items.push_back(
-    UI::InventoryItem("ore_veldspar", "Veldspar", 1000, 0.01f, "ore", "mining")
+    UI::InventoryItem("ore_veldspar", "Ferrite", 1000, 0.01f, "ore", "mining")
 );
 inventoryPanel->SetInventoryData(invData);
 

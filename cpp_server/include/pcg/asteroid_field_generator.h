@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_ASTEROID_FIELD_GENERATOR_H
-#define EVE_PCG_ASTEROID_FIELD_GENERATOR_H
+#ifndef NOVAFORGE_PCG_ASTEROID_FIELD_GENERATOR_H
+#define NOVAFORGE_PCG_ASTEROID_FIELD_GENERATOR_H
 
 #include "pcg_context.h"
 #include "deterministic_rng.h"
@@ -12,12 +12,12 @@ namespace pcg {
 
 // ── Asteroid mineral types ──────────────────────────────────────────
 enum class AsteroidType : uint32_t {
-    Veldspar,      ///< Common, high-sec.
-    Scordite,      ///< Common, high-sec.
-    Pyroxeres,     ///< Uncommon, mid-sec.
-    Plagioclase,   ///< Uncommon, mid-sec.
-    Omber,         ///< Rare, low-sec.
-    Kernite,       ///< Rare, low-sec.
+    Ferrite,      ///< Common, high-sec.
+    Galvite,      ///< Common, high-sec.
+    Cryolite,     ///< Uncommon, mid-sec.
+    Silvane,   ///< Uncommon, mid-sec.
+    Duskite,         ///< Rare, low-sec.
+    Heliore,       ///< Rare, low-sec.
     Jaspet,        ///< Very rare, null-sec.
     Mercoxit,      ///< Exceedingly rare, null-sec only.
 };
@@ -97,4 +97,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_ASTEROID_FIELD_GENERATOR_H
+#endif // NOVAFORGE_PCG_ASTEROID_FIELD_GENERATOR_H

@@ -12,7 +12,7 @@ BlenderSpaceshipGenerator/
 ├── interior_generator.py    # Creates interior spaces
 ├── module_system.py         # Handles attachable modules
 ├── brick_system.py          # Brick taxonomy, grid, Ship DNA
-├── atlas_exporter.py        # EVEOFFLINE JSON import + OBJ export
+├── atlas_exporter.py        # NOVAFORGE JSON import + OBJ export
 ├── station_generator.py     # Procedural station generation
 ├── asteroid_generator.py    # Asteroid belt generation
 ├── texture_generator.py     # Procedural PBR materials
@@ -20,9 +20,9 @@ BlenderSpaceshipGenerator/
 ├── USAGE.md                 # Installation and usage guide
 ├── EXAMPLES.md              # Example configurations
 ├── TECHNICAL.md             # This file
-├── ENGINE_INTEGRATION.md    # Engine-facing data reference (for Atlas/EVEOFFLINE)
+├── ENGINE_INTEGRATION.md    # Engine-facing data reference (for Atlas/NOVAFORGE)
 ├── features.md              # Feature specification and design rules
-├── EVEOFFLINE_GUIDE.md      # Start-to-finish EVEOFFLINE integration guide
+├── NOVAFORGE_GUIDE.md      # Start-to-finish NOVAFORGE integration guide
 └── IMPLEMENTATION_SUMMARY.md # Implementation overview
 ```
 
@@ -264,8 +264,8 @@ Scene Collection
 
 ## Object Hierarchy
 
-When a naming prefix is set (e.g. `EVEOFFLINE`), every generated element
-name is prepended with `EVEOFFLINE_`.  Without a prefix the names remain
+When a naming prefix is set (e.g. `NOVAFORGE`), every generated element
+name is prepended with `NOVAFORGE_`.  Without a prefix the names remain
 unchanged.
 
 ```
@@ -448,4 +448,4 @@ This addon is designed as an educational and creative tool. Users should be awar
 
 - **[ENGINE_INTEGRATION.md](ENGINE_INTEGRATION.md)** — Ship DNA schemas, brick tables, ECS component mappings, turret custom properties, hull skinning pipeline, and all data formats needed to implement ship systems in the Atlas game engine.
 - **[features.md](features.md)** — Complete feature specification with design pillars, implementation status, and planned engine-side systems.
-- **[EVEOFFLINE_GUIDE.md](EVEOFFLINE_GUIDE.md)** — Step-by-step guide for importing EVEOFFLINE ship JSON and exporting OBJ models.
+- **[NOVAFORGE_GUIDE.md](NOVAFORGE_GUIDE.md)** — Step-by-step guide for importing NOVAFORGE ship JSON and exporting OBJ models.

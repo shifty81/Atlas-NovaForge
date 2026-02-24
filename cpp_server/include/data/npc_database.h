@@ -1,5 +1,5 @@
-#ifndef EVE_DATA_NPC_DATABASE_H
-#define EVE_DATA_NPC_DATABASE_H
+#ifndef NOVAFORGE_DATA_NPC_DATABASE_H
+#define NOVAFORGE_DATA_NPC_DATABASE_H
 
 #include <string>
 #include <unordered_map>
@@ -123,4 +123,4 @@ private:
 } // namespace data
 } // namespace atlas
 
-#endif // EVE_DATA_NPC_DATABASE_H
+#endif // NOVAFORGE_DATA_NPC_DATABASE_H

@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_REFINING_SYSTEM_H
-#define EVE_SYSTEMS_REFINING_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_REFINING_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_REFINING_SYSTEM_H
 
 #include "ecs/system.h"
 #include "ecs/entity.h"
@@ -30,7 +30,7 @@ public:
      * @brief Refine ore from a player's inventory at a station
      * @param player_id   Entity id of the player
      * @param station_id  Entity id of the station with RefiningFacility
-     * @param ore_type    Name of the ore to refine (e.g. "Veldspar")
+     * @param ore_type    Name of the ore to refine (e.g. "Ferrite")
      * @param batches     Number of batches to refine (each consumes ore_units_required)
      * @return Number of batches actually refined (0 on failure)
      */
@@ -43,8 +43,8 @@ public:
      * @brief Set up default refining recipes on a facility
      *
      * Installs standard recipes for common ore types:
-     * Veldspar→Tritanium, Scordite→Tritanium+Pyerite,
-     * Pyroxeres→Pyerite+Nocxidium, Plagioclase→Tritanium+Pyerite+Mexallon
+     * Ferrite→Stellium, Galvite→Stellium+Vanthium,
+     * Cryolite→Vanthium+Nocxidium, Silvane→Stellium+Vanthium+Cydrium
      *
      * @param station_id Entity with a RefiningFacility component
      * @return true if recipes were installed
@@ -55,4 +55,4 @@ public:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_REFINING_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_REFINING_SYSTEM_H

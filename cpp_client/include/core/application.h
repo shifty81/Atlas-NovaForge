@@ -43,7 +43,7 @@ namespace atlas {
  * - Rendering (3D graphics, UI)
  * - Input handling (keyboard, mouse)
  * - Networking (client-server or embedded server)
- * - Camera control (EVE-style right-click camera, FPS, cockpit)
+ * - Camera control (Astralis-style right-click camera, FPS, cockpit)
  * - Entity management and targeting
  * - Session management (singleplayer/multiplayer)
  * - Game state management (space flight, docking, interiors)
@@ -285,11 +285,11 @@ private:
     void handleMouseMove(double x, double y, double deltaX, double deltaY);
     void handleScroll(double xoffset, double yoffset);
     
-    // EVE-style right-click context menu
+    // Astralis-style right-click context menu
     void showSpaceContextMenu(double x, double y);
     void showEntityContextMenu(const std::string& entityId, double x, double y);
     
-    // EVE-style movement commands
+    // Astralis-style movement commands
     void commandApproach(const std::string& entityId);
     void commandOrbit(const std::string& entityId, float distance = 500.0f);
     void commandKeepAtRange(const std::string& entityId, float distance = 2500.0f);
@@ -336,7 +336,7 @@ private:
     std::vector<std::string> m_targetList;
     int m_currentTargetIndex;
     
-    // EVE-style camera control state
+    // Astralis-style camera control state
     bool m_rightMouseDown = false;
     bool m_leftMouseDown = false;
     double m_lastMouseDragX = 0.0;
@@ -346,7 +346,7 @@ private:
     // game-world interaction handlers to prevent click-through
     bool m_atlasConsumedMouse = false;
     
-    // EVE-style movement state
+    // Astralis-style movement state
     enum class MoveCommand { None, Approach, Orbit, KeepAtRange, AlignTo, WarpTo };
     MoveCommand m_currentMoveCommand = MoveCommand::None;
     std::string m_moveTargetId;

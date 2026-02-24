@@ -1,7 +1,7 @@
 """
 Ore Compression System
 Handles compression of ore and ice to reduce volume for transport
-Based on EVE Online ore compression mechanics
+Based on Astralis ore compression mechanics
 """
 
 import json
@@ -15,36 +15,36 @@ from engine.components.game_components import OreHold, Inventory, Skills
 # In EVE, compressed ore is much smaller than raw ore
 ORE_COMPRESSION_DATA = {
     # High-sec ores
-    "veldspar": {
+    "ferrite": {
         "batch_size": 100,  # m3 per compression batch
         "compressed_volume": 0.15,  # m3 per compressed unit
-        "compressed_name": "Compressed Veldspar"
+        "compressed_name": "Compressed Ferrite"
     },
-    "scordite": {
+    "galvite": {
         "batch_size": 100,
         "compressed_volume": 0.19,
-        "compressed_name": "Compressed Scordite"
+        "compressed_name": "Compressed Galvite"
     },
-    "pyroxeres": {
+    "cryolite": {
         "batch_size": 100,
         "compressed_volume": 0.16,
-        "compressed_name": "Compressed Pyroxeres"
+        "compressed_name": "Compressed Cryolite"
     },
-    "plagioclase": {
+    "silvane": {
         "batch_size": 100,
         "compressed_volume": 0.15,
-        "compressed_name": "Compressed Plagioclase"
+        "compressed_name": "Compressed Silvane"
     },
     # Low-sec ores
-    "kernite": {
+    "heliore": {
         "batch_size": 100,
         "compressed_volume": 0.19,
-        "compressed_name": "Compressed Kernite"
+        "compressed_name": "Compressed Heliore"
     },
-    "omber": {
+    "duskite": {
         "batch_size": 100,
         "compressed_volume": 0.07,
-        "compressed_name": "Compressed Omber"
+        "compressed_name": "Compressed Duskite"
     },
     "jaspet": {
         "batch_size": 100,
@@ -187,7 +187,7 @@ class OreCompressionSystem(System):
         
         Args:
             entity: Entity with OreHold or Inventory containing the ore
-            ore_type: Type of ore to compress (e.g., 'veldspar')
+            ore_type: Type of ore to compress (e.g., 'ferrite')
             quantity: Amount of ore in m3 to compress
             at_station: Whether compression is being done at a station/structure
             

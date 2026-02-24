@@ -16,7 +16,7 @@ import math
 class MinimapRadar:
     """
     Minimap/Radar display showing nearby entities
-    Similar to EVE Online's tactical overlay
+    Similar to Astralis's tactical overlay
     """
     
     def __init__(self, parent, pos=(0.7, 0.5), size=0.25, max_range=500.0):
@@ -51,7 +51,7 @@ class MinimapRadar:
         """Create minimap UI elements"""
         # Background frame
         self.frame = DirectFrame(
-            frameColor=(0.02, 0.04, 0.08, 0.9),  # EVE dark blue-black
+            frameColor=(0.02, 0.04, 0.08, 0.9),  # Astralis dark blue-black
             frameSize=(-self.size/2, self.size/2, -self.size/2, self.size/2),
             pos=(self.pos[0], 0, self.pos[1]),
             parent=self.parent
@@ -60,7 +60,7 @@ class MinimapRadar:
         
         # Border
         border_frame = DirectFrame(
-            frameColor=(0.2, 0.6, 0.8, 0.5),  # EVE teal border
+            frameColor=(0.2, 0.6, 0.8, 0.5),  # Astralis teal border
             frameSize=(-self.size/2 - 0.005, self.size/2 + 0.005, 
                        -self.size/2 - 0.005, self.size/2 + 0.005),
             pos=(0, 0, 0),

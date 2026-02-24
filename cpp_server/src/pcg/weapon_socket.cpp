@@ -54,7 +54,7 @@ WeaponLayout WeaponSocketUtil::generateLayout(const PCGContext& ctx,
 
     int totalTurrets = ship.turretSlots;
 
-    // Determine arc style from hull class (EVE-style roles).
+    // Determine arc style from hull class (Astralis-style roles).
     float baseArc      = 0.0f;
     float baseTracking = 0.0f;
 

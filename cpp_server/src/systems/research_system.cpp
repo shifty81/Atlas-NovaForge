@@ -63,8 +63,8 @@ std::string ResearchSystem::startMEResearch(const std::string& lab_entity_id,
     if (owner) {
         auto* player = owner->getComponent<components::Player>();
         if (player) {
-            if (player->isk < install_cost) return "";
-            player->isk -= install_cost;
+            if (player->credits < install_cost) return "";
+            player->credits -= install_cost;
         }
     }
 
@@ -101,8 +101,8 @@ std::string ResearchSystem::startTEResearch(const std::string& lab_entity_id,
     if (owner) {
         auto* player = owner->getComponent<components::Player>();
         if (player) {
-            if (player->isk < install_cost) return "";
-            player->isk -= install_cost;
+            if (player->credits < install_cost) return "";
+            player->credits -= install_cost;
         }
     }
 
@@ -142,8 +142,8 @@ std::string ResearchSystem::startInvention(const std::string& lab_entity_id,
     if (owner) {
         auto* player = owner->getComponent<components::Player>();
         if (player) {
-            if (player->isk < install_cost) return "";
-            player->isk -= install_cost;
+            if (player->credits < install_cost) return "";
+            player->credits -= install_cost;
         }
     }
 

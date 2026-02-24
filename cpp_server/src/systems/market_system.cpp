@@ -55,8 +55,8 @@ std::string MarketSystem::placeSellOrder(const std::string& station_id,
 
     // Deduct broker fee
     double broker_fee = price_per_unit * quantity * hub->broker_fee_rate;
-    if (player->isk < broker_fee) return "";
-    player->isk -= broker_fee;
+    if (player->credits < broker_fee) return "";
+    player->credits -= broker_fee;
 
     // Create order
     components::MarketHub::Order order;
@@ -95,8 +95,8 @@ std::string MarketSystem::placeBuyOrder(const std::string& station_id,
     double total_cost = price_per_unit * quantity;
     double broker_fee = total_cost * hub->broker_fee_rate;
     double escrow = total_cost + broker_fee;
-    if (player->isk < escrow) return "";
-    player->isk -= escrow;
+    if (player->credits < escrow) return "";
+    player->credits -= escrow;
 
     // Create order
     components::MarketHub::Order order;
@@ -150,16 +150,16 @@ int MarketSystem::buyFromMarket(const std::string& station_id,
         double tax = cost * hub->sales_tax_rate;
         double total = cost + tax;
 
-        if (buyer_player->isk < total) break;
+        if (buyer_player->credits < total) break;
 
-        buyer_player->isk -= total;
+        buyer_player->credits -= total;
 
         // Pay seller
         auto* seller = world_->getEntity(best->owner_id);
         if (seller) {
             auto* seller_player = seller->getComponent<components::Player>();
             if (seller_player) {
-                seller_player->isk += cost;
+                seller_player->credits += cost;
             }
         }
 
@@ -239,9 +239,9 @@ int MarketSystem::seedNPCOrders(const std::string& station_id) {
 
     struct Seed { std::string id; std::string name; double price; int qty; };
     std::vector<Seed> seeds = {
-        {"mineral_tritanium",  "Tritanium",  6.0,   100000},
-        {"mineral_pyerite",    "Pyerite",    10.0,  50000},
-        {"mineral_mexallon",   "Mexallon",   40.0,  20000},
+        {"mineral_tritanium",  "Stellium",  6.0,   100000},
+        {"mineral_pyerite",    "Vanthium",    10.0,  50000},
+        {"mineral_mexallon",   "Cydrium",   40.0,  20000},
         {"mineral_nocxidium",  "Nocxidium",  800.0, 5000}
     };
 

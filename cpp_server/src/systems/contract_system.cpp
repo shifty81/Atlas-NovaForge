@@ -88,7 +88,7 @@ bool ContractSystem::completeContract(const std::string& board_entity_id,
                 if (assignee) {
                     auto* player = assignee->getComponent<components::Player>();
                     if (player) {
-                        player->isk += contract.isk_reward;
+                        player->credits += contract.isk_reward;
                     }
                 }
             }

@@ -14,7 +14,7 @@
 #include <random>
 #include <filesystem>
 
-using namespace EVE;
+using namespace novaforge;
 
 // Helper to pause execution
 void wait(float seconds) {

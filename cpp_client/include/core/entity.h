@@ -34,7 +34,7 @@ struct Health {
 
 /**
  * Capacitor structure for entities
- * Represents the energy capacitor in EVE ONLINE
+ * Represents the energy capacitor in Astralis ONLINE
  */
 struct Capacitor {
     float current{0.0f};

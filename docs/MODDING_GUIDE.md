@@ -339,7 +339,7 @@ Missions are in `data/missions/missions.json`
       {"type": "npc_destroyer", "count": 1}
     ],
     "rewards": {
-      "isk": 50000,
+      "credits": 50000,
       "loyalty_points": 250,
       "items": [
         {"id": "item_name", "quantity": 1}
@@ -424,7 +424,7 @@ Skills are in `data/skills/skills.json`
 1. **More powerful = More expensive**
    - Higher CPU/PG requirements
    - Longer skill training
-   - Higher ISK cost
+   - Higher Credits cost
 
 2. **Trade-offs are good**
    - High damage → Low tank

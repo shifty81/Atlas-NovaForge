@@ -15,14 +15,14 @@ This document describes the asteroid field system based on EVE Online mechanics.
 ## Asteroid Types
 
 ### High-Sec Ores (0.5-1.0 Security)
-- **Veldspar**: Most common, low value, high volume
-- **Scordite**: Common, moderate minerals
-- **Pyroxeres**: Common, good minerals
-- **Plagioclase**: Uncommon, valuable minerals
+- **Ferrite**: Most common, low value, high volume
+- **Galvite**: Common, moderate minerals
+- **Cryolite**: Common, good minerals
+- **Silvane**: Uncommon, valuable minerals
 
 ### Low-Sec Ores (0.1-0.4 Security)
-- **Omber**: Uncommon, good value
-- **Kernite**: Rare, valuable
+- **Duskite**: Uncommon, good value
+- **Heliore**: Rare, valuable
 - **Jaspet**: Rare, very valuable
 
 ### Null-Sec Ores (0.0 Security)
@@ -96,7 +96,7 @@ Each ore type has variants:
       "asteroids": [
         {
           "id": "ast_001",
-          "type": "Veldspar",
+          "type": "Ferrite",
           "variant": "Dense",
           "position": {"x": 25000, "y": 5000, "z": 0},
           "size": "large",
@@ -139,11 +139,11 @@ Each ore type has variants:
 - **Huge**: 500,000-1,000,000 m³
 
 ### Ore Values (per m³)
-- **Veldspar**: 10 ISK
-- **Scordite**: 25 ISK
-- **Plagioclase**: 50 ISK
-- **Kernite**: 150 ISK
-- **Arkonor**: 500 ISK
+- **Ferrite**: 10 Credits
+- **Galvite**: 25 Credits
+- **Silvane**: 50 Credits
+- **Heliore**: 150 Credits
+- **Arkonor**: 500 Credits
 
 ---
 

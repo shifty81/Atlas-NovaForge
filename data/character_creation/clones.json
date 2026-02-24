@@ -2,9 +2,9 @@
   "clone_system": {
     "description": "When your capsule is destroyed, your clone is activated. Clone grade determines how many skill points are retained. Wise players keep clones updated to avoid losing training time.",
     "medical_clones": {
-      "alpha_clone": {
-        "id": "alpha_clone",
-        "name": "Alpha Clone",
+      "foundry_clone": {
+        "id": "foundry_clone",
+        "name": "Foundry Clone",
         "description": "Basic clone provided free of charge. Limited skill point retention.",
         "max_skill_points": 900000,
         "cost": 0,
@@ -42,19 +42,19 @@
         "cost": 13500000,
         "available_at": "any_station_with_cloning"
       },
-      "omega_clone": {
-        "id": "omega_clone",
-        "name": "Omega Clone",
+      "apex_clone": {
+        "id": "apex_clone",
+        "name": "Apex Clone",
         "description": "Ultimate clone with maximum skill point retention.",
         "max_skill_points": 100000000,
         "cost": 45000000,
         "available_at": "any_station_with_cloning"
       }
     },
-    "jump_clones": {
-      "description": "Jump clones allow instant travel to a pre-placed clone body. Requires the Infomorph Psychology skill.",
+    "relay_clones": {
+      "description": "Relay clones allow instant travel to a pre-placed clone body. Requires the Infomorph Psychology skill.",
       "cooldown_hours": 24,
-      "max_jump_clones_per_skill_level": {
+      "max_relay_clones_per_skill_level": {
         "1": 1,
         "2": 2,
         "3": 3,

@@ -97,28 +97,28 @@ AsteroidType AsteroidFieldGenerator::selectType(DeterministicRNG& rng,
     float roll = rng.nextFloat();
 
     if (secLevel >= 0.5f) {
-        if (roll < 0.40f) return AsteroidType::Veldspar;
-        if (roll < 0.75f) return AsteroidType::Scordite;
-        if (roll < 0.90f) return AsteroidType::Pyroxeres;
-        return AsteroidType::Plagioclase;
+        if (roll < 0.40f) return AsteroidType::Ferrite;
+        if (roll < 0.75f) return AsteroidType::Galvite;
+        if (roll < 0.90f) return AsteroidType::Cryolite;
+        return AsteroidType::Silvane;
     }
 
     if (secLevel > 0.2f) {
-        if (roll < 0.20f) return AsteroidType::Veldspar;
-        if (roll < 0.40f) return AsteroidType::Scordite;
-        if (roll < 0.55f) return AsteroidType::Pyroxeres;
-        if (roll < 0.70f) return AsteroidType::Plagioclase;
-        if (roll < 0.85f) return AsteroidType::Omber;
-        return AsteroidType::Kernite;
+        if (roll < 0.20f) return AsteroidType::Ferrite;
+        if (roll < 0.40f) return AsteroidType::Galvite;
+        if (roll < 0.55f) return AsteroidType::Cryolite;
+        if (roll < 0.70f) return AsteroidType::Silvane;
+        if (roll < 0.85f) return AsteroidType::Duskite;
+        return AsteroidType::Heliore;
     }
 
     // Null-sec
-    if (roll < 0.10f) return AsteroidType::Veldspar;
-    if (roll < 0.20f) return AsteroidType::Scordite;
-    if (roll < 0.30f) return AsteroidType::Pyroxeres;
-    if (roll < 0.40f) return AsteroidType::Plagioclase;
-    if (roll < 0.55f) return AsteroidType::Omber;
-    if (roll < 0.70f) return AsteroidType::Kernite;
+    if (roll < 0.10f) return AsteroidType::Ferrite;
+    if (roll < 0.20f) return AsteroidType::Galvite;
+    if (roll < 0.30f) return AsteroidType::Cryolite;
+    if (roll < 0.40f) return AsteroidType::Silvane;
+    if (roll < 0.55f) return AsteroidType::Duskite;
+    if (roll < 0.70f) return AsteroidType::Heliore;
     if (roll < 0.88f) return AsteroidType::Jaspet;
     return AsteroidType::Mercoxit;
 }
@@ -126,12 +126,12 @@ AsteroidType AsteroidFieldGenerator::selectType(DeterministicRNG& rng,
 float AsteroidFieldGenerator::rollRadius(DeterministicRNG& rng,
                                          AsteroidType type) {
     switch (type) {
-        case AsteroidType::Veldspar:    return rng.rangeFloat(5.0f, 30.0f);
-        case AsteroidType::Scordite:    return rng.rangeFloat(5.0f, 25.0f);
-        case AsteroidType::Pyroxeres:   return rng.rangeFloat(8.0f, 35.0f);
-        case AsteroidType::Plagioclase: return rng.rangeFloat(8.0f, 30.0f);
-        case AsteroidType::Omber:       return rng.rangeFloat(10.0f, 40.0f);
-        case AsteroidType::Kernite:     return rng.rangeFloat(10.0f, 45.0f);
+        case AsteroidType::Ferrite:    return rng.rangeFloat(5.0f, 30.0f);
+        case AsteroidType::Galvite:    return rng.rangeFloat(5.0f, 25.0f);
+        case AsteroidType::Cryolite:   return rng.rangeFloat(8.0f, 35.0f);
+        case AsteroidType::Silvane: return rng.rangeFloat(8.0f, 30.0f);
+        case AsteroidType::Duskite:       return rng.rangeFloat(10.0f, 40.0f);
+        case AsteroidType::Heliore:     return rng.rangeFloat(10.0f, 45.0f);
         case AsteroidType::Jaspet:      return rng.rangeFloat(12.0f, 50.0f);
         case AsteroidType::Mercoxit:    return rng.rangeFloat(15.0f, 60.0f);
     }
@@ -141,12 +141,12 @@ float AsteroidFieldGenerator::rollRadius(DeterministicRNG& rng,
 float AsteroidFieldGenerator::rollYield(DeterministicRNG& rng,
                                         AsteroidType type) {
     switch (type) {
-        case AsteroidType::Veldspar:    return rng.rangeFloat(500.0f, 2000.0f);
-        case AsteroidType::Scordite:    return rng.rangeFloat(400.0f, 1800.0f);
-        case AsteroidType::Pyroxeres:   return rng.rangeFloat(300.0f, 1500.0f);
-        case AsteroidType::Plagioclase: return rng.rangeFloat(300.0f, 1200.0f);
-        case AsteroidType::Omber:       return rng.rangeFloat(200.0f, 1000.0f);
-        case AsteroidType::Kernite:     return rng.rangeFloat(150.0f, 800.0f);
+        case AsteroidType::Ferrite:    return rng.rangeFloat(500.0f, 2000.0f);
+        case AsteroidType::Galvite:    return rng.rangeFloat(400.0f, 1800.0f);
+        case AsteroidType::Cryolite:   return rng.rangeFloat(300.0f, 1500.0f);
+        case AsteroidType::Silvane: return rng.rangeFloat(300.0f, 1200.0f);
+        case AsteroidType::Duskite:       return rng.rangeFloat(200.0f, 1000.0f);
+        case AsteroidType::Heliore:     return rng.rangeFloat(150.0f, 800.0f);
         case AsteroidType::Jaspet:      return rng.rangeFloat(100.0f, 600.0f);
         case AsteroidType::Mercoxit:    return rng.rangeFloat(50.0f, 300.0f);
     }

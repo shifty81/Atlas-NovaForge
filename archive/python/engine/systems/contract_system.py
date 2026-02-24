@@ -1,7 +1,7 @@
 """
 Contract System
 Handles player-to-player contracts: item exchange, courier, and auction
-Based on EVE Online's contract system
+Based on Astralis's contract system
 """
 
 from typing import Optional, Dict, List
@@ -13,7 +13,7 @@ import time
 
 class ContractType(Enum):
     """Types of contracts"""
-    ITEM_EXCHANGE = "item_exchange"  # Trade items for ISK
+    ITEM_EXCHANGE = "item_exchange"  # Trade items for Credits
     COURIER = "courier"  # Transport items from A to B
     AUCTION = "auction"  # Auction items to highest bidder
 
@@ -29,7 +29,7 @@ class ContractStatus(Enum):
 
 @dataclass
 class ItemExchangeContract:
-    """Item exchange contract (buy/sell items for ISK)"""
+    """Item exchange contract (buy/sell items for Credits)"""
     contract_id: str
     issuer_id: str
     issuer_name: str
@@ -41,8 +41,8 @@ class ItemExchangeContract:
     # Items requested (can be empty for pure sell contract)
     items_requested: Dict[str, int] = field(default_factory=dict)  # {item_id: quantity}
     
-    # ISK exchange
-    price: float = 0.0  # ISK price (positive = issuer wants ISK, negative = issuer pays ISK)
+    # Credits exchange
+    price: float = 0.0  # Credits price (positive = issuer wants Credits, negative = issuer pays Credits)
     collateral: float = 0.0  # Collateral required
     
     # Contract details
@@ -80,8 +80,8 @@ class CourierContract:
     end_location: str = "Amarr"
     
     # Payment
-    reward: float = 0.0  # ISK reward for completion
-    collateral: float = 0.0  # ISK collateral (paid if items lost)
+    reward: float = 0.0  # Credits reward for completion
+    collateral: float = 0.0  # Credits collateral (paid if items lost)
     
     # Contract details
     status: ContractStatus = ContractStatus.OUTSTANDING
@@ -170,8 +170,8 @@ class ContractSystem:
             issuer_entity: Entity creating the contract
             items_offered: Items being offered {item_id: quantity}
             items_requested: Items being requested (can be empty)
-            price: ISK price (positive = issuer wants ISK)
-            collateral: ISK collateral required
+            price: Credits price (positive = issuer wants Credits)
+            collateral: Credits collateral required
             expiration_days: Days until contract expires
             availability: "public" or "private"
             location: Station/system where contract is
@@ -189,8 +189,8 @@ class ContractSystem:
         contract_value = abs(price) + collateral
         broker_fee = contract_value * self.broker_fee_rate
         
-        # Check if issuer has enough ISK for broker fee
-        if player_comp.isk < broker_fee:
+        # Check if issuer has enough Credits for broker fee
+        if player_comp.credits < broker_fee:
             return None
         
         # Check if issuer has the offered items
@@ -203,7 +203,7 @@ class ContractSystem:
                 return None
         
         # Charge broker fee
-        player_comp.isk -= broker_fee
+        player_comp.credits -= broker_fee
         
         # Remove offered items from inventory (held in contract)
         for item_id, quantity in items_offered.items():
@@ -277,9 +277,9 @@ class ContractSystem:
         if not player_comp:
             return False
         
-        # Check if acceptor has enough ISK
+        # Check if acceptor has enough Credits
         total_isk_needed = max(0, contract.price) + contract.collateral
-        if player_comp.isk < total_isk_needed:
+        if player_comp.credits < total_isk_needed:
             return False
         
         # Check if acceptor has requested items
@@ -293,23 +293,23 @@ class ContractSystem:
                 return False
         
         # Execute contract
-        # Transfer ISK
+        # Transfer Credits
         if contract.price > 0:
             # Acceptor pays issuer
-            player_comp.isk -= contract.price
+            player_comp.credits -= contract.price
             issuer_entity = self.world.get_entity(contract.issuer_id)
             if issuer_entity:
                 issuer_player = issuer_entity.get_component(Player)
                 if issuer_player:
-                    issuer_player.isk += contract.price
+                    issuer_player.credits += contract.price
         elif contract.price < 0:
             # Issuer pays acceptor
-            player_comp.isk += abs(contract.price)
+            player_comp.credits += abs(contract.price)
             issuer_entity = self.world.get_entity(contract.issuer_id)
             if issuer_entity:
                 issuer_player = issuer_entity.get_component(Player)
                 if issuer_player:
-                    issuer_player.isk -= abs(contract.price)
+                    issuer_player.credits -= abs(contract.price)
         
         # Transfer offered items to acceptor
         for item_id, quantity in contract.items_offered.items():
@@ -380,8 +380,8 @@ class ContractSystem:
             items: Items to transport {item_id: quantity}
             start_location: Starting station/system
             end_location: Destination station/system
-            reward: ISK reward for completion
-            collateral: ISK collateral (paid if items lost)
+            reward: Credits reward for completion
+            collateral: Credits collateral (paid if items lost)
             expiration_days: Days until contract expires
             days_to_complete: Days to complete after acceptance
             availability: "public" or "private"
@@ -398,8 +398,8 @@ class ContractSystem:
         # Calculate broker fee
         broker_fee = (reward + collateral) * self.broker_fee_rate
         
-        # Check if issuer has enough ISK
-        if player_comp.isk < broker_fee:
+        # Check if issuer has enough Credits
+        if player_comp.credits < broker_fee:
             return None
         
         # Check if issuer has the items
@@ -415,7 +415,7 @@ class ContractSystem:
         volume = sum(items.values())
         
         # Charge broker fee
-        player_comp.isk -= broker_fee
+        player_comp.credits -= broker_fee
         
         # Remove items from inventory (held in contract)
         for item_id, quantity in items.items():
@@ -490,12 +490,12 @@ class ContractSystem:
         if not player_comp:
             return False
         
-        # Check if acceptor has enough ISK for collateral
-        if player_comp.isk < contract.collateral:
+        # Check if acceptor has enough Credits for collateral
+        if player_comp.credits < contract.collateral:
             return False
         
         # Lock collateral
-        player_comp.isk -= contract.collateral
+        player_comp.credits -= contract.collateral
         
         # Transfer items to acceptor's inventory
         inventory_comp = acceptor_entity.get_component(Inventory)
@@ -584,13 +584,13 @@ class ContractSystem:
                 issuer_inventory.items[item_id] = issuer_inventory.items.get(item_id, 0) + quantity
         
         # Pay reward and return collateral
-        player_comp.isk += contract.reward + contract.collateral
+        player_comp.credits += contract.reward + contract.collateral
         
         # Issuer pays reward
         if issuer_entity:
             issuer_player = issuer_entity.get_component(Player)
             if issuer_player:
-                issuer_player.isk -= contract.reward
+                issuer_player.credits -= contract.reward
         
         # Update contract status
         contract.status = ContractStatus.COMPLETED
@@ -637,7 +637,7 @@ class ContractSystem:
         if issuer_entity:
             issuer_player = issuer_entity.get_component(Player)
             if issuer_player:
-                issuer_player.isk += contract.collateral
+                issuer_player.credits += contract.collateral
         
         # Acceptor loses collateral (already deducted)
         

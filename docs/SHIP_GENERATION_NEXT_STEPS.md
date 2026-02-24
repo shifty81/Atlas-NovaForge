@@ -203,7 +203,7 @@ void Model::addPartToMesh(const ShipPart* part, const glm::mat4& transform,
     "original_name": "Rifter",
     "class": "Frigate",
     "race": "Minmatar",
-    "description": "The Drifter is a versatile frigate combining speed with firepower. Known as the 'rustbucket' by pilots, it's a classic choice for new capsuleers.",
+    "description": "The Drifter is a versatile frigate combining speed with firepower. Known as the 'rustbucket' by pilots, it's a classic choice for new voidrunners.",
     "hull_hp": 450,
     ...
   },

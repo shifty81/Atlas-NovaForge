@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_CHARACTER_MESH_SYSTEM_H
-#define EVE_PCG_CHARACTER_MESH_SYSTEM_H
+#ifndef NOVAFORGE_PCG_CHARACTER_MESH_SYSTEM_H
+#define NOVAFORGE_PCG_CHARACTER_MESH_SYSTEM_H
 
 #include "pcg_context.h"
 #include "deterministic_rng.h"
@@ -124,4 +124,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_CHARACTER_MESH_SYSTEM_H
+#endif // NOVAFORGE_PCG_CHARACTER_MESH_SYSTEM_H

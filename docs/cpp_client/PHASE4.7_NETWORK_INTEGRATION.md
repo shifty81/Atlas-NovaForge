@@ -157,7 +157,7 @@ void sendMarketQuery(const std::string& itemId);
 
 **Usage Example**:
 ```cpp
-// Transfer 1000 units of Veldspar from cargo to hangar
+// Transfer 1000 units of Ferrite from cargo to hangar
 networkMgr->sendInventoryTransfer("ore_veldspar", 1000, true, false);
 
 // Fit a module
@@ -301,7 +301,7 @@ Update UI State / Show Feedback
 ### Example 1: Inventory Transfer via Drag-and-Drop
 
 ```cpp
-// User drags "Veldspar" from cargo to hangar
+// User drags "Ferrite" from cargo to hangar
 // InventoryPanel detects drop and triggers callback:
 
 inventoryCallback("ore_veldspar", 1000, 

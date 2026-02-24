@@ -84,15 +84,15 @@ void MissionTemplateSystem::installDefaultTemplates() {
 
     // ---- Mining L1-L3 ----
     addTemplate("mining_l1", "Ore Requisition: {system}", "mining", 1, "", 0.0f,
-                {OT{"mine", "Veldspar", 100, 200}},
+                {OT{"mine", "Ferrite", 100, 200}},
                 50000.0, 25000.0, 0.05f, 0.03f, 3600.0f);
 
     addTemplate("mining_l2", "Deep Core Request: {system}", "mining", 2, "", 0.0f,
-                {OT{"mine", "Scordite", 200, 350}},
+                {OT{"mine", "Galvite", 200, 350}},
                 75000.0, 25000.0, 0.05f, 0.03f, 5400.0f);
 
     addTemplate("mining_l3", "Rare Ore Extraction: {system}", "mining", 3, "", 0.3f,
-                {OT{"mine", "Kernite", 350, 500}},
+                {OT{"mine", "Heliore", 350, 500}},
                 120000.0, 30000.0, 0.08f, 0.04f, 7200.0f);
 
     // ---- Courier L1-L3 ----

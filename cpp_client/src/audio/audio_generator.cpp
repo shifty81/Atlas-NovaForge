@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <random>
 
-namespace EVE {
+namespace novaforge {
 
 bool AudioGenerator::generate_tone(const std::string& filepath,
                                    float frequency_hz,
@@ -415,6 +415,6 @@ int16_t AudioGenerator::float_to_int16(float sample) {
     return static_cast<int16_t>(sample * 32767.0f);
 }
 
-} // namespace EVE
+} // namespace novaforge
 
 #endif // USE_OPENAL

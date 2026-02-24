@@ -1,7 +1,7 @@
 """
-Planetary Interaction (PI) System
+Planetary Operations (PI) System
 Handles planetary colony management, resource extraction, and processing
-Based on EVE Online PI mechanics
+Based on Astralis PI mechanics
 """
 
 import math
@@ -15,7 +15,7 @@ from engine.components.game_components import (
 
 class PlanetaryInteractionSystem(System):
     """
-    Manages planetary interaction operations including:
+    Manages planetary operations operations including:
     - Colony creation and management
     - Resource extraction from planets
     - Material processing in factories

@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_STATION_SYSTEM_H
-#define EVE_SYSTEMS_STATION_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_STATION_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_STATION_SYSTEM_H
 
 #include "ecs/system.h"
 #include <string>
@@ -16,7 +16,7 @@ namespace systems {
  *
  * While docked:
  *   - The player entity is not removed but flagged as docked
- *   - Repair service restores shield/armor/hull to max for an ISK cost
+ *   - Repair service restores shield/armor/hull to max for an Credits cost
  *   - The player cannot move or be targeted
  *
  * On undock the docked flag is cleared and movement resumes.
@@ -35,7 +35,7 @@ public:
      * @param name        Display name (e.g. "Jita IV Trade Hub")
      * @param x,y,z       World position
      * @param docking_range  Maximum distance for docking (metres)
-     * @param repair_cost_per_hp  ISK cost per hit-point repaired
+     * @param repair_cost_per_hp  Credits cost per hit-point repaired
      * @return true if station was created
      */
     bool createStation(const std::string& station_id,
@@ -63,7 +63,7 @@ public:
     /**
      * @brief Repair all damage on a docked ship
      * @param entity_id  The player entity requesting repair
-     * @return ISK cost charged for the repair (0.0 if not docked or no damage)
+     * @return Credits cost charged for the repair (0.0 if not docked or no damage)
      */
     double repairShip(const std::string& entity_id);
 
@@ -82,4 +82,4 @@ public:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_STATION_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_STATION_SYSTEM_H

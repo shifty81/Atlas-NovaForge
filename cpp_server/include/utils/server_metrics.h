@@ -1,5 +1,5 @@
-#ifndef EVE_SERVER_METRICS_H
-#define EVE_SERVER_METRICS_H
+#ifndef NOVAFORGE_SERVER_METRICS_H
+#define NOVAFORGE_SERVER_METRICS_H
 
 #include <string>
 #include <chrono>
@@ -88,4 +88,4 @@ private:
 } // namespace utils
 } // namespace atlas
 
-#endif // EVE_SERVER_METRICS_H
+#endif // NOVAFORGE_SERVER_METRICS_H

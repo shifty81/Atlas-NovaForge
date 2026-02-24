@@ -22,16 +22,16 @@
 | 13 | Manufacturing & Research | Blueprints, ME/TE, research agents | `data/industry/` | ✅ Implemented |
 | 14 | Deadspace Complexes | 5 difficulty tiers, multi-room, escalation | `data/exploration/deadspace_complexes.json` | ✅ Data ready |
 | 15 | Escrow | Contracts, escrow mechanics | `data/contracts/contracts.json` | ✅ Data ready |
-| 17 | Legal System | CONCORD, security status, criminal flags | `data/security/concord_and_insurance.json` | ✅ Data ready |
+| 17 | Legal System | AEGIS, security status, criminal flags | `data/security/aegis_and_insurance.json` | ✅ Data ready |
 
 ## Systems Not in Manual (EVE OFFLINE Additions)
 
 | System | Description | Data Files |
 |--------|-------------|------------|
-| Clone System | Medical clones, jump clones, death mechanics | `data/character_creation/clones.json` |
+| Clone System | Medical clones, relay clones, death mechanics | `data/character_creation/clones.json` |
 | Implant System | Attribute-boosting cybernetic implants | `data/character_creation/implants.json` |
-| Insurance System | Ship hull insurance with coverage levels | `data/security/concord_and_insurance.json` |
-| Planetary Interaction | Resource extraction from planets | `data/planetary_interaction/` |
+| Insurance System | Ship hull insurance with coverage levels | `data/security/aegis_and_insurance.json` |
+| Planetary Operations | Resource extraction from planets | `data/planetary_operations/` |
 | Ice Mining | Ice products for fuel blocks | `data/ice_types.json` |
 | Gas Mining | Gas cloud harvesting | `data/gas_types.json` |
 | Capital Ships | Carriers, Dreadnoughts, Titans | `data/ships/capitals.json` |
@@ -42,7 +42,7 @@
 data/
 ├── character_creation/     # Ch. 3 - Races, bloodlines, clones, implants
 │   ├── races.json          # 4 races with bloodlines and attributes
-│   ├── clones.json         # Medical and jump clone mechanics
+│   ├── clones.json         # Medical and relay clone mechanics
 │   └── implants.json       # Cybernetic implant system
 ├── ships/                  # Ch. 1, 8 - Ship definitions
 │   ├── frigates.json       # Tech I frigates (Rifter, Merlin, Tristan, Punisher)
@@ -74,7 +74,7 @@ data/
 │   ├── station_types.json
 │   └── warp_mechanics.json
 ├── security/               # Ch. 17 - Legal system
-│   └── concord_and_insurance.json # CONCORD + insurance
+│   └── aegis_and_insurance.json # AEGIS + insurance
 ├── corporations/           # Ch. 12 - Corporation system
 │   └── corporations.json   # NPC and player corp mechanics
 ├── contracts/              # Ch. 15 - Escrow system
@@ -84,7 +84,7 @@ data/
 ├── industry/               # Ch. 13 - Manufacturing
 ├── market/                 # Economy
 ├── asteroid_fields/        # Ch. 6 - Mining
-├── planetary_interaction/  # PI resources
+├── planetary_operations/  # PI resources
 ├── gas_types.json          # Gas mining
 └── ice_types.json          # Ice mining
 ```

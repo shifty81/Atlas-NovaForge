@@ -17,7 +17,7 @@ Following the Equinox expansion and leading into 2026, nullsec structures are de
 **Usage:**
 - Harvests planetary resources directly from planets
 - Provides a new, passive income stream
-- Replaces older, less efficient planetary interaction (PI) methods
+- Replaces older, less efficient planetary operations (PI) methods
 
 **Defense:**
 - Requires **active management and defense**
@@ -194,7 +194,7 @@ Living in wormhole space has been revamped to encourage more collaborative, high
 
 ## 4. Other New Deployables & Structures
 
-### CONCORD Rogue Analysis Beacon (CRAB)
+### AEGIS Rogue Analysis Beacon (CRAB)
 
 **Description**: Used in nullsec to bait and fight NPCs for high-tier loot.
 
@@ -266,7 +266,7 @@ Living in wormhole space has been revamped to encourage more collaborative, high
 | **Metenox Moon Drill** | Nullsec | Small-scale automatic moon mining |
 | **Communal Granary** | Wormhole | Boosts mining yield (Non-destructible) |
 | **Upwell Structures (All)** | All Space | Fitted with specialized mining/industry modules |
-| **CONCORD CRAB** | Nullsec Deployable | Bait NPCs for high-tier loot |
+| **AEGIS CRAB** | Nullsec Deployable | Bait NPCs for high-tier loot |
 | **Advertising Center** | Nullsec Structure | Alliance branding and propaganda |
 
 ## Design Philosophy - 2026

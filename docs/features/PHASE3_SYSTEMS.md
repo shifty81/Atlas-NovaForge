@@ -50,14 +50,14 @@ active_jobs = industry.get_active_jobs(entity)
 ### Features
 - Buy and sell market orders
 - Instant buy/sell transactions
-- ISK wallet management
+- Credits wallet management
 - Market order book per location
 - Transaction history
 - Broker fees and sales tax (EVE-like)
 - NPC base prices
 
 ### Components
-- `Wallet` - ISK currency storage
+- `Wallet` - Credits currency storage
 - `MarketAccess` - Market location and active orders
 - `MarketOrder` - Individual buy/sell order
 
@@ -67,18 +67,18 @@ market = MarketSystem(world)
 
 # Place orders
 order_id = market.place_order(
-    entity, "tritanium", OrderType.SELL, price=6.0, quantity=10000
+    entity, "stellium", OrderType.SELL, price=6.0, quantity=10000
 )
 
 # Instant trading
-market.instant_buy(buyer, "tritanium", quantity=5000, max_price=7.0)
+market.instant_buy(buyer, "stellium", quantity=5000, max_price=7.0)
 market.instant_sell(seller, "rifter", quantity=1, min_price=300000.0)
 
 # Cancel orders
 market.cancel_order(entity, order_id)
 
 # Check prices
-prices = market.get_market_price("tritanium", "jita_4_4")
+prices = market.get_market_price("stellium", "jita_4_4")
 # Returns: {'buy': 5.5, 'sell': 6.0, 'average': 5.75}
 ```
 
@@ -103,7 +103,7 @@ prices = market.get_market_price("tritanium", "jita_4_4")
 - Scanner probe formation and positioning
 - Scan strength calculation based on probe coverage
 - Site completion and rewards
-- Directional scanner (D-Scan)
+- Directional scanner (Proxscan)
 
 ### Components
 - `ProbeScanner` - Scanner probes and scan capability
@@ -160,7 +160,7 @@ nearby_entities = exploration.directional_scan(explorer, current_time)
 - Loot containers (wrecks, cargo cans)
 - Weighted loot tables
 - Guaranteed + random loot
-- ISK drops
+- Credits drops
 - Wreck salvaging
 - Container despawning
 
@@ -197,8 +197,8 @@ nearby = loot_system.get_nearby_containers((x, y, z), max_range=100.0)
 ```
 
 ### Default Loot Tables
-- **Frigate Loot**: Salvage, ammo, small modules, 5-15K ISK
-- **Cruiser Loot**: Medium modules, datacores, rare salvage, 50-150K ISK
+- **Frigate Loot**: Salvage, ammo, small modules, 5-15K Credits
+- **Cruiser Loot**: Medium modules, datacores, rare salvage, 50-150K Credits
 - **Salvage Materials**: Common and rare salvage from wrecks
 
 ---
@@ -303,12 +303,12 @@ fleet = FleetSystem(world)
 
 # Create player
 player = world.create_entity()
-player.add_component(Wallet(isk=10000000.0))
+player.add_component(Wallet(credits=10000000.0))
 player.add_component(Inventory(capacity=1000.0))
 
 # 1. BUY MATERIALS
-market.instant_buy(player, "tritanium", 50000, max_price=6.0)
-market.instant_buy(player, "pyerite", 15000, max_price=12.0)
+market.instant_buy(player, "stellium", 50000, max_price=6.0)
+market.instant_buy(player, "vanthium", 15000, max_price=12.0)
 
 # 2. MANUFACTURE SHIP
 job_id = industry.start_manufacturing(player, "rifter_blueprint", quantity=1)
@@ -341,9 +341,9 @@ fleet.set_fleet_booster(fleet_id, player, FleetBoosterType.SHIELD)
 | System | Requires | Integrates With | Outputs |
 |--------|----------|-----------------|---------|
 | **Manufacturing** | Inventory, Blueprints | Market (buy materials) | Ships, Modules, Ammo |
-| **Market** | Wallet, Inventory | Manufacturing, Exploration | ISK, Items |
+| **Market** | Wallet, Inventory | Manufacturing, Exploration | Credits, Items |
 | **Exploration** | Scanner Probes | Loot (site rewards) | Signatures, Loot |
-| **Loot** | Inventory | Combat (NPC drops) | Items, ISK, Salvage |
+| **Loot** | Inventory | Combat (NPC drops) | Items, Credits, Salvage |
 | **Fleet** | - | All combat systems | Bonuses, Coordination |
 
 ---
@@ -391,7 +391,7 @@ Form Fleet → Share Fleet Bonuses → Run Group Content → Split Loot
 - ✅ Exploration and scanning
 - ✅ Loot and salvaging
 - ✅ Fleet mechanics and bonuses
-- ✅ ISK economy
+- ✅ Credits economy
 - ✅ Material requirements
 - ✅ Blueprint research
 

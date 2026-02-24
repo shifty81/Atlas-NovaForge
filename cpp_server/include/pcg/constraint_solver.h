@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_CONSTRAINT_SOLVER_H
-#define EVE_PCG_CONSTRAINT_SOLVER_H
+#ifndef NOVAFORGE_PCG_CONSTRAINT_SOLVER_H
+#define NOVAFORGE_PCG_CONSTRAINT_SOLVER_H
 
 #include "deterministic_rng.h"
 #include <cstdint>
@@ -149,4 +149,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_CONSTRAINT_SOLVER_H
+#endif // NOVAFORGE_PCG_CONSTRAINT_SOLVER_H

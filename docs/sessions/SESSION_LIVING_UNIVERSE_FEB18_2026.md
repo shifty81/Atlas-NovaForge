@@ -42,7 +42,7 @@ Intent-driven NPC AI component:
 - **6 Archetypes**: Trader, Pirate, Patrol, Miner, Hauler, Industrialist
 - **Personality weights**: Per-intent scoring weights
 - **State tracking**: Target system/entity, duration, cooldown, completion
-- **Economic state**: Wallet (ISK), cargo fill, profit target
+- **Economic state**: Wallet (Credits), cargo fill, profit target
 
 ### 4. NPCIntentSystem ✅
 

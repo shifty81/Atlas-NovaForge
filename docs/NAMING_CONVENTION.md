@@ -9,7 +9,7 @@
 
 All UI framework classes, files, and identifiers have been renamed to use
 original names unique to the EVE OFFLINE project. Names that were
-previously pulled directly from EVE Online (Photon UI, Neocom, etc.)
+previously pulled directly from EVE Online (Photon UI, Nexcom, etc.)
 have been replaced with project-specific alternatives.
 
 ## Naming Mapping
@@ -32,12 +32,12 @@ have been replaced with project-specific alternatives.
 | `eve_panels.h` | `hud_panels.h` | File |
 | `EVETargetList` | `TargetList` | Class |
 | `eve_target_list.h` | `target_list.h` | File |
-| `NeocomPanel` | `SidebarPanel` | Class |
-| `neocom_panel.h` | `sidebar_panel.h` | File |
-| `neocom.rml` | `sidebar.rml` | RML File |
-| `neocomBar()` | `sidebarBar()` | Function |
-| `setNeocomCallback()` | `setSidebarCallback()` | Method |
-| `m_neocomPanel` | `m_sidebarPanel` | Variable |
+| `NexcomPanel` | `SidebarPanel` | Class |
+| `nexcom_panel.h` | `sidebar_panel.h` | File |
+| `nexcom.rml` | `sidebar.rml` | RML File |
+| `nexcomBar()` | `sidebarBar()` | Function |
+| `setNexcomCallback()` | `setSidebarCallback()` | Method |
+| `m_nexcomPanel` | `m_sidebarPanel` | Variable |
 | `m_photonCtx` | `m_atlasCtx` | Variable |
 | `m_photonHUD` | `m_atlasHUD` | Variable |
 
@@ -73,7 +73,7 @@ cpp_client/include/ui/
 ├── space_colors.h       # Color palette (was eve_colors.h)
 ├── hud_panels.h         # HUD panel utilities (was eve_panels.h)
 ├── target_list.h        # Target list (was eve_target_list.h)
-├── sidebar_panel.h      # Left sidebar (was neocom_panel.h)
+├── sidebar_panel.h      # Left sidebar (was nexcom_panel.h)
 ├── layout_manager.h     # NEW: Layout save/load system
 ├── ui_manager.h         # Central UI coordinator
 └── ...                  # Other panel headers unchanged

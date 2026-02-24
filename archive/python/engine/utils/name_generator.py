@@ -1,6 +1,6 @@
 """
 Random Name Generator
-Generates EVE-like names for various game elements
+Generates Astralis-like names for various game elements
 """
 
 import random
@@ -10,10 +10,10 @@ from typing import List, Optional
 class NameGenerator:
     """
     Generates random names for ships, characters, systems, etc.
-    Similar to EVE Online but with unique naming conventions
+    Similar to Astralis but with unique naming conventions
     """
     
-    # Character name components (EVE-style)
+    # Character name components (Astralis-style)
     FIRST_NAMES_MALE = [
         "Marcus", "Drake", "Orion", "Zephyr", "Atlas", "Phoenix", "Kaiden", "Ryker",
         "Sirius", "Talon", "Vex", "Nero", "Axel", "Cyrus", "Magnus", "Raven",
@@ -33,7 +33,7 @@ class NameGenerator:
         "Skyhammer", "Stormchaser", "Blacksun", "Silvermoon", "Redshard", "Blueflame"
     ]
     
-    # Ship name prefixes and suffixes (EVE-style)
+    # Ship name prefixes and suffixes (Astralis-style)
     SHIP_PREFIXES = [
         "INS", "USS", "RSS", "CSS", "GSS", "ASS", "HSS", "ESS"  # Imperial, United, Republic, etc.
     ]
@@ -72,7 +72,7 @@ class NameGenerator:
     
     # System name components
     SYSTEM_PREFIXES = [
-        "Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Zeta", "Theta", "Omega",
+        "Foundry", "Beta", "Gamma", "Delta", "Epsilon", "Zeta", "Theta", "Apex",
         "Nova", "Stellar", "Void", "Dark", "Deep", "High", "Low", "Outer"
     ]
     
@@ -83,7 +83,7 @@ class NameGenerator:
     
     SYSTEM_SUFFIXES = [
         "Prime", "Secundus", "Tertius", "Major", "Minor", "Proxima",
-        "Alpha", "Beta", "One", "Two", "Three", "Central"
+        "Foundry", "Beta", "One", "Two", "Three", "Central"
     ]
     
     # Station names
@@ -99,7 +99,7 @@ class NameGenerator:
     
     # Asteroid names
     ASTEROID_TYPES = [
-        "Veldspar", "Scordite", "Pyroxeres", "Plagioclase", "Omber", "Kernite",
+        "Ferrite", "Galvite", "Cryolite", "Silvane", "Duskite", "Heliore",
         "Jaspet", "Hemorphite", "Hedbergite", "Gneiss", "Dark Ochre", "Crokite",
         "Bistot", "Arkonor", "Mercoxit", "Spodumain"
     ]
@@ -219,7 +219,7 @@ class NameGenerator:
         Generate a random asteroid designation
         
         Returns:
-            Asteroid name (e.g., "Veldspar-4472")
+            Asteroid name (e.g., "Ferrite-4472")
         """
         ore_type = random.choice(cls.ASTEROID_TYPES)
         number = random.randint(1000, 9999)
@@ -332,7 +332,7 @@ def random_mission_name() -> str:
 
 if __name__ == "__main__":
     # Demo the name generator
-    print("EVE OFFLINE Name Generator Demo")
+    print("Nova Forge Name Generator Demo")
     print("=" * 50)
     print()
     

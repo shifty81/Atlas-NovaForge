@@ -25,22 +25,22 @@ class TestOreReprocessing(unittest.TestCase):
         self.world = World()
         self.industry_system = IndustrySystem(self.world)
         
-        # Sample ore data (Veldspar)
+        # Sample ore data (Ferrite)
         self.veldspar_data = {
-            "name": "Veldspar",
+            "name": "Ferrite",
             "tier": "common",
             "volume_per_unit": 0.1,
             "reprocessing_base": 400,
-            "minerals": {"tritanium": 415}
+            "minerals": {"stellium": 415}
         }
         
-        # Sample ore data (Scordite)
+        # Sample ore data (Galvite)
         self.scordite_data = {
-            "name": "Scordite",
+            "name": "Galvite",
             "tier": "common",
             "volume_per_unit": 0.15,
             "reprocessing_base": 333,
-            "minerals": {"tritanium": 346, "pyerite": 173}
+            "minerals": {"stellium": 346, "vanthium": 173}
         }
         
         # Create miner entity with inventory
@@ -52,25 +52,25 @@ class TestOreReprocessing(unittest.TestCase):
         """Test basic ore reprocessing"""
         # Add ore to inventory
         inventory = self.miner.get_component(Inventory)
-        inventory.items["veldspar"] = 1000
+        inventory.items["ferrite"] = 1000
         
         # Reprocess ore (400 units = 1 batch)
         minerals = self.industry_system.reprocess_ore(
             self.miner,
-            "veldspar",
+            "ferrite",
             400,
             self.veldspar_data,
             station_efficiency=0.50
         )
         
         self.assertIsNotNone(minerals)
-        self.assertIn("tritanium", minerals)
+        self.assertIn("stellium", minerals)
         
-        # Should get 415 * 1 * 0.50 = 207.5 -> 207 tritanium
-        self.assertGreater(minerals["tritanium"], 200)
+        # Should get 415 * 1 * 0.50 = 207.5 -> 207 stellium
+        self.assertGreater(minerals["stellium"], 200)
         
         # Check ore was consumed
-        self.assertEqual(inventory.items["veldspar"], 600)
+        self.assertEqual(inventory.items["ferrite"], 600)
     
     def test_reprocess_with_skills(self):
         """Test reprocessing with skill bonuses"""
@@ -80,7 +80,7 @@ class TestOreReprocessing(unittest.TestCase):
         # Total: 0.50 + 0.15 + 0.08 = 0.73 (73%)
         
         inventory = self.miner.get_component(Inventory)
-        inventory.items["veldspar"] = 1000
+        inventory.items["ferrite"] = 1000
         
         # Calculate expected efficiency
         efficiency = self.industry_system.calculate_reprocessing_efficiency(
@@ -92,7 +92,7 @@ class TestOreReprocessing(unittest.TestCase):
         # Reprocess with skills
         minerals = self.industry_system.reprocess_ore(
             self.miner,
-            "veldspar",
+            "ferrite",
             400,
             self.veldspar_data,
             station_efficiency=0.50,
@@ -100,42 +100,42 @@ class TestOreReprocessing(unittest.TestCase):
         )
         
         self.assertIsNotNone(minerals)
-        # Should get 415 * 1 * 0.73 = 302.95 -> 302 tritanium
-        self.assertGreater(minerals["tritanium"], 280)
-        self.assertLess(minerals["tritanium"], 320)
+        # Should get 415 * 1 * 0.73 = 302.95 -> 302 stellium
+        self.assertGreater(minerals["stellium"], 280)
+        self.assertLess(minerals["stellium"], 320)
     
     def test_reprocess_multiple_minerals(self):
         """Test reprocessing ore with multiple mineral outputs"""
         inventory = self.miner.get_component(Inventory)
-        inventory.items["scordite"] = 1000
+        inventory.items["galvite"] = 1000
         
-        # Reprocess scordite (produces tritanium and pyerite)
+        # Reprocess galvite (produces stellium and vanthium)
         minerals = self.industry_system.reprocess_ore(
             self.miner,
-            "scordite",
+            "galvite",
             666,  # 2 batches (333 each)
             self.scordite_data,
             station_efficiency=0.50
         )
         
         self.assertIsNotNone(minerals)
-        self.assertIn("tritanium", minerals)
-        self.assertIn("pyerite", minerals)
+        self.assertIn("stellium", minerals)
+        self.assertIn("vanthium", minerals)
         
         # Should get 2 batches worth
-        # Tritanium: 346 * 2 * 0.50 = 346
-        # Pyerite: 173 * 2 * 0.50 = 173
-        self.assertGreater(minerals["tritanium"], 300)
-        self.assertGreater(minerals["pyerite"], 150)
+        # Stellium: 346 * 2 * 0.50 = 346
+        # Vanthium: 173 * 2 * 0.50 = 173
+        self.assertGreater(minerals["stellium"], 300)
+        self.assertGreater(minerals["vanthium"], 150)
     
     def test_reprocess_insufficient_ore(self):
         """Test reprocessing fails with insufficient ore"""
         inventory = self.miner.get_component(Inventory)
-        inventory.items["veldspar"] = 100  # Not enough for 1 batch (needs 400)
+        inventory.items["ferrite"] = 100  # Not enough for 1 batch (needs 400)
         
         minerals = self.industry_system.reprocess_ore(
             self.miner,
-            "veldspar",
+            "ferrite",
             400,
             self.veldspar_data
         )
@@ -147,38 +147,38 @@ class TestOreReprocessing(unittest.TestCase):
         # Add ore hold
         self.miner.add_component(OreHold(ore_hold_capacity=10000.0))
         ore_hold = self.miner.get_component(OreHold)
-        ore_hold.ore["veldspar"] = 1000
+        ore_hold.ore["ferrite"] = 1000
         ore_hold.ore_hold_used = 1000
         
         # Reprocess from ore hold
         minerals = self.industry_system.reprocess_ore(
             self.miner,
-            "veldspar",
+            "ferrite",
             800,  # 2 batches
             self.veldspar_data,
             station_efficiency=0.50
         )
         
         self.assertIsNotNone(minerals)
-        self.assertIn("tritanium", minerals)
+        self.assertIn("stellium", minerals)
         
         # Check ore hold was depleted
-        self.assertEqual(ore_hold.ore["veldspar"], 200)
+        self.assertEqual(ore_hold.ore["ferrite"], 200)
         self.assertEqual(ore_hold.ore_hold_used, 200)
         
         # Minerals should be in inventory
         inventory = self.miner.get_component(Inventory)
-        self.assertIn("tritanium", inventory.items)
+        self.assertIn("stellium", inventory.items)
     
     def test_reprocess_partial_batch(self):
         """Test that partial batches don't get processed"""
         inventory = self.miner.get_component(Inventory)
-        inventory.items["veldspar"] = 1000
+        inventory.items["ferrite"] = 1000
         
         # Try to reprocess 300 units (less than 1 batch of 400)
         minerals = self.industry_system.reprocess_ore(
             self.miner,
-            "veldspar",
+            "ferrite",
             300,
             self.veldspar_data
         )
@@ -187,16 +187,16 @@ class TestOreReprocessing(unittest.TestCase):
         self.assertIsNone(minerals)
         
         # Ore should not be consumed
-        self.assertEqual(inventory.items["veldspar"], 1000)
+        self.assertEqual(inventory.items["ferrite"], 1000)
     
     def test_reprocess_removes_depleted_ore(self):
         """Test that ore entry is removed when fully consumed"""
         inventory = self.miner.get_component(Inventory)
-        inventory.items["veldspar"] = 400  # Exactly 1 batch
+        inventory.items["ferrite"] = 400  # Exactly 1 batch
         
         minerals = self.industry_system.reprocess_ore(
             self.miner,
-            "veldspar",
+            "ferrite",
             400,
             self.veldspar_data
         )
@@ -204,7 +204,7 @@ class TestOreReprocessing(unittest.TestCase):
         self.assertIsNotNone(minerals)
         
         # Ore should be completely removed from inventory
-        self.assertNotIn("veldspar", inventory.items)
+        self.assertNotIn("ferrite", inventory.items)
     
     def test_calculate_reprocessing_efficiency(self):
         """Test efficiency calculation"""
@@ -251,22 +251,22 @@ class TestOreReprocessing(unittest.TestCase):
     def test_reprocess_multiple_types(self):
         """Test reprocessing different ore types sequentially"""
         inventory = self.miner.get_component(Inventory)
-        inventory.items["veldspar"] = 1000
-        inventory.items["scordite"] = 1000
+        inventory.items["ferrite"] = 1000
+        inventory.items["galvite"] = 1000
         
-        # Reprocess veldspar
+        # Reprocess ferrite
         minerals1 = self.industry_system.reprocess_ore(
             self.miner,
-            "veldspar",
+            "ferrite",
             400,
             self.veldspar_data,
             station_efficiency=0.50
         )
         
-        # Reprocess scordite
+        # Reprocess galvite
         minerals2 = self.industry_system.reprocess_ore(
             self.miner,
-            "scordite",
+            "galvite",
             333,
             self.scordite_data,
             station_efficiency=0.50
@@ -276,12 +276,12 @@ class TestOreReprocessing(unittest.TestCase):
         self.assertIsNotNone(minerals2)
         
         # Check both ores were consumed
-        self.assertEqual(inventory.items["veldspar"], 600)
-        self.assertEqual(inventory.items["scordite"], 667)
+        self.assertEqual(inventory.items["ferrite"], 600)
+        self.assertEqual(inventory.items["galvite"], 667)
         
         # Check minerals accumulated
-        self.assertIn("tritanium", inventory.items)
-        self.assertIn("pyerite", inventory.items)
+        self.assertIn("stellium", inventory.items)
+        self.assertIn("vanthium", inventory.items)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_WEAPON_SOCKET_H
-#define EVE_PCG_WEAPON_SOCKET_H
+#ifndef NOVAFORGE_PCG_WEAPON_SOCKET_H
+#define NOVAFORGE_PCG_WEAPON_SOCKET_H
 
 #include "ship_generator.h"
 #include <cstdint>
@@ -47,7 +47,7 @@ public:
     /**
      * @brief Can a turret track the target at the given angular velocity?
      *
-     * Direct EVE analog:  hit iff angularVelocity ≤ tracking.
+     * Direct Astralis analog:  hit iff angularVelocity ≤ tracking.
      *
      * @param angularVelocity  Target's angular velocity (rad/s).
      * @param tracking         Turret tracking speed (rad/s).
@@ -93,4 +93,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_WEAPON_SOCKET_H
+#endif // NOVAFORGE_PCG_WEAPON_SOCKET_H

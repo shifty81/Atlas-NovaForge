@@ -1,7 +1,7 @@
 """
 Mining System
 Handles mining laser operations, ore extraction, and yield calculations
-Based on EVE Online mining mechanics
+Based on Astralis mining mechanics
 """
 
 import math

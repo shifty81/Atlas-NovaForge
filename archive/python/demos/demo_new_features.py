@@ -52,9 +52,9 @@ def demo_manufacturing():
         time_efficiency=10,  # 10% time reduction
         runs=-1,  # BPO (infinite runs)
         materials={
-            "tritanium": 30000,
-            "pyerite": 8000,
-            "mexallon": 2000
+            "stellium": 30000,
+            "vanthium": 8000,
+            "cydrium": 2000
         },
         manufacturing_time=3600.0  # 1 hour
     )
@@ -63,9 +63,9 @@ def demo_manufacturing():
     
     # Add materials to inventory
     print("📦 Starting inventory:")
-    inventory.add_item("tritanium", 100000, 0.01)
-    inventory.add_item("pyerite", 25000, 0.01)
-    inventory.add_item("mexallon", 10000, 0.01)
+    inventory.add_item("stellium", 100000, 0.01)
+    inventory.add_item("vanthium", 25000, 0.01)
+    inventory.add_item("cydrium", 10000, 0.01)
     
     for item_id, qty in inventory.items.items():
         print(f"  - {item_id}: {qty:,}")
@@ -133,7 +133,7 @@ def demo_market():
     
     # Initialize NPC prices
     npc_prices = {
-        "tritanium": 5.0,
+        "stellium": 5.0,
         "rifter": 350000.0,
         "autocannon": 25000.0
     }
@@ -144,17 +144,17 @@ def demo_market():
     buyer = world.create_entity()
     
     # Setup seller
-    seller_wallet = Wallet(isk=5000000.0)
+    seller_wallet = Wallet(credits=5000000.0)
     seller_market = MarketAccess(location_id="jita_4_4")
     seller_inv = Inventory(capacity=1000.0)
-    seller_inv.add_item("tritanium", 100000, 0.01)
+    seller_inv.add_item("stellium", 100000, 0.01)
     
     seller.add_component(seller_wallet)
     seller.add_component(seller_market)
     seller.add_component(seller_inv)
     
     # Setup buyer
-    buyer_wallet = Wallet(isk=10000000.0)
+    buyer_wallet = Wallet(credits=10000000.0)
     buyer_market = MarketAccess(location_id="jita_4_4")
     buyer_inv = Inventory(capacity=1000.0)
     
@@ -163,19 +163,19 @@ def demo_market():
     buyer.add_component(buyer_inv)
     
     print("💰 Initial state:")
-    print(f"  Seller ISK: {seller_wallet.isk:,.0f}")
-    print(f"  Seller tritanium: {seller_inv.items.get('tritanium', 0):,}")
-    print(f"  Buyer ISK: {buyer_wallet.isk:,.0f}")
-    print(f"  Buyer tritanium: {buyer_inv.items.get('tritanium', 0):,}")
+    print(f"  Seller Credits: {seller_wallet.credits:,.0f}")
+    print(f"  Seller stellium: {seller_inv.items.get('stellium', 0):,}")
+    print(f"  Buyer Credits: {buyer_wallet.credits:,.0f}")
+    print(f"  Buyer stellium: {buyer_inv.items.get('stellium', 0):,}")
     
     # Seller places a sell order
     print("\n📊 Seller places sell order:")
-    print("  Item: Tritanium x50,000")
-    print("  Price: 6.0 ISK each")
+    print("  Item: Stellium x50,000")
+    print("  Price: 6.0 Credits each")
     
     order_id = market.place_order(
         seller,
-        "tritanium",
+        "stellium",
         OrderType.SELL,
         price=6.0,
         quantity=50000
@@ -185,28 +185,28 @@ def demo_market():
         print(f"  ✅ Order placed: {order_id}")
         
         # Check market price
-        prices = market.get_market_price("tritanium", "jita_4_4")
+        prices = market.get_market_price("stellium", "jita_4_4")
         print(f"\n💱 Current market prices:")
-        print(f"  Best sell: {prices['sell']:.2f} ISK")
-        print(f"  Best buy: {prices['buy']:.2f} ISK")
-        print(f"  Average: {prices['average']:.2f} ISK")
+        print(f"  Best sell: {prices['sell']:.2f} Credits")
+        print(f"  Best buy: {prices['buy']:.2f} Credits")
+        print(f"  Average: {prices['average']:.2f} Credits")
         
         # Buyer makes instant purchase
         print("\n🛒 Buyer makes instant purchase:")
         print("  Quantity: 10,000 units")
         
-        if market.instant_buy(buyer, "tritanium", 10000):
+        if market.instant_buy(buyer, "stellium", 10000):
             print("  ✅ Purchase successful!")
             
             print(f"\n💰 After transaction:")
-            print(f"  Seller ISK: {seller_wallet.isk:,.0f} (+{300000 - 6000:.0f})")
-            print(f"  Seller tritanium: {seller_inv.items.get('tritanium', 0):,}")
-            print(f"  Buyer ISK: {buyer_wallet.isk:,.0f} (-{61200:.0f})")
-            print(f"  Buyer tritanium: {buyer_inv.items.get('tritanium', 0):,}")
+            print(f"  Seller Credits: {seller_wallet.credits:,.0f} (+{300000 - 6000:.0f})")
+            print(f"  Seller stellium: {seller_inv.items.get('stellium', 0):,}")
+            print(f"  Buyer Credits: {buyer_wallet.credits:,.0f} (-{61200:.0f})")
+            print(f"  Buyer stellium: {buyer_inv.items.get('stellium', 0):,}")
             
             print(f"\n📈 Transaction history:")
             for tx in market.transaction_history[-3:]:
-                print(f"  - {tx['item_id']} x{tx['quantity']} @ {tx['price']:.2f} ISK")
+                print(f"  - {tx['item_id']} x{tx['quantity']} @ {tx['price']:.2f} Credits")
         else:
             print("  ❌ Purchase failed")
     else:
@@ -335,7 +335,7 @@ def demo_exploration():
 def main():
     """Run all demos"""
     print("\n" + "="*70)
-    print("  EVE OFFLINE - NEW FEATURES DEMONSTRATION")
+    print("  Nova Forge - NEW FEATURES DEMONSTRATION")
     print("  Manufacturing, Market, and Exploration Systems")
     print("="*70)
     
@@ -354,12 +354,12 @@ def main():
         print("✅ All new systems demonstrated successfully!")
         print("\nNew systems available:")
         print("  1. 🏭 Manufacturing System - Blueprint research, manufacturing, copying")
-        print("  2. 💰 Market System - Buy/sell orders, instant trading, ISK wallet")
+        print("  2. 💰 Market System - Buy/sell orders, instant trading, Credits wallet")
         print("  3. 🔍 Exploration System - Probe scanning, cosmic signatures, sites")
         print("\nSee docs/features/LANGUAGE_AND_3D_OPTIONS.md for information about:")
         print("  - Python vs C++20 implementation")
         print("  - 3D graphics support options")
-        print("  - EVE Online and Astrox Imperium visual style")
+        print("  - Astralis and Astrox Imperium visual style")
         
     except KeyboardInterrupt:
         print("\n\nDemo interrupted by user")

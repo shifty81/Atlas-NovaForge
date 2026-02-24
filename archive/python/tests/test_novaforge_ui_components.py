@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Unit tests for EVE-styled UI components
+Unit tests for Astralis-styled UI components
 Tests that the UI components can be imported and instantiated correctly
 """
 
@@ -15,13 +15,13 @@ def test_imports():
     print("Testing imports...")
     
     try:
-        from client_3d.ui.eve_style import (
-            EVEColorScheme, EVEPanelStyle, EVELayoutPresets,
+        from client_3d.ui.novaforge_style import (
+            AstralisColorScheme, AstralisPanelStyle, EVELayoutPresets,
             get_health_color, get_capacitor_color, lerp_color
         )
-        print("✓ eve_style module imported successfully")
+        print("✓ novaforge_style module imported successfully")
     except Exception as e:
-        print(f"✗ Failed to import eve_style: {e}")
+        print(f"✗ Failed to import novaforge_style: {e}")
         return False
     
     try:
@@ -32,10 +32,10 @@ def test_imports():
         return False
     
     try:
-        from client_3d.ui.eve_hud import EVEStyledHUD
-        print("✓ eve_hud module imported successfully")
+        from client_3d.ui.novaforge_hud import AstralisStyledHUD
+        print("✓ novaforge_hud module imported successfully")
     except Exception as e:
-        print(f"✗ Failed to import eve_hud: {e}")
+        print(f"✗ Failed to import novaforge_hud: {e}")
         return False
     
     try:
@@ -52,13 +52,13 @@ def test_color_scheme():
     """Test color scheme values"""
     print("\nTesting color scheme...")
     
-    from client_3d.ui.eve_style import EVEColorScheme, get_health_color, get_capacitor_color
+    from client_3d.ui.novaforge_style import AstralisColorScheme, get_health_color, get_capacitor_color
     from panda3d.core import Vec4
     
     # Test that colors are Vec4
-    assert isinstance(EVEColorScheme.BACKGROUND_PRIMARY, Vec4)
-    assert isinstance(EVEColorScheme.ACCENT_PRIMARY, Vec4)
-    assert isinstance(EVEColorScheme.SHIELD_COLOR, Vec4)
+    assert isinstance(AstralisColorScheme.BACKGROUND_PRIMARY, Vec4)
+    assert isinstance(AstralisColorScheme.ACCENT_PRIMARY, Vec4)
+    assert isinstance(AstralisColorScheme.SHIELD_COLOR, Vec4)
     print("✓ Color scheme values are valid Vec4")
     
     # Test health color function
@@ -78,17 +78,17 @@ def test_panel_style():
     """Test panel style constants"""
     print("\nTesting panel style...")
     
-    from client_3d.ui.eve_style import EVEPanelStyle
+    from client_3d.ui.novaforge_style import AstralisPanelStyle
     
     # Test constants exist
-    assert hasattr(EVEPanelStyle, 'FONT_SIZE_NORMAL')
-    assert hasattr(EVEPanelStyle, 'PANEL_PADDING')
-    assert hasattr(EVEPanelStyle, 'ANIM_FAST')
+    assert hasattr(AstralisPanelStyle, 'FONT_SIZE_NORMAL')
+    assert hasattr(AstralisPanelStyle, 'PANEL_PADDING')
+    assert hasattr(AstralisPanelStyle, 'ANIM_FAST')
     print("✓ Panel style constants defined")
     
     # Test values are reasonable
-    assert 0 < EVEPanelStyle.FONT_SIZE_NORMAL < 1
-    assert 0 < EVEPanelStyle.PANEL_PADDING < 1
+    assert 0 < AstralisPanelStyle.FONT_SIZE_NORMAL < 1
+    assert 0 < AstralisPanelStyle.PANEL_PADDING < 1
     print("✓ Panel style values are reasonable")
     
     return True
@@ -98,12 +98,12 @@ def test_layout_presets():
     """Test layout presets"""
     print("\nTesting layout presets...")
     
-    from client_3d.ui.eve_style import EVELayoutPresets
+    from client_3d.ui.novaforge_style import EVELayoutPresets
     
     # Test that presets exist
     assert hasattr(EVELayoutPresets, 'SHIP_STATUS')
     assert hasattr(EVELayoutPresets, 'TARGET_INFO')
-    assert hasattr(EVELayoutPresets, 'NEOCOM')
+    assert hasattr(EVELayoutPresets, 'NEXCOM')
     print("✓ Layout presets defined")
     
     # Test structure
@@ -130,7 +130,7 @@ def test_hud_factory():
 def main():
     """Run all tests"""
     print("=" * 60)
-    print("EVE-Styled UI Component Tests")
+    print("Astralis-Styled UI Component Tests")
     print("=" * 60)
     
     all_passed = True
@@ -155,13 +155,13 @@ def main():
     if all_passed:
         print("✓ ALL TESTS PASSED")
         print("=" * 60)
-        print("\nEVE-styled UI components are properly configured!")
+        print("\nAstralis-styled UI components are properly configured!")
         print("\nKey Features:")
-        print("  • EVE Online Photon UI color scheme")
+        print("  • Astralis Photon UI color scheme")
         print("  • Circular capacitor ring display")
         print("  • Concentric health rings (shield/armor/hull)")
-        print("  • EVE-styled panels with borders and headers")
-        print("  • Neocom-style left sidebar")
+        print("  • Astralis-styled panels with borders and headers")
+        print("  • Nexcom-style left sidebar")
         print("  • Overview panel")
         print("  • Combat log with proper styling")
         print("  • Target info panel")
@@ -169,7 +169,7 @@ def main():
         print("\nTo test with 3D client:")
         print("  python client_3d.py \"TestPilot\"")
         print("\nTo test standalone UI demo:")
-        print("  python test_eve_hud.py")
+        print("  python test_novaforge_hud.py")
         return 0
     else:
         print("✗ SOME TESTS FAILED")

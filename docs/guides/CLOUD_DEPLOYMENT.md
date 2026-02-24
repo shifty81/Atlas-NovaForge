@@ -20,7 +20,7 @@ The server includes a multi-stage Dockerfile for optimized deployment.
 
 ```bash
 cd /path/to/EVEOFFLINE
-docker build -t eve-offline-server:latest .
+docker build -t novaforge-server:latest .
 ```
 
 ### Run Locally
@@ -31,7 +31,7 @@ docker run -d \
   -p 27015:27015 \
   -v $(pwd)/data:/app/data:ro \
   -v eve-server-saves:/app/saves \
-  eve-offline-server:latest
+  novaforge-server:latest
 ```
 
 ### Configuration
@@ -45,7 +45,7 @@ docker run -d \
   -v $(pwd)/data:/app/data:ro \
   -v $(pwd)/custom_config.json:/app/config/server_config.json:ro \
   -v eve-server-saves:/app/saves \
-  eve-offline-server:latest
+  novaforge-server:latest
 ```
 
 ---
@@ -62,18 +62,18 @@ aws ecr get-login-password --region us-east-1 | \
   docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-east-1.amazonaws.com
 
 # Create repository
-aws ecr create-repository --repository-name eve-offline-server
+aws ecr create-repository --repository-name novaforge-server
 
 # Tag and push
-docker tag eve-offline-server:latest <account-id>.dkr.ecr.us-east-1.amazonaws.com/eve-offline-server:latest
-docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/eve-offline-server:latest
+docker tag novaforge-server:latest <account-id>.dkr.ecr.us-east-1.amazonaws.com/novaforge-server:latest
+docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/novaforge-server:latest
 ```
 
 2. **Create ECS Task Definition:**
 
 ```json
 {
-  "family": "eve-offline-server",
+  "family": "novaforge-server",
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "1024",
@@ -81,7 +81,7 @@ docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/eve-offline-server:late
   "containerDefinitions": [
     {
       "name": "eve-server",
-      "image": "<account-id>.dkr.ecr.us-east-1.amazonaws.com/eve-offline-server:latest",
+      "image": "<account-id>.dkr.ecr.us-east-1.amazonaws.com/novaforge-server:latest",
       "portMappings": [
         {
           "containerPort": 27015,
@@ -91,7 +91,7 @@ docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/eve-offline-server:late
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/eve-offline-server",
+          "awslogs-group": "/ecs/novaforge-server",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
         }
@@ -107,7 +107,7 @@ docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/eve-offline-server:late
 aws ecs create-service \
   --cluster eve-cluster \
   --service-name eve-server \
-  --task-definition eve-offline-server \
+  --task-definition novaforge-server \
   --desired-count 1 \
   --launch-type FARGATE \
   --network-configuration "awsvpcConfiguration={subnets=[subnet-xxx],securityGroups=[sg-xxx],assignPublicIp=ENABLED}"
@@ -134,7 +134,7 @@ docker run -d \
   -p 27015:27015 \
   -v /opt/eve-data:/app/data:ro \
   -v /opt/eve-saves:/app/saves \
-  eve-offline-server:latest
+  novaforge-server:latest
 ```
 
 4. **Configure Security Group** to allow TCP port 27015
@@ -148,14 +148,14 @@ docker run -d \
 1. **Build and push to GCR:**
 
 ```bash
-gcloud builds submit --tag gcr.io/<project-id>/eve-offline-server
+gcloud builds submit --tag gcr.io/<project-id>/novaforge-server
 ```
 
 2. **Deploy to Cloud Run:**
 
 ```bash
 gcloud run deploy eve-server \
-  --image gcr.io/<project-id>/eve-offline-server \
+  --image gcr.io/<project-id>/novaforge-server \
   --platform managed \
   --region us-central1 \
   --port 27015 \
@@ -193,7 +193,7 @@ sudo docker run -d \
   --restart unless-stopped \
   --name eve-server \
   -p 27015:27015 \
-  eve-offline-server:latest
+  novaforge-server:latest
 ```
 
 4. **Create firewall rule:**
@@ -227,7 +227,7 @@ docker run -d \
   -p 27015:27015 \
   -v /opt/eve-data:/app/data:ro \
   -v /opt/eve-saves:/app/saves \
-  eve-offline-server:latest
+  novaforge-server:latest
 ```
 
 4. **Configure firewall** via Digital Ocean dashboard to allow TCP 27015
@@ -237,8 +237,8 @@ docker run -d \
 1. **Push to Docker Hub or DOCR:**
 
 ```bash
-docker tag eve-offline-server:latest <dockerhub-user>/eve-offline-server:latest
-docker push <dockerhub-user>/eve-offline-server:latest
+docker tag novaforge-server:latest <dockerhub-user>/novaforge-server:latest
+docker push <dockerhub-user>/novaforge-server:latest
 ```
 
 2. **Create App** via Digital Ocean dashboard
@@ -262,10 +262,10 @@ az group create --name eve-server-rg --location eastus
 2. **Push to Azure Container Registry:**
 
 ```bash
-az acr create --resource-group eve-server-rg --name eveofflineregistry --sku Basic
-az acr login --name eveofflineregistry
-docker tag eve-offline-server:latest eveofflineregistry.azurecr.io/eve-offline-server:latest
-docker push eveofflineregistry.azurecr.io/eve-offline-server:latest
+az acr create --resource-group eve-server-rg --name novaforgeregistry --sku Basic
+az acr login --name novaforgeregistry
+docker tag novaforge-server:latest novaforgeregistry.azurecr.io/novaforge-server:latest
+docker push novaforgeregistry.azurecr.io/novaforge-server:latest
 ```
 
 3. **Deploy container instance:**
@@ -274,7 +274,7 @@ docker push eveofflineregistry.azurecr.io/eve-offline-server:latest
 az container create \
   --resource-group eve-server-rg \
   --name eve-server \
-  --image eveofflineregistry.azurecr.io/eve-offline-server:latest \
+  --image novaforgeregistry.azurecr.io/novaforge-server:latest \
   --cpu 1 \
   --memory 2 \
   --ports 27015 \

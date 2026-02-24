@@ -2,7 +2,7 @@
 NPC Damage Type Reference
 Provides a lookup table for optimal damage types to deal against each NPC faction,
 and what damage types each faction deals to players.
-Based on EVE Online's NPC faction damage profiles.
+Based on Astralis's NPC faction damage profiles.
 
 This is a critical reference for PVE gameplay - knowing what to shoot and what to tank.
 """
@@ -31,7 +31,7 @@ class FactionDamageProfile:
 
 
 # Complete NPC faction damage reference table
-# Based on EVE Online Wiki data
+# Based on Astralis Wiki data
 NPC_FACTION_PROFILES: Dict[str, FactionDamageProfile] = {
     "serpentis": FactionDamageProfile(
         faction_id="serpentis",

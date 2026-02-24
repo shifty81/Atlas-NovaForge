@@ -26,11 +26,11 @@ market = MarketSystem(world)
 
 # Place sell order
 order_id = market.place_order(
-    seller, "tritanium", OrderType.SELL, price=6.0, quantity=50000
+    seller, "stellium", OrderType.SELL, price=6.0, quantity=50000
 )
 
 # Instant buy
-market.instant_buy(buyer, "tritanium", quantity=10000)
+market.instant_buy(buyer, "stellium", quantity=10000)
 ```
 
 ### Exploration
@@ -107,7 +107,7 @@ python interactive_demo.py      # Text-based gameplay
 ### Market
 - Buy/sell orders
 - Instant trading
-- ISK economy
+- Credits economy
 - Broker fees & taxes
 - Trade hubs
 
@@ -116,7 +116,7 @@ python interactive_demo.py      # Text-based gameplay
 - 5 signature types
 - Site completion
 - Loot rewards
-- D-Scan
+- Proxscan
 
 ### Loot
 - NPC drops

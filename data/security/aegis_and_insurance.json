@@ -82,7 +82,7 @@
     }
   },
   "insurance_system": {
-    "description": "Ships can be insured against destruction. When an insured ship is destroyed, you receive an ISK payout based on the insurance level.",
+    "description": "Ships can be insured against destruction. When an insured ship is destroyed, you receive an Credits payout based on the insurance level.",
     "insurance_levels": {
       "basic": {
         "id": "basic",

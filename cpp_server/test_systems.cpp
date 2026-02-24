@@ -1850,7 +1850,7 @@ void testSerializeDeserializePlayerComponent() {
     auto player = std::make_unique<components::Player>();
     player->player_id = "steam_12345";
     player->character_name = "TestPilot";
-    player->isk = 5000000.0;
+    player->credits = 5000000.0;
     player->corporation = "Test Corp";
     entity->addComponent(std::move(player));
 
@@ -1867,7 +1867,7 @@ void testSerializeDeserializePlayerComponent() {
     assertTrue(lp != nullptr, "Player component loaded");
     assertTrue(lp->player_id == "steam_12345", "Player ID preserved");
     assertTrue(lp->character_name == "TestPilot", "Character name preserved");
-    assertTrue(lp->isk > 4999999.0 && lp->isk < 5000001.0, "ISK preserved");
+    assertTrue(lp->credits > 4999999.0 && lp->credits < 5000001.0, "Credits preserved");
     assertTrue(lp->corporation == "Test Corp", "Corporation preserved");
 }
 
@@ -2402,7 +2402,7 @@ void testMissionAcceptAndComplete() {
     auto* player = world.createEntity("player1");
     addComp<components::MissionTracker>(player);
     auto* playerComp = addComp<components::Player>(player);
-    playerComp->isk = 0.0;
+    playerComp->credits = 0.0;
     auto* standings = addComp<components::Standings>(player);
 
     // Accept a mission
@@ -2433,8 +2433,8 @@ void testMissionAcceptAndComplete() {
 
     // Update should process completion
     missionSys.update(0.0f);
-    assertTrue(approxEqual(static_cast<float>(playerComp->isk), 100000.0f, 1.0f),
-               "ISK reward applied");
+    assertTrue(approxEqual(static_cast<float>(playerComp->credits), 100000.0f, 1.0f),
+               "Credits reward applied");
     assertTrue(tracker->completed_mission_ids.size() == 1,
                "Mission recorded as completed");
     assertTrue(tracker->active_missions.empty(),
@@ -2856,14 +2856,14 @@ void testInventoryAddItem() {
     auto* inv = addComp<components::Inventory>(ship);
     inv->max_capacity = 100.0f;
 
-    bool added = invSys.addItem("ship1", "tritanium", "Tritanium", "ore", 10, 1.0f);
+    bool added = invSys.addItem("ship1", "stellium", "Stellium", "ore", 10, 1.0f);
     assertTrue(added, "Item added successfully");
     assertTrue(inv->items.size() == 1, "One item stack in inventory");
     assertTrue(inv->items[0].quantity == 10, "Quantity is 10");
     assertTrue(approxEqual(inv->usedCapacity(), 10.0f), "Used capacity is 10 m3");
 
     // Stack with existing
-    added = invSys.addItem("ship1", "tritanium", "Tritanium", "ore", 5, 1.0f);
+    added = invSys.addItem("ship1", "stellium", "Stellium", "ore", 5, 1.0f);
     assertTrue(added, "Stacked item added");
     assertTrue(inv->items.size() == 1, "Still one stack after stacking");
     assertTrue(inv->items[0].quantity == 15, "Quantity is 15 after stacking");
@@ -2879,7 +2879,7 @@ void testInventoryCapacityLimit() {
     auto* inv = addComp<components::Inventory>(ship);
     inv->max_capacity = 50.0f;
 
-    bool added = invSys.addItem("ship1", "ore", "Veldspar", "ore", 40, 1.0f);
+    bool added = invSys.addItem("ship1", "ore", "Ferrite", "ore", 40, 1.0f);
     assertTrue(added, "40 m3 fits in 50 m3 hold");
 
     added = invSys.addItem("ship1", "big_item", "Big Module", "module", 1, 20.0f);
@@ -2995,9 +2995,9 @@ void testLootGenerate() {
     assertTrue(wreck_inv->items.size() >= 1, "Wreck has at least one item");
 
     auto* wreck_lt = wreck->getComponent<components::LootTable>();
-    assertTrue(wreck_lt != nullptr, "Wreck has LootTable for ISK");
+    assertTrue(wreck_lt != nullptr, "Wreck has LootTable for Credits");
     assertTrue(approxEqual(static_cast<float>(wreck_lt->isk_drop), 15000.0f),
-               "ISK bounty preserved on wreck");
+               "Credits bounty preserved on wreck");
 }
 
 void testLootCollect() {
@@ -3029,13 +3029,13 @@ void testLootCollect() {
     auto* player_inv = addComp<components::Inventory>(player);
     player_inv->max_capacity = 400.0f;
     auto* player_comp = addComp<components::Player>(player);
-    player_comp->isk = 100000.0;
+    player_comp->credits = 100000.0;
 
     bool collected = lootSys.collectLoot(wreck_id, "player1");
     assertTrue(collected, "Loot collected successfully");
     assertTrue(player_inv->items.size() >= 1, "Player received items");
-    assertTrue(approxEqual(static_cast<float>(player_comp->isk), 125000.0f),
-               "Player ISK increased by bounty");
+    assertTrue(approxEqual(static_cast<float>(player_comp->credits), 125000.0f),
+               "Player Credits increased by bounty");
 }
 
 void testLootEmptyTable() {
@@ -3411,7 +3411,7 @@ void testInsurancePurchase() {
     systems::InsuranceSystem insSys(&world);
     auto* ship = world.createEntity("player_ship");
     auto* player = addComp<components::Player>(ship);
-    player->isk = 1000000.0;
+    player->credits = 1000000.0;
 
     assertTrue(insSys.purchaseInsurance("player_ship", "basic", 500000.0),
                "Basic insurance purchased");
@@ -3420,7 +3420,7 @@ void testInsurancePurchase() {
     assertTrue(policy->tier == "basic", "Policy tier is basic");
     assertTrue(approxEqual(static_cast<float>(policy->coverage_fraction), 0.5f), "Basic coverage is 50%");
     assertTrue(approxEqual(static_cast<float>(policy->payout_value), 250000.0f), "Payout is 50% of ship value");
-    assertTrue(player->isk < 1000000.0, "Premium deducted from ISK");
+    assertTrue(player->credits < 1000000.0, "Premium deducted from Credits");
     assertTrue(policy->active, "Policy is active");
 }
 
@@ -3430,16 +3430,16 @@ void testInsuranceClaim() {
     systems::InsuranceSystem insSys(&world);
     auto* ship = world.createEntity("player_ship");
     auto* player = addComp<components::Player>(ship);
-    player->isk = 1000000.0;
+    player->credits = 1000000.0;
 
     insSys.purchaseInsurance("player_ship", "standard", 500000.0);
-    double isk_after_purchase = player->isk;
+    double isk_after_purchase = player->credits;
 
     double payout = insSys.claimInsurance("player_ship");
     assertTrue(payout > 0.0, "Claim returns positive payout");
     assertTrue(approxEqual(static_cast<float>(payout), 350000.0f), "Standard pays 70% of ship value");
-    assertTrue(approxEqual(static_cast<float>(player->isk), static_cast<float>(isk_after_purchase + payout)),
-               "ISK increased by payout");
+    assertTrue(approxEqual(static_cast<float>(player->credits), static_cast<float>(isk_after_purchase + payout)),
+               "Credits increased by payout");
 
     auto* policy = ship->getComponent<components::InsurancePolicy>();
     assertTrue(policy->claimed, "Policy marked as claimed");
@@ -3454,7 +3454,7 @@ void testInsurancePlatinum() {
     systems::InsuranceSystem insSys(&world);
     auto* ship = world.createEntity("player_ship");
     auto* player = addComp<components::Player>(ship);
-    player->isk = 1000000.0;
+    player->credits = 1000000.0;
 
     assertTrue(insSys.purchaseInsurance("player_ship", "platinum", 500000.0),
                "Platinum insurance purchased");
@@ -3469,7 +3469,7 @@ void testInsuranceExpiry() {
     systems::InsuranceSystem insSys(&world);
     auto* ship = world.createEntity("player_ship");
     auto* player = addComp<components::Player>(ship);
-    player->isk = 1000000.0;
+    player->credits = 1000000.0;
 
     insSys.purchaseInsurance("player_ship", "basic", 500000.0);
     auto* policy = ship->getComponent<components::InsurancePolicy>();
@@ -3490,7 +3490,7 @@ void testInsuranceInsufficientFunds() {
     systems::InsuranceSystem insSys(&world);
     auto* ship = world.createEntity("player_ship");
     auto* player = addComp<components::Player>(ship);
-    player->isk = 100.0; // Not enough
+    player->credits = 100.0; // Not enough
 
     assertTrue(!insSys.purchaseInsurance("player_ship", "basic", 500000.0),
                "Insurance rejected with insufficient funds");
@@ -3507,11 +3507,11 @@ void testBountyProcessKill() {
     
     auto* player = world.createEntity("player_1");
     auto* pc = addComp<components::Player>(player);
-    pc->isk = 100000.0;
+    pc->credits = 100000.0;
     
     double bounty = bountySys.processKill("player_1", "npc_pirate_1", "Venom Scout", 12500.0, "Venom Syndicate");
     assertTrue(approxEqual(static_cast<float>(bounty), 12500.0f), "Bounty returned correctly");
-    assertTrue(approxEqual(static_cast<float>(pc->isk), 112500.0f), "ISK increased by bounty");
+    assertTrue(approxEqual(static_cast<float>(pc->credits), 112500.0f), "Credits increased by bounty");
     assertTrue(bountySys.getTotalKills("player_1") == 1, "Kill count is 1");
     assertTrue(approxEqual(static_cast<float>(bountySys.getTotalBounty("player_1")), 12500.0f), "Total bounty correct");
 }
@@ -3523,7 +3523,7 @@ void testBountyMultipleKills() {
     
     auto* player = world.createEntity("player_1");
     auto* pc = addComp<components::Player>(player);
-    pc->isk = 0.0;
+    pc->credits = 0.0;
     
     bountySys.processKill("player_1", "npc_1", "Scout", 10000.0);
     bountySys.processKill("player_1", "npc_2", "Cruiser", 50000.0);
@@ -3531,7 +3531,7 @@ void testBountyMultipleKills() {
     
     assertTrue(bountySys.getTotalKills("player_1") == 3, "3 kills recorded");
     assertTrue(approxEqual(static_cast<float>(bountySys.getTotalBounty("player_1")), 210000.0f), "Total bounty is 210K");
-    assertTrue(approxEqual(static_cast<float>(pc->isk), 210000.0f), "ISK matches total bounty");
+    assertTrue(approxEqual(static_cast<float>(pc->credits), 210000.0f), "Credits matches total bounty");
 }
 
 void testBountyLedgerRecordLimit() {
@@ -3577,12 +3577,12 @@ void testMarketPlaceSellOrder() {
 
     auto* seller = world.createEntity("seller_1");
     auto* pc = addComp<components::Player>(seller);
-    pc->isk = 100000.0;
+    pc->credits = 100000.0;
 
-    std::string oid = marketSys.placeSellOrder("station_1", "seller_1", "tritanium", "Tritanium", 100, 5.0);
+    std::string oid = marketSys.placeSellOrder("station_1", "seller_1", "stellium", "Stellium", 100, 5.0);
     assertTrue(!oid.empty(), "Sell order created");
     assertTrue(marketSys.getOrderCount("station_1") == 1, "One order on station");
-    assertTrue(pc->isk < 100000.0, "Broker fee deducted from seller");
+    assertTrue(pc->credits < 100000.0, "Broker fee deducted from seller");
 }
 
 void testMarketBuyFromMarket() {
@@ -3596,18 +3596,18 @@ void testMarketBuyFromMarket() {
 
     auto* seller = world.createEntity("seller_1");
     auto* seller_pc = addComp<components::Player>(seller);
-    seller_pc->isk = 100000.0;
+    seller_pc->credits = 100000.0;
 
     auto* buyer = world.createEntity("buyer_1");
     auto* buyer_pc = addComp<components::Player>(buyer);
-    buyer_pc->isk = 100000.0;
+    buyer_pc->credits = 100000.0;
 
-    marketSys.placeSellOrder("station_1", "seller_1", "tritanium", "Tritanium", 100, 5.0);
+    marketSys.placeSellOrder("station_1", "seller_1", "stellium", "Stellium", 100, 5.0);
 
-    int bought = marketSys.buyFromMarket("station_1", "buyer_1", "tritanium", 50);
+    int bought = marketSys.buyFromMarket("station_1", "buyer_1", "stellium", 50);
     assertTrue(bought == 50, "Bought 50 units");
-    assertTrue(buyer_pc->isk < 100000.0, "Buyer ISK decreased");
-    assertTrue(seller_pc->isk > 100000.0 - 100000.0 * 0.02, "Seller ISK increased from sale");
+    assertTrue(buyer_pc->credits < 100000.0, "Buyer Credits decreased");
+    assertTrue(seller_pc->credits > 100000.0 - 100000.0 * 0.02, "Seller Credits increased from sale");
 }
 
 void testMarketPriceQueries() {
@@ -3621,24 +3621,24 @@ void testMarketPriceQueries() {
 
     auto* seller1 = world.createEntity("seller_1");
     auto* pc1 = addComp<components::Player>(seller1);
-    pc1->isk = 1000000.0;
+    pc1->credits = 1000000.0;
 
     auto* seller2 = world.createEntity("seller_2");
     auto* pc2 = addComp<components::Player>(seller2);
-    pc2->isk = 1000000.0;
+    pc2->credits = 1000000.0;
 
     auto* buyer1 = world.createEntity("buyer_1");
     auto* bpc = addComp<components::Player>(buyer1);
-    bpc->isk = 1000000.0;
+    bpc->credits = 1000000.0;
 
-    marketSys.placeSellOrder("station_1", "seller_1", "tritanium", "Tritanium", 100, 5.0);
-    marketSys.placeSellOrder("station_1", "seller_2", "tritanium", "Tritanium", 50, 4.5);
-    marketSys.placeBuyOrder("station_1", "buyer_1", "tritanium", "Tritanium", 200, 4.0);
+    marketSys.placeSellOrder("station_1", "seller_1", "stellium", "Stellium", 100, 5.0);
+    marketSys.placeSellOrder("station_1", "seller_2", "stellium", "Stellium", 50, 4.5);
+    marketSys.placeBuyOrder("station_1", "buyer_1", "stellium", "Stellium", 200, 4.0);
 
-    double lowest = marketSys.getLowestSellPrice("station_1", "tritanium");
+    double lowest = marketSys.getLowestSellPrice("station_1", "stellium");
     assertTrue(approxEqual(static_cast<float>(lowest), 4.5f), "Lowest sell is 4.5");
 
-    double highest = marketSys.getHighestBuyPrice("station_1", "tritanium");
+    double highest = marketSys.getHighestBuyPrice("station_1", "stellium");
     assertTrue(approxEqual(static_cast<float>(highest), 4.0f), "Highest buy is 4.0");
 
     double no_item = marketSys.getLowestSellPrice("station_1", "nonexistent");
@@ -3656,9 +3656,9 @@ void testMarketOrderExpiry() {
 
     auto* seller = world.createEntity("seller_1");
     auto* pc = addComp<components::Player>(seller);
-    pc->isk = 1000000.0;
+    pc->credits = 1000000.0;
 
-    marketSys.placeSellOrder("station_1", "seller_1", "tritanium", "Tritanium", 100, 5.0);
+    marketSys.placeSellOrder("station_1", "seller_1", "stellium", "Stellium", 100, 5.0);
     assertTrue(marketSys.getOrderCount("station_1") == 1, "One active order");
 
     // Set order duration
@@ -3795,7 +3795,7 @@ void testCorpApplyTax() {
     corpSys.setTaxRate("corp_wallet_corp", "player1", 0.10f);
 
     double remaining = corpSys.applyTax("corp_wallet_corp", 1000.0);
-    assertTrue(approxEqual(static_cast<float>(remaining), 900.0f), "Remaining ISK after 10% tax");
+    assertTrue(approxEqual(static_cast<float>(remaining), 900.0f), "Remaining Credits after 10% tax");
 
     auto* corp = world.getEntity("corp_wallet_corp")->getComponent<components::Corporation>();
     assertTrue(approxEqual(static_cast<float>(corp->corp_wallet), 100.0f), "Corp wallet received tax");
@@ -3817,7 +3817,7 @@ void testSerializeDeserializeCorporation() {
     corp->member_ids.push_back("player2");
 
     components::Corporation::CorpHangarItem item;
-    item.item_id = "tritanium"; item.name = "Tritanium";
+    item.item_id = "stellium"; item.name = "Stellium";
     item.type = "ore"; item.quantity = 1000; item.volume = 0.01f;
     corp->hangar_items.push_back(item);
 
@@ -3842,7 +3842,7 @@ void testSerializeDeserializeCorporation() {
     assertTrue(corp2->member_ids[0] == "player1", "member_ids[0] preserved");
     assertTrue(corp2->member_ids[1] == "player2", "member_ids[1] preserved");
     assertTrue(corp2->hangar_items.size() == 1, "hangar_items count preserved");
-    assertTrue(corp2->hangar_items[0].item_id == "tritanium", "hangar item_id preserved");
+    assertTrue(corp2->hangar_items[0].item_id == "stellium", "hangar item_id preserved");
     assertTrue(corp2->hangar_items[0].quantity == 1000, "hangar item quantity preserved");
 }
 
@@ -3892,7 +3892,7 @@ void testContractComplete() {
 
     auto* acceptor = world.createEntity("player_2");
     auto* player = addComp<components::Player>(acceptor);
-    player->isk = 10000.0;
+    player->credits = 10000.0;
 
     contractSys.createContract("station_1", "player_1", "item_exchange", 75000.0, -1.0f);
     auto* board = station->getComponent<components::ContractBoard>();
@@ -3901,7 +3901,7 @@ void testContractComplete() {
     contractSys.acceptContract("station_1", cid, "player_2");
     assertTrue(contractSys.completeContract("station_1", cid), "Contract completed");
     assertTrue(board->contracts[0].status == "completed", "Status is completed");
-    assertTrue(approxEqual(static_cast<float>(player->isk), 85000.0f), "ISK reward paid to acceptor");
+    assertTrue(approxEqual(static_cast<float>(player->credits), 85000.0f), "Credits reward paid to acceptor");
 }
 
 void testContractExpiry() {
@@ -3970,12 +3970,12 @@ void testSerializeDeserializeContractBoard() {
     c.days_to_complete = 7.0f;
 
     components::ContractBoard::ContractItem offered;
-    offered.item_id = "trit"; offered.name = "Tritanium";
+    offered.item_id = "trit"; offered.name = "Stellium";
     offered.quantity = 500; offered.volume = 0.01f;
     c.items_offered.push_back(offered);
 
     components::ContractBoard::ContractItem requested;
-    requested.item_id = "pye"; requested.name = "Pyerite";
+    requested.item_id = "pye"; requested.name = "Vanthium";
     requested.quantity = 100; requested.volume = 0.01f;
     c.items_requested.push_back(requested);
 
@@ -4258,8 +4258,8 @@ void testSerializeDeserializeFleetCargoAndRumors() {
     auto* cargo = addComp<components::FleetCargoPool>(entity);
     cargo->total_capacity = 50000;
     cargo->used_capacity = 12000;
-    cargo->pooled_items["Tritanium"] = 5000;
-    cargo->pooled_items["Pyerite"] = 2000;
+    cargo->pooled_items["Stellium"] = 5000;
+    cargo->pooled_items["Vanthium"] = 2000;
     cargo->contributor_ship_ids.push_back("ship_1");
     cargo->contributor_ship_ids.push_back("ship_2");
 
@@ -4287,8 +4287,8 @@ void testSerializeDeserializeFleetCargoAndRumors() {
     assertTrue(cargo2->total_capacity == 50000, "total_capacity preserved");
     assertTrue(cargo2->used_capacity == 12000, "used_capacity preserved");
     assertTrue(cargo2->pooled_items.size() == 2, "pooled_items count preserved");
-    assertTrue(cargo2->pooled_items["Tritanium"] == 5000, "Tritanium quantity preserved");
-    assertTrue(cargo2->pooled_items["Pyerite"] == 2000, "Pyerite quantity preserved");
+    assertTrue(cargo2->pooled_items["Stellium"] == 5000, "Stellium quantity preserved");
+    assertTrue(cargo2->pooled_items["Vanthium"] == 2000, "Vanthium quantity preserved");
     assertTrue(cargo2->contributor_ship_ids.size() == 2, "contributor count preserved");
     assertTrue(cargo2->contributor_ship_ids[0] == "ship_1", "contributor[0] preserved");
     assertTrue(cargo2->contributor_ship_ids[1] == "ship_2", "contributor[1] preserved");
@@ -4310,7 +4310,7 @@ void testSerializeDeserializeEconomyComponents() {
 
     auto* e1 = world.createEntity("deposit_entity");
     auto* deposit = addComp<components::MineralDeposit>(e1);
-    deposit->mineral_type = "Scordite";
+    deposit->mineral_type = "Galvite";
     deposit->quantity_remaining = 7500.0f;
     deposit->max_quantity = 10000.0f;
     deposit->yield_rate = 1.2f;
@@ -4319,12 +4319,12 @@ void testSerializeDeserializeEconomyComponents() {
     auto* e2 = world.createEntity("sysres_entity");
     auto* sysres = addComp<components::SystemResources>(e2);
     components::SystemResources::ResourceEntry re1;
-    re1.mineral_type = "Tritanium";
+    re1.mineral_type = "Stellium";
     re1.total_quantity = 50000.0f;
     re1.remaining_quantity = 35000.0f;
     sysres->resources.push_back(re1);
     components::SystemResources::ResourceEntry re2;
-    re2.mineral_type = "Pyerite";
+    re2.mineral_type = "Vanthium";
     re2.total_quantity = 20000.0f;
     re2.remaining_quantity = 18000.0f;
     sysres->resources.push_back(re2);
@@ -4337,7 +4337,7 @@ void testSerializeDeserializeEconomyComponents() {
     components::MarketHub::Order order;
     order.order_id = "order_001";
     order.item_id = "trit";
-    order.item_name = "Tritanium";
+    order.item_name = "Stellium";
     order.owner_id = "player_1";
     order.is_buy_order = true;
     order.price_per_unit = 5.5;
@@ -4358,7 +4358,7 @@ void testSerializeDeserializeEconomyComponents() {
     assertTrue(de != nullptr, "Deposit entity recreated");
     auto* deposit2 = de->getComponent<components::MineralDeposit>();
     assertTrue(deposit2 != nullptr, "MineralDeposit component recreated");
-    assertTrue(deposit2->mineral_type == "Scordite", "mineral_type preserved");
+    assertTrue(deposit2->mineral_type == "Galvite", "mineral_type preserved");
     assertTrue(approxEqual(deposit2->quantity_remaining, 7500.0f), "quantity_remaining preserved");
     assertTrue(approxEqual(deposit2->max_quantity, 10000.0f), "max_quantity preserved");
     assertTrue(approxEqual(deposit2->yield_rate, 1.2f), "yield_rate preserved");
@@ -4369,10 +4369,10 @@ void testSerializeDeserializeEconomyComponents() {
     auto* sysres2 = sr->getComponent<components::SystemResources>();
     assertTrue(sysres2 != nullptr, "SystemResources component recreated");
     assertTrue(sysres2->resources.size() == 2, "resource count preserved");
-    assertTrue(sysres2->resources[0].mineral_type == "Tritanium", "resource[0] mineral_type preserved");
+    assertTrue(sysres2->resources[0].mineral_type == "Stellium", "resource[0] mineral_type preserved");
     assertTrue(approxEqual(sysres2->resources[0].total_quantity, 50000.0f), "resource[0] total_quantity preserved");
     assertTrue(approxEqual(sysres2->resources[0].remaining_quantity, 35000.0f), "resource[0] remaining_quantity preserved");
-    assertTrue(sysres2->resources[1].mineral_type == "Pyerite", "resource[1] mineral_type preserved");
+    assertTrue(sysres2->resources[1].mineral_type == "Vanthium", "resource[1] mineral_type preserved");
     assertTrue(approxEqual(sysres2->resources[1].total_quantity, 20000.0f), "resource[1] total_quantity preserved");
     assertTrue(approxEqual(sysres2->resources[1].remaining_quantity, 18000.0f), "resource[1] remaining_quantity preserved");
 
@@ -4386,7 +4386,7 @@ void testSerializeDeserializeEconomyComponents() {
     assertTrue(market2->orders.size() == 1, "order count preserved");
     assertTrue(market2->orders[0].order_id == "order_001", "order_id preserved");
     assertTrue(market2->orders[0].item_id == "trit", "order item_id preserved");
-    assertTrue(market2->orders[0].item_name == "Tritanium", "order item_name preserved");
+    assertTrue(market2->orders[0].item_name == "Stellium", "order item_name preserved");
     assertTrue(market2->orders[0].owner_id == "player_1", "order owner_id preserved");
     assertTrue(market2->orders[0].is_buy_order == true, "is_buy_order preserved");
     assertTrue(approxEqual(static_cast<float>(market2->orders[0].price_per_unit), 5.5f), "price_per_unit preserved");
@@ -4572,13 +4572,13 @@ void testManufacturingStartJob() {
     auto* player = world.createEntity("player1");
     auto* pcomp = addComp<components::Player>(player);
     pcomp->player_id = "player1";
-    pcomp->isk = 100000.0;
+    pcomp->credits = 100000.0;
 
     std::string job_id = mfgSys.startJob("station1", "player1", "fang_blueprint",
                                            "fang", "Fang Frigate", 1, 3600.0f, 1000.0);
     assertTrue(!job_id.empty(), "Job started successfully");
     assertTrue(mfgSys.getActiveJobCount("station1") == 1, "1 active job");
-    assertTrue(approxEqual(static_cast<float>(pcomp->isk), 99000.0f), "Install cost deducted");
+    assertTrue(approxEqual(static_cast<float>(pcomp->credits), 99000.0f), "Install cost deducted");
 }
 
 void testManufacturingJobCompletion() {
@@ -4595,7 +4595,7 @@ void testManufacturingJobCompletion() {
     auto* player = world.createEntity("player2");
     auto* pcomp = addComp<components::Player>(player);
     pcomp->player_id = "player2";
-    pcomp->isk = 100000.0;
+    pcomp->credits = 100000.0;
 
     mfgSys.startJob("station2", "player2", "autocannon_bp",
                      "autocannon_i", "150mm Autocannon I", 1, 100.0f, 500.0);
@@ -4624,7 +4624,7 @@ void testManufacturingMultipleRuns() {
     auto* player = world.createEntity("player3");
     auto* pcomp = addComp<components::Player>(player);
     pcomp->player_id = "player3";
-    pcomp->isk = 100000.0;
+    pcomp->credits = 100000.0;
 
     mfgSys.startJob("station3", "player3", "drone_bp",
                      "hobgoblin_i", "Hobgoblin I", 3, 50.0f, 200.0);
@@ -4659,7 +4659,7 @@ void testManufacturingJobSlotLimit() {
     auto* player = world.createEntity("player4");
     auto* pcomp = addComp<components::Player>(player);
     pcomp->player_id = "player4";
-    pcomp->isk = 100000.0;
+    pcomp->credits = 100000.0;
 
     std::string job1 = mfgSys.startJob("station4", "player4", "bp1",
                                          "item1", "Item 1", 1, 3600.0f, 100.0);
@@ -4685,7 +4685,7 @@ void testManufacturingCancelJob() {
     auto* player = world.createEntity("player5");
     auto* pcomp = addComp<components::Player>(player);
     pcomp->player_id = "player5";
-    pcomp->isk = 100000.0;
+    pcomp->credits = 100000.0;
 
     std::string job_id = mfgSys.startJob("station5", "player5", "bp_test",
                                            "item_test", "Test Item", 1, 3600.0f, 100.0);
@@ -4710,13 +4710,13 @@ void testManufacturingInsufficientFunds() {
     auto* player = world.createEntity("player6");
     auto* pcomp = addComp<components::Player>(player);
     pcomp->player_id = "player6";
-    pcomp->isk = 50.0;  // Not enough
+    pcomp->credits = 50.0;  // Not enough
 
     std::string job_id = mfgSys.startJob("station6", "player6", "bp_expensive",
                                            "item_expensive", "Expensive Item", 1, 3600.0f, 1000.0);
     assertTrue(job_id.empty(), "Job rejected (insufficient funds)");
     assertTrue(mfgSys.getActiveJobCount("station6") == 0, "No active jobs");
-    assertTrue(approxEqual(static_cast<float>(pcomp->isk), 50.0f), "ISK unchanged");
+    assertTrue(approxEqual(static_cast<float>(pcomp->credits), 50.0f), "Credits unchanged");
 }
 
 // ==================== ResearchSystem Tests ====================
@@ -4735,13 +4735,13 @@ void testResearchME() {
     auto* player = world.createEntity("researcher1");
     auto* pcomp = addComp<components::Player>(player);
     pcomp->player_id = "researcher1";
-    pcomp->isk = 100000.0;
+    pcomp->credits = 100000.0;
 
     std::string job_id = resSys.startMEResearch("lab1", "researcher1", "fang_blueprint",
                                                   5, 100.0f, 500.0);
     assertTrue(!job_id.empty(), "ME research started");
     assertTrue(resSys.getActiveJobCount("lab1") == 1, "1 active job");
-    assertTrue(approxEqual(static_cast<float>(pcomp->isk), 99500.0f), "Install cost deducted");
+    assertTrue(approxEqual(static_cast<float>(pcomp->credits), 99500.0f), "Install cost deducted");
 
     // Complete
     resSys.update(100.0f);
@@ -4763,7 +4763,7 @@ void testResearchTE() {
     auto* player = world.createEntity("researcher2");
     auto* pcomp = addComp<components::Player>(player);
     pcomp->player_id = "researcher2";
-    pcomp->isk = 100000.0;
+    pcomp->credits = 100000.0;
 
     std::string job_id = resSys.startTEResearch("lab2", "researcher2", "autocannon_bp",
                                                   10, 200.0f, 300.0);
@@ -4788,7 +4788,7 @@ void testResearchInvention() {
     auto* player = world.createEntity("researcher3");
     auto* pcomp = addComp<components::Player>(player);
     pcomp->player_id = "researcher3";
-    pcomp->isk = 100000.0;
+    pcomp->credits = 100000.0;
 
     std::string job_id = resSys.startInvention("lab3", "researcher3",
                                                 "fang_blueprint", "fang_ii_blueprint",
@@ -4819,7 +4819,7 @@ void testResearchInventionFailure() {
     auto* player = world.createEntity("researcher4");
     auto* pcomp = addComp<components::Player>(player);
     pcomp->player_id = "researcher4";
-    pcomp->isk = 100000.0;
+    pcomp->credits = 100000.0;
 
     std::string job_id = resSys.startInvention("lab4", "researcher4",
                                                 "fang_blueprint", "fang_ii_blueprint",
@@ -4848,7 +4848,7 @@ void testResearchJobSlotLimit() {
     auto* player = world.createEntity("researcher5");
     auto* pcomp = addComp<components::Player>(player);
     pcomp->player_id = "researcher5";
-    pcomp->isk = 100000.0;
+    pcomp->credits = 100000.0;
 
     std::string job1 = resSys.startMEResearch("lab5", "researcher5", "bp1",
                                                 5, 1000.0f, 100.0);
@@ -4874,13 +4874,13 @@ void testResearchInsufficientFunds() {
     auto* player = world.createEntity("researcher6");
     auto* pcomp = addComp<components::Player>(player);
     pcomp->player_id = "researcher6";
-    pcomp->isk = 10.0;  // Not enough
+    pcomp->credits = 10.0;  // Not enough
 
     std::string job_id = resSys.startMEResearch("lab6", "researcher6", "bp_expensive",
                                                   5, 1000.0f, 500.0);
     assertTrue(job_id.empty(), "Job rejected (insufficient funds)");
     assertTrue(resSys.getActiveJobCount("lab6") == 0, "No active jobs");
-    assertTrue(approxEqual(static_cast<float>(pcomp->isk), 10.0f), "ISK unchanged");
+    assertTrue(approxEqual(static_cast<float>(pcomp->credits), 10.0f), "Credits unchanged");
 }
 
 // ==================== Chat System Tests ====================
@@ -5188,16 +5188,16 @@ void testCharacterCloneGrade() {
     addComp<components::CharacterSheet>(entity);
     charSys.createCharacter("pilot_1", "TestPilot", "Caldari", "Deteis", "Scientist", "male");
 
-    bool result = charSys.setCloneGrade("pilot_1", "omega");
+    bool result = charSys.setCloneGrade("pilot_1", "apex");
     auto* sheet = entity->getComponent<components::CharacterSheet>();
-    assertTrue(result && sheet->clone_grade == "omega", "Clone grade set to omega");
+    assertTrue(result && sheet->clone_grade == "apex", "Clone grade set to omega");
 
     bool gamma_result = charSys.setCloneGrade("pilot_1", "gamma");
     assertTrue(!gamma_result, "Invalid clone grade gamma returns false");
 }
 
-void testCharacterJumpClone() {
-    std::cout << "\n=== Character Jump Clone ===" << std::endl;
+void testCharacterRelayClone() {
+    std::cout << "\n=== Character Relay Clone ===" << std::endl;
 
     ecs::World world;
     systems::CharacterCreationSystem charSys(&world);
@@ -5208,10 +5208,10 @@ void testCharacterJumpClone() {
 
     bool result = charSys.jumpClone("pilot_1");
     auto* sheet = entity->getComponent<components::CharacterSheet>();
-    assertTrue(result && sheet->clone_jump_cooldown > 0, "Jump clone sets cooldown");
+    assertTrue(result && sheet->clone_jump_cooldown > 0, "Relay clone sets cooldown");
 
     bool second = charSys.jumpClone("pilot_1");
-    assertTrue(!second, "Cannot jump clone while on cooldown");
+    assertTrue(!second, "Cannot relay clone while on cooldown");
 }
 
 void testCharacterCloneCooldownDecay() {
@@ -5231,7 +5231,7 @@ void testCharacterCloneCooldownDecay() {
     assertTrue(sheet->clone_jump_cooldown == 0, "Cooldown decays to 0 after 86400 seconds");
 
     bool result = charSys.jumpClone("pilot_1");
-    assertTrue(result, "Can jump clone again after cooldown expires");
+    assertTrue(result, "Can relay clone again after cooldown expires");
 }
 
 void testCharacterSecurityStatus() {
@@ -5518,7 +5518,7 @@ void testLeaderboardMultiplePlayers() {
 }
 
 void testLeaderboardIskTracking() {
-    std::cout << "\n=== Leaderboard ISK Tracking ===" << std::endl;
+    std::cout << "\n=== Leaderboard Credits Tracking ===" << std::endl;
     ecs::World world;
     systems::LeaderboardSystem lbSys(&world);
 
@@ -5528,7 +5528,7 @@ void testLeaderboardIskTracking() {
     lbSys.recordIskEarned("board_1", "p1", "Alice", 50000.0);
     lbSys.recordIskEarned("board_1", "p1", "Alice", 25000.0);
 
-    assertTrue(approxEqual(static_cast<float>(lbSys.getPlayerIskEarned("board_1", "p1")), 75000.0f), "ISK earned is 75K");
+    assertTrue(approxEqual(static_cast<float>(lbSys.getPlayerIskEarned("board_1", "p1")), 75000.0f), "Credits earned is 75K");
 }
 
 void testLeaderboardMissionTracking() {
@@ -5625,7 +5625,7 @@ void testLeaderboardNonexistentPlayer() {
     addComp<components::Leaderboard>(board);
 
     assertTrue(lbSys.getPlayerKills("board_1", "fake") == 0, "Zero kills for nonexistent");
-    assertTrue(approxEqual(static_cast<float>(lbSys.getPlayerIskEarned("board_1", "fake")), 0.0f), "Zero ISK for nonexistent");
+    assertTrue(approxEqual(static_cast<float>(lbSys.getPlayerIskEarned("board_1", "fake")), 0.0f), "Zero Credits for nonexistent");
     assertTrue(lbSys.getPlayerMissions("board_1", "fake") == 0, "Zero missions for nonexistent");
 }
 
@@ -5765,17 +5765,17 @@ void testStationRepair() {
     hp->hull_hp   = 80.0f;  hp->hull_max   = 100.0f;
 
     auto* player = addComp<components::Player>(ship);
-    player->isk = 10000.0;
+    player->credits = 10000.0;
 
     stationSys.dockAtStation("player_1", "station_1");
 
     double cost = stationSys.repairShip("player_1");
-    // Damage = (100-50) + (100-30) + (100-80) = 50+70+20 = 140 HP, at 1 ISK/hp = 140
-    assertTrue(approxEqual(static_cast<float>(cost), 140.0f), "Repair cost is 140 ISK");
+    // Damage = (100-50) + (100-30) + (100-80) = 50+70+20 = 140 HP, at 1 Credits/hp = 140
+    assertTrue(approxEqual(static_cast<float>(cost), 140.0f), "Repair cost is 140 Credits");
     assertTrue(approxEqual(hp->shield_hp, 100.0f), "Shield fully repaired");
     assertTrue(approxEqual(hp->armor_hp, 100.0f), "Armor fully repaired");
     assertTrue(approxEqual(hp->hull_hp, 100.0f), "Hull fully repaired");
-    assertTrue(approxEqual(static_cast<float>(player->isk), 9860.0f), "ISK deducted");
+    assertTrue(approxEqual(static_cast<float>(player->credits), 9860.0f), "Credits deducted");
 }
 
 void testStationRepairNoDamage() {
@@ -6583,7 +6583,7 @@ void testFleetCargoUsedCapacity() {
     inv->max_capacity = 400.0f;
     components::Inventory::Item item;
     item.item_id = "ore1";
-    item.name = "Veldspar";
+    item.name = "Ferrite";
     item.type = "ore";
     item.quantity = 10;
     item.volume = 5.0f;
@@ -7469,7 +7469,7 @@ void testMiningCreateDeposit() {
     ecs::World world;
     systems::MiningSystem mineSys(&world);
 
-    std::string id = mineSys.createDeposit("Veldspar", 5000.0f, 100.0f, 0.0f, 0.0f);
+    std::string id = mineSys.createDeposit("Ferrite", 5000.0f, 100.0f, 0.0f, 0.0f);
     assertTrue(!id.empty(), "Deposit entity created");
 
     auto* entity = world.getEntity(id);
@@ -7477,7 +7477,7 @@ void testMiningCreateDeposit() {
 
     auto* dep = entity->getComponent<components::MineralDeposit>();
     assertTrue(dep != nullptr, "Deposit has MineralDeposit component");
-    assertTrue(dep->mineral_type == "Veldspar", "Mineral type is Veldspar");
+    assertTrue(dep->mineral_type == "Ferrite", "Mineral type is Ferrite");
     assertTrue(approxEqual(dep->quantity_remaining, 5000.0f), "Quantity remaining is 5000");
     assertTrue(!dep->isDepleted(), "Deposit is not depleted");
 
@@ -7492,7 +7492,7 @@ void testMiningStartStop() {
     ecs::World world;
     systems::MiningSystem mineSys(&world);
 
-    std::string dep_id = mineSys.createDeposit("Scordite", 1000.0f, 0.0f, 0.0f, 0.0f);
+    std::string dep_id = mineSys.createDeposit("Galvite", 1000.0f, 0.0f, 0.0f, 0.0f);
 
     auto* miner = world.createEntity("miner_1");
     auto* pos = addComp<components::Position>(miner);
@@ -7519,7 +7519,7 @@ void testMiningRangeCheck() {
     ecs::World world;
     systems::MiningSystem mineSys(&world);
 
-    std::string dep_id = mineSys.createDeposit("Veldspar", 1000.0f, 0.0f, 0.0f, 0.0f);
+    std::string dep_id = mineSys.createDeposit("Ferrite", 1000.0f, 0.0f, 0.0f, 0.0f);
 
     auto* miner = world.createEntity("miner_far");
     auto* pos = addComp<components::Position>(miner);
@@ -7537,7 +7537,7 @@ void testMiningCycleCompletion() {
     ecs::World world;
     systems::MiningSystem mineSys(&world);
 
-    std::string dep_id = mineSys.createDeposit("Veldspar", 1000.0f, 0.0f, 0.0f, 0.0f, 0.1f);
+    std::string dep_id = mineSys.createDeposit("Ferrite", 1000.0f, 0.0f, 0.0f, 0.0f, 0.1f);
 
     auto* miner = world.createEntity("miner_1");
     auto* pos = addComp<components::Position>(miner);
@@ -7554,7 +7554,7 @@ void testMiningCycleCompletion() {
     mineSys.update(10.0f);
 
     assertTrue(inv->items.size() == 1, "Ore item added to inventory");
-    assertTrue(inv->items[0].item_id == "Veldspar", "Mined Veldspar");
+    assertTrue(inv->items[0].item_id == "Ferrite", "Mined Ferrite");
     assertTrue(inv->items[0].quantity == 50, "Mined 50 units");
 
     auto* dep = world.getEntity(dep_id)->getComponent<components::MineralDeposit>();
@@ -7568,7 +7568,7 @@ void testMiningDepletedDeposit() {
     systems::MiningSystem mineSys(&world);
 
     // Small deposit — only 20 units
-    std::string dep_id = mineSys.createDeposit("Kernite", 20.0f, 0.0f, 0.0f, 0.0f, 0.1f);
+    std::string dep_id = mineSys.createDeposit("Heliore", 20.0f, 0.0f, 0.0f, 0.0f, 0.1f);
 
     auto* miner = world.createEntity("miner_1");
     addComp<components::Position>(miner);
@@ -7596,7 +7596,7 @@ void testMiningCargoFull() {
     ecs::World world;
     systems::MiningSystem mineSys(&world);
 
-    std::string dep_id = mineSys.createDeposit("Veldspar", 10000.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+    std::string dep_id = mineSys.createDeposit("Ferrite", 10000.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 
     auto* miner = world.createEntity("miner_1");
     addComp<components::Position>(miner);
@@ -7620,7 +7620,7 @@ void testMiningOreStacking() {
     ecs::World world;
     systems::MiningSystem mineSys(&world);
 
-    std::string dep_id = mineSys.createDeposit("Veldspar", 10000.0f, 0.0f, 0.0f, 0.0f, 0.1f);
+    std::string dep_id = mineSys.createDeposit("Ferrite", 10000.0f, 0.0f, 0.0f, 0.0f, 0.1f);
 
     auto* miner = world.createEntity("miner_1");
     addComp<components::Position>(miner);
@@ -7650,7 +7650,7 @@ void testMiningDroneLaunchAndMine() {
     systems::MiningSystem mineSys(&world);
 
     // Create a mineral deposit
-    std::string dep_id = mineSys.createDeposit("Veldspar", 5000.0f, 0.0f, 0.0f, 0.0f, 0.1f);
+    std::string dep_id = mineSys.createDeposit("Ferrite", 5000.0f, 0.0f, 0.0f, 0.0f, 0.1f);
 
     // Create a ship with mining drones
     auto* ship = world.createEntity("ship_1");
@@ -7683,7 +7683,7 @@ void testMiningDroneLaunchAndMine() {
     droneSys.update(0.0f); // first tick: mines immediately (cooldown=0)
 
     assertTrue(inv->items.size() == 1, "Ore mined by drone");
-    assertTrue(inv->items[0].item_id == "Veldspar", "Mined correct mineral");
+    assertTrue(inv->items[0].item_id == "Ferrite", "Mined correct mineral");
     assertTrue(inv->items[0].quantity == 25, "Mined correct amount");
 
     auto* dep = world.getEntity(dep_id)->getComponent<components::MineralDeposit>();
@@ -7776,7 +7776,7 @@ void testMiningDroneTargetDepletedDeposit() {
     systems::DroneSystem droneSys(&world);
     systems::MiningSystem mineSys(&world);
 
-    std::string dep_id = mineSys.createDeposit("Veldspar", 0.0f, 0.0f, 0.0f, 0.0f);
+    std::string dep_id = mineSys.createDeposit("Ferrite", 0.0f, 0.0f, 0.0f, 0.0f);
 
     auto* ship = world.createEntity("ship_3");
     auto* bay = addComp<components::DroneBay>(ship);
@@ -8035,17 +8035,17 @@ void testSystemResourcesTracking() {
     auto* system = world.createEntity("system_jita");
     auto* res = addComp<components::SystemResources>(system);
 
-    components::SystemResources::ResourceEntry veldspar;
-    veldspar.mineral_type = "Veldspar";
-    veldspar.total_quantity = 100000.0f;
-    veldspar.remaining_quantity = 100000.0f;
-    res->resources.push_back(veldspar);
+    components::SystemResources::ResourceEntry ferrite;
+    ferrite.mineral_type = "Ferrite";
+    ferrite.total_quantity = 100000.0f;
+    ferrite.remaining_quantity = 100000.0f;
+    res->resources.push_back(ferrite);
 
-    components::SystemResources::ResourceEntry scordite;
-    scordite.mineral_type = "Scordite";
-    scordite.total_quantity = 50000.0f;
-    scordite.remaining_quantity = 30000.0f;
-    res->resources.push_back(scordite);
+    components::SystemResources::ResourceEntry galvite;
+    galvite.mineral_type = "Galvite";
+    galvite.total_quantity = 50000.0f;
+    galvite.remaining_quantity = 30000.0f;
+    res->resources.push_back(galvite);
 
     assertTrue(res->resources.size() == 2, "Two resource types tracked");
     assertTrue(approxEqual(res->totalRemaining(), 130000.0f), "Total remaining correct");
@@ -8115,9 +8115,9 @@ void testProtocolMiningMessages() {
     assertTrue(type == atlas::network::MessageType::MINING_STOP, "Type is MINING_STOP");
 
     // Create mining result
-    std::string result = proto.createMiningResult(true, "deposit_0", "Veldspar", 100);
+    std::string result = proto.createMiningResult(true, "deposit_0", "Ferrite", 100);
     assertTrue(result.find("mining_result") != std::string::npos, "Result has correct type");
-    assertTrue(result.find("Veldspar") != std::string::npos, "Result contains mineral_type");
+    assertTrue(result.find("Ferrite") != std::string::npos, "Result contains mineral_type");
     assertTrue(result.find("100") != std::string::npos, "Result contains quantity_mined");
 }
 
@@ -8203,7 +8203,7 @@ void testProtocolMiningResultParse() {
 
     atlas::network::ProtocolHandler proto;
 
-    std::string msg = "{\"message_type\":\"mining_result\",\"data\":{\"success\":true,\"deposit_id\":\"deposit_1\",\"mineral_type\":\"Scordite\",\"quantity_mined\":50}}";
+    std::string msg = "{\"message_type\":\"mining_result\",\"data\":{\"success\":true,\"deposit_id\":\"deposit_1\",\"mineral_type\":\"Galvite\",\"quantity_mined\":50}}";
     atlas::network::MessageType type;
     std::string data;
     bool ok = proto.parseMessage(msg, type, data);
@@ -8239,7 +8239,7 @@ void testAIMiningBehaviorActivatesLaser() {
     auto* dpos = addComp<components::Position>(deposit);
     dpos->x = 100.0f; dpos->y = 0.0f; dpos->z = 0.0f;
     auto* dep = addComp<components::MineralDeposit>(deposit);
-    dep->mineral_type = "Veldspar";
+    dep->mineral_type = "Ferrite";
     dep->quantity_remaining = 5000.0f;
 
     // Create an AI miner with MiningLaser
@@ -8275,7 +8275,7 @@ void testAIMiningIdleFindsDeposit() {
     auto* dpos = addComp<components::Position>(deposit);
     dpos->x = 5000.0f; dpos->y = 0.0f; dpos->z = 0.0f;
     auto* dep = addComp<components::MineralDeposit>(deposit);
-    dep->mineral_type = "Scordite";
+    dep->mineral_type = "Galvite";
     dep->quantity_remaining = 3000.0f;
 
     // Create a passive AI miner at origin, idle
@@ -8309,7 +8309,7 @@ void testAIMiningApproachTransitions() {
     auto* dpos = addComp<components::Position>(deposit);
     dpos->x = 100.0f; dpos->y = 0.0f; dpos->z = 0.0f;
     auto* dep = addComp<components::MineralDeposit>(deposit);
-    dep->mineral_type = "Veldspar";
+    dep->mineral_type = "Ferrite";
     dep->quantity_remaining = 1000.0f;
 
     // Create NPC approaching the deposit (within mining range)
@@ -8342,7 +8342,7 @@ void testAIMiningStopsOnDepletedDeposit() {
     auto* dpos = addComp<components::Position>(deposit);
     dpos->x = 100.0f; dpos->y = 0.0f; dpos->z = 0.0f;
     auto* dep = addComp<components::MineralDeposit>(deposit);
-    dep->mineral_type = "Veldspar";
+    dep->mineral_type = "Ferrite";
     dep->quantity_remaining = 0.0f;
 
     auto* npc = world.createEntity("miner4");
@@ -8373,7 +8373,7 @@ void testAIMiningStopsOnCargoFull() {
     auto* dpos = addComp<components::Position>(deposit);
     dpos->x = 100.0f; dpos->y = 0.0f; dpos->z = 0.0f;
     auto* dep = addComp<components::MineralDeposit>(deposit);
-    dep->mineral_type = "Veldspar";
+    dep->mineral_type = "Ferrite";
     dep->quantity_remaining = 5000.0f;
 
     auto* npc = world.createEntity("miner5");
@@ -8390,8 +8390,8 @@ void testAIMiningStopsOnCargoFull() {
     auto* inv = addComp<components::Inventory>(npc);
     inv->max_capacity = 100.0f;
     components::Inventory::Item ore;
-    ore.item_id = "Veldspar";
-    ore.name = "Veldspar";
+    ore.item_id = "Ferrite";
+    ore.name = "Ferrite";
     ore.type = "ore";
     ore.quantity = 1000;
     ore.volume = 0.1f;
@@ -8413,14 +8413,14 @@ void testAIFindNearestDeposit() {
     auto* fdpos = addComp<components::Position>(far_dep);
     fdpos->x = 30000.0f; fdpos->y = 0.0f; fdpos->z = 0.0f;
     auto* fd = addComp<components::MineralDeposit>(far_dep);
-    fd->mineral_type = "Scordite";
+    fd->mineral_type = "Galvite";
     fd->quantity_remaining = 5000.0f;
 
     auto* near_dep = world.createEntity("near_dep");
     auto* ndpos = addComp<components::Position>(near_dep);
     ndpos->x = 5000.0f; ndpos->y = 0.0f; ndpos->z = 0.0f;
     auto* nd = addComp<components::MineralDeposit>(near_dep);
-    nd->mineral_type = "Veldspar";
+    nd->mineral_type = "Ferrite";
     nd->quantity_remaining = 5000.0f;
 
     auto* npc = world.createEntity("searcher");
@@ -8450,11 +8450,11 @@ void testRefineOreBasic() {
     facility->efficiency = 1.0f;  // 100% efficiency
     facility->tax_rate = 0.0f;    // no tax
 
-    // Add a recipe: 100 Veldspar → 415 Tritanium
+    // Add a recipe: 100 Ferrite → 415 Stellium
     components::RefiningFacility::RefineRecipe recipe;
-    recipe.ore_type = "Veldspar";
+    recipe.ore_type = "Ferrite";
     recipe.ore_units_required = 100;
-    recipe.outputs.push_back({"Tritanium", 415});
+    recipe.outputs.push_back({"Stellium", 415});
     facility->recipes.push_back(recipe);
 
     // Create a player with ore
@@ -8462,14 +8462,14 @@ void testRefineOreBasic() {
     auto* inv = addComp<components::Inventory>(player);
     inv->max_capacity = 10000.0f;
     components::Inventory::Item ore;
-    ore.item_id = "Veldspar";
-    ore.name = "Veldspar";
+    ore.item_id = "Ferrite";
+    ore.name = "Ferrite";
     ore.type = "ore";
     ore.quantity = 200;
     ore.volume = 0.1f;
     inv->items.push_back(ore);
 
-    int refined = refiningSys.refineOre("player1", "station1", "Veldspar", 2);
+    int refined = refiningSys.refineOre("player1", "station1", "Ferrite", 2);
 
     assertTrue(refined == 2, "Refined 2 batches");
 
@@ -8477,11 +8477,11 @@ void testRefineOreBasic() {
     bool ore_found = false;
     int mineral_qty = 0;
     for (const auto& item : inv->items) {
-        if (item.item_id == "Veldspar") ore_found = true;
-        if (item.item_id == "Tritanium") mineral_qty = item.quantity;
+        if (item.item_id == "Ferrite") ore_found = true;
+        if (item.item_id == "Stellium") mineral_qty = item.quantity;
     }
     assertTrue(!ore_found, "Ore consumed completely");
-    assertTrue(mineral_qty == 830, "Produced 830 Tritanium (415 * 2)");
+    assertTrue(mineral_qty == 830, "Produced 830 Stellium (415 * 2)");
 }
 
 void testRefineOreWithEfficiency() {
@@ -8496,31 +8496,31 @@ void testRefineOreWithEfficiency() {
     facility->tax_rate = 0.0f;
 
     components::RefiningFacility::RefineRecipe recipe;
-    recipe.ore_type = "Veldspar";
+    recipe.ore_type = "Ferrite";
     recipe.ore_units_required = 100;
-    recipe.outputs.push_back({"Tritanium", 400});
+    recipe.outputs.push_back({"Stellium", 400});
     facility->recipes.push_back(recipe);
 
     auto* player = world.createEntity("player2");
     auto* inv = addComp<components::Inventory>(player);
     inv->max_capacity = 10000.0f;
     components::Inventory::Item ore;
-    ore.item_id = "Veldspar";
-    ore.name = "Veldspar";
+    ore.item_id = "Ferrite";
+    ore.name = "Ferrite";
     ore.type = "ore";
     ore.quantity = 100;
     ore.volume = 0.1f;
     inv->items.push_back(ore);
 
-    int refined = refiningSys.refineOre("player2", "station2", "Veldspar", 1);
+    int refined = refiningSys.refineOre("player2", "station2", "Ferrite", 1);
     assertTrue(refined == 1, "Refined 1 batch at 50% efficiency");
 
     int mineral_qty = 0;
     for (const auto& item : inv->items) {
-        if (item.item_id == "Tritanium") mineral_qty = item.quantity;
+        if (item.item_id == "Stellium") mineral_qty = item.quantity;
     }
     // 400 * 0.5 efficiency * (1 - 0.0 tax) = 200
-    assertTrue(mineral_qty == 200, "50% efficiency yields 200 Tritanium");
+    assertTrue(mineral_qty == 200, "50% efficiency yields 200 Stellium");
 }
 
 void testRefineOreWithTax() {
@@ -8535,30 +8535,30 @@ void testRefineOreWithTax() {
     facility->tax_rate = 0.1f;   // 10% tax
 
     components::RefiningFacility::RefineRecipe recipe;
-    recipe.ore_type = "Veldspar";
+    recipe.ore_type = "Ferrite";
     recipe.ore_units_required = 100;
-    recipe.outputs.push_back({"Tritanium", 400});
+    recipe.outputs.push_back({"Stellium", 400});
     facility->recipes.push_back(recipe);
 
     auto* player = world.createEntity("player3");
     auto* inv = addComp<components::Inventory>(player);
     inv->max_capacity = 10000.0f;
     components::Inventory::Item ore;
-    ore.item_id = "Veldspar";
-    ore.name = "Veldspar";
+    ore.item_id = "Ferrite";
+    ore.name = "Ferrite";
     ore.type = "ore";
     ore.quantity = 100;
     ore.volume = 0.1f;
     inv->items.push_back(ore);
 
-    refiningSys.refineOre("player3", "station3", "Veldspar", 1);
+    refiningSys.refineOre("player3", "station3", "Ferrite", 1);
 
     int mineral_qty = 0;
     for (const auto& item : inv->items) {
-        if (item.item_id == "Tritanium") mineral_qty = item.quantity;
+        if (item.item_id == "Stellium") mineral_qty = item.quantity;
     }
     // 400 * 1.0 * (1 - 0.1) = 360
-    assertTrue(mineral_qty == 360, "10% tax yields 360 Tritanium");
+    assertTrue(mineral_qty == 360, "10% tax yields 360 Stellium");
 }
 
 void testRefineOreInsufficientOre() {
@@ -8573,23 +8573,23 @@ void testRefineOreInsufficientOre() {
     facility->tax_rate = 0.0f;
 
     components::RefiningFacility::RefineRecipe recipe;
-    recipe.ore_type = "Veldspar";
+    recipe.ore_type = "Ferrite";
     recipe.ore_units_required = 100;
-    recipe.outputs.push_back({"Tritanium", 415});
+    recipe.outputs.push_back({"Stellium", 415});
     facility->recipes.push_back(recipe);
 
     auto* player = world.createEntity("player4");
     auto* inv = addComp<components::Inventory>(player);
     inv->max_capacity = 10000.0f;
     components::Inventory::Item ore;
-    ore.item_id = "Veldspar";
-    ore.name = "Veldspar";
+    ore.item_id = "Ferrite";
+    ore.name = "Ferrite";
     ore.type = "ore";
     ore.quantity = 50;  // not enough for 1 batch
     ore.volume = 0.1f;
     inv->items.push_back(ore);
 
-    int refined = refiningSys.refineOre("player4", "station4", "Veldspar", 1);
+    int refined = refiningSys.refineOre("player4", "station4", "Ferrite", 1);
     assertTrue(refined == 0, "Cannot refine with insufficient ore");
     assertTrue(inv->items[0].quantity == 50, "Ore not consumed when refining fails");
 }
@@ -8608,14 +8608,14 @@ void testRefineOreNoRecipe() {
     auto* inv = addComp<components::Inventory>(player);
     inv->max_capacity = 10000.0f;
     components::Inventory::Item ore;
-    ore.item_id = "Veldspar";
-    ore.name = "Veldspar";
+    ore.item_id = "Ferrite";
+    ore.name = "Ferrite";
     ore.type = "ore";
     ore.quantity = 200;
     ore.volume = 0.1f;
     inv->items.push_back(ore);
 
-    int refined = refiningSys.refineOre("player5", "station5", "Veldspar", 1);
+    int refined = refiningSys.refineOre("player5", "station5", "Ferrite", 1);
     assertTrue(refined == 0, "Cannot refine without recipe");
 }
 
@@ -8630,35 +8630,35 @@ void testRefineOreMultipleOutputs() {
     facility->efficiency = 1.0f;
     facility->tax_rate = 0.0f;
 
-    // Scordite → Tritanium + Pyerite
+    // Galvite → Stellium + Vanthium
     components::RefiningFacility::RefineRecipe recipe;
-    recipe.ore_type = "Scordite";
+    recipe.ore_type = "Galvite";
     recipe.ore_units_required = 100;
-    recipe.outputs.push_back({"Tritanium", 346});
-    recipe.outputs.push_back({"Pyerite", 173});
+    recipe.outputs.push_back({"Stellium", 346});
+    recipe.outputs.push_back({"Vanthium", 173});
     facility->recipes.push_back(recipe);
 
     auto* player = world.createEntity("player6");
     auto* inv = addComp<components::Inventory>(player);
     inv->max_capacity = 10000.0f;
     components::Inventory::Item ore;
-    ore.item_id = "Scordite";
-    ore.name = "Scordite";
+    ore.item_id = "Galvite";
+    ore.name = "Galvite";
     ore.type = "ore";
     ore.quantity = 100;
     ore.volume = 0.15f;
     inv->items.push_back(ore);
 
-    int refined = refiningSys.refineOre("player6", "station6", "Scordite", 1);
-    assertTrue(refined == 1, "Refined 1 batch of Scordite");
+    int refined = refiningSys.refineOre("player6", "station6", "Galvite", 1);
+    assertTrue(refined == 1, "Refined 1 batch of Galvite");
 
-    int tritanium = 0, pyerite = 0;
+    int stellium = 0, vanthium = 0;
     for (const auto& item : inv->items) {
-        if (item.item_id == "Tritanium") tritanium = item.quantity;
-        if (item.item_id == "Pyerite") pyerite = item.quantity;
+        if (item.item_id == "Stellium") stellium = item.quantity;
+        if (item.item_id == "Vanthium") vanthium = item.quantity;
     }
-    assertTrue(tritanium == 346, "Produced 346 Tritanium from Scordite");
-    assertTrue(pyerite == 173, "Produced 173 Pyerite from Scordite");
+    assertTrue(stellium == 346, "Produced 346 Stellium from Galvite");
+    assertTrue(vanthium == 173, "Produced 173 Vanthium from Galvite");
 }
 
 void testRefineDefaultRecipes() {
@@ -8695,27 +8695,27 @@ void testMarketOrePricing() {
     // Create an NPC seller
     auto* npc_seller = world.createEntity("npc_ore_seller");
     auto* npc_player = addComp<components::Player>(npc_seller);
-    npc_player->isk = 1000000.0;
+    npc_player->credits = 1000000.0;
 
     // NPC places sell orders for common ores
     std::string o1 = marketSys.placeSellOrder("trade_hub", "npc_ore_seller",
-                                               "Veldspar", "Veldspar", 10000, 15.0);
+                                               "Ferrite", "Ferrite", 10000, 15.0);
     std::string o2 = marketSys.placeSellOrder("trade_hub", "npc_ore_seller",
-                                               "Scordite", "Scordite", 5000, 38.0);
+                                               "Galvite", "Galvite", 5000, 38.0);
     std::string o3 = marketSys.placeSellOrder("trade_hub", "npc_ore_seller",
-                                               "Pyroxeres", "Pyroxeres", 3000, 70.0);
+                                               "Cryolite", "Cryolite", 3000, 70.0);
 
-    assertTrue(!o1.empty(), "Veldspar sell order placed");
-    assertTrue(!o2.empty(), "Scordite sell order placed");
-    assertTrue(!o3.empty(), "Pyroxeres sell order placed");
+    assertTrue(!o1.empty(), "Ferrite sell order placed");
+    assertTrue(!o2.empty(), "Galvite sell order placed");
+    assertTrue(!o3.empty(), "Cryolite sell order placed");
 
-    double veldspar_price = marketSys.getLowestSellPrice("trade_hub", "Veldspar");
-    double scordite_price = marketSys.getLowestSellPrice("trade_hub", "Scordite");
-    double pyroxeres_price = marketSys.getLowestSellPrice("trade_hub", "Pyroxeres");
+    double veldspar_price = marketSys.getLowestSellPrice("trade_hub", "Ferrite");
+    double scordite_price = marketSys.getLowestSellPrice("trade_hub", "Galvite");
+    double pyroxeres_price = marketSys.getLowestSellPrice("trade_hub", "Cryolite");
 
-    assertTrue(veldspar_price == 15.0, "Veldspar price is 15 ISK");
-    assertTrue(scordite_price == 38.0, "Scordite price is 38 ISK");
-    assertTrue(pyroxeres_price == 70.0, "Pyroxeres price is 70 ISK");
+    assertTrue(veldspar_price == 15.0, "Ferrite price is 15 Credits");
+    assertTrue(scordite_price == 38.0, "Galvite price is 38 Credits");
+    assertTrue(pyroxeres_price == 70.0, "Cryolite price is 70 Credits");
     assertTrue(marketSys.getOrderCount("trade_hub") == 3, "3 orders on market");
 }
 
@@ -8733,22 +8733,22 @@ void testMarketMineralPricing() {
 
     auto* npc_buyer = world.createEntity("npc_mineral_buyer");
     auto* npc_player = addComp<components::Player>(npc_buyer);
-    npc_player->isk = 10000000.0;
+    npc_player->credits = 10000000.0;
 
     // NPC places buy orders for refined minerals
     std::string b1 = marketSys.placeBuyOrder("mineral_hub", "npc_mineral_buyer",
-                                              "Tritanium", "Tritanium", 50000, 6.0);
+                                              "Stellium", "Stellium", 50000, 6.0);
     std::string b2 = marketSys.placeBuyOrder("mineral_hub", "npc_mineral_buyer",
-                                              "Pyerite", "Pyerite", 20000, 9.0);
+                                              "Vanthium", "Vanthium", 20000, 9.0);
 
-    assertTrue(!b1.empty(), "Tritanium buy order placed");
-    assertTrue(!b2.empty(), "Pyerite buy order placed");
+    assertTrue(!b1.empty(), "Stellium buy order placed");
+    assertTrue(!b2.empty(), "Vanthium buy order placed");
 
-    double trit_price = marketSys.getHighestBuyPrice("mineral_hub", "Tritanium");
-    double pyer_price = marketSys.getHighestBuyPrice("mineral_hub", "Pyerite");
+    double trit_price = marketSys.getHighestBuyPrice("mineral_hub", "Stellium");
+    double pyer_price = marketSys.getHighestBuyPrice("mineral_hub", "Vanthium");
 
-    assertTrue(trit_price == 6.0, "Tritanium buy price is 6 ISK");
-    assertTrue(pyer_price == 9.0, "Pyerite buy price is 9 ISK");
+    assertTrue(trit_price == 6.0, "Stellium buy price is 6 Credits");
+    assertTrue(pyer_price == 9.0, "Vanthium buy price is 9 Credits");
 }
 
 // ==================== Ship Generation Model Data Tests ====================
@@ -10137,7 +10137,7 @@ void testMissionTemplateGenerate() {
     auto mission = sys.generateMissionFromTemplate(templates[0], "system_1", "player_1");
     assertTrue(!mission.mission_id.empty(), "Generated mission has ID");
     assertTrue(!mission.objectives.empty(), "Generated mission has objectives");
-    assertTrue(mission.isk_reward > 0.0, "Generated mission has positive ISK reward");
+    assertTrue(mission.isk_reward > 0.0, "Generated mission has positive Credits reward");
 }
 
 void testMissionTemplateDeterministic() {
@@ -10164,9 +10164,9 @@ void testMissionTemplateScaledRewards() {
         auto m1 = sys.generateMissionFromTemplate(l1[0], "s1", "p1");
         auto m3 = sys.generateMissionFromTemplate(l3[0], "s1", "p1");
         assertTrue(m3.isk_reward >= m1.isk_reward,
-                   "Higher level missions give more ISK");
+                   "Higher level missions give more Credits");
     } else {
-        assertTrue(true, "Higher level missions give more ISK (skipped)");
+        assertTrue(true, "Higher level missions give more Credits (skipped)");
     }
 }
 
@@ -10439,7 +10439,7 @@ void testMissionEconomyMiningReducesOre() {
     auto* sys_entity = world.createEntity("system1");
     auto* resources = addComp<components::SystemResources>(sys_entity);
     components::SystemResources::ResourceEntry entry;
-    entry.mineral_type = "Veldspar";
+    entry.mineral_type = "Ferrite";
     entry.total_quantity = 1000.0f;
     entry.remaining_quantity = 1000.0f;
     resources->resources.push_back(entry);
@@ -10451,7 +10451,7 @@ void testMissionEconomyMiningReducesOre() {
     sys.setEconomySystemId("system1");
     sys.acceptMission("player1", "m1", "Mine Ore", 2, "mining", "Solari",
                       50000.0, 0.05f, -1.0f);
-    tracker->active_missions[0].objectives.push_back({"mine", "Veldspar", 1, 1});
+    tracker->active_missions[0].objectives.push_back({"mine", "Ferrite", 1, 1});
     sys.update(0.1f);
 
     assertTrue(resources->resources[0].remaining_quantity < 1000.0f,
@@ -10502,14 +10502,14 @@ void testNPCMarketSeedPricesCorrect() {
 
     market.seedNPCOrders("station_seed2");
 
-    assertTrue(hub->orders[0].item_name == "Tritanium", "First order is Tritanium");
-    assertTrue(approxEqual(hub->orders[0].price_per_unit, 6.0), "Tritanium price is 6.0 ISK");
-    assertTrue(hub->orders[1].item_name == "Pyerite", "Second order is Pyerite");
-    assertTrue(approxEqual(hub->orders[1].price_per_unit, 10.0), "Pyerite price is 10.0 ISK");
-    assertTrue(hub->orders[2].item_name == "Mexallon", "Third order is Mexallon");
-    assertTrue(approxEqual(hub->orders[2].price_per_unit, 40.0), "Mexallon price is 40.0 ISK");
+    assertTrue(hub->orders[0].item_name == "Stellium", "First order is Stellium");
+    assertTrue(approxEqual(hub->orders[0].price_per_unit, 6.0), "Stellium price is 6.0 Credits");
+    assertTrue(hub->orders[1].item_name == "Vanthium", "Second order is Vanthium");
+    assertTrue(approxEqual(hub->orders[1].price_per_unit, 10.0), "Vanthium price is 10.0 Credits");
+    assertTrue(hub->orders[2].item_name == "Cydrium", "Third order is Cydrium");
+    assertTrue(approxEqual(hub->orders[2].price_per_unit, 40.0), "Cydrium price is 40.0 Credits");
     assertTrue(hub->orders[3].item_name == "Nocxidium", "Fourth order is Nocxidium");
-    assertTrue(approxEqual(hub->orders[3].price_per_unit, 800.0, 1.0), "Nocxidium price is 800.0 ISK");
+    assertTrue(approxEqual(hub->orders[3].price_per_unit, 800.0, 1.0), "Nocxidium price is 800.0 Credits");
 }
 
 void testNPCMarketSeedOrdersPermanent() {
@@ -10541,14 +10541,14 @@ void testNPCMarketSeedBuyableByPlayer() {
 
     auto* buyer = world.createEntity("player_buyer");
     auto* player = addComp<components::Player>(buyer);
-    player->isk = 10000.0;
+    player->credits = 10000.0;
     addComp<components::Inventory>(buyer);
 
     market.seedNPCOrders("station_seed4");
 
     double tritPrice = market.getLowestSellPrice("station_seed4", "mineral_tritanium");
-    assertTrue(tritPrice > 0.0, "Tritanium sell price exists after seeding");
-    assertTrue(approxEqual(tritPrice, 6.0), "Tritanium sell price is 6.0 ISK");
+    assertTrue(tritPrice > 0.0, "Stellium sell price exists after seeding");
+    assertTrue(approxEqual(tritPrice, 6.0), "Stellium sell price is 6.0 Credits");
 }
 
 // ==================== Anomaly Visual Cue Tests ====================
@@ -11021,7 +11021,7 @@ void testMineralEconomyEndToEnd() {
     inv->max_capacity = 10000.0f;
 
     // Create deposit
-    std::string depositId = mining.createDeposit("Veldspar", 5000.0f, 10.0f, 0.0f, 0.0f);
+    std::string depositId = mining.createDeposit("Ferrite", 5000.0f, 10.0f, 0.0f, 0.0f);
     assertTrue(!depositId.empty(), "Deposit created");
 
     // Mine ore
@@ -11036,24 +11036,24 @@ void testMineralEconomyEndToEnd() {
     // Check miner has ore
     bool hasOre = false;
     for (const auto& item : inv->items) {
-        if (item.name == "Veldspar" && item.quantity > 0) hasOre = true;
+        if (item.name == "Ferrite" && item.quantity > 0) hasOre = true;
     }
-    assertTrue(hasOre, "Miner has Veldspar ore after mining");
+    assertTrue(hasOre, "Miner has Ferrite ore after mining");
 
     // Refine the ore at the station
-    int refined = refining.refineOre("econ_miner", "econ_station", "Veldspar", 1);
+    int refined = refining.refineOre("econ_miner", "econ_station", "Ferrite", 1);
     assertTrue(refined > 0, "Ore refined successfully");
 
-    // Check that Tritanium was produced (Veldspar → Tritanium)
-    bool hasTritanium = false;
+    // Check that Stellium was produced (Ferrite → Stellium)
+    bool hasStellium = false;
     for (const auto& item : inv->items) {
-        if (item.name == "Tritanium" && item.quantity > 0) hasTritanium = true;
+        if (item.name == "Stellium" && item.quantity > 0) hasStellium = true;
     }
-    assertTrue(hasTritanium, "Miner has Tritanium after refining Veldspar");
+    assertTrue(hasStellium, "Miner has Stellium after refining Ferrite");
 
     // Verify market still has mineral prices
     double tritPrice = market.getLowestSellPrice("econ_station", "mineral_tritanium");
-    assertTrue(tritPrice > 0.0, "Tritanium still available on market");
+    assertTrue(tritPrice > 0.0, "Stellium still available on market");
 }
 
 // ==================== Phase 9: Interruptible Chatter Tests ====================
@@ -11851,8 +11851,8 @@ void testPersistenceFleetStateFile() {
     auto* cargo = addComp<components::FleetCargoPool>(fc);
     cargo->total_capacity = 50000;
     cargo->used_capacity = 12000;
-    cargo->pooled_items["Tritanium"] = 5000;
-    cargo->pooled_items["Pyerite"] = 3000;
+    cargo->pooled_items["Stellium"] = 5000;
+    cargo->pooled_items["Vanthium"] = 3000;
     cargo->contributor_ship_ids.push_back("fleet_fc");
     cargo->contributor_ship_ids.push_back("fleet_member_1");
 
@@ -11907,8 +11907,8 @@ void testPersistenceFleetStateFile() {
     assertTrue(cargo2 != nullptr, "FleetCargoPool on FC after load");
     assertTrue(cargo2->total_capacity == 50000, "cargo total_capacity preserved");
     assertTrue(cargo2->used_capacity == 12000, "cargo used_capacity preserved");
-    assertTrue(cargo2->pooled_items["Tritanium"] == 5000, "cargo Tritanium preserved");
-    assertTrue(cargo2->pooled_items["Pyerite"] == 3000, "cargo Pyerite preserved");
+    assertTrue(cargo2->pooled_items["Stellium"] == 5000, "cargo Stellium preserved");
+    assertTrue(cargo2->pooled_items["Vanthium"] == 3000, "cargo Vanthium preserved");
     assertTrue(cargo2->contributor_ship_ids.size() == 2, "cargo contributors preserved");
 
     // Verify member
@@ -11945,7 +11945,7 @@ void testPersistenceEconomyFile() {
     components::MarketHub::Order sell;
     sell.order_id = "sell_001";
     sell.item_id = "trit";
-    sell.item_name = "Tritanium";
+    sell.item_name = "Stellium";
     sell.owner_id = "npc_trader_1";
     sell.is_buy_order = false;
     sell.price_per_unit = 6.0;
@@ -11959,7 +11959,7 @@ void testPersistenceEconomyFile() {
     components::MarketHub::Order buy;
     buy.order_id = "buy_001";
     buy.item_id = "pye";
-    buy.item_name = "Pyerite";
+    buy.item_name = "Vanthium";
     buy.owner_id = "npc_trader_2";
     buy.is_buy_order = true;
     buy.price_per_unit = 12.0;
@@ -11972,7 +11972,7 @@ void testPersistenceEconomyFile() {
     // Create mineral deposits
     auto* belt = world.createEntity("asteroid_belt_1");
     auto* deposit = addComp<components::MineralDeposit>(belt);
-    deposit->mineral_type = "Veldspar";
+    deposit->mineral_type = "Ferrite";
     deposit->quantity_remaining = 25000.0f;
     deposit->max_quantity = 50000.0f;
     deposit->yield_rate = 1.0f;
@@ -11982,12 +11982,12 @@ void testPersistenceEconomyFile() {
     auto* sys = world.createEntity("system_res_1");
     auto* sysres = addComp<components::SystemResources>(sys);
     components::SystemResources::ResourceEntry r1;
-    r1.mineral_type = "Tritanium";
+    r1.mineral_type = "Stellium";
     r1.total_quantity = 100000.0f;
     r1.remaining_quantity = 75000.0f;
     sysres->resources.push_back(r1);
     components::SystemResources::ResourceEntry r2;
-    r2.mineral_type = "Mexallon";
+    r2.mineral_type = "Cydrium";
     r2.total_quantity = 30000.0f;
     r2.remaining_quantity = 28000.0f;
     sysres->resources.push_back(r2);
@@ -12022,7 +12022,7 @@ void testPersistenceEconomyFile() {
     assertTrue(belt2 != nullptr, "Asteroid belt found after load");
     auto* deposit2 = belt2->getComponent<components::MineralDeposit>();
     assertTrue(deposit2 != nullptr, "MineralDeposit after load");
-    assertTrue(deposit2->mineral_type == "Veldspar", "mineral_type preserved");
+    assertTrue(deposit2->mineral_type == "Ferrite", "mineral_type preserved");
     assertTrue(approxEqual(deposit2->quantity_remaining, 25000.0f), "deposit qty remaining preserved");
 
     // Verify system resources
@@ -12031,8 +12031,8 @@ void testPersistenceEconomyFile() {
     auto* sysres2 = sys2->getComponent<components::SystemResources>();
     assertTrue(sysres2 != nullptr, "SystemResources after load");
     assertTrue(sysres2->resources.size() == 2, "Resource entries preserved");
-    assertTrue(sysres2->resources[0].mineral_type == "Tritanium", "Tritanium entry preserved");
-    assertTrue(approxEqual(sysres2->resources[0].remaining_quantity, 75000.0f), "Tritanium remaining preserved");
+    assertTrue(sysres2->resources[0].mineral_type == "Stellium", "Stellium entry preserved");
+    assertTrue(approxEqual(sysres2->resources[0].remaining_quantity, 75000.0f), "Stellium remaining preserved");
 
     // Clean up
     std::remove(filepath.c_str());
@@ -15078,8 +15078,8 @@ void testAsteroidFieldHighSecTypes() {
     int commonCount = 0;
     for (const auto& a : field.asteroids) {
         if (a.type == atlas::pcg::AsteroidType::Mercoxit) hasMercoxit = true;
-        if (a.type == atlas::pcg::AsteroidType::Veldspar ||
-            a.type == atlas::pcg::AsteroidType::Scordite) commonCount++;
+        if (a.type == atlas::pcg::AsteroidType::Ferrite ||
+            a.type == atlas::pcg::AsteroidType::Galvite) commonCount++;
     }
     assertTrue(!hasMercoxit, "High-sec belt has no Mercoxit");
     assertTrue(commonCount > 0, "High-sec belt has common ores");
@@ -17161,10 +17161,10 @@ void testMarketPlaceOrderSystem() {
 
     systems::MarketOrderSystem sys(&world);
     sys.placeOrder("order2", components::MarketOrder::OrderType::Sell,
-                   "Tritanium", 1000, 5.0f, "region_a", "station_1", "player_1");
+                   "Stellium", 1000, 5.0f, "region_a", "station_1", "player_1");
 
     auto* order = e->getComponent<components::MarketOrder>();
-    assertTrue(order->item_type == "Tritanium", "Item is Tritanium");
+    assertTrue(order->item_type == "Stellium", "Item is Stellium");
     assertTrue(order->quantity == 1000, "Quantity 1000");
     assertTrue(order->quantity_remaining == 1000, "Remaining 1000");
     assertTrue(approxEqual(order->price_per_unit, 5.0f), "Price 5.0");
@@ -17178,7 +17178,7 @@ void testMarketFillOrderSystem() {
 
     systems::MarketOrderSystem sys(&world);
     sys.placeOrder("order3", components::MarketOrder::OrderType::Buy,
-                   "Pyerite", 500, 10.0f, "region_b", "station_2", "player_2");
+                   "Vanthium", 500, 10.0f, "region_b", "station_2", "player_2");
 
     int filled = sys.fillOrder("order3", 200);
     assertTrue(filled == 200, "Filled 200");
@@ -17200,7 +17200,7 @@ void testMarketOrderExpirySystem() {
 
     systems::MarketOrderSystem sys(&world);
     sys.placeOrder("order4", components::MarketOrder::OrderType::Sell,
-                   "Mexallon", 100, 20.0f, "region_c", "station_3", "npc_1");
+                   "Cydrium", 100, 20.0f, "region_c", "station_3", "npc_1");
 
     assertTrue(!sys.isOrderExpired("order4"), "Not expired initially");
     sys.update(101.0f);
@@ -17636,7 +17636,7 @@ void testAIEconomicActorDefaults() {
     assertTrue(actor->destruction_count == 0, "No destructions");
     assertTrue(actor->replacement_count == 0, "No replacements");
     assertTrue(approxEqual(actor->time_alive, 0.0f), "Time alive starts at 0");
-    assertTrue(intent->wallet == 10000.0, "Wallet default ISK");
+    assertTrue(intent->wallet == 10000.0, "Wallet default Credits");
 }
 
 void testAIEconomicActorEarnSpend() {
@@ -17651,7 +17651,7 @@ void testAIEconomicActorEarnSpend() {
     intent->wallet = 5000.0;
 
     sys.earnISK("npc_miner_1", 3000.0);
-    assertTrue(intent->wallet == 8000.0, "Earned 3000 ISK");
+    assertTrue(intent->wallet == 8000.0, "Earned 3000 Credits");
 
     bool spent = sys.spendISK("npc_miner_1", 2000.0);
     assertTrue(spent, "Spend succeeds with sufficient funds");
@@ -17746,7 +17746,7 @@ void testAIEconomicActorTotalEconomy() {
     i2->wallet = 30000.0;
 
     double total = sys.getTotalEconomyISK();
-    assertTrue(total == 80000.0, "Total economy ISK correct");
+    assertTrue(total == 80000.0, "Total economy Credits correct");
 
     auto low = sys.getLowFundsActors(40000.0);
     assertTrue(low.size() == 1, "One low-funds actor");
@@ -18230,12 +18230,12 @@ void testWarDeclare() {
     auto* aggEnt = world.createEntity("aggressor1");
     auto* aggPlayer = addComp<components::Player>(aggEnt);
     aggPlayer->player_id = "aggressor1";
-    aggPlayer->isk = 500000000.0;
+    aggPlayer->credits = 500000000.0;
 
     std::string warId = warSys.declareWar("aggressor1", "defender1", 100000000.0);
     assertTrue(!warId.empty(), "War declared successfully");
     assertTrue(warSys.getWarStatus(warId) == "pending", "War status is pending");
-    assertTrue(approxEqual(aggPlayer->isk, 400000000.0), "ISK deducted");
+    assertTrue(approxEqual(aggPlayer->credits, 400000000.0), "Credits deducted");
 }
 
 void testWarActivate() {
@@ -18246,7 +18246,7 @@ void testWarActivate() {
     auto* aggEnt = world.createEntity("aggressor1");
     auto* aggPlayer = addComp<components::Player>(aggEnt);
     aggPlayer->player_id = "aggressor1";
-    aggPlayer->isk = 500000000.0;
+    aggPlayer->credits = 500000000.0;
 
     std::string warId = warSys.declareWar("aggressor1", "defender1", 100000000.0);
     assertTrue(warSys.activateWar(warId), "War activated");
@@ -18262,7 +18262,7 @@ void testWarMakeMutual() {
     auto* aggEnt = world.createEntity("aggressor1");
     auto* aggPlayer = addComp<components::Player>(aggEnt);
     aggPlayer->player_id = "aggressor1";
-    aggPlayer->isk = 500000000.0;
+    aggPlayer->credits = 500000000.0;
 
     std::string warId = warSys.declareWar("aggressor1", "defender1", 100000000.0);
     warSys.activateWar(warId);
@@ -18282,7 +18282,7 @@ void testWarSurrender() {
     auto* aggEnt = world.createEntity("aggressor1");
     auto* aggPlayer = addComp<components::Player>(aggEnt);
     aggPlayer->player_id = "aggressor1";
-    aggPlayer->isk = 500000000.0;
+    aggPlayer->credits = 500000000.0;
 
     std::string warId = warSys.declareWar("aggressor1", "defender1", 100000000.0);
     warSys.activateWar(warId);
@@ -18302,7 +18302,7 @@ void testWarRetract() {
     auto* aggEnt = world.createEntity("aggressor1");
     auto* aggPlayer = addComp<components::Player>(aggEnt);
     aggPlayer->player_id = "aggressor1";
-    aggPlayer->isk = 500000000.0;
+    aggPlayer->credits = 500000000.0;
 
     std::string warId = warSys.declareWar("aggressor1", "defender1", 100000000.0);
 
@@ -18321,7 +18321,7 @@ void testWarRecordKill() {
     auto* aggEnt = world.createEntity("aggressor1");
     auto* aggPlayer = addComp<components::Player>(aggEnt);
     aggPlayer->player_id = "aggressor1";
-    aggPlayer->isk = 500000000.0;
+    aggPlayer->credits = 500000000.0;
 
     std::string warId = warSys.declareWar("aggressor1", "defender1", 100000000.0);
     warSys.activateWar(warId);
@@ -18335,9 +18335,9 @@ void testWarRecordKill() {
     assertTrue(war->aggressor_kills == 1, "Aggressor has 1 kill");
     assertTrue(war->defender_kills == 1, "Defender has 1 kill");
     assertTrue(approxEqual(war->aggressor_isk_destroyed, 50000000.0),
-               "Aggressor ISK destroyed correct");
+               "Aggressor Credits destroyed correct");
     assertTrue(approxEqual(war->defender_isk_destroyed, 30000000.0),
-               "Defender ISK destroyed correct");
+               "Defender Credits destroyed correct");
 }
 
 void testWarAutoFinish() {
@@ -18348,7 +18348,7 @@ void testWarAutoFinish() {
     auto* aggEnt = world.createEntity("aggressor1");
     auto* aggPlayer = addComp<components::Player>(aggEnt);
     aggPlayer->player_id = "aggressor1";
-    aggPlayer->isk = 500000000.0;
+    aggPlayer->credits = 500000000.0;
 
     std::string warId = warSys.declareWar("aggressor1", "defender1", 100000000.0);
     warSys.activateWar(warId);
@@ -18370,11 +18370,11 @@ void testWarInsufficientFunds() {
     auto* aggEnt = world.createEntity("aggressor1");
     auto* aggPlayer = addComp<components::Player>(aggEnt);
     aggPlayer->player_id = "aggressor1";
-    aggPlayer->isk = 50000000.0; // Only 50M, need 100M
+    aggPlayer->credits = 50000000.0; // Only 50M, need 100M
 
     std::string warId = warSys.declareWar("aggressor1", "defender1", 100000000.0);
     assertTrue(warId.empty(), "War declaration failed - insufficient funds");
-    assertTrue(approxEqual(aggPlayer->isk, 50000000.0), "ISK not deducted on failure");
+    assertTrue(approxEqual(aggPlayer->credits, 50000000.0), "Credits not deducted on failure");
 }
 
 int main() {
@@ -18659,7 +18659,7 @@ int main() {
     testCharacterImplantSlotOccupied();
     testCharacterRemoveImplant();
     testCharacterCloneGrade();
-    testCharacterJumpClone();
+    testCharacterRelayClone();
     testCharacterCloneCooldownDecay();
     testCharacterSecurityStatus();
     testCharacterEmploymentHistory();

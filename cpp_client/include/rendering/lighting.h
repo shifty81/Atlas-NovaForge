@@ -158,9 +158,9 @@ public:
     );
     
     /**
-     * Setup default EVE-style lighting (sun + fill lights)
+     * Setup default Astralis-style lighting (sun + fill lights)
      */
-    void setupEVEStyleLighting();
+    void setupAstralisStyleLighting();
 
 private:
     std::vector<Light> m_lights;

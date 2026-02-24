@@ -85,12 +85,12 @@ Implemented procedural station generation:
 Created procedural asteroid generation:
 - Irregular, natural shapes using spherical coordinates
 - 8 ore type variations with specific colors:
-  - Veldspar (brown-orange)
-  - Scordite (gray metallic)
-  - Pyroxeres (red-brown)
-  - Plagioclase (green-gray)
-  - Omber (golden-brown)
-  - Kernite (blue-cyan)
+  - Ferrite (brown-orange)
+  - Galvite (gray metallic)
+  - Cryolite (red-brown)
+  - Silvane (green-gray)
+  - Duskite (golden-brown)
+  - Heliore (blue-cyan)
   - Jaspet (dark red)
   - Hemorphite (bright red-orange)
 - Variable sizing for visual variety

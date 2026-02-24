@@ -57,7 +57,7 @@ def demo_mission_board():
     for i, (level, reward) in enumerate(zip(levels, rewards)):
         mission_name = NameGenerator.generate_mission_name()
         print(f"  [{i+1}] {mission_name}")
-        print(f"      Level: {level} | Reward: {reward:,} ISK")
+        print(f"      Level: {level} | Reward: {reward:,} Credits")
     
     print()
 
@@ -168,7 +168,7 @@ def main():
     """Run all demo scenarios"""
     print("\n")
     print("╔" + "═" * 68 + "╗")
-    print("║" + " " * 10 + "EVE OFFLINE - Name Generator Game Demo" + " " * 18 + "║")
+    print("║" + " " * 10 + "Nova Forge - Name Generator Game Demo" + " " * 18 + "║")
     print("╚" + "═" * 68 + "╝")
     print()
     
@@ -184,7 +184,7 @@ def main():
     print("=" * 70)
     print("Demo Complete!")
     print("=" * 70)
-    print("\nThe name generator creates unique, EVE-like names for all")
+    print("\nThe name generator creates unique, Astralis-like names for all")
     print("game elements, enhancing immersion and reducing repetitive content.")
     print()
 

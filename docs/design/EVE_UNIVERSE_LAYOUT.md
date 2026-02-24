@@ -129,14 +129,14 @@ EVE OFFLINE implements 6 primary station types based on EVE Online:
 ### Ore Distribution by Security Level
 
 #### High-Sec (1.0 - 0.5)
-- **1.0**: Veldspar, Scordite (abundant, high traffic)
-- **0.9**: Veldspar, Scordite, Pyroxeres (abundant)
-- **0.8**: Veldspar, Scordite, Pyroxeres, Plagioclase (good)
-- **0.7**: Add Omber (good yield, moderate traffic)
-- **0.6-0.5**: Plagioclase, Omber, Kernite (moderate yield)
+- **1.0**: Ferrite, Galvite (abundant, high traffic)
+- **0.9**: Ferrite, Galvite, Cryolite (abundant)
+- **0.8**: Ferrite, Galvite, Cryolite, Silvane (good)
+- **0.7**: Add Duskite (good yield, moderate traffic)
+- **0.6-0.5**: Silvane, Duskite, Heliore (moderate yield)
 
 #### Low-Sec (0.4 - 0.1)
-- **0.4**: Kernite, Jaspet, Hemorphite (dangerous, NPC presence)
+- **0.4**: Heliore, Jaspet, Hemorphite (dangerous, NPC presence)
 - **0.1-0.3**: Jaspet, Hemorphite, Hedbergite (very dangerous)
 
 #### Null-Sec (0.0 and below)
@@ -324,7 +324,7 @@ Time required to align ship for warp entry:
 - Find a "Colossal" belt with ore remaining
 - Start mining operations
 - Align ship toward safe station in case of gankers
-- Mine Veldspar, Scordite, Pyroxeres
+- Mine Ferrite, Galvite, Cryolite
 
 #### 13:00 UTC - First Load Complete
 - Ore hold full (~5,000-10,000 m³)

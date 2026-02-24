@@ -110,7 +110,7 @@ Each ship class has predefined characteristics:
 - X4: Angular, industrial, geometric
 - Elite Dangerous: Sleek, aerodynamic
 - Eve Online: Organic, flowing curves
-- EVEOFFLINE Factions: Solari, Veyren, Aurelian, Keldari
+- NOVAFORGE Factions: Solari, Veyren, Aurelian, Keldari
 - NMS: Colorful, varied, organic
 
 **Random Seed**

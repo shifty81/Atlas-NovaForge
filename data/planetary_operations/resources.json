@@ -745,8 +745,8 @@
       "output_quantity": 1,
       "cycle_time": 7200
     },
-    "neocoms": {
-      "name": "Neocoms",
+    "nexcoms": {
+      "name": "Nexcoms",
       "tier": 3,
       "volume": 1.5,
       "inputs": {
@@ -878,7 +878,7 @@
       "inputs": {
         "data_chips": 2,
         "high_tech_transmitters": 2,
-        "neocoms": 2
+        "nexcoms": 2
       },
       "output_quantity": 1,
       "cycle_time": 14400

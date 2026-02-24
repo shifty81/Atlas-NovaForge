@@ -73,23 +73,23 @@ Maximum: +50% from skills + additional from modules
 
 | Ore | Tier | Sec Level | Minerals |
 |-----|------|-----------|----------|
-| Veldspar | Common | 0.5+ | Tritanium |
-| Scordite | Common | 0.7+ | Tritanium, Pyerite |
-| Pyroxeres | Uncommon | 0.9+ | Tritanium, Pyerite, Mexallon, Nocxium |
-| Plagioclase | Uncommon | 0.9+ | Tritanium, Pyerite, Mexallon |
-| Omber | Uncommon | 0.7-0.9 | Tritanium, Pyerite, Isogen |
-| Kernite | Rare | 0.4-0.7 | Tritanium, Mexallon, Isogen |
-| Jaspet | Rare | 0.2-0.4 | Mexallon, Nocxium, Zydrine |
-| Hemorphite | Rare | 0.0-0.2 | Tritanium, Isogen, Nocxium, Zydrine |
-| Hedbergite | Rare | 0.0-0.2 | Pyerite, Isogen, Nocxium, Zydrine |
-| Gneiss | Very Rare | 0.0 | Pyerite, Mexallon, Isogen |
-| Dark Ochre | Very Rare | 0.0 | Tritanium, Nocxium, Zydrine |
-| Crokite | Ultra Rare | 0.0 | Tritanium, Nocxium, Zydrine |
-| Bistot | Ultra Rare | 0.0 | Pyerite, Zydrine, Megacyte |
-| Arkonor | Ultra Rare | 0.0 | Tritanium, Mexallon, Megacyte |
+| Ferrite | Common | 0.5+ | Stellium |
+| Galvite | Common | 0.7+ | Stellium, Vanthium |
+| Cryolite | Uncommon | 0.9+ | Stellium, Vanthium, Cydrium, Umbrium |
+| Silvane | Uncommon | 0.9+ | Stellium, Vanthium, Cydrium |
+| Duskite | Uncommon | 0.7-0.9 | Stellium, Vanthium, Aethite |
+| Heliore | Rare | 0.4-0.7 | Stellium, Cydrium, Aethite |
+| Jaspet | Rare | 0.2-0.4 | Cydrium, Umbrium, Celestine |
+| Hemorphite | Rare | 0.0-0.2 | Stellium, Aethite, Umbrium, Celestine |
+| Hedbergite | Rare | 0.0-0.2 | Vanthium, Aethite, Umbrium, Celestine |
+| Gneiss | Very Rare | 0.0 | Vanthium, Cydrium, Aethite |
+| Dark Ochre | Very Rare | 0.0 | Stellium, Umbrium, Celestine |
+| Crokite | Ultra Rare | 0.0 | Stellium, Umbrium, Celestine |
+| Bistot | Ultra Rare | 0.0 | Vanthium, Celestine, Novarite |
+| Arkonor | Ultra Rare | 0.0 | Stellium, Cydrium, Novarite |
 | Mercoxit | Legendary | -0.5 | Morphite |
 
-**8 Minerals**: Tritanium, Pyerite, Mexallon, Isogen, Nocxium, Zydrine, Megacyte, Morphite
+**8 Minerals**: Stellium, Vanthium, Cydrium, Aethite, Umbrium, Celestine, Novarite, Morphite
 
 ### 5. Mining Skills ✅
 
@@ -114,7 +114,7 @@ Maximum: +50% from skills + additional from modules
 **File**: `engine/systems/industry_system.py` (+130 lines)
 
 **Features Implemented**:
-- Batch-based ore reprocessing (e.g., 400 Veldspar = 1 batch)
+- Batch-based ore reprocessing (e.g., 400 Ferrite = 1 batch)
 - Station efficiency calculations (default 50%)
 - Skill-based efficiency bonuses (Reprocessing + Reprocessing Efficiency)
 - Ore hold and cargo hold source detection
@@ -351,7 +351,7 @@ Successfully integrated with:
 
 ### Phase 7 Continuation
 Other Phase 7 systems (as per ROADMAP):
-- Planetary Interaction (PI)
+- Planetary Operations (PI)
 - Research & Invention
 - Wormhole Space
 - Advanced Fleet Mechanics

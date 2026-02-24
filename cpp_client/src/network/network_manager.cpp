@@ -162,7 +162,7 @@ void NetworkManager::sendMarketBuy(const std::string& itemId, int quantity, doub
     std::string msg = m_protocolHandler->createMarketBuyMessage(itemId, quantity, price);
     m_tcpClient->send(msg);
     std::cout << "Sent market buy: " << itemId << " x" << quantity 
-              << " @ " << price << " ISK" << std::endl;
+              << " @ " << price << " Credits" << std::endl;
 }
 
 void NetworkManager::sendMarketSell(const std::string& itemId, int quantity, double price) {
@@ -171,7 +171,7 @@ void NetworkManager::sendMarketSell(const std::string& itemId, int quantity, dou
     std::string msg = m_protocolHandler->createMarketSellMessage(itemId, quantity, price);
     m_tcpClient->send(msg);
     std::cout << "Sent market sell: " << itemId << " x" << quantity 
-              << " @ " << price << " ISK" << std::endl;
+              << " @ " << price << " Credits" << std::endl;
 }
 
 void NetworkManager::sendMarketQuery(const std::string& itemId) {

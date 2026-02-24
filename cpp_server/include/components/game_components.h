@@ -1,5 +1,5 @@
-#ifndef EVE_COMPONENTS_GAME_COMPONENTS_H
-#define EVE_COMPONENTS_GAME_COMPONENTS_H
+#ifndef NOVAFORGE_COMPONENTS_GAME_COMPONENTS_H
+#define NOVAFORGE_COMPONENTS_GAME_COMPONENTS_H
 
 #include "ecs/component.h"
 #include <string>
@@ -40,7 +40,7 @@ public:
 };
 
 /**
- * @brief Health pools (shield, armor, hull) like EVE ONLINE
+ * @brief Health pools (shield, armor, hull) like Astralis ONLINE
  */
 class Health : public ecs::Component {
 public:
@@ -79,7 +79,7 @@ public:
 };
 
 /**
- * @brief Energy capacitor like EVE ONLINE
+ * @brief Energy capacitor like Astralis ONLINE
  */
 class Capacitor : public ecs::Component {
 public:
@@ -201,7 +201,7 @@ class Player : public ecs::Component {
 public:
     std::string player_id;
     std::string character_name = "Pilot";
-    double isk = 1000000.0;  // Starting ISK
+    double credits = 1000000.0;  // Starting Credits
     std::string corporation = "NPC Corp";
     
     COMPONENT_TYPE(Player)
@@ -520,7 +520,7 @@ public:
     };
 
     std::vector<LootEntry> entries;
-    double isk_drop = 0.0;     // ISK bounty
+    double isk_drop = 0.0;     // Credits bounty
 
     COMPONENT_TYPE(LootTable)
 };
@@ -587,8 +587,8 @@ public:
     std::string ship_type;
     std::string tier = "basic";    // "basic", "standard", "platinum"
     float coverage_fraction = 0.5f; // fraction of ship value paid out
-    double premium_paid = 0.0;     // ISK paid for policy
-    double payout_value = 0.0;     // ISK paid out on loss
+    double premium_paid = 0.0;     // Credits paid for policy
+    double payout_value = 0.0;     // Credits paid out on loss
     float duration_remaining = -1.0f; // seconds, -1 = permanent
     bool active = true;
     bool claimed = false;
@@ -695,7 +695,7 @@ public:
 };
 
 /**
- * @brief Planetary Interaction colony on a planet
+ * @brief Planetary Operations colony on a planet
  *
  * Tracks extractors, processors, and storage for PI resources.
  * Each colony has a CPU and powergrid budget from the planet type.
@@ -920,7 +920,7 @@ public:
     int memory = 20;
 
     // Clone
-    std::string clone_grade = "alpha";       // "alpha", "omega"
+    std::string clone_grade = "foundry";       // "foundry", "apex"
     std::string clone_location;              // station ID for medical clone
     int clone_jump_cooldown = 0;             // seconds remaining
 
@@ -1009,7 +1009,7 @@ public:
 /**
  * @brief Leaderboard for tracking player rankings and achievements
  *
- * Aggregates player stats across categories (kills, ISK earned,
+ * Aggregates player stats across categories (kills, Credits earned,
  * missions completed, etc.) and tracks unlocked achievements.
  */
 class Leaderboard : public ecs::Component {
@@ -1057,7 +1057,7 @@ class Station : public ecs::Component {
 public:
     std::string station_name;
     float docking_range = 2500.0f;       // metres
-    float repair_cost_per_hp = 1.0f;     // ISK per HP repaired
+    float repair_cost_per_hp = 1.0f;     // Credits per HP repaired
     int docked_count = 0;                // number of ships currently docked
 
     COMPONENT_TYPE(Station)
@@ -1376,7 +1376,7 @@ public:
  */
 class MineralDeposit : public ecs::Component {
 public:
-    std::string mineral_type = "Veldspar";   // ore name
+    std::string mineral_type = "Ferrite";   // ore name
     float quantity_remaining = 10000.0f;     // units of ore left
     float max_quantity = 10000.0f;           // original total
     float yield_rate = 1.0f;                 // multiplier on mining yield
@@ -1613,10 +1613,10 @@ public:
 class RefiningFacility : public ecs::Component {
 public:
     struct RefineRecipe {
-        std::string ore_type;           // input ore name (e.g. "Veldspar")
+        std::string ore_type;           // input ore name (e.g. "Ferrite")
         int ore_units_required = 100;   // units consumed per batch
         struct MineralOutput {
-            std::string mineral_type;   // output mineral name (e.g. "Tritanium")
+            std::string mineral_type;   // output mineral name (e.g. "Stellium")
             int base_quantity = 333;    // base output per batch at 100% efficiency
         };
         std::vector<MineralOutput> outputs;
@@ -1754,7 +1754,7 @@ class MissionTemplate : public ecs::Component {
 public:
     struct ObjectiveTemplate {
         std::string type;          // "destroy", "mine", "deliver", "reach"
-        std::string target;        // target type (e.g., "pirate_frigate", "Veldspar", "Trade Goods")
+        std::string target;        // target type (e.g., "pirate_frigate", "Ferrite", "Trade Goods")
         int count_min = 1;
         int count_max = 5;
     };
@@ -1970,7 +1970,7 @@ public:
     bool intent_complete = false;       // current intent fulfilled
 
     // Economic state
-    double wallet = 10000.0;            // ISK balance
+    double wallet = 10000.0;            // Credits balance
     float cargo_fill = 0.0f;           // 0.0-1.0 cargo space used
     float profit_target = 0.0f;         // target profit before docking
 
@@ -2001,7 +2001,7 @@ public:
 // ==================== Living Universe: Security Response ====================
 
 /**
- * @brief Per-system security response timer (CONCORD-style)
+ * @brief Per-system security response timer (AEGIS-style)
  *
  * Tracks whether a delayed security response is pending or active
  * for a star system.
@@ -2537,6 +2537,9 @@ public:
         ModMenu,
         MultiplayerMenu,
         CharacterCreation,
+        ShipSelection,
+        HangarSpawn,
+        FleetCommand,
         InGame,
         PauseMenu
     };
@@ -2779,13 +2782,13 @@ public:
  * @brief Makes NPCs real economic participants with wallets, ship ownership,
  *        and permanent death.
  *
- * NPCs are no longer disposable spawns — they own ships, earn and spend ISK,
+ * NPCs are no longer disposable spawns — they own ships, earn and spend Credits,
  * and permanently die if they cannot afford a replacement hull.
  */
 class AIEconomicActor : public ecs::Component {
 public:
     std::string owned_ship_type;        // e.g. "Rifter", "Caracal"
-    double ship_value = 0.0;            // estimated hull ISK value
+    double ship_value = 0.0;            // estimated hull Credits value
     double repair_cost_ratio = 0.15;    // fraction of ship_value for repairs
     bool is_destroyed = false;          // ship currently destroyed
     bool permanently_dead = false;      // cannot afford replacement — removed from sim
@@ -2869,7 +2872,7 @@ public:
     std::string status = "pending"; // "pending", "active", "mutual", "surrendered", "retracted", "finished"
     float duration_hours = 168.0f; // Default 1 week
     float elapsed_hours = 0.0f;
-    double war_cost = 100000000.0; // ISK cost to declare war (100M)
+    double war_cost = 100000000.0; // Credits cost to declare war (100M)
     int aggressor_kills = 0;
     int defender_kills = 0;
     double aggressor_isk_destroyed = 0.0;
@@ -2881,4 +2884,4 @@ public:
 } // namespace components
 } // namespace atlas
 
-#endif // EVE_COMPONENTS_GAME_COMPONENTS_H
+#endif // NOVAFORGE_COMPONENTS_GAME_COMPONENTS_H

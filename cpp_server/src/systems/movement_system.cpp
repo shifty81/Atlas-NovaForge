@@ -267,7 +267,7 @@ bool MovementSystem::commandWarp(const std::string& entity_id,
     auto* pos = entity->getComponent<components::Position>();
     if (!pos) return false;
 
-    // Check minimum warp distance (150km in EVE)
+    // Check minimum warp distance (150km in Astralis)
     float dx = dest_x - pos->x;
     float dy = dest_y - pos->y;
     float dz = dest_z - pos->z;

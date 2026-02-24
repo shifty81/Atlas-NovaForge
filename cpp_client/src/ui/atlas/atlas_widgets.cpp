@@ -142,7 +142,7 @@ bool iconButton(AtlasContext& ctx, WidgetID id, const Rect& r,
 
     bool clicked = ctx.buttonBehavior(r, id);
 
-    // Neocom-style: subtle background that only shows on hover/active
+    // Nexcom-style: subtle background that only shows on hover/active
     bool hovered = ctx.isHot(id);
     bool active  = ctx.isActive(id);
 
@@ -777,7 +777,7 @@ void scrollbar(AtlasContext& ctx, const Rect& track,
 }
 
 // ── Sidebar Icon Shape Helpers ──────────────────────────────────────
-// Draw shape-based icons modelled after EVE Online's Neocom Photon UI.
+// Draw shape-based icons modelled after Astralis's Nexcom Photon UI.
 // Each icon uses simple geometric primitives (rect, circle, line, arc)
 // to create a distinctive silhouette recognizable at a glance.
 
@@ -845,7 +845,7 @@ static void drawIconMission(AtlasRenderer& rr, Vec2 c, float sz, const Color& co
     }
 }
 
-static void drawIconDScan(AtlasRenderer& rr, Vec2 c, float sz, const Color& col) {
+static void drawIconProxscan(AtlasRenderer& rr, Vec2 c, float sz, const Color& col) {
     // Radar sweep: circle outline with a sweep wedge
     float r = sz * 0.38f;
     rr.drawCircleOutline(c, r, col.withAlpha(0.5f), 1.0f, 16);
@@ -915,7 +915,7 @@ static void drawSidebarIconShape(AtlasRenderer& rr, int index,
         case 1: drawIconFitting(rr, centre, slotSz, col);   break;
         case 2: drawIconMarket(rr, centre, slotSz, col);    break;
         case 3: drawIconMission(rr, centre, slotSz, col);   break;
-        case 4: drawIconDScan(rr, centre, slotSz, col);     break;
+        case 4: drawIconProxscan(rr, centre, slotSz, col);     break;
         case 5: drawIconOverview(rr, centre, slotSz, col);  break;
         case 6: drawIconChat(rr, centre, slotSz, col);      break;
         case 7: drawIconDrone(rr, centre, slotSz, col);     break;
@@ -1040,13 +1040,13 @@ void sidebarBar(AtlasContext& ctx, float x, float width, float height,
         "Chat",
         "Drones",
     };
-    // Per-icon accent colours (EVE lets users colour-code icons)
+    // Per-icon accent colours (Astralis lets users colour-code icons)
     static const Color iconAccentColors[] = {
         Color(0.35f, 0.75f, 0.45f, 1.0f),  // Inventory: green
         Color(0.85f, 0.50f, 0.25f, 1.0f),  // Fitting: orange
         Color(0.40f, 0.65f, 0.90f, 1.0f),  // Market: blue
         Color(0.80f, 0.75f, 0.30f, 1.0f),  // Missions: gold
-        Color(0.60f, 0.80f, 0.90f, 1.0f),  // D-Scan: light cyan
+        Color(0.60f, 0.80f, 0.90f, 1.0f),  // Proxscan: light cyan
         Color(0.50f, 0.70f, 0.85f, 1.0f),  // Overview: steel blue
         Color(0.65f, 0.55f, 0.85f, 1.0f),  // Chat: purple
         Color(0.45f, 0.80f, 0.65f, 1.0f),  // Drones: teal
@@ -1084,7 +1084,7 @@ void sidebarBar(AtlasContext& ctx, float x, float width, float height,
                          accentCol.withAlpha(0.5f));
         }
 
-        // Shape-based icon (EVE Photon style)
+        // Shape-based icon (Astralis Photon style)
         Color iconCol = isOpen ? accentCol : (hovered ? t.textPrimary : t.textSecondary);
         drawSidebarIconShape(rr, i, iconRect.center(), slotSz, iconCol);
 
@@ -1107,7 +1107,7 @@ void sidebarBar(AtlasContext& ctx, float x, float width, float height,
         iconY += 5.0f;
     }
 
-    // ── Middle group: Market, Missions, D-Scan, Overview (icons 2–5) ─
+    // ── Middle group: Market, Missions, Proxscan, Overview (icons 2–5) ─
     int midGroup = std::min(icons, 6);
     for (int i = topGroup; i < midGroup; ++i) {
         Rect iconRect = {x + pad, iconY, slotSz, slotSz};
@@ -1136,7 +1136,7 @@ void sidebarBar(AtlasContext& ctx, float x, float width, float height,
                          accentCol.withAlpha(0.5f));
         }
 
-        // Shape-based icon (EVE Photon style)
+        // Shape-based icon (Astralis Photon style)
         Color iconCol = isOpen ? accentCol : (hovered ? t.textPrimary : t.textSecondary);
         drawSidebarIconShape(rr, i, iconRect.center(), slotSz, iconCol);
 
@@ -1187,7 +1187,7 @@ void sidebarBar(AtlasContext& ctx, float x, float width, float height,
                          accentCol.withAlpha(0.5f));
         }
 
-        // Shape-based icon (EVE Photon style)
+        // Shape-based icon (Astralis Photon style)
         Color iconCol = isOpen ? accentCol : (hovered ? t.textPrimary : t.textSecondary);
         drawSidebarIconShape(rr, i, iconRect.center(), slotSz, iconCol);
 
@@ -1457,8 +1457,8 @@ bool panelBeginStateful(AtlasContext& ctx, const char* title,
                 state.bounds.x = std::max(leftEdge, std::min(state.bounds.x, winW - state.bounds.w));
                 state.bounds.y = std::max(0.0f, std::min(state.bounds.y, winH - t.headerHeight));
 
-                // ── EVE-style edge magnetism / snapping ────────────────
-                // Panels snap to screen edges and the Neocom sidebar
+                // ── Astralis-style edge magnetism / snapping ────────────────
+                // Panels snap to screen edges and the Nexcom sidebar
                 // when within the snap threshold (Photon UI principle).
                 constexpr float snapThreshold = 15.0f;
 

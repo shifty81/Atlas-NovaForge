@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_SECURITY_RESPONSE_SYSTEM_H
-#define EVE_SYSTEMS_SECURITY_RESPONSE_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_SECURITY_RESPONSE_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_SECURITY_RESPONSE_SYSTEM_H
 
 #include "ecs/system.h"
 #include "ecs/entity.h"
@@ -11,7 +11,7 @@ namespace atlas {
 namespace systems {
 
 /**
- * @brief CONCORD-style delayed security response in high-sec systems
+ * @brief AEGIS-style delayed security response in high-sec systems
  *
  * When a system's threat exceeds a threshold and its security_level
  * is high enough, a security response timer begins.  After the delay
@@ -59,4 +59,4 @@ private:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_SECURITY_RESPONSE_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_SECURITY_RESPONSE_SYSTEM_H

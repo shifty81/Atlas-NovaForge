@@ -16,7 +16,7 @@
       }
     ],
     "rewards": {
-      "isk": 50000,
+      "credits": 50000,
       "loyalty_points": 150,
       "standing_gain": 0.01,
       "items": []
@@ -42,7 +42,7 @@
       }
     ],
     "rewards": {
-      "isk": 35000,
+      "credits": 35000,
       "loyalty_points": 100,
       "standing_gain": 0.005,
       "items": []
@@ -69,7 +69,7 @@
       }
     ],
     "rewards": {
-      "isk": 80000,
+      "credits": 80000,
       "loyalty_points": 200,
       "standing_gain": 0.015,
       "items": []
@@ -97,7 +97,7 @@
       }
     ],
     "rewards": {
-      "isk": 120000,
+      "credits": 120000,
       "loyalty_points": 300,
       "standing_gain": 0.015
     },
@@ -125,7 +125,7 @@
       }
     ],
     "rewards": {
-      "isk": 65000,
+      "credits": 65000,
       "loyalty_points": 180,
       "standing_gain": 0.012,
       "items": [
@@ -154,7 +154,7 @@
       }
     ],
     "rewards": {
-      "isk": 55000,
+      "credits": 55000,
       "loyalty_points": 165,
       "standing_gain": 0.011,
       "items": [
@@ -183,7 +183,7 @@
       }
     ],
     "rewards": {
-      "isk": 45000,
+      "credits": 45000,
       "loyalty_points": 200,
       "standing_gain": 0.015,
       "items": []
@@ -214,7 +214,7 @@
       }
     ],
     "rewards": {
-      "isk": 60000,
+      "credits": 60000,
       "loyalty_points": 180,
       "standing_gain": 0.012,
       "items": [
@@ -255,7 +255,7 @@
       }
     ],
     "rewards": {
-      "isk": 100000,
+      "credits": 100000,
       "loyalty_points": 500,
       "standing_gain": 0.05,
       "faction_standing_gain": 0.02,

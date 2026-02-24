@@ -279,7 +279,7 @@ EVEOFFLINE_CPP/
 │       ├── logger.h/cpp
 │       └── config.h/cpp
 ├── include/
-│   └── eve_offline/
+│   └── novaforge/
 │       └── (public headers if needed)
 ├── tests/
 │   ├── test_client.cpp
@@ -583,7 +583,7 @@ endif()
 ### Windows
 ```
 EVEOffline-Setup.exe
-├── eve_offline.exe
+├── novaforge.exe
 ├── panda3d.dll
 ├── boost_asio.dll
 ├── assets/
@@ -592,22 +592,22 @@ EVEOffline-Setup.exe
 
 ### Linux
 ```
-eve-offline.tar.gz or .deb/.rpm
-├── bin/eve_offline
+novaforge.tar.gz or .deb/.rpm
+├── bin/novaforge
 ├── lib/
 │   ├── libpanda3d.so
 │   └── libboost_asio.so
-├── share/eve_offline/
+├── share/novaforge/
 │   ├── assets/
 │   └── data/
-└── eve_offline.desktop
+└── novaforge.desktop
 ```
 
 ### macOS
 ```
 EVEOffline.app
 └── Contents/
-    ├── MacOS/eve_offline
+    ├── MacOS/novaforge
     ├── Frameworks/
     ├── Resources/
     │   ├── assets/

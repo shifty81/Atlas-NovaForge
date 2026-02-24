@@ -1,6 +1,23 @@
 @echo off
 REM Build script for Nova Forge C++ Dedicated Server (Windows)
 
+setlocal
+
+REM --- Logging Setup ---
+set "SCRIPT_DIR=%~dp0"
+if not exist "%SCRIPT_DIR%logs" mkdir "%SCRIPT_DIR%logs"
+for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value') do set "datetime=%%I"
+set "LOG_FILE=%SCRIPT_DIR%logs\server_build_%datetime:~0,8%_%datetime:~8,6%.log"
+echo Build log will be saved to: %LOG_FILE%
+call :main %* > "%LOG_FILE%" 2>&1
+set "EXIT_CODE=%ERRORLEVEL%"
+echo Build finished. Log saved to: %LOG_FILE%
+exit /b %EXIT_CODE%
+
+:main
+echo Log file: %LOG_FILE%
+echo.
+
 echo ==================================
 echo Nova Forge Server Build Script
 echo ==================================
@@ -68,12 +85,12 @@ echo ==================================
 echo Build complete!
 echo ==================================
 echo.
-echo Executable: build\bin\%BUILD_TYPE%\eve_dedicated_server.exe
+echo Executable: build\bin\%BUILD_TYPE%\novaforge_server.exe
 echo Config: build\bin\config\server.json
 echo.
 echo To run the server:
 echo   cd build\bin\%BUILD_TYPE%
-echo   eve_dedicated_server.exe
+echo   novaforge_server.exe
 echo.
 
 cd ..

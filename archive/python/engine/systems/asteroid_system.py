@@ -1,7 +1,7 @@
 """
 Asteroid Field System
 Manages asteroid belts, mining mechanics, and ore distribution
-Based on EVE Online asteroid field mechanics
+Based on Astralis asteroid field mechanics
 """
 
 import random

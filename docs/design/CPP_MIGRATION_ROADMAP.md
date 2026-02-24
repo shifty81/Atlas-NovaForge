@@ -69,15 +69,15 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 file(GLOB_RECURSE HEADERS "include/*.h")
 
 # Executable
-add_executable(eve_offline ${SOURCES} ${HEADERS})
+add_executable(novaforge ${SOURCES} ${HEADERS})
 
-target_include_directories(eve_offline 
+target_include_directories(novaforge 
     PRIVATE 
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${Panda3D_INCLUDE_DIRS}
 )
 
-target_link_libraries(eve_offline 
+target_link_libraries(novaforge 
     PRIVATE 
         ${Panda3D_LIBRARIES}
         Boost::system
@@ -134,7 +134,7 @@ int main(int argc, char *argv[]) {
 mkdir build && cd build
 cmake ..
 cmake --build .
-./eve_offline  # or eve_offline.exe on Windows
+./novaforge  # or novaforge.exe on Windows
 ```
 
 **Expected Output**: Window opens with empty scene
@@ -465,7 +465,7 @@ public:
 3. Navigation Panel
 4. Combat Log
 5. Overview Panel
-6. Neocom Sidebar
+6. Nexcom Sidebar
 7. Capacitor Display (with geometry)
 8. Health Rings (with geometry)
 
