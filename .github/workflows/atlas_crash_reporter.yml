@@ -1,0 +1,130 @@
+name: Atlas Crash Reporter
+
+on:
+  workflow_run:
+    workflows: ["Atlas Determinism Gate"]
+    types: [completed]
+
+jobs:
+  collect-crash-reports:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'failure'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Check for crash artifacts
+      run: |
+        # Look for any .atlascrash manifests in common output directories
+        CRASH_DIR="/tmp/atlas_repro"
+        if [ -d "$CRASH_DIR" ]; then
+          echo "crash_found=true" >> "$GITHUB_OUTPUT"
+          echo "crash_dir=$CRASH_DIR" >> "$GITHUB_OUTPUT"
+        else
+          echo "crash_found=false" >> "$GITHUB_OUTPUT"
+          echo "⚠ No crash artifacts found in $CRASH_DIR"
+        fi
+      id: check
+
+    - name: Bundle crash reports
+      if: steps.check.outputs.crash_found == 'true'
+      run: |
+        python3 tools/crash_reporter.py \
+          --dir "${{ steps.check.outputs.crash_dir }}" \
+          --output /tmp/atlas_crash_bundle.tar.gz \
+          --verbose
+
+    - name: Upload crash bundle
+      if: steps.check.outputs.crash_found == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: atlas-crash-bundle
+        path: /tmp/atlas_crash_bundle.tar.gz
+        retention-days: 30
+
+    - name: Validate crash manifests
+      run: |
+        # Validate any crash manifests found during the test run
+        CRASH_DIR="/tmp/atlas_repro"
+        if [ -d "$CRASH_DIR" ]; then
+          python3 tools/crash_reporter.py \
+            --dir "$CRASH_DIR" \
+            --validate-only || true
+        fi
+
+  hash-comparison-dashboard:
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download Ubuntu replay hashes
+      uses: actions/download-artifact@v4
+      with:
+        name: replay-hashes-ubuntu-latest
+        path: hashes-ubuntu
+      continue-on-error: true
+
+    - name: Download Windows replay hashes
+      uses: actions/download-artifact@v4
+      with:
+        name: replay-hashes-windows-latest
+        path: hashes-windows
+      continue-on-error: true
+
+    - name: Generate Hash Comparison Dashboard
+      run: |
+        echo "## 🔍 Cross-Platform Hash Comparison Dashboard" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        if [ ! -d hashes-ubuntu ] && [ ! -d hashes-windows ]; then
+          echo "⚠️ No replay hash artifacts available for comparison." >> $GITHUB_STEP_SUMMARY
+          exit 0
+        fi
+
+        echo "| Replay | Ubuntu Hash | Windows Hash | Match |" >> $GITHUB_STEP_SUMMARY
+        echo "|--------|-------------|--------------|-------|" >> $GITHUB_STEP_SUMMARY
+
+        verified=0
+        mismatched=0
+        missing=0
+
+        # Compare hashes from both platforms
+        truncate_hash() { printf '%s' "${1:0:16}"; }
+
+        for ubuntu_hash in hashes-ubuntu/replay_hash_*.txt 2>/dev/null; do
+          [ -f "$ubuntu_hash" ] || continue
+          base=$(basename "$ubuntu_hash")
+          replay_name=$(echo "$base" | sed 's/replay_hash_//' | sed 's/\.txt$//')
+          ubuntu_val=$(cat "$ubuntu_hash" 2>/dev/null || echo "N/A")
+          ubuntu_short=$(truncate_hash "$ubuntu_val")
+
+          windows_hash="hashes-windows/${base}"
+          if [ -f "$windows_hash" ]; then
+            windows_val=$(cat "$windows_hash")
+            windows_short=$(truncate_hash "$windows_val")
+            if [ "$ubuntu_val" = "$windows_val" ]; then
+              echo "| $replay_name | \`${ubuntu_short}...\` | \`${windows_short}...\` | ✅ |" >> $GITHUB_STEP_SUMMARY
+              verified=$((verified + 1))
+            else
+              echo "| $replay_name | \`${ubuntu_short}...\` | \`${windows_short}...\` | ❌ |" >> $GITHUB_STEP_SUMMARY
+              mismatched=$((mismatched + 1))
+            fi
+          else
+            echo "| $replay_name | \`${ubuntu_short}...\` | N/A | ⚠️ |" >> $GITHUB_STEP_SUMMARY
+            missing=$((missing + 1))
+          fi
+        done
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Verified: $verified" >> $GITHUB_STEP_SUMMARY
+        echo "- ❌ Mismatched: $mismatched" >> $GITHUB_STEP_SUMMARY
+        echo "- ⚠️ Missing: $missing" >> $GITHUB_STEP_SUMMARY
+
+        if [ "$mismatched" -gt 0 ]; then
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "❌ **Cross-platform determinism verification FAILED**" >> $GITHUB_STEP_SUMMARY
+          exit 1
+        fi

@@ -1,0 +1,85 @@
+# Build directories
+build/
+build_*/
+dist/
+bin/
+obj/
+out/
+
+# Dependencies
+node_modules/
+vendor/
+.venv/
+venv/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Compiled files
+*.o
+*.so
+*.dll
+*.exe
+*.dylib
+*.class
+*.pyc
+*.pyo
+
+# Logs and databases
+*.log
+logs/*
+!logs/.gitkeep
+*.sqlite
+*.db
+
+# Temporary files
+*.tmp
+.cache/
+tmp/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# CodeQL artifacts
+_codeql_build_dir/
+_codeql_detected_source_root
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+*.cmake
+!CMakeLists.txt
+!engine/cmake/*.cmake
+
+# Visual Studio
+.vs/
+build_vs/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.suo
+*.user
+*.pdb
+*.ilk
+*.idb
+
+# Engine build artifacts
+engine/build/
+editor/build/
+runtime/build/
+
+# Additional C++ build artifacts
+*.a
+*.lib
+*.obj
+!*.obj
+*.out
+/tmp/

@@ -1,0 +1,181 @@
+name: Atlas Determinism Gate
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  determinism:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure (Strict Determinism)
+      run: |
+        cmake -B build \
+          -DCMAKE_CXX_FLAGS="-DATLAS_DETERMINISM_STRICT=1 -DATLAS_SIMULATION_BUILD=1" \
+          -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build
+      run: cmake --build build --parallel
+
+    - name: Run Tests
+      run: |
+        cd build
+        ctest --output-on-failure
+
+    - name: Contract Scanner
+      run: python3 tools/contract_scan.py --path engine
+
+    - name: Golden Replay Verification
+      run: |
+        set -e
+        if [ -d tests/replays ] && compgen -G "tests/replays/*.atlasreplay" > /dev/null 2>&1; then
+          for replay in tests/replays/*.atlasreplay; do
+            base=$(basename "$replay" .atlasreplay)
+            hashfile="tests/replays/${base}.hash"
+            if [ -f "$hashfile" ]; then
+              ./build/tests/AtlasTests --replay "$replay" --hash-out "/tmp/${base}.hash" 2>/dev/null || true
+              if [ -f "/tmp/${base}.hash" ]; then
+                diff "$hashfile" "/tmp/${base}.hash" || { echo "❌ Golden replay hash mismatch: $base"; exit 1; }
+                echo "✅ Golden replay verified: $base"
+              fi
+            fi
+          done
+        else
+          echo "⚠ No golden replays found — skipping verification"
+        fi
+
+    - name: TLC Model Checker
+      run: |
+        if command -v tlc 2>/dev/null || [ -f tools/tlc.jar ]; then
+          for spec in specs/*.tla; do
+            echo "Checking $spec..."
+            if [ -f tools/tlc.jar ]; then
+              java -jar tools/tlc.jar "$spec" || { echo "❌ TLC failed: $spec"; exit 1; }
+            else
+              tlc "$spec" || { echo "❌ TLC failed: $spec"; exit 1; }
+            fi
+            echo "✅ TLC passed: $spec"
+          done
+        else
+          echo "⚠ TLC not available — skipping formal verification"
+        fi
+
+    - name: Determinism Config Change Detection
+      if: github.event_name == 'pull_request'
+      run: |
+        if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q "determinism.json"; then
+          echo "⚠ determinism.json modified — requires contract review"
+          echo "::warning::determinism.json has been modified. This change requires explicit contract review."
+        fi
+
+  cross-platform-replay:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure
+      run: |
+        cmake -B build \
+          -DCMAKE_CXX_FLAGS="-DATLAS_DETERMINISM_STRICT=1" \
+          -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build
+      run: cmake --build build --parallel
+
+    - name: Run Tests
+      run: |
+        cd build
+        ctest --output-on-failure
+
+    - name: Generate Replay Hashes
+      run: |
+        if [ -d tests/replays ]; then
+          for replay in tests/replays/*.atlasreplay; do
+            base=$(basename "$replay" .atlasreplay)
+            ./build/tests/AtlasTests --replay "$replay" --hash-out "replay_hash_${base}.txt" 2>/dev/null || true
+          done
+        fi
+      shell: bash
+
+    - name: Upload Replay Hashes
+      if: hashFiles('replay_hash_*.txt') != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: replay-hashes-${{ matrix.os }}
+        path: replay_hash_*.txt
+
+  cross-compile-replay-verify:
+    needs: cross-platform-replay
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download Ubuntu Replay Hashes
+      uses: actions/download-artifact@v4
+      with:
+        name: replay-hashes-ubuntu-latest
+        path: hashes-ubuntu
+      continue-on-error: true
+
+    - name: Download Windows Replay Hashes
+      uses: actions/download-artifact@v4
+      with:
+        name: replay-hashes-windows-latest
+        path: hashes-windows
+      continue-on-error: true
+
+    - name: Compare Cross-Platform Replay Hashes
+      run: |
+        set -e
+        if [ ! -d hashes-ubuntu ] || [ ! -d hashes-windows ]; then
+          echo "⚠ One or both platform hash artifacts missing — skipping cross-compile verification"
+          exit 0
+        fi
+
+        ubuntu_count=$(find hashes-ubuntu -name "replay_hash_*.txt" 2>/dev/null | wc -l)
+        windows_count=$(find hashes-windows -name "replay_hash_*.txt" 2>/dev/null | wc -l)
+
+        if [ "$ubuntu_count" -eq 0 ] && [ "$windows_count" -eq 0 ]; then
+          echo "⚠ No replay hash files found on either platform — skipping"
+          exit 0
+        fi
+
+        mismatch=0
+        verified=0
+
+        for ubuntu_hash in hashes-ubuntu/replay_hash_*.txt; do
+          base=$(basename "$ubuntu_hash")
+          windows_hash="hashes-windows/${base}"
+          if [ -f "$windows_hash" ]; then
+            if diff -q "$ubuntu_hash" "$windows_hash" > /dev/null 2>&1; then
+              echo "✅ Cross-platform hash match: $base"
+              verified=$((verified + 1))
+            else
+              echo "❌ Cross-platform hash MISMATCH: $base"
+              echo "  Ubuntu:  $(cat "$ubuntu_hash")"
+              echo "  Windows: $(cat "$windows_hash")"
+              mismatch=$((mismatch + 1))
+            fi
+          else
+            echo "⚠ No Windows hash for: $base"
+          fi
+        done
+
+        echo ""
+        echo "=== Cross-Platform Replay Hash Summary ==="
+        echo "  Verified: $verified"
+        echo "  Mismatched: $mismatch"
+
+        if [ "$mismatch" -gt 0 ]; then
+          echo "❌ Cross-platform determinism verification FAILED"
+          exit 1
+        fi
+
+        echo "✅ All cross-platform replay hashes match"

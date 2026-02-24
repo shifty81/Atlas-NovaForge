@@ -1,0 +1,33 @@
+add_executable(AtlasEditor
+    main.cpp
+    ui/EditorLayout.cpp
+    ui/EditorAttachProtocol.cpp
+    panels/ECSInspectorPanel.cpp
+    panels/ProfilerPanel.cpp
+    panels/NetInspectorPanel.cpp
+    panels/ConsolePanel.cpp
+    panels/InteractionDebugger.cpp
+    panels/ProjectPickerPanel.cpp
+    panels/WorldGraphPanel.cpp
+    panels/AssetBrowserPanel.cpp
+    panels/VoiceCommandPanel.cpp
+    panels/InteractionDebugPanel.cpp
+    panels/ProofViewerPanel.cpp
+    panels/CIDashboardPanel.cpp
+    tools/GamePackagerPanel.cpp
+    tools/VisualDiff.cpp
+    tools/TileEditorModule.cpp
+    ui/LauncherScreen.cpp
+    assistant/EditorAssistant.cpp
+    assistant/AssetGraphAssistant.cpp
+    panels/TilePalettePanel.cpp
+    panels/RuleGraphEditorPanel.cpp
+    ui/LayoutPersistence.cpp
+    tools/PlayInEditor.cpp
+    panels/QuestEditorPanel.cpp
+    panels/InventoryEditorPanel.cpp
+    panels/AIDebuggerPanel.cpp
+    ai/AIAggregator.cpp
+)
+
+target_link_libraries(AtlasEditor AtlasEngine)

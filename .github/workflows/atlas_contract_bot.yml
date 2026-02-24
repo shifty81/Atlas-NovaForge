@@ -1,0 +1,80 @@
+name: Atlas Contract Bot
+
+on:
+  pull_request:
+
+jobs:
+  contract-review:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Scan for Contract Violations
+      id: scan
+      run: |
+        if python3 tools/contract_scan.py --path engine > contract_report.txt 2>&1; then
+          echo "violations=false" >> "$GITHUB_OUTPUT"
+        else
+          echo "violations=true" >> "$GITHUB_OUTPUT"
+          {
+            echo 'report<<ATLAS_EOF'
+            cat contract_report.txt
+            echo 'ATLAS_EOF'
+          } >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Check Contract Review Required
+      id: review
+      run: |
+        # Check if this PR modifies contract-critical files
+        CRITICAL_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E "(ATLAS_CORE_CONTRACT|determinism\.json|engine/core/contract/|engine/sim/)" || true)
+        if [ -n "$CRITICAL_FILES" ]; then
+          echo "review_required=true" >> "$GITHUB_OUTPUT"
+          echo "Modified contract-critical files:"
+          echo "$CRITICAL_FILES"
+        else
+          echo "review_required=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Comment on PR (violations found)
+      if: steps.scan.outputs.violations == 'true'
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        header: atlas-contract
+        message: |
+          ❌ **Atlas Core Contract Violation Detected**
+
+          This PR introduces code that violates the Atlas Core Contract.
+          Please review `docs/ATLAS_CORE_CONTRACT.md`.
+
+          ```
+          ${{ steps.scan.outputs.report }}
+          ```
+
+    - name: Comment on PR (no violations)
+      if: steps.scan.outputs.violations == 'false' && steps.review.outputs.review_required == 'false'
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        header: atlas-contract
+        message: |
+          ✅ **Atlas Core Contract — No Violations**
+
+          All simulation code passes contract validation.
+
+    - name: Comment on PR (contract review required)
+      if: steps.scan.outputs.violations == 'false' && steps.review.outputs.review_required == 'true'
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        header: atlas-contract
+        message: |
+          ✅ **Atlas Core Contract — No Violations**
+
+          ⚠️ **Contract Review Required**
+          This PR modifies contract-critical files. A contract review is required before merge.
+
+    - name: Fail on violations
+      if: steps.scan.outputs.violations == 'true'
+      run: |
+        cat contract_report.txt
+        exit 1
