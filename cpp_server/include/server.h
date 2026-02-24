@@ -2,6 +2,7 @@
 #define NOVAFORGE_SERVER_H
 
 #include <string>
+#include <vector>
 #include <memory>
 #include <atomic>
 #include "network/tcp_server.h"
@@ -41,6 +42,12 @@ public:
     // Status
     bool isRunning() const { return running_; }
     int getPlayerCount() const;
+
+    /// Get list of connected player names
+    std::vector<std::string> getPlayerNames() const;
+
+    /// Kick a player by character name. Returns true if found and removed.
+    bool kickPlayer(const std::string& character_name);
     
     // Get game world
     ecs::World* getWorld() { return game_world_.get(); }

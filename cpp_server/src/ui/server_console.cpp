@@ -225,7 +225,7 @@ std::string ServerConsole::handleHelpCommand() {
     oss << "  help            - Show this help message\n";
     oss << "  status          - Show server status\n";
     oss << "  players         - List connected players\n";
-    oss << "  kick <player>   - Kick a player (not yet implemented)\n";
+    oss << "  kick <player>   - Kick a player\n";
     oss << "  metrics         - Show detailed performance metrics\n";
     oss << "  save            - Save world state\n";
     oss << "  load            - Load world state (not yet implemented)\n";
@@ -252,8 +252,14 @@ std::string ServerConsole::handlePlayersCommand() {
     std::ostringstream oss;
     oss << "Connected players: " << count;
     
-    // TODO: Add player list when GameSession provides player enumeration
-    // For now, just show count
+    auto names = server_->getPlayerNames();
+    if (!names.empty()) {
+        oss << "\n";
+        for (size_t i = 0; i < names.size(); ++i) {
+            oss << "  " << (i + 1) << ". " << names[i];
+            if (i + 1 < names.size()) oss << "\n";
+        }
+    }
     
     return oss.str();
 }
@@ -263,9 +269,11 @@ std::string ServerConsole::handleKickCommand(const std::string& player_name) {
         return "Usage: kick <player_name>";
     }
     
-    // TODO: Implement player kick functionality
-    // Requires GameSession to provide player management API
-    return "Kick command not yet implemented. Player: " + player_name;
+    if (server_->kickPlayer(player_name)) {
+        utils::Logger::instance().info("Kicked player: " + player_name);
+        return "Kicked player: " + player_name;
+    }
+    return "Player not found: " + player_name;
 }
 
 std::string ServerConsole::handleStopCommand() {

@@ -73,6 +73,75 @@ struct GenerationStyle {
     bool valid;  ///< Set by validate().
 };
 
+// ── Star system generation result ────────────────────────────────────
+
+struct GeneratedCelestialBody {
+    uint32_t    bodyId;
+    std::string name;
+    float       orbitRadius;   ///< AU from star.
+    float       orbitAngle;    ///< Radians.
+    float       radius;        ///< km.
+    uint32_t    bodyType;      ///< 0=rocky, 1=gas, 2=ice, 3=lava.
+};
+
+struct GeneratedStargate {
+    uint32_t    gateId;
+    std::string name;
+    float       posX, posY, posZ;
+};
+
+struct GeneratedStarSystem {
+    uint64_t    systemId;
+    std::string systemName;
+    float       securityLevel;
+    float       starLuminosity;
+    uint32_t    starType;      ///< 0=main_sequence, 1=red_giant, 2=white_dwarf, 3=neutron.
+    std::vector<GeneratedCelestialBody> planets;
+    int         beltCount;
+    int         stationCount;
+    std::vector<GeneratedStargate> gates;
+    bool        valid;
+};
+
+// ── Asteroid field generation result ────────────────────────────────
+
+struct GeneratedAsteroid {
+    uint32_t    asteroidId;
+    float       posX, posY, posZ;
+    float       radius;        ///< Metres.
+    uint32_t    oreType;       ///< 0=veldspar … 7=arkonor.
+    float       richness;      ///< Yield multiplier.
+};
+
+struct GeneratedAsteroidField {
+    uint64_t    fieldId;
+    std::string fieldName;
+    float       centerX, centerY, centerZ;
+    float       fieldRadius;
+    std::vector<GeneratedAsteroid> asteroids;
+    int         clusterCount;
+    bool        valid;
+};
+
+// ── Fleet composition generation result ─────────────────────────────
+
+struct GeneratedFleetShip {
+    uint32_t    shipId;
+    HullClass   hullClass;
+    std::string role;          ///< "dps", "logistics", "ewar", "tackle", "command".
+    std::string shipName;
+};
+
+struct GeneratedFleetCompositionResult {
+    uint64_t    fleetId;
+    std::string doctrineName;
+    std::vector<GeneratedFleetShip> ships;
+    int         capitalCount;
+    int         subcapCount;
+    float       aggressionRating;
+    bool        valid;
+};
+
 // ── Result of style-driven generation ───────────────────────────────
 
 struct StyleGenerationResult {
@@ -82,9 +151,12 @@ struct StyleGenerationResult {
     std::string         errorMessage;
 
     // Domain-specific results (populated based on sourceType).
-    GeneratedShip     shipResult;
-    GeneratedStation  stationResult;
-    GeneratedInterior interiorResult;
+    GeneratedShip                  shipResult;
+    GeneratedStation               stationResult;
+    GeneratedInterior              interiorResult;
+    GeneratedStarSystem            starSystemResult;
+    GeneratedAsteroidField         asteroidFieldResult;
+    GeneratedFleetCompositionResult fleetResult;
 
     int placementsApplied;   ///< How many designer placements were honoured.
     int parametersApplied;   ///< How many parameter overrides took effect.

@@ -52,6 +52,12 @@ public:
     /// Get the number of connected players
     int getPlayerCount() const;
 
+    /// Get list of connected player names
+    std::vector<std::string> getPlayerNames() const;
+
+    /// Kick a player by character name. Returns true if found and removed.
+    bool kickPlayer(const std::string& character_name);
+
     /// Set pointer to the TargetingSystem for lock/unlock handling
     void setTargetingSystem(systems::TargetingSystem* ts) { targeting_system_ = ts; }
 

@@ -312,6 +312,380 @@ void test_gs_ship_parameter_overrides() {
     ok("test_gs_ship_parameter_overrides");
 }
 
+// ── Star System generation tests ────────────────────────────────────
+
+void test_gs_generate_star_system() {
+    auto style = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::StarSystem);
+    atlas::pcg::GenerationStyleEngine::validate(style);
+
+    atlas::pcg::PCGManager mgr;
+    mgr.initialize(style.baseSeed);
+    auto ctx = mgr.makeRootContext(atlas::pcg::PCGDomain::StarSystem, 1, 1);
+
+    auto result = atlas::pcg::GenerationStyleEngine::generate(ctx, style);
+    assert(result.success);
+    assert(result.sourceType == atlas::pcg::GenerationStyleType::StarSystem);
+    assert(!result.starSystemResult.systemName.empty());
+    assert(!result.starSystemResult.planets.empty());
+    assert(!result.starSystemResult.gates.empty());
+    assert(result.starSystemResult.valid);
+    assert(result.parametersApplied >= 1);
+    ok("test_gs_generate_star_system");
+}
+
+void test_gs_star_system_planet_count_override() {
+    auto style = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::StarSystem);
+    for (auto& p : style.parameters) {
+        if (p.name == "planetCount") {
+            p.value = 7.0f;
+            break;
+        }
+    }
+    atlas::pcg::GenerationStyleEngine::validate(style);
+
+    atlas::pcg::PCGManager mgr;
+    mgr.initialize(style.baseSeed);
+    auto ctx = mgr.makeRootContext(atlas::pcg::PCGDomain::StarSystem, 1, 1);
+
+    auto result = atlas::pcg::GenerationStyleEngine::generate(ctx, style);
+    assert(result.success);
+    assert(result.starSystemResult.planets.size() == 7);
+    ok("test_gs_star_system_planet_count_override");
+}
+
+void test_gs_star_system_gate_count_override() {
+    auto style = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::StarSystem);
+    for (auto& p : style.parameters) {
+        if (p.name == "gateCount") {
+            p.value = 3.0f;
+            break;
+        }
+    }
+    atlas::pcg::GenerationStyleEngine::validate(style);
+
+    atlas::pcg::PCGManager mgr;
+    mgr.initialize(style.baseSeed);
+    auto ctx = mgr.makeRootContext(atlas::pcg::PCGDomain::StarSystem, 1, 1);
+
+    auto result = atlas::pcg::GenerationStyleEngine::generate(ctx, style);
+    assert(result.success);
+    assert(result.starSystemResult.gates.size() == 3);
+    ok("test_gs_star_system_gate_count_override");
+}
+
+void test_gs_star_system_security_level() {
+    auto style = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::StarSystem);
+    for (auto& p : style.parameters) {
+        if (p.name == "securityLevel") {
+            p.value = 0.8f;
+            break;
+        }
+    }
+    atlas::pcg::GenerationStyleEngine::validate(style);
+
+    atlas::pcg::PCGManager mgr;
+    mgr.initialize(style.baseSeed);
+    auto ctx = mgr.makeRootContext(atlas::pcg::PCGDomain::StarSystem, 1, 1);
+
+    auto result = atlas::pcg::GenerationStyleEngine::generate(ctx, style);
+    assert(result.success);
+    assert(std::fabs(result.starSystemResult.securityLevel - 0.8f) < 0.01f);
+    ok("test_gs_star_system_security_level");
+}
+
+void test_gs_star_system_with_placements() {
+    auto style = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::StarSystem);
+    for (auto& p : style.parameters) {
+        if (p.name == "planetCount") { p.value = 5.0f; break; }
+    }
+
+    atlas::pcg::PlacementEntry pe{};
+    pe.slotIndex   = 0;
+    pe.contentType = 1;  // gas giant
+    pe.posX = 2.0f;      // orbitRadius
+    pe.posY = 1.5f;      // orbitAngle
+    pe.posZ = 50000.0f;  // radius
+    pe.locked = true;
+    pe.label  = "Gas Giant";
+    style.placements.push_back(pe);
+
+    atlas::pcg::GenerationStyleEngine::validate(style);
+
+    atlas::pcg::PCGManager mgr;
+    mgr.initialize(style.baseSeed);
+    auto ctx = mgr.makeRootContext(atlas::pcg::PCGDomain::StarSystem, 1, 1);
+
+    auto result = atlas::pcg::GenerationStyleEngine::generate(ctx, style);
+    assert(result.success);
+    assert(result.placementsApplied >= 1);
+    assert(result.starSystemResult.planets[0].bodyType == 1);
+    assert(std::fabs(result.starSystemResult.planets[0].orbitRadius - 2.0f) < 0.01f);
+    assert(std::fabs(result.starSystemResult.planets[0].radius - 50000.0f) < 0.01f);
+    ok("test_gs_star_system_with_placements");
+}
+
+void test_gs_star_system_determinism() {
+    auto style = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::StarSystem);
+    atlas::pcg::GenerationStyleEngine::validate(style);
+
+    atlas::pcg::PCGManager mgr1, mgr2;
+    mgr1.initialize(style.baseSeed);
+    mgr2.initialize(style.baseSeed);
+    auto ctx1 = mgr1.makeRootContext(atlas::pcg::PCGDomain::StarSystem, 1, 1);
+    auto ctx2 = mgr2.makeRootContext(atlas::pcg::PCGDomain::StarSystem, 1, 1);
+
+    auto r1 = atlas::pcg::GenerationStyleEngine::generate(ctx1, style);
+    auto r2 = atlas::pcg::GenerationStyleEngine::generate(ctx2, style);
+
+    assert(r1.starSystemResult.systemName == r2.starSystemResult.systemName);
+    assert(r1.starSystemResult.planets.size() == r2.starSystemResult.planets.size());
+    assert(r1.starSystemResult.gates.size() == r2.starSystemResult.gates.size());
+    ok("test_gs_star_system_determinism");
+}
+
+// ── Asteroid Field generation tests ─────────────────────────────────
+
+void test_gs_generate_asteroid_field() {
+    auto style = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::AsteroidField);
+    atlas::pcg::GenerationStyleEngine::validate(style);
+
+    atlas::pcg::PCGManager mgr;
+    mgr.initialize(style.baseSeed);
+    auto ctx = mgr.makeRootContext(atlas::pcg::PCGDomain::Asteroid, 1, 1);
+
+    auto result = atlas::pcg::GenerationStyleEngine::generate(ctx, style);
+    assert(result.success);
+    assert(result.sourceType == atlas::pcg::GenerationStyleType::AsteroidField);
+    assert(!result.asteroidFieldResult.asteroids.empty());
+    assert(!result.asteroidFieldResult.fieldName.empty());
+    assert(result.asteroidFieldResult.valid);
+    assert(result.parametersApplied >= 1);
+    ok("test_gs_generate_asteroid_field");
+}
+
+void test_gs_asteroid_field_density_affects_count() {
+    auto styleLow = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::AsteroidField);
+    auto styleHigh = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::AsteroidField);
+
+    for (auto& p : styleLow.parameters) {
+        if (p.name == "density") { p.value = 0.05f; break; }
+    }
+    for (auto& p : styleHigh.parameters) {
+        if (p.name == "density") { p.value = 0.4f; break; }
+    }
+
+    atlas::pcg::GenerationStyleEngine::validate(styleLow);
+    atlas::pcg::GenerationStyleEngine::validate(styleHigh);
+
+    atlas::pcg::PCGManager mgr;
+    mgr.initialize(42);
+    auto ctxLow  = mgr.makeRootContext(atlas::pcg::PCGDomain::Asteroid, 1, 1);
+    auto ctxHigh = mgr.makeRootContext(atlas::pcg::PCGDomain::Asteroid, 2, 1);
+
+    auto rLow  = atlas::pcg::GenerationStyleEngine::generate(ctxLow, styleLow);
+    auto rHigh = atlas::pcg::GenerationStyleEngine::generate(ctxHigh, styleHigh);
+
+    assert(rLow.success && rHigh.success);
+    assert(rHigh.asteroidFieldResult.asteroids.size() >
+           rLow.asteroidFieldResult.asteroids.size());
+    ok("test_gs_asteroid_field_density_affects_count");
+}
+
+void test_gs_asteroid_field_with_placements() {
+    auto style = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::AsteroidField);
+    atlas::pcg::GenerationStyleEngine::validate(style);
+
+    atlas::pcg::PlacementEntry pe{};
+    pe.slotIndex   = 0;
+    pe.contentType = 7;  // arkonor
+    pe.posX = 100.0f;
+    pe.posY = 0.0f;
+    pe.posZ = 50.0f;
+    pe.locked = true;
+    pe.label  = "Rare Rock";
+    style.placements.push_back(pe);
+
+    atlas::pcg::PCGManager mgr;
+    mgr.initialize(style.baseSeed);
+    auto ctx = mgr.makeRootContext(atlas::pcg::PCGDomain::Asteroid, 1, 1);
+
+    auto result = atlas::pcg::GenerationStyleEngine::generate(ctx, style);
+    assert(result.success);
+    assert(result.placementsApplied >= 1);
+    assert(result.asteroidFieldResult.asteroids[0].oreType == 7);
+    assert(std::fabs(result.asteroidFieldResult.asteroids[0].posX - 100.0f) < 0.01f);
+    ok("test_gs_asteroid_field_with_placements");
+}
+
+void test_gs_asteroid_field_determinism() {
+    auto style = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::AsteroidField);
+    atlas::pcg::GenerationStyleEngine::validate(style);
+
+    atlas::pcg::PCGManager mgr1, mgr2;
+    mgr1.initialize(style.baseSeed);
+    mgr2.initialize(style.baseSeed);
+    auto ctx1 = mgr1.makeRootContext(atlas::pcg::PCGDomain::Asteroid, 1, 1);
+    auto ctx2 = mgr2.makeRootContext(atlas::pcg::PCGDomain::Asteroid, 1, 1);
+
+    auto r1 = atlas::pcg::GenerationStyleEngine::generate(ctx1, style);
+    auto r2 = atlas::pcg::GenerationStyleEngine::generate(ctx2, style);
+
+    assert(r1.asteroidFieldResult.asteroids.size() ==
+           r2.asteroidFieldResult.asteroids.size());
+    assert(r1.asteroidFieldResult.fieldName == r2.asteroidFieldResult.fieldName);
+    ok("test_gs_asteroid_field_determinism");
+}
+
+// ── Fleet Composition generation tests ──────────────────────────────
+
+void test_gs_generate_fleet_composition() {
+    auto style = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::FleetComposition);
+    atlas::pcg::GenerationStyleEngine::validate(style);
+
+    atlas::pcg::PCGManager mgr;
+    mgr.initialize(style.baseSeed);
+    auto ctx = mgr.makeRootContext(atlas::pcg::PCGDomain::Fleet, 1, 1);
+
+    auto result = atlas::pcg::GenerationStyleEngine::generate(ctx, style);
+    assert(result.success);
+    assert(result.sourceType == atlas::pcg::GenerationStyleType::FleetComposition);
+    assert(!result.fleetResult.ships.empty());
+    assert(!result.fleetResult.doctrineName.empty());
+    assert(result.fleetResult.valid);
+    assert(result.parametersApplied >= 1);
+    ok("test_gs_generate_fleet_composition");
+}
+
+void test_gs_fleet_size_override() {
+    auto style = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::FleetComposition);
+    for (auto& p : style.parameters) {
+        if (p.name == "fleetSize") { p.value = 10.0f; break; }
+    }
+    atlas::pcg::GenerationStyleEngine::validate(style);
+
+    atlas::pcg::PCGManager mgr;
+    mgr.initialize(style.baseSeed);
+    auto ctx = mgr.makeRootContext(atlas::pcg::PCGDomain::Fleet, 1, 1);
+
+    auto result = atlas::pcg::GenerationStyleEngine::generate(ctx, style);
+    assert(result.success);
+    assert(static_cast<int>(result.fleetResult.ships.size()) == 10);
+    ok("test_gs_fleet_size_override");
+}
+
+void test_gs_fleet_capital_ratio() {
+    auto style = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::FleetComposition);
+    for (auto& p : style.parameters) {
+        if (p.name == "fleetSize") p.value = 20.0f;
+        if (p.name == "capitalRatio") p.value = 0.25f;
+    }
+    atlas::pcg::GenerationStyleEngine::validate(style);
+
+    atlas::pcg::PCGManager mgr;
+    mgr.initialize(style.baseSeed);
+    auto ctx = mgr.makeRootContext(atlas::pcg::PCGDomain::Fleet, 1, 1);
+
+    auto result = atlas::pcg::GenerationStyleEngine::generate(ctx, style);
+    assert(result.success);
+    assert(result.fleetResult.capitalCount == 5);
+    assert(result.fleetResult.subcapCount == 15);
+    assert(static_cast<int>(result.fleetResult.ships.size()) == 20);
+    ok("test_gs_fleet_capital_ratio");
+}
+
+void test_gs_fleet_support_ratio() {
+    auto style = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::FleetComposition);
+    for (auto& p : style.parameters) {
+        if (p.name == "fleetSize") p.value = 10.0f;
+        if (p.name == "capitalRatio") p.value = 0.0f;
+        if (p.name == "supportRatio") p.value = 0.3f;
+    }
+    atlas::pcg::GenerationStyleEngine::validate(style);
+
+    atlas::pcg::PCGManager mgr;
+    mgr.initialize(style.baseSeed);
+    auto ctx = mgr.makeRootContext(atlas::pcg::PCGDomain::Fleet, 1, 1);
+
+    auto result = atlas::pcg::GenerationStyleEngine::generate(ctx, style);
+    assert(result.success);
+    // With 10 ships, 0 capital, 30% support = 3 support + 7 dps.
+    int supportCount = 0;
+    int dpsCount = 0;
+    for (const auto& ship : result.fleetResult.ships) {
+        if (ship.role == "dps") ++dpsCount;
+        else ++supportCount;
+    }
+    assert(supportCount == 3);
+    assert(dpsCount == 7);
+    ok("test_gs_fleet_support_ratio");
+}
+
+void test_gs_fleet_with_placements() {
+    auto style = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::FleetComposition);
+    for (auto& p : style.parameters) {
+        if (p.name == "fleetSize") { p.value = 5.0f; break; }
+    }
+
+    atlas::pcg::PlacementEntry pe{};
+    pe.slotIndex   = 0;
+    pe.contentType = static_cast<uint32_t>(atlas::pcg::HullClass::Titan);
+    pe.locked      = false;
+    pe.label       = "Flagship";
+    style.placements.push_back(pe);
+
+    atlas::pcg::GenerationStyleEngine::validate(style);
+
+    atlas::pcg::PCGManager mgr;
+    mgr.initialize(style.baseSeed);
+    auto ctx = mgr.makeRootContext(atlas::pcg::PCGDomain::Fleet, 1, 1);
+
+    auto result = atlas::pcg::GenerationStyleEngine::generate(ctx, style);
+    assert(result.success);
+    assert(result.placementsApplied >= 1);
+    assert(result.fleetResult.ships[0].hullClass == atlas::pcg::HullClass::Titan);
+    assert(result.fleetResult.ships[0].shipName == "Flagship");
+    ok("test_gs_fleet_with_placements");
+}
+
+void test_gs_fleet_determinism() {
+    auto style = atlas::pcg::GenerationStyleEngine::createDefaultStyle(
+        atlas::pcg::GenerationStyleType::FleetComposition);
+    atlas::pcg::GenerationStyleEngine::validate(style);
+
+    atlas::pcg::PCGManager mgr1, mgr2;
+    mgr1.initialize(style.baseSeed);
+    mgr2.initialize(style.baseSeed);
+    auto ctx1 = mgr1.makeRootContext(atlas::pcg::PCGDomain::Fleet, 1, 1);
+    auto ctx2 = mgr2.makeRootContext(atlas::pcg::PCGDomain::Fleet, 1, 1);
+
+    auto r1 = atlas::pcg::GenerationStyleEngine::generate(ctx1, style);
+    auto r2 = atlas::pcg::GenerationStyleEngine::generate(ctx2, style);
+
+    assert(r1.fleetResult.doctrineName == r2.fleetResult.doctrineName);
+    assert(r1.fleetResult.ships.size() == r2.fleetResult.ships.size());
+    for (size_t i = 0; i < r1.fleetResult.ships.size(); ++i) {
+        assert(r1.fleetResult.ships[i].shipName == r2.fleetResult.ships[i].shipName);
+        assert(r1.fleetResult.ships[i].hullClass == r2.fleetResult.ships[i].hullClass);
+    }
+    ok("test_gs_fleet_determinism");
+}
+
 // ═══════════════════════════════════════════════════════════════════
 //  Generation Style Panel tests
 // ═══════════════════════════════════════════════════════════════════
