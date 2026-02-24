@@ -1,6 +1,6 @@
 {
   "aegis_system": {
-    "description": "AEGIS is the interstellar police force of Astralis. They enforce security in high-sec space and respond to criminal acts. In EVEOFFLINE, AEGIS provides security enforcement for PVE gameplay.",
+    "description": "AEGIS is the interstellar police force of Astralis. They enforce security in high-sec space and respond to criminal acts. In NovaForge, AEGIS provides security enforcement for PVE gameplay.",
     "security_ratings": {
       "high_sec": {
         "range": "0.5 to 1.0",
