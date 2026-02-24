@@ -55,8 +55,10 @@ add_library(AtlasEngine STATIC
     ai/BehaviorNodes.cpp
     character/CharacterGraph.cpp
     character/CharacterNodes.cpp
+    character/HumanMeshGenerator.cpp
     animation/AnimationGraph.cpp
     animation/AnimationNodes.cpp
+    animation/CharacterAnimationController.cpp
     animation/DeterministicAnimationGraph.cpp
     weapon/WeaponGraph.cpp
     weapon/WeaponNodes.cpp
