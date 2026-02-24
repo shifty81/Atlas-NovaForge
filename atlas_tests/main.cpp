@@ -276,286 +276,286 @@ int main(int argc, char* argv[]) {
 
     // GraphVM
     log.BeginSection("Graph VM");
-    test_basic_arithmetic();
-    test_subtraction();
-    test_multiplication();
-    test_division();
-    test_division_by_zero();
-    test_comparison();
-    test_conditional_jump();
-    test_variables();
+    RUN_TEST(test_basic_arithmetic);
+    RUN_TEST(test_subtraction);
+    RUN_TEST(test_multiplication);
+    RUN_TEST(test_division);
+    RUN_TEST(test_division_by_zero);
+    RUN_TEST(test_comparison);
+    RUN_TEST(test_conditional_jump);
+    RUN_TEST(test_variables);
 
     // ECS
     log.BeginSection("ECS");
-    test_create_entity();
-    test_destroy_entity();
-    test_tick_callback();
+    RUN_TEST(test_create_entity);
+    RUN_TEST(test_destroy_entity);
+    RUN_TEST(test_tick_callback);
 
     // ECS Components
     log.BeginSection("ECS Components");
-    test_add_and_get_component();
-    test_has_component();
-    test_remove_component();
-    test_multiple_components();
-    test_destroy_entity_removes_components();
-    test_component_update();
+    RUN_TEST(test_add_and_get_component);
+    RUN_TEST(test_has_component);
+    RUN_TEST(test_remove_component);
+    RUN_TEST(test_multiple_components);
+    RUN_TEST(test_destroy_entity_removes_components);
+    RUN_TEST(test_component_update);
 
     // Assets
     log.BeginSection("Asset System");
-    test_asset_binary_roundtrip();
-    test_asset_registry_scan();
+    RUN_TEST(test_asset_binary_roundtrip);
+    RUN_TEST(test_asset_registry_scan);
 
     // Networking
     log.BeginSection("Networking");
-    test_net_init();
-    test_net_authority();
-    test_net_shutdown();
+    RUN_TEST(test_net_init);
+    RUN_TEST(test_net_authority);
+    RUN_TEST(test_net_shutdown);
 
     // Network Queue
     log.BeginSection("Network Queue");
-    test_net_add_peer();
-    test_net_remove_peer();
-    test_net_send_receive();
-    test_net_broadcast_receive();
-    test_net_shutdown_clears_queues();
+    RUN_TEST(test_net_add_peer);
+    RUN_TEST(test_net_remove_peer);
+    RUN_TEST(test_net_send_receive);
+    RUN_TEST(test_net_broadcast_receive);
+    RUN_TEST(test_net_shutdown_clears_queues);
 
     // Network Quality Monitor
     log.BeginSection("Network Quality Monitor");
-    test_nqm_initial_rtt();
-    test_nqm_rtt_ewma();
-    test_nqm_stable_rtt_low_jitter();
-    test_nqm_negative_rtt_ignored();
-    test_nqm_no_loss();
-    test_nqm_50_percent_loss();
-    test_nqm_window_trims();
-    test_nqm_empty_loss_rate();
-    test_nqm_interp_floor();
-    test_nqm_interp_ceiling();
-    test_nqm_interp_increases_with_jitter();
-    test_nqm_interp_increases_with_loss();
-    test_nqm_reset();
-    test_net_send_assigns_sequence();
-    test_net_broadcast_assigns_sequence();
-    test_net_sequence_resets_on_init();
+    RUN_TEST(test_nqm_initial_rtt);
+    RUN_TEST(test_nqm_rtt_ewma);
+    RUN_TEST(test_nqm_stable_rtt_low_jitter);
+    RUN_TEST(test_nqm_negative_rtt_ignored);
+    RUN_TEST(test_nqm_no_loss);
+    RUN_TEST(test_nqm_50_percent_loss);
+    RUN_TEST(test_nqm_window_trims);
+    RUN_TEST(test_nqm_empty_loss_rate);
+    RUN_TEST(test_nqm_interp_floor);
+    RUN_TEST(test_nqm_interp_ceiling);
+    RUN_TEST(test_nqm_interp_increases_with_jitter);
+    RUN_TEST(test_nqm_interp_increases_with_loss);
+    RUN_TEST(test_nqm_reset);
+    RUN_TEST(test_net_send_assigns_sequence);
+    RUN_TEST(test_net_broadcast_assigns_sequence);
+    RUN_TEST(test_net_sequence_resets_on_init);
 
     // World
     log.BeginSection("World Layout");
-    test_cube_sphere_projection();
-    test_cube_sphere_chunk_roundtrip();
-    test_cube_sphere_neighbors();
-    test_cube_sphere_lod();
-    test_voxel_chunk_roundtrip();
-    test_voxel_neighbors();
+    RUN_TEST(test_cube_sphere_projection);
+    RUN_TEST(test_cube_sphere_chunk_roundtrip);
+    RUN_TEST(test_cube_sphere_neighbors);
+    RUN_TEST(test_cube_sphere_lod);
+    RUN_TEST(test_voxel_chunk_roundtrip);
+    RUN_TEST(test_voxel_neighbors);
 
     // Compiler
     log.BeginSection("Graph Compiler");
-    test_compile_constants_and_add();
-    test_compile_and_execute_full();
-    test_compile_multiply();
+    RUN_TEST(test_compile_constants_and_add);
+    RUN_TEST(test_compile_and_execute_full);
+    RUN_TEST(test_compile_multiply);
 
     // Engine
     log.BeginSection("Engine");
-    test_engine_init_and_shutdown();
-    test_engine_run_loop_ticks();
-    test_engine_capabilities();
-    test_engine_net_mode_from_config();
+    RUN_TEST(test_engine_init_and_shutdown);
+    RUN_TEST(test_engine_run_loop_ticks);
+    RUN_TEST(test_engine_capabilities);
+    RUN_TEST(test_engine_net_mode_from_config);
 
     // Console
     log.BeginSection("Console");
-    test_console_spawn_entity();
-    test_console_ecs_dump();
-    test_console_set_tickrate();
-    test_console_net_mode();
-    test_console_help();
-    test_console_unknown_command();
+    RUN_TEST(test_console_spawn_entity);
+    RUN_TEST(test_console_ecs_dump);
+    RUN_TEST(test_console_set_tickrate);
+    RUN_TEST(test_console_net_mode);
+    RUN_TEST(test_console_help);
+    RUN_TEST(test_console_unknown_command);
 
     // HUD Panels
     log.BeginSection("HUD Panels");
-    test_station_panel_defaults();
-    test_station_panel_toggle();
-    test_station_panel_set_data();
-    test_station_panel_callbacks();
-    test_inventory_panel_defaults();
-    test_inventory_panel_set_data();
-    test_fitting_panel_defaults();
-    test_fitting_panel_set_data();
-    test_market_panel_defaults();
-    test_market_panel_set_data();
-    test_fleet_panel_defaults();
-    test_fleet_panel_toggle();
-    test_fleet_panel_set_data();
-    test_existing_panel_toggles();
-    test_overview_tab_filter();
+    RUN_TEST(test_station_panel_defaults);
+    RUN_TEST(test_station_panel_toggle);
+    RUN_TEST(test_station_panel_set_data);
+    RUN_TEST(test_station_panel_callbacks);
+    RUN_TEST(test_inventory_panel_defaults);
+    RUN_TEST(test_inventory_panel_set_data);
+    RUN_TEST(test_fitting_panel_defaults);
+    RUN_TEST(test_fitting_panel_set_data);
+    RUN_TEST(test_market_panel_defaults);
+    RUN_TEST(test_market_panel_set_data);
+    RUN_TEST(test_fleet_panel_defaults);
+    RUN_TEST(test_fleet_panel_toggle);
+    RUN_TEST(test_fleet_panel_set_data);
+    RUN_TEST(test_existing_panel_toggles);
+    RUN_TEST(test_overview_tab_filter);
 
     // Game State & ViewMode
 #ifndef ATLAS_NO_GLM
     log.BeginSection("Game State & ViewMode");
-    test_camera_default_view_mode();
-    test_camera_set_view_mode_orbit();
-    test_camera_set_view_mode_fps();
-    test_camera_set_view_mode_cockpit();
-    test_camera_fps_position_and_forward();
-    test_camera_fps_rotate();
-    test_camera_orbit_position_unchanged_in_fps();
-    test_camera_view_mode_kills_inertia();
-    test_camera_view_matrix_differs_by_mode();
+    RUN_TEST(test_camera_default_view_mode);
+    RUN_TEST(test_camera_set_view_mode_orbit);
+    RUN_TEST(test_camera_set_view_mode_fps);
+    RUN_TEST(test_camera_set_view_mode_cockpit);
+    RUN_TEST(test_camera_fps_position_and_forward);
+    RUN_TEST(test_camera_fps_rotate);
+    RUN_TEST(test_camera_orbit_position_unchanged_in_fps);
+    RUN_TEST(test_camera_view_mode_kills_inertia);
+    RUN_TEST(test_camera_view_matrix_differs_by_mode);
 #else
     log.BeginSection("Game State & ViewMode (SKIPPED — GLM not available)");
 #endif
 
     // PCG Preview Panel
     log.BeginSection("PCG Preview Panel");
-    test_pcg_preview_defaults();
-    test_pcg_preview_generate_ship();
-    test_pcg_preview_generate_ship_override_hull();
-    test_pcg_preview_generate_station();
-    test_pcg_preview_generate_station_override_count();
-    test_pcg_preview_generate_interior();
-    test_pcg_preview_determinism();
-    test_pcg_preview_randomize_changes_seed();
-    test_pcg_preview_clear();
-    test_pcg_preview_set_settings();
-    test_pcg_preview_different_seeds_differ();
-    test_pcg_preview_draw_does_not_crash();
+    RUN_TEST(test_pcg_preview_defaults);
+    RUN_TEST(test_pcg_preview_generate_ship);
+    RUN_TEST(test_pcg_preview_generate_ship_override_hull);
+    RUN_TEST(test_pcg_preview_generate_station);
+    RUN_TEST(test_pcg_preview_generate_station_override_count);
+    RUN_TEST(test_pcg_preview_generate_interior);
+    RUN_TEST(test_pcg_preview_determinism);
+    RUN_TEST(test_pcg_preview_randomize_changes_seed);
+    RUN_TEST(test_pcg_preview_clear);
+    RUN_TEST(test_pcg_preview_set_settings);
+    RUN_TEST(test_pcg_preview_different_seeds_differ);
+    RUN_TEST(test_pcg_preview_draw_does_not_crash);
 
     // Low-Poly Character Generator
     log.BeginSection("Low-Poly Character Generator");
-    test_lowpoly_char_generate_default();
-    test_lowpoly_char_body_slot_count();
-    test_lowpoly_char_override_archetype();
-    test_lowpoly_char_override_gender();
-    test_lowpoly_char_palette_regions();
-    test_lowpoly_char_flat_shading();
-    test_lowpoly_char_fps_arms();
-    test_lowpoly_char_determinism();
-    test_lowpoly_char_different_seeds_differ();
-    test_lowpoly_char_clothing_always_has_basics();
-    test_lowpoly_char_archetype_names();
-    test_lowpoly_char_body_slot_names();
-    test_lowpoly_char_clothing_slot_names();
-    test_pcg_preview_generate_character();
-    test_pcg_preview_character_override_archetype();
-    test_pcg_preview_character_override_gender();
-    test_pcg_preview_character_clear();
+    RUN_TEST(test_lowpoly_char_generate_default);
+    RUN_TEST(test_lowpoly_char_body_slot_count);
+    RUN_TEST(test_lowpoly_char_override_archetype);
+    RUN_TEST(test_lowpoly_char_override_gender);
+    RUN_TEST(test_lowpoly_char_palette_regions);
+    RUN_TEST(test_lowpoly_char_flat_shading);
+    RUN_TEST(test_lowpoly_char_fps_arms);
+    RUN_TEST(test_lowpoly_char_determinism);
+    RUN_TEST(test_lowpoly_char_different_seeds_differ);
+    RUN_TEST(test_lowpoly_char_clothing_always_has_basics);
+    RUN_TEST(test_lowpoly_char_archetype_names);
+    RUN_TEST(test_lowpoly_char_body_slot_names);
+    RUN_TEST(test_lowpoly_char_clothing_slot_names);
+    RUN_TEST(test_pcg_preview_generate_character);
+    RUN_TEST(test_pcg_preview_character_override_archetype);
+    RUN_TEST(test_pcg_preview_character_override_gender);
+    RUN_TEST(test_pcg_preview_character_clear);
 
     // Generation Style Engine
     log.BeginSection("Generation Style Engine");
-    test_gs_create_default_ship_style();
-    test_gs_create_default_station_style();
-    test_gs_create_all_default_styles();
-    test_gs_validate_valid_style();
-    test_gs_validate_empty_name_fails();
-    test_gs_validate_out_of_range_param_fails();
-    test_gs_validate_duplicate_slots_fails();
-    test_gs_available_parameters();
-    test_gs_find_parameter();
-    test_gs_style_type_names();
-    test_gs_generate_ship_style();
-    test_gs_generate_station_style();
-    test_gs_generate_station_with_placements();
-    test_gs_generate_interior_style();
-    test_gs_generate_determinism();
-    test_gs_serialize_roundtrip();
-    test_gs_ship_parameter_overrides();
+    RUN_TEST(test_gs_create_default_ship_style);
+    RUN_TEST(test_gs_create_default_station_style);
+    RUN_TEST(test_gs_create_all_default_styles);
+    RUN_TEST(test_gs_validate_valid_style);
+    RUN_TEST(test_gs_validate_empty_name_fails);
+    RUN_TEST(test_gs_validate_out_of_range_param_fails);
+    RUN_TEST(test_gs_validate_duplicate_slots_fails);
+    RUN_TEST(test_gs_available_parameters);
+    RUN_TEST(test_gs_find_parameter);
+    RUN_TEST(test_gs_style_type_names);
+    RUN_TEST(test_gs_generate_ship_style);
+    RUN_TEST(test_gs_generate_station_style);
+    RUN_TEST(test_gs_generate_station_with_placements);
+    RUN_TEST(test_gs_generate_interior_style);
+    RUN_TEST(test_gs_generate_determinism);
+    RUN_TEST(test_gs_serialize_roundtrip);
+    RUN_TEST(test_gs_ship_parameter_overrides);
 
     // Generation Style Panel
     log.BeginSection("Generation Style Panel");
-    test_gsp_defaults();
-    test_gsp_new_style();
-    test_gsp_add_remove_placement();
-    test_gsp_set_parameter();
-    test_gsp_enable_disable_parameter();
-    test_gsp_generate();
-    test_gsp_generate_with_asset_style();
-    test_gsp_save_load_string();
-    test_gsp_draw_does_not_crash();
+    RUN_TEST(test_gsp_defaults);
+    RUN_TEST(test_gsp_new_style);
+    RUN_TEST(test_gsp_add_remove_placement);
+    RUN_TEST(test_gsp_set_parameter);
+    RUN_TEST(test_gsp_enable_disable_parameter);
+    RUN_TEST(test_gsp_generate);
+    RUN_TEST(test_gsp_generate_with_asset_style);
+    RUN_TEST(test_gsp_save_load_string);
+    RUN_TEST(test_gsp_draw_does_not_crash);
 
     // Asset Style Library
     log.BeginSection("Asset Style Library");
-    test_as_library_add_find();
-    test_as_library_replace();
-    test_as_library_remove();
-    test_as_library_list_by_type();
-    test_as_library_clear();
-    test_as_shape_apply_to_ship();
-    test_as_shape_apply_to_station();
-    test_as_surface_treatment_names();
-    test_as_serialize_roundtrip();
+    RUN_TEST(test_as_library_add_find);
+    RUN_TEST(test_as_library_replace);
+    RUN_TEST(test_as_library_remove);
+    RUN_TEST(test_as_library_list_by_type);
+    RUN_TEST(test_as_library_clear);
+    RUN_TEST(test_as_shape_apply_to_ship);
+    RUN_TEST(test_as_shape_apply_to_station);
+    RUN_TEST(test_as_surface_treatment_names);
+    RUN_TEST(test_as_serialize_roundtrip);
 
     // Asset Style Panel
     log.BeginSection("Asset Style Panel");
-    test_asp_defaults();
-    test_asp_new_style();
-    test_asp_shape_control_points();
-    test_asp_mirror_and_smoothing();
-    test_asp_palette_colors();
-    test_asp_palette_materials();
-    test_asp_surface_treatment();
-    test_asp_detail_level();
-    test_asp_apply_and_preview_ship();
-    test_asp_apply_and_preview_station();
-    test_asp_library_save_load();
-    test_asp_serialize_roundtrip();
-    test_asp_draw_does_not_crash();
+    RUN_TEST(test_asp_defaults);
+    RUN_TEST(test_asp_new_style);
+    RUN_TEST(test_asp_shape_control_points);
+    RUN_TEST(test_asp_mirror_and_smoothing);
+    RUN_TEST(test_asp_palette_colors);
+    RUN_TEST(test_asp_palette_materials);
+    RUN_TEST(test_asp_surface_treatment);
+    RUN_TEST(test_asp_detail_level);
+    RUN_TEST(test_asp_apply_and_preview_ship);
+    RUN_TEST(test_asp_apply_and_preview_station);
+    RUN_TEST(test_asp_library_save_load);
+    RUN_TEST(test_asp_serialize_roundtrip);
+    RUN_TEST(test_asp_draw_does_not_crash);
 
     // Ship Archetype Engine
     log.BeginSection("Ship Archetype Engine");
-    test_arch_create_default_frigate();
-    test_arch_create_all_hull_classes();
-    test_arch_capital_bigger_than_frigate();
-    test_arch_validate_valid();
-    test_arch_validate_empty_name_fails();
-    test_arch_validate_no_rooms_fails();
-    test_arch_validate_no_hardpoints_fails();
-    test_arch_validate_duplicate_hardpoint_ids_fails();
-    test_arch_validate_door_bad_room_ref_fails();
-    test_arch_generate_from_archetype();
-    test_arch_generate_determinism();
-    test_arch_apply_subsystems();
-    test_arch_apply_module_visuals();
-    test_arch_subsystem_type_names();
-    test_arch_serialize_roundtrip();
-    test_arch_different_seeds_differ();
+    RUN_TEST(test_arch_create_default_frigate);
+    RUN_TEST(test_arch_create_all_hull_classes);
+    RUN_TEST(test_arch_capital_bigger_than_frigate);
+    RUN_TEST(test_arch_validate_valid);
+    RUN_TEST(test_arch_validate_empty_name_fails);
+    RUN_TEST(test_arch_validate_no_rooms_fails);
+    RUN_TEST(test_arch_validate_no_hardpoints_fails);
+    RUN_TEST(test_arch_validate_duplicate_hardpoint_ids_fails);
+    RUN_TEST(test_arch_validate_door_bad_room_ref_fails);
+    RUN_TEST(test_arch_generate_from_archetype);
+    RUN_TEST(test_arch_generate_determinism);
+    RUN_TEST(test_arch_apply_subsystems);
+    RUN_TEST(test_arch_apply_module_visuals);
+    RUN_TEST(test_arch_subsystem_type_names);
+    RUN_TEST(test_arch_serialize_roundtrip);
+    RUN_TEST(test_arch_different_seeds_differ);
 
     // Ship Archetype Panel
     log.BeginSection("Ship Archetype Panel");
-    test_archp_defaults();
-    test_archp_select_hull_class();
-    test_archp_add_remove_hull_control_point();
-    test_archp_add_remove_room();
-    test_archp_add_remove_door();
-    test_archp_add_remove_hardpoint();
-    test_archp_subsystem_editing();
-    test_archp_module_visual_rules();
-    test_archp_variation_bounds();
-    test_archp_generate_preview();
-    test_archp_generate_preview_with_subsystems();
-    test_archp_generate_preview_with_modules();
-    test_archp_save_load_string();
-    test_archp_draw_does_not_crash();
+    RUN_TEST(test_archp_defaults);
+    RUN_TEST(test_archp_select_hull_class);
+    RUN_TEST(test_archp_add_remove_hull_control_point);
+    RUN_TEST(test_archp_add_remove_room);
+    RUN_TEST(test_archp_add_remove_door);
+    RUN_TEST(test_archp_add_remove_hardpoint);
+    RUN_TEST(test_archp_subsystem_editing);
+    RUN_TEST(test_archp_module_visual_rules);
+    RUN_TEST(test_archp_variation_bounds);
+    RUN_TEST(test_archp_generate_preview);
+    RUN_TEST(test_archp_generate_preview_with_subsystems);
+    RUN_TEST(test_archp_generate_preview_with_modules);
+    RUN_TEST(test_archp_save_load_string);
+    RUN_TEST(test_archp_draw_does_not_crash);
 
     // Viewport Panel
     log.BeginSection("Viewport Panel");
-    test_viewport_defaults();
-    test_viewport_load_ship();
-    test_viewport_load_station();
-    test_viewport_clear_scene();
-    test_viewport_select_object();
-    test_viewport_deselect_all();
-    test_viewport_translate_selected();
-    test_viewport_rotate_selected();
-    test_viewport_scale_selected();
-    test_viewport_scale_clamps_positive();
-    test_viewport_gizmo_mode();
-    test_viewport_camera_orbit();
-    test_viewport_camera_pitch_clamp();
-    test_viewport_camera_distance();
-    test_viewport_commit_changes();
-    test_viewport_discard_changes();
-    test_viewport_grid_toggle();
-    test_viewport_draw_does_not_crash();
-    test_viewport_log_entries();
-    test_viewport_no_op_without_selection();
+    RUN_TEST(test_viewport_defaults);
+    RUN_TEST(test_viewport_load_ship);
+    RUN_TEST(test_viewport_load_station);
+    RUN_TEST(test_viewport_clear_scene);
+    RUN_TEST(test_viewport_select_object);
+    RUN_TEST(test_viewport_deselect_all);
+    RUN_TEST(test_viewport_translate_selected);
+    RUN_TEST(test_viewport_rotate_selected);
+    RUN_TEST(test_viewport_scale_selected);
+    RUN_TEST(test_viewport_scale_clamps_positive);
+    RUN_TEST(test_viewport_gizmo_mode);
+    RUN_TEST(test_viewport_camera_orbit);
+    RUN_TEST(test_viewport_camera_pitch_clamp);
+    RUN_TEST(test_viewport_camera_distance);
+    RUN_TEST(test_viewport_commit_changes);
+    RUN_TEST(test_viewport_discard_changes);
+    RUN_TEST(test_viewport_grid_toggle);
+    RUN_TEST(test_viewport_draw_does_not_crash);
+    RUN_TEST(test_viewport_log_entries);
+    RUN_TEST(test_viewport_no_op_without_selection);
 
     if (!logPath.empty()) {
         log.WriteLogFile(logPath);
