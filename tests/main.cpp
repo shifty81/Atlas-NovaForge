@@ -1638,6 +1638,37 @@ void test_ship_editor_draw_no_ship();
 void test_ship_editor_set_ship_info();
 void test_ship_editor_mark_clean();
 
+// Character Viewer / Editor / Animation tests
+void test_human_mesh_generate_default();
+void test_human_mesh_generate_from_context();
+void test_human_mesh_deterministic();
+void test_human_mesh_different_seeds();
+void test_human_mesh_params_from_graph();
+void test_human_mesh_height_affects_size();
+void test_anim_controller_default_state();
+void test_anim_controller_set_state();
+void test_anim_controller_update();
+void test_anim_controller_clip_lengths();
+void test_anim_controller_speed_and_damage();
+void test_char_select_init_slots();
+void test_char_select_select_slot();
+void test_char_select_confirm();
+void test_char_select_rotation();
+void test_char_select_zoom();
+void test_char_select_animation();
+void test_char_select_draw();
+void test_char_select_regenerate();
+void test_char_editor_name();
+void test_char_editor_default_params();
+void test_char_editor_set_params();
+void test_char_editor_individual_setters();
+void test_char_editor_regenerate_mesh();
+void test_char_editor_sections();
+void test_char_editor_animation();
+void test_char_editor_draw();
+void test_char_editor_summary();
+void test_char_editor_callback();
+
 // Prefab Editor Panel tests
 void test_prefab_editor_name();
 void test_prefab_editor_empty();
@@ -3806,6 +3837,44 @@ int main() {
     test_ship_editor_draw_no_ship();
     test_ship_editor_set_ship_info();
     test_ship_editor_mark_clean();
+
+    // Character Viewer / Editor / Animation
+    std::cout << "\n--- Human Mesh Generator ---" << std::endl;
+    test_human_mesh_generate_default();
+    test_human_mesh_generate_from_context();
+    test_human_mesh_deterministic();
+    test_human_mesh_different_seeds();
+    test_human_mesh_params_from_graph();
+    test_human_mesh_height_affects_size();
+
+    std::cout << "\n--- Character Animation Controller ---" << std::endl;
+    test_anim_controller_default_state();
+    test_anim_controller_set_state();
+    test_anim_controller_update();
+    test_anim_controller_clip_lengths();
+    test_anim_controller_speed_and_damage();
+
+    std::cout << "\n--- Character Select Screen ---" << std::endl;
+    test_char_select_init_slots();
+    test_char_select_select_slot();
+    test_char_select_confirm();
+    test_char_select_rotation();
+    test_char_select_zoom();
+    test_char_select_animation();
+    test_char_select_draw();
+    test_char_select_regenerate();
+
+    std::cout << "\n--- Character Editor Panel ---" << std::endl;
+    test_char_editor_name();
+    test_char_editor_default_params();
+    test_char_editor_set_params();
+    test_char_editor_individual_setters();
+    test_char_editor_regenerate_mesh();
+    test_char_editor_sections();
+    test_char_editor_animation();
+    test_char_editor_draw();
+    test_char_editor_summary();
+    test_char_editor_callback();
 
     // Prefab Editor Panel
     std::cout << "\n--- Prefab Editor Panel ---" << std::endl;

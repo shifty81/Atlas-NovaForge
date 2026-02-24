@@ -28,6 +28,8 @@ add_executable(AtlasEditor
     panels/InventoryEditorPanel.cpp
     panels/AIDebuggerPanel.cpp
     panels/ShipEditorPanel.cpp
+    panels/CharacterEditorPanel.cpp
+    ui/CharacterSelectScreen.cpp
     ai/AIAggregator.cpp
 )
 
