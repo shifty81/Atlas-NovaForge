@@ -1115,6 +1115,17 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 - [x] **Damage decals** — Missing modules, hull breaches visible on damaged ships — DamageStateGenerator with DamageLevel classification, decal placement, structural integrity (6 tests)
 - [x] **Economy-driven generation** — NPC ships reflect economic state (resource-rich = mining hulls, war-torn = damaged patrols) — EconomyDrivenGenerator with 5 economy states, 7 ship roles, equipment quality and wear (7 tests)
 
+#### Ship Stats & Fitting
+- [x] **Expanded GeneratedShip** — Armor HP, shield HP, signature radius, targeting speed, drone bay capacity added to ship generation pipeline (6+7 assertions)
+- [x] **Procedural ship naming** — Deterministic faction-neutral name generation (Prefix Suffix-Serial format, 4 assertions)
+- [x] **ConstraintSolver integration** — ShipGenerator weapon fitting now uses PowerGridConstraint + solver retries instead of ad-hoc while-loop
+- [x] **Functional room layout** — Room types assigned by function (Cockpit deck 0, Engine last, Reactor lower decks) with type-specific dimensions (4+5 assertions)
+- [x] **Hub-and-spoke corridors** — Non-linear corridor connections from room 0 when ≥ 4 rooms per deck (2 assertions)
+- [x] **ShipDesigner save fix** — saveShipLayout() now captures all rooms as overrides from deck data (4 assertions)
+
+#### Background Pressure
+- [x] **Titan assembly system** — Pirate Titan background pressure with 4 phases (Rumor/Unease/Fear/Acceptance), tick progression, disruption, phase regression (21 assertions)
+
 ---
 
 ### 📋 Phase 13: FPS & Interior Systems (In Progress)
