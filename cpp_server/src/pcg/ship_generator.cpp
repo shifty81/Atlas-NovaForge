@@ -1,5 +1,7 @@
 #include "pcg/ship_generator.h"
+#include "pcg/constraint_solver.h"
 #include "pcg/pcg_trace.h"
+#include <iterator>
 
 namespace atlas {
 namespace pcg {
@@ -13,21 +15,32 @@ struct HullTemplate {
     int   turretMin, turretMax;
     int   launcherMin, launcherMax;
     WeaponSize maxWeapon;
+    float armorMin, armorMax;
+    float shieldMin, shieldMax;
+    float sigMin, sigMax;           // signature radius metres
+    float targetSpeedMin, targetSpeedMax; // seconds to lock
+    int   droneBayMin, droneBayMax; // m³
 };
 
 static const HullTemplate TEMPLATES[] = {
     // Frigate
-    { 1'000, 2'500,    30, 55,    120, 200,    250, 400,   2, 3,  1, 2,  WeaponSize::Small  },
+    { 1'000, 2'500,    30, 55,    120, 200,    250, 400,   2, 3,  1, 2,  WeaponSize::Small,
+      300, 600,   250, 500,   30, 45,    3.0f, 5.0f,    0, 25 },
     // Destroyer
-    { 2'000, 4'000,    45, 80,    170, 280,    350, 550,   4, 6,  2, 3,  WeaponSize::Small  },
+    { 2'000, 4'000,    45, 80,    170, 280,    350, 550,   4, 6,  2, 3,  WeaponSize::Small,
+      600, 1200,  400, 800,   50, 75,    4.0f, 6.0f,    0, 25 },
     // Cruiser
-    { 8'000, 14'000,   700, 1200, 280, 400,    800, 1300,  3, 5,  2, 4,  WeaponSize::Medium },
+    { 8'000, 14'000,   700, 1200, 280, 400,    800, 1300,  3, 5,  2, 4,  WeaponSize::Medium,
+      1800, 3500, 1500, 3000, 100, 150,  5.0f, 8.0f,    25, 75 },
     // Battlecruiser
-    { 12'000, 22'000,  1000, 1600, 350, 500,   1200, 1800, 5, 7,  3, 5,  WeaponSize::Medium },
+    { 12'000, 22'000,  1000, 1600, 350, 500,   1200, 1800, 5, 7,  3, 5,  WeaponSize::Medium,
+      3000, 5500, 2500, 5000, 200, 280,  6.0f, 10.0f,   25, 75 },
     // Battleship
-    { 80'000, 120'000, 8000, 14000, 500, 700,  4000, 6500, 6, 8,  4, 6,  WeaponSize::Large  },
+    { 80'000, 120'000, 8000, 14000, 500, 700,  4000, 6500, 6, 8,  4, 6,  WeaponSize::Large,
+      6000, 10000, 5000, 9000, 300, 450,  8.0f, 14.0f,   50, 125 },
     // Capital
-    { 800'000, 1'500'000, 60000, 120000, 700, 1000, 50000, 90000, 0, 2, 2, 6, WeaponSize::Large },
+    { 800'000, 1'500'000, 60000, 120000, 700, 1000, 50000, 90000, 0, 2, 2, 6, WeaponSize::Large,
+      40000, 80000, 30000, 60000, 2000, 5000, 14.0f, 25.0f, 100, 300 },
 };
 
 // ── Static members ─────────────────────────────────────────────────
@@ -50,6 +63,30 @@ std::string ShipGenerator::hullClassName(HullClass hull) {
     return "Unknown";
 }
 
+// ── Ship name tables (faction-neutral, procedural) ─────────────────
+static const char* NAME_PREFIX[] = {
+    "Tempest", "Vortex", "Zenith", "Eclipse", "Nova",
+    "Rift", "Aegis", "Phantom", "Crucible", "Apex",
+    "Wraith", "Bastion", "Specter", "Herald", "Sigil",
+    "Torrent", "Cipher", "Vigil", "Talon", "Meridian",
+};
+static constexpr int NAME_PREFIX_COUNT = static_cast<int>(std::size(NAME_PREFIX));
+
+static const char* NAME_SUFFIX[] = {
+    "Mark", "Class", "Prime", "Alpha", "Vanguard",
+    "Delta", "Core", "Edge", "Forge", "Crest",
+};
+static constexpr int NAME_SUFFIX_COUNT = static_cast<int>(std::size(NAME_SUFFIX));
+
+std::string ShipGenerator::generateName(DeterministicRNG& rng, HullClass hull) {
+    int prefixIdx = rng.range(0, NAME_PREFIX_COUNT - 1);
+    int suffixIdx = rng.range(0, NAME_SUFFIX_COUNT - 1);
+    int serial    = rng.range(1, 999);
+    return std::string(NAME_PREFIX[prefixIdx]) + " " +
+           std::string(NAME_SUFFIX[suffixIdx]) + "-" +
+           std::to_string(serial);
+}
+
 // ── Public API ─────────────────────────────────────────────────────
 
 GeneratedShip ShipGenerator::generate(const PCGContext& ctx) {
@@ -60,6 +97,7 @@ GeneratedShip ShipGenerator::generate(const PCGContext& ctx) {
     deriveStats(rng, ship);
     attachEngines(rng, ship);
     attachWeapons(rng, ship);
+    ship.shipName = generateName(rng, ship.hullClass);
     ship.valid = validateConstraints(ship);
 
     // Emit trace for debug visualization.
@@ -74,6 +112,9 @@ GeneratedShip ShipGenerator::generate(const PCGContext& ctx) {
         traceRecorder_->annotate("Hull: " + hullClassName(ship.hullClass));
         traceRecorder_->annotate("Engines: " + std::to_string(ship.engineCount));
         traceRecorder_->annotate("Turrets: " + std::to_string(ship.turretSlots));
+        traceRecorder_->annotate("Armor: " + std::to_string(static_cast<int>(ship.armorHP)));
+        traceRecorder_->annotate("Shield: " + std::to_string(static_cast<int>(ship.shieldHP)));
+        traceRecorder_->annotate("Name: " + ship.shipName);
         traceRecorder_->popNode();
     }
 
@@ -88,6 +129,7 @@ GeneratedShip ShipGenerator::generate(const PCGContext& ctx, HullClass hull) {
     deriveStats(rng, ship);
     attachEngines(rng, ship);
     attachWeapons(rng, ship);
+    ship.shipName = generateName(rng, ship.hullClass);
     ship.valid = validateConstraints(ship);
     return ship;
 }
@@ -117,6 +159,11 @@ void ShipGenerator::deriveStats(DeterministicRNG& rng, GeneratedShip& ship) {
     ship.turretSlots   = rng.range(t.turretMin, t.turretMax);
     ship.launcherSlots = rng.range(t.launcherMin, t.launcherMax);
     ship.maxWeaponSize = t.maxWeapon;
+    ship.armorHP         = rng.rangeFloat(t.armorMin, t.armorMax);
+    ship.shieldHP        = rng.rangeFloat(t.shieldMin, t.shieldMax);
+    ship.signatureRadius = rng.rangeFloat(t.sigMin, t.sigMax);
+    ship.targetingSpeed  = rng.rangeFloat(t.targetSpeedMin, t.targetSpeedMax);
+    ship.droneBay        = rng.range(t.droneBayMin, t.droneBayMax);
 }
 
 void ShipGenerator::attachEngines(DeterministicRNG& rng, GeneratedShip& ship) {
@@ -148,23 +195,59 @@ void ShipGenerator::attachEngines(DeterministicRNG& rng, GeneratedShip& ship) {
     ship.alignTime = ship.mass / ship.thrust;
 }
 
+// File-scope state for ConstraintSolver callbacks.
+// NOTE: PCG generation is intentionally single-threaded (deterministic by
+// design).  These statics exist because ConstraintSolver::MutateFn and
+// FallbackFn are plain function pointers that cannot capture state.
+static int*   s_turretSlots = nullptr;
+static float  s_pgPerTurret = 0.0f;
+static float* s_usedPg      = nullptr;
+static PowerGridConstraint* s_pgConstraint = nullptr;
+
+static void weaponMutator(DeterministicRNG& /*rng*/) {
+    if (s_turretSlots && *s_turretSlots > 0) {
+        (*s_turretSlots)--;
+        if (s_usedPg) {
+            *s_usedPg = s_pgPerTurret * static_cast<float>(*s_turretSlots);
+            if (s_pgConstraint) s_pgConstraint->setUsedPower(*s_usedPg);
+        }
+    }
+}
+
+static void weaponFallback() {
+    if (s_turretSlots) *s_turretSlots = 0;
+    if (s_usedPg)      *s_usedPg = 0.0f;
+    if (s_pgConstraint) s_pgConstraint->setUsedPower(0.0f);
+}
+
 void ShipGenerator::attachWeapons(DeterministicRNG& rng, GeneratedShip& ship) {
-    // Weapon slots are already set by deriveStats().
-    // Here we just sanity-check that the powergrid budget is sufficient.
-    // (A full fitting solver would iterate here.)
     float pgPerTurret = 0.0f;
     switch (ship.maxWeaponSize) {
         case WeaponSize::Small:  pgPerTurret = rng.rangeFloat(3.0f, 8.0f);   break;
         case WeaponSize::Medium: pgPerTurret = rng.rangeFloat(80.0f, 160.0f); break;
         case WeaponSize::Large:  pgPerTurret = rng.rangeFloat(1000.0f, 2500.0f); break;
     }
-    float totalPgNeeded = pgPerTurret * static_cast<float>(ship.turretSlots);
 
-    // If weapons exceed budget, trim turret count (constraint retry).
-    while (totalPgNeeded > ship.powergrid * 0.85f && ship.turretSlots > 0) {
-        ship.turretSlots--;
-        totalPgNeeded = pgPerTurret * static_cast<float>(ship.turretSlots);
-    }
+    float usedPg = pgPerTurret * static_cast<float>(ship.turretSlots);
+    PowerGridConstraint pgConstraint(usedPg, ship.powergrid);
+
+    // Wire file-scope state for solver callbacks.
+    s_turretSlots  = &ship.turretSlots;
+    s_pgPerTurret  = pgPerTurret;
+    s_usedPg       = &usedPg;
+    s_pgConstraint = &pgConstraint;
+
+    ConstraintSolver solver;
+    solver.add(&pgConstraint);
+    solver.setMutator(weaponMutator);
+    solver.setFallback(weaponFallback);
+    solver.solve(rng);
+
+    // Clear file-scope state.
+    s_turretSlots  = nullptr;
+    s_pgPerTurret  = 0.0f;
+    s_usedPg       = nullptr;
+    s_pgConstraint = nullptr;
 }
 
 bool ShipGenerator::validateConstraints(const GeneratedShip& ship) {
@@ -172,6 +255,10 @@ bool ShipGenerator::validateConstraints(const GeneratedShip& ship) {
     if (ship.mass <= 0.0f)      return false;
     if (ship.alignTime <= 0.0f) return false;
     if (ship.capacitor <= 0.0f) return false;
+    if (ship.armorHP <= 0.0f)   return false;
+    if (ship.shieldHP <= 0.0f)  return false;
+    if (ship.signatureRadius <= 0.0f) return false;
+    if (ship.targetingSpeed <= 0.0f)  return false;
     return true;
 }
 

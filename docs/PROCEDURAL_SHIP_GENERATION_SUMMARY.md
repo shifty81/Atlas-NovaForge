@@ -348,7 +348,14 @@ docs/
 | **Documentation** | ✅ Complete | Usage guide, naming guide |
 | **Model Integration** | ✅ Complete | Modular assembly with addPartToMesh() |
 | **JSON Data Update** | ✅ Complete | 102 ships with model_data (turrets, launchers, drones, engines, seed) |
-| **Server-Side Testing** | ✅ Complete | 6 test functions, 24 assertions (1139 total) |
+| **Server-Side Testing** | ✅ Complete | 59+ new assertions (2733 total); expanded ship fields, room logic, naming, Titan assembly |
+| **Expanded Ship Stats** | ✅ Complete | Armor, shields, signature radius, targeting speed, drone bay |
+| **Procedural Ship Naming** | ✅ Complete | Deterministic prefix/suffix/serial name generation |
+| **ConstraintSolver Integration** | ✅ Complete | PowerGridConstraint + solver retries in ShipGenerator |
+| **Functional Room Layout** | ✅ Complete | Room types assigned by function; dimensions vary by type |
+| **Hub-and-Spoke Corridors** | ✅ Complete | Non-linear connections when ≥ 4 rooms per deck |
+| **ShipDesigner Save Fix** | ✅ Complete | saveShipLayout now captures room overrides from deck data |
+| **Titan Assembly System** | ✅ Complete | Background pressure simulation with 4 phases |
 | **Procedural Texturing** | ⏳ Pending | Phase 4 |
 | **Client-Side Testing** | ⏳ Pending | Requires OpenGL environment |
 

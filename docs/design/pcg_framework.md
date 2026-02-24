@@ -189,9 +189,12 @@ Later waves spawn larger hulls; lower security spawns heavier compositions.  Eac
 
 ## 11. Future Extensions
 
-* PCG debug visualiser (seed → object tree).
-* Constraint solver with retries (genetic-style fitting).
-* Server-authoritative PCG verification for multiplayer.
-* Asteroid field noise-based mesh generation.
+* ~~PCG debug visualiser (seed → object tree).~~ ✅ Implemented (`pcg_trace.h`).
+* ~~Constraint solver with retries (genetic-style fitting).~~ ✅ Implemented (`constraint_solver.h`); integrated into `ShipGenerator::attachWeapons`.
+* ~~Server-authoritative PCG verification for multiplayer.~~ ✅ Implemented (`pcg_verify.h`).
+* ~~Asteroid field noise-based mesh generation.~~ ✅ Implemented (`asteroid_field_generator.h`).
 * Procedural texturing (albedo, normal, light maps per faction).
-* Spine-based hull grammar (Phase 12 overhaul).
+* ~~Spine-based hull grammar (Phase 12 overhaul).~~ ✅ Implemented (`spine_hull_generator.h`).
+* ~~Expanded ship stats (armor, shields, signature, targeting, drones).~~ ✅ Added to `GeneratedShip`.
+* ~~Procedural ship naming.~~ ✅ Deterministic name generation in `ShipGenerator`.
+* ~~Titan assembly pressure system.~~ ✅ Implemented (`titan_assembly_system.h`).

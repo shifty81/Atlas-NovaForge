@@ -21,14 +21,21 @@ void applyDesignerOverrides(std::vector<Deck>& decks,
     }
 }
 
-ShipDesignerSave saveShipLayout(const std::vector<Deck>& /*decks*/,
+ShipDesignerSave saveShipLayout(const std::vector<Deck>& decks,
                                 int shipClass,
                                 uint64_t seed) {
     ShipDesignerSave save{};
     save.pcgVersion = CURRENT_PCG_VERSION;
     save.shipClass  = shipClass;
     save.seed       = seed;
-    // roomOverrides left empty — caller adds overrides as needed.
+
+    // Capture every room as an override so the layout round-trips.
+    for (const Deck& deck : decks) {
+        for (const RoomNode& room : deck.rooms) {
+            save.roomOverrides.push_back({ room.roomId, room.type });
+        }
+    }
+
     return save;
 }
 

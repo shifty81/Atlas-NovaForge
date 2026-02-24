@@ -35,10 +35,23 @@ std::vector<Corridor> connectRooms(const std::vector<RoomNode>& rooms) {
     std::vector<Corridor> corridors;
     if (rooms.size() < 2) return corridors;
 
-    corridors.reserve(rooms.size() - 1);
+    // Linear connections: each consecutive pair.
+    size_t estimated = (rooms.size() >= 4)
+                       ? rooms.size() * 2 - 3
+                       : rooms.size() - 1;
+    corridors.reserve(estimated);
     for (size_t i = 0; i + 1 < rooms.size(); ++i) {
         corridors.push_back({rooms[i].roomId, rooms[i + 1].roomId});
     }
+
+    // Hub-and-spoke: first room connects to all non-adjacent rooms
+    // when there are enough rooms to make this meaningful.
+    if (rooms.size() >= 4) {
+        for (size_t i = 2; i < rooms.size(); ++i) {
+            corridors.push_back({rooms[0].roomId, rooms[i].roomId});
+        }
+    }
+
     return corridors;
 }
 
