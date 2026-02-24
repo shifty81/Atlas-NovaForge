@@ -83,9 +83,11 @@ void CharacterMeshSystem::applySlider(AstronautCharacter& character,
                          / (slider.maxValue - slider.minValue);
         character.morphWeights[sliderName] = normalized;
 
-        // Recompute uniform scale from the height slider.
+        // Recompute uniform scale from the height slider relative to
+        // the default value (1.0) so it matches the server convention.
         if (sliderName == "height") {
-            character.uniformScale = slider.currentValue;
+            constexpr float DEFAULT_HEIGHT_VALUE = 1.0f;
+            character.uniformScale = slider.currentValue / DEFAULT_HEIGHT_VALUE;
         }
 
         return;

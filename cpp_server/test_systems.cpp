@@ -14663,9 +14663,9 @@ void testCharacterMorphWeights() {
     auto ch = cms.generate(55, Race::SynthBorn, BodyType::Organic, sl);
     assertTrue(ch.morphWeights.count("height") > 0, "height morph present");
     assertTrue(ch.morphWeights.count("build") > 0, "build morph present");
-    assertTrue(ch.morphWeights.count("limbLength") > 0, "limbLength morph present");
-    assertTrue(ch.morphWeights.count("torso") > 0, "torso morph present");
-    assertTrue(ch.morphWeights.count("headShape") > 0, "headShape morph present");
+    assertTrue(ch.morphWeights.count("limb_length") > 0, "limb_length morph present");
+    assertTrue(ch.morphWeights.count("torso_proportion") > 0, "torso_proportion morph present");
+    assertTrue(ch.morphWeights.count("head_shape") > 0, "head_shape morph present");
     assertTrue(ch.morphWeights.at("height") >= 0.0f && ch.morphWeights.at("height") <= 1.0f,
                "height morph in [0,1]");
     assertTrue(ch.morphWeights.at("build") >= 0.0f && ch.morphWeights.at("build") <= 1.0f,

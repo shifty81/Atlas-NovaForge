@@ -180,11 +180,11 @@ GeneratedCharacter CharacterMeshSystem::generate(uint64_t seed, Race race,
 
     // Procedurally derive morph weights from the character sliders
     // so the uploaded mesh can be morphed at load time.
-    character.morphWeights["height"]     = sliders.height;
-    character.morphWeights["build"]      = sliders.build;
-    character.morphWeights["limbLength"] = sliders.limb_length;
-    character.morphWeights["torso"]      = sliders.torso_proportion;
-    character.morphWeights["headShape"]  = sliders.head_shape;
+    character.morphWeights["height"]           = sliders.height;
+    character.morphWeights["build"]            = sliders.build;
+    character.morphWeights["limb_length"]      = sliders.limb_length;
+    character.morphWeights["torso_proportion"] = sliders.torso_proportion;
+    character.morphWeights["head_shape"]       = sliders.head_shape;
 
     return character;
 }
