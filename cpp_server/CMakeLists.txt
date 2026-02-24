@@ -161,6 +161,7 @@ set(SERVER_SOURCES
     src/pcg/interior_budget.cpp
     src/pcg/interior_generator.cpp
     src/pcg/character_mesh_system.cpp
+    src/pcg/lowpoly_character_generator.cpp
     src/pcg/turret_generator.cpp
     src/pcg/planet_generator.cpp
     src/pcg/habitat_generator.cpp
@@ -308,6 +309,7 @@ set(SERVER_HEADERS
     include/pcg/interior_budget.h
     include/pcg/interior_generator.h
     include/pcg/character_mesh_system.h
+    include/pcg/lowpoly_character_generator.h
     include/pcg/turret_generator.h
     include/pcg/planet_generator.h
     include/pcg/habitat_generator.h
@@ -522,6 +524,7 @@ if(BUILD_TESTS)
         src/pcg/interior_budget.cpp
         src/pcg/interior_generator.cpp
         src/pcg/character_mesh_system.cpp
+        src/pcg/lowpoly_character_generator.cpp
         src/pcg/turret_generator.cpp
         src/pcg/planet_generator.cpp
         src/pcg/habitat_generator.cpp
