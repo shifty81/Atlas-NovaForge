@@ -53,6 +53,9 @@ set(ATLAS_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/generation_style.cpp
     ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/pcg_asset_style.cpp
     ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/ship_archetype.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/spine_hull_generator.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/turret_placement_system.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/turret_generator.cpp
 )
 
 # Camera tests require GLM; include conditionally

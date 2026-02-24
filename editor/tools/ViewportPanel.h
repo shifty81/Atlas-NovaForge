@@ -83,6 +83,11 @@ public:
     /** Load a generated station into the viewport for manipulation. */
     void LoadStation(const pcg::GeneratedStation& station, uint64_t seed);
 
+    /** Load a spine hull with optional turret placement into the viewport. */
+    void LoadSpineHull(const pcg::GeneratedSpineHull& hull,
+                       const pcg::TurretPlacement* placement,
+                       uint64_t seed);
+
     /** Clear all objects from the viewport. */
     void ClearScene();
 

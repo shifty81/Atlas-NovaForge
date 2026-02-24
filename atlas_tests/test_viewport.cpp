@@ -14,6 +14,8 @@
 #include "../cpp_server/include/pcg/pcg_manager.h"
 #include "../cpp_server/include/pcg/ship_generator.h"
 #include "../cpp_server/include/pcg/station_generator.h"
+#include "../cpp_server/include/pcg/spine_hull_generator.h"
+#include "../cpp_server/include/pcg/turret_placement_system.h"
 #include <iostream>
 #include <cassert>
 #include <cmath>
@@ -352,5 +354,90 @@ void test_viewport_no_op_without_selection() {
     vp.RotateSelected(90.0f, 0.0f, 0.0f);
     vp.ScaleSelected(5.0f, 5.0f, 5.0f);
     assert(!vp.HasPendingChanges());
+
+}
+
+// ── Spine Hull viewport tests ─────────────────────────────────────
+
+void test_viewport_load_spine_hull() {
+    ViewportPanel vp;
+    PCGManager mgr;
+    mgr.initialize(55555);
+    PCGContext ctx = mgr.makeRootContext(PCGDomain::Ship, 1, 1);
+    GeneratedSpineHull hull = SpineHullGenerator::generate(ctx, HullClass::Cruiser);
+
+    vp.LoadSpineHull(hull, nullptr, 55555);
+
+    // Should have one object per zone (3 zones).
+    assert(vp.ObjectCount() == 3);
+    assert(vp.GetObject(0).type == "HullZone");
+    assert(vp.GetObject(1).type == "HullZone");
+    assert(vp.GetObject(2).type == "HullZone");
+
+}
+
+void test_viewport_load_spine_hull_with_turrets() {
+    ViewportPanel vp;
+    PCGManager mgr;
+    mgr.initialize(55555);
+    PCGContext ctx = mgr.makeRootContext(PCGDomain::Ship, 1, 1);
+    GeneratedSpineHull hull = SpineHullGenerator::generate(ctx, HullClass::Battleship);
+
+    PCGContext ctx2 = mgr.makeRootContext(PCGDomain::Ship, 2, 1);
+    TurretPlacement placement = TurretPlacementSystem::place(ctx2, hull.hull_class, 5);
+
+    vp.LoadSpineHull(hull, &placement, 55555);
+
+    // 3 zones + 5 turret mounts = 8 objects
+    assert(vp.ObjectCount() == 8);
+
+    // First 3 should be HullZone
+    for (size_t i = 0; i < 3; ++i) {
+        assert(vp.GetObject(i).type == "HullZone");
+    }
+    // Next 5 should be TurretMount
+    for (size_t i = 3; i < 8; ++i) {
+        assert(vp.GetObject(i).type == "TurretMount");
+    }
+
+}
+
+void test_viewport_spine_hull_zone_names() {
+    ViewportPanel vp;
+    PCGManager mgr;
+    mgr.initialize(77777);
+    PCGContext ctx = mgr.makeRootContext(PCGDomain::Ship, 1, 1);
+    GeneratedSpineHull hull = SpineHullGenerator::generate(ctx, HullClass::Frigate, "Solari");
+
+    vp.LoadSpineHull(hull, nullptr, 77777);
+
+    assert(vp.ObjectCount() == 3);
+    // Zone names should contain the functional zone name
+    std::string n0 = vp.GetObject(0).name;
+    std::string n1 = vp.GetObject(1).name;
+    std::string n2 = vp.GetObject(2).name;
+    assert(n0.find("Command") != std::string::npos);
+    assert(n1.find("MidHull") != std::string::npos);
+    assert(n2.find("Engineering") != std::string::npos);
+
+}
+
+void test_viewport_spine_hull_select_and_transform() {
+    ViewportPanel vp;
+    PCGManager mgr;
+    mgr.initialize(55555);
+    PCGContext ctx = mgr.makeRootContext(PCGDomain::Ship, 1, 1);
+    GeneratedSpineHull hull = SpineHullGenerator::generate(ctx, HullClass::Cruiser);
+
+    vp.LoadSpineHull(hull, nullptr, 55555);
+
+    uint32_t zoneId = vp.GetObject(0).id;
+    vp.SelectObject(zoneId);
+    assert(vp.SelectedObjectId() == zoneId);
+
+    float origX = vp.GetTransform(zoneId).posX;
+    vp.TranslateSelected(10.0f, 0.0f, 0.0f);
+    assert(std::abs(vp.GetTransform(zoneId).posX - (origX + 10.0f)) < 0.01f);
+    assert(vp.HasPendingChanges());
 
 }

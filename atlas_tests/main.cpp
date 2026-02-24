@@ -130,6 +130,16 @@ void test_pcg_preview_clear();
 void test_pcg_preview_set_settings();
 void test_pcg_preview_different_seeds_differ();
 void test_pcg_preview_draw_does_not_crash();
+void test_pcg_preview_generate_spine_hull();
+void test_pcg_preview_spine_hull_override_hull_class();
+void test_pcg_preview_spine_hull_override_faction();
+void test_pcg_preview_spine_hull_determinism();
+void test_pcg_preview_spine_hull_aspect_ratio_clamped();
+void test_pcg_preview_generate_turret_placement();
+void test_pcg_preview_turret_placement_override_slots();
+void test_pcg_preview_turret_placement_with_faction();
+void test_pcg_preview_turret_placement_overlap_validation();
+void test_pcg_preview_clear_includes_new_modes();
 
 // Low-Poly Character Generator tests
 void test_lowpoly_char_generate_default();
@@ -329,6 +339,10 @@ void test_viewport_grid_toggle();
 void test_viewport_draw_does_not_crash();
 void test_viewport_log_entries();
 void test_viewport_no_op_without_selection();
+void test_viewport_load_spine_hull();
+void test_viewport_load_spine_hull_with_turrets();
+void test_viewport_spine_hull_zone_names();
+void test_viewport_spine_hull_select_and_transform();
 
 int main(int argc, char* argv[]) {
     std::string logPath;
@@ -485,6 +499,19 @@ int main(int argc, char* argv[]) {
     RUN_TEST(test_pcg_preview_set_settings);
     RUN_TEST(test_pcg_preview_different_seeds_differ);
     RUN_TEST(test_pcg_preview_draw_does_not_crash);
+
+    // SpineHull & TurretPlacement Preview
+    log.BeginSection("SpineHull & TurretPlacement Preview");
+    RUN_TEST(test_pcg_preview_generate_spine_hull);
+    RUN_TEST(test_pcg_preview_spine_hull_override_hull_class);
+    RUN_TEST(test_pcg_preview_spine_hull_override_faction);
+    RUN_TEST(test_pcg_preview_spine_hull_determinism);
+    RUN_TEST(test_pcg_preview_spine_hull_aspect_ratio_clamped);
+    RUN_TEST(test_pcg_preview_generate_turret_placement);
+    RUN_TEST(test_pcg_preview_turret_placement_override_slots);
+    RUN_TEST(test_pcg_preview_turret_placement_with_faction);
+    RUN_TEST(test_pcg_preview_turret_placement_overlap_validation);
+    RUN_TEST(test_pcg_preview_clear_includes_new_modes);
 
     // Low-Poly Character Generator
     log.BeginSection("Low-Poly Character Generator");
@@ -649,6 +676,10 @@ int main(int argc, char* argv[]) {
     RUN_TEST(test_viewport_draw_does_not_crash);
     RUN_TEST(test_viewport_log_entries);
     RUN_TEST(test_viewport_no_op_without_selection);
+    RUN_TEST(test_viewport_load_spine_hull);
+    RUN_TEST(test_viewport_load_spine_hull_with_turrets);
+    RUN_TEST(test_viewport_spine_hull_zone_names);
+    RUN_TEST(test_viewport_spine_hull_select_and_transform);
 
     // ECS Inspector
     log.BeginSection("ECS Inspector");
