@@ -7,10 +7,12 @@ namespace atlas::editor {
 
 static const char* previewModeName(PCGPreviewMode mode) {
     switch (mode) {
-        case PCGPreviewMode::Ship:      return "Ship";
-        case PCGPreviewMode::Station:   return "Station";
-        case PCGPreviewMode::Interior:  return "Interior";
-        case PCGPreviewMode::Character: return "Character";
+        case PCGPreviewMode::Ship:            return "Ship";
+        case PCGPreviewMode::Station:         return "Station";
+        case PCGPreviewMode::Interior:        return "Interior";
+        case PCGPreviewMode::Character:       return "Character";
+        case PCGPreviewMode::SpineHull:       return "SpineHull";
+        case PCGPreviewMode::TurretPlacement: return "TurretPlacement";
     }
     return "Unknown";
 }
@@ -60,10 +62,12 @@ void PCGPreviewPanel::Generate() {
         + " (v" + std::to_string(m_settings.version) + ")");
 
     switch (m_settings.mode) {
-        case PCGPreviewMode::Ship:      generateShip();      break;
-        case PCGPreviewMode::Station:   generateStation();   break;
-        case PCGPreviewMode::Interior:  generateInterior();  break;
-        case PCGPreviewMode::Character: generateCharacter(); break;
+        case PCGPreviewMode::Ship:            generateShip();            break;
+        case PCGPreviewMode::Station:         generateStation();         break;
+        case PCGPreviewMode::Interior:        generateInterior();        break;
+        case PCGPreviewMode::Character:       generateCharacter();       break;
+        case PCGPreviewMode::SpineHull:       generateSpineHull();       break;
+        case PCGPreviewMode::TurretPlacement: generateTurretPlacement(); break;
     }
 }
 
@@ -76,10 +80,12 @@ void PCGPreviewPanel::Randomize() {
 }
 
 void PCGPreviewPanel::ClearPreview() {
-    m_shipPreview      = ShipPreview{};
-    m_stationPreview   = StationPreview{};
-    m_interiorPreview  = InteriorPreview{};
-    m_characterPreview = CharacterPreview{};
+    m_shipPreview             = ShipPreview{};
+    m_stationPreview          = StationPreview{};
+    m_interiorPreview         = InteriorPreview{};
+    m_characterPreview        = CharacterPreview{};
+    m_spineHullPreview        = SpineHullPreview{};
+    m_turretPlacementPreview  = TurretPlacementPreview{};
     m_log.clear();
 }
 
@@ -225,6 +231,118 @@ void PCGPreviewPanel::generateCharacter() {
     // Log FPS arm config
     log("  FPS Arms: L=" + character.fpsArms.leftArmMesh
         + " R=" + character.fpsArms.rightArmMesh);
+}
+
+// ── Spine Hull generation ────────────────────────────────────────────
+
+void PCGPreviewPanel::generateSpineHull() {
+    pcg::PCGContext ctx = m_pcgManager.makeRootContext(
+        pcg::PCGDomain::Ship, /*objectId=*/1, m_settings.version);
+
+    pcg::GeneratedSpineHull hull;
+    if (m_settings.overrideHull && m_settings.overrideFaction) {
+        hull = pcg::SpineHullGenerator::generate(ctx, m_settings.hullClass, m_settings.faction);
+    } else if (m_settings.overrideHull) {
+        hull = pcg::SpineHullGenerator::generate(ctx, m_settings.hullClass);
+    } else {
+        hull = pcg::SpineHullGenerator::generate(ctx);
+    }
+
+    m_spineHullPreview.data      = hull;
+    m_spineHullPreview.populated = true;
+
+    std::ostringstream os;
+    os << "SpineHull: " << pcg::SpineHullGenerator::spineTypeName(hull.spine)
+       << " | Class: " << pcg::ShipGenerator::hullClassName(hull.hull_class)
+       << " | Length: " << hull.profile.length << " m"
+       << " | Width(fwd/mid/aft): " << hull.profile.width_fwd
+       << "/" << hull.profile.width_mid
+       << "/" << hull.profile.width_aft << " m"
+       << " | Aspect: " << hull.aspect_ratio
+       << " | Engines: " << hull.engine_cluster_count
+       << " | Greeble: " << hull.total_greeble_count
+       << " | Symmetric: " << (hull.bilateral_symmetry ? "yes" : "no")
+       << " | Faction: " << (hull.faction_style.empty() ? "none" : hull.faction_style)
+       << " | Valid: " << (hull.valid ? "yes" : "NO");
+    log(os.str());
+
+    for (size_t i = 0; i < hull.zones.size(); ++i) {
+        const auto& z = hull.zones[i];
+        const char* zoneName = "Unknown";
+        switch (z.zone) {
+            case pcg::FunctionalZone::Command:     zoneName = "Command";     break;
+            case pcg::FunctionalZone::MidHull:     zoneName = "MidHull";     break;
+            case pcg::FunctionalZone::Engineering: zoneName = "Engineering"; break;
+        }
+        std::ostringstream zs;
+        zs << "  Zone " << i << ": " << zoneName
+           << " (" << static_cast<int>(z.length_fraction * 100.0f) << "% spine)"
+           << " greeble=" << z.greeble_count;
+        log(zs.str());
+    }
+}
+
+// ── Turret Placement generation ──────────────────────────────────────
+
+void PCGPreviewPanel::generateTurretPlacement() {
+    pcg::PCGContext ctx = m_pcgManager.makeRootContext(
+        pcg::PCGDomain::Ship, /*objectId=*/1, m_settings.version);
+
+    // First generate a spine hull to provide hull class context.
+    pcg::GeneratedSpineHull hull;
+    if (m_settings.overrideHull && m_settings.overrideFaction) {
+        hull = pcg::SpineHullGenerator::generate(ctx, m_settings.hullClass, m_settings.faction);
+    } else if (m_settings.overrideHull) {
+        hull = pcg::SpineHullGenerator::generate(ctx, m_settings.hullClass);
+    } else {
+        hull = pcg::SpineHullGenerator::generate(ctx);
+    }
+
+    // Derive turret slot count from the generated ship if not overridden.
+    int slots = m_settings.turretSlots;
+    if (!m_settings.overrideTurretSlots) {
+        pcg::GeneratedShip ship = pcg::ShipGenerator::generate(ctx, hull.hull_class);
+        slots = ship.turretSlots;
+    }
+
+    // Use a child context so turret placement RNG is independent.
+    pcg::PCGContext turretCtx = m_pcgManager.makeRootContext(
+        pcg::PCGDomain::Ship, /*objectId=*/2, m_settings.version);
+
+    pcg::TurretPlacement placement = pcg::TurretPlacementSystem::place(
+        turretCtx, hull.hull_class, slots,
+        m_settings.overrideFaction ? m_settings.faction : hull.faction_style);
+
+    m_turretPlacementPreview.data      = placement;
+    m_turretPlacementPreview.hull      = hull;
+    m_turretPlacementPreview.populated = true;
+
+    std::ostringstream os;
+    os << "TurretPlacement on "
+       << pcg::SpineHullGenerator::spineTypeName(hull.spine)
+       << " " << pcg::ShipGenerator::hullClassName(hull.hull_class)
+       << " | Mounts: " << placement.mounts.size()
+       << " | Coverage: " << static_cast<int>(placement.coverage_score * 100.0f) << "%"
+       << " | MaxOverlap: " << static_cast<int>(placement.max_overlap * 100.0f) << "%"
+       << " | Valid: " << (placement.valid ? "yes" : "NO");
+    log(os.str());
+
+    for (size_t i = 0; i < placement.mounts.size(); ++i) {
+        const auto& m = placement.mounts[i];
+        const char* sizeName = "Unknown";
+        switch (m.size) {
+            case pcg::TurretSize::Small:   sizeName = "Small";   break;
+            case pcg::TurretSize::Medium:  sizeName = "Medium";  break;
+            case pcg::TurretSize::Large:   sizeName = "Large";   break;
+            case pcg::TurretSize::Capital: sizeName = "Capital"; break;
+        }
+        std::ostringstream ms;
+        ms << "  Mount " << m.socket_id << ": " << sizeName
+           << " pos(" << m.x_offset << ", " << m.y_offset << ", " << m.z_offset << ")"
+           << " facing=" << m.direction_deg << "°"
+           << " arc=" << m.arc_deg << "°";
+        log(ms.str());
+    }
 }
 
 // ── Logging ─────────────────────────────────────────────────────────

@@ -194,3 +194,200 @@ void test_pcg_preview_draw_does_not_crash() {
     panel.Draw();  // Should be a safe no-op stub
     ok("test_pcg_preview_draw_does_not_crash");
 }
+
+// ── SpineHull Preview Tests ─────────────────────────────────────────
+
+void test_pcg_preview_generate_spine_hull() {
+    atlas::editor::PCGPreviewPanel panel;
+    atlas::editor::PCGPreviewSettings s = panel.Settings();
+    s.mode = atlas::editor::PCGPreviewMode::SpineHull;
+    panel.SetSettings(s);
+    panel.Generate();
+
+    assert(panel.GetSpineHullPreview().populated);
+    auto& hull = panel.GetSpineHullPreview().data;
+    assert(hull.profile.length > 0.0f);
+    assert(hull.profile.width_mid > 0.0f);
+    assert(hull.engine_cluster_count > 0);
+    assert(hull.zones.size() == 3);
+    assert(hull.bilateral_symmetry);
+    assert(hull.valid);
+    assert(!panel.Log().empty());
+
+    ok("test_pcg_preview_generate_spine_hull");
+}
+
+void test_pcg_preview_spine_hull_override_hull_class() {
+    atlas::editor::PCGPreviewPanel panel;
+    atlas::editor::PCGPreviewSettings s = panel.Settings();
+    s.mode         = atlas::editor::PCGPreviewMode::SpineHull;
+    s.overrideHull = true;
+    s.hullClass    = atlas::pcg::HullClass::Capital;
+    panel.SetSettings(s);
+    panel.Generate();
+
+    assert(panel.GetSpineHullPreview().populated);
+    assert(panel.GetSpineHullPreview().data.hull_class ==
+           atlas::pcg::HullClass::Capital);
+
+    ok("test_pcg_preview_spine_hull_override_hull_class");
+}
+
+void test_pcg_preview_spine_hull_override_faction() {
+    atlas::editor::PCGPreviewPanel panel;
+    atlas::editor::PCGPreviewSettings s = panel.Settings();
+    s.mode            = atlas::editor::PCGPreviewMode::SpineHull;
+    s.overrideHull    = true;
+    s.hullClass       = atlas::pcg::HullClass::Cruiser;
+    s.overrideFaction = true;
+    s.faction         = "Solari";
+    panel.SetSettings(s);
+    panel.Generate();
+
+    assert(panel.GetSpineHullPreview().populated);
+    assert(panel.GetSpineHullPreview().data.faction_style == "Solari");
+    assert(panel.GetSpineHullPreview().data.valid);
+
+    ok("test_pcg_preview_spine_hull_override_faction");
+}
+
+void test_pcg_preview_spine_hull_determinism() {
+    atlas::editor::PCGPreviewSettings s;
+    s.mode         = atlas::editor::PCGPreviewMode::SpineHull;
+    s.seed         = 777;
+    s.overrideHull = true;
+    s.hullClass    = atlas::pcg::HullClass::Destroyer;
+
+    atlas::editor::PCGPreviewPanel a;
+    a.SetSettings(s);
+    a.Generate();
+
+    atlas::editor::PCGPreviewPanel b;
+    b.SetSettings(s);
+    b.Generate();
+
+    assert(a.GetSpineHullPreview().data.spine ==
+           b.GetSpineHullPreview().data.spine);
+    assert(a.GetSpineHullPreview().data.profile.length ==
+           b.GetSpineHullPreview().data.profile.length);
+    assert(a.GetSpineHullPreview().data.engine_cluster_count ==
+           b.GetSpineHullPreview().data.engine_cluster_count);
+
+    ok("test_pcg_preview_spine_hull_determinism");
+}
+
+void test_pcg_preview_spine_hull_aspect_ratio_clamped() {
+    atlas::editor::PCGPreviewPanel panel;
+    atlas::editor::PCGPreviewSettings s = panel.Settings();
+    s.mode         = atlas::editor::PCGPreviewMode::SpineHull;
+    s.overrideHull = true;
+    s.hullClass    = atlas::pcg::HullClass::Frigate;
+    panel.SetSettings(s);
+    panel.Generate();
+
+    auto& hull = panel.GetSpineHullPreview().data;
+    assert(hull.aspect_ratio >= 1.5f);
+    assert(hull.aspect_ratio <= 15.0f);
+
+    ok("test_pcg_preview_spine_hull_aspect_ratio_clamped");
+}
+
+// ── TurretPlacement Preview Tests ───────────────────────────────────
+
+void test_pcg_preview_generate_turret_placement() {
+    atlas::editor::PCGPreviewPanel panel;
+    atlas::editor::PCGPreviewSettings s = panel.Settings();
+    s.mode         = atlas::editor::PCGPreviewMode::TurretPlacement;
+    s.overrideHull = true;
+    s.hullClass    = atlas::pcg::HullClass::Cruiser;
+    panel.SetSettings(s);
+    panel.Generate();
+
+    assert(panel.GetTurretPlacementPreview().populated);
+    auto& tp = panel.GetTurretPlacementPreview().data;
+    assert(!tp.mounts.empty());
+    assert(tp.coverage_score > 0.0f);
+
+    // Underlying hull should also be populated.
+    auto& hull = panel.GetTurretPlacementPreview().hull;
+    assert(hull.valid);
+
+    assert(!panel.Log().empty());
+
+    ok("test_pcg_preview_generate_turret_placement");
+}
+
+void test_pcg_preview_turret_placement_override_slots() {
+    atlas::editor::PCGPreviewPanel panel;
+    atlas::editor::PCGPreviewSettings s = panel.Settings();
+    s.mode                = atlas::editor::PCGPreviewMode::TurretPlacement;
+    s.overrideHull        = true;
+    s.hullClass           = atlas::pcg::HullClass::Battleship;
+    s.overrideTurretSlots = true;
+    s.turretSlots         = 6;
+    panel.SetSettings(s);
+    panel.Generate();
+
+    assert(panel.GetTurretPlacementPreview().populated);
+    assert(panel.GetTurretPlacementPreview().data.mounts.size() == 6);
+
+    ok("test_pcg_preview_turret_placement_override_slots");
+}
+
+void test_pcg_preview_turret_placement_with_faction() {
+    atlas::editor::PCGPreviewPanel panel;
+    atlas::editor::PCGPreviewSettings s = panel.Settings();
+    s.mode                = atlas::editor::PCGPreviewMode::TurretPlacement;
+    s.overrideHull        = true;
+    s.hullClass           = atlas::pcg::HullClass::Frigate;
+    s.overrideFaction     = true;
+    s.faction             = "Keldari";
+    s.overrideTurretSlots = true;
+    s.turretSlots         = 3;
+    panel.SetSettings(s);
+    panel.Generate();
+
+    assert(panel.GetTurretPlacementPreview().populated);
+    assert(panel.GetTurretPlacementPreview().data.mounts.size() == 3);
+    assert(panel.GetTurretPlacementPreview().hull.faction_style == "Keldari");
+
+    ok("test_pcg_preview_turret_placement_with_faction");
+}
+
+void test_pcg_preview_turret_placement_overlap_validation() {
+    atlas::editor::PCGPreviewPanel panel;
+    atlas::editor::PCGPreviewSettings s = panel.Settings();
+    s.mode                = atlas::editor::PCGPreviewMode::TurretPlacement;
+    s.overrideHull        = true;
+    s.hullClass           = atlas::pcg::HullClass::Cruiser;
+    s.overrideTurretSlots = true;
+    s.turretSlots         = 4;
+    panel.SetSettings(s);
+    panel.Generate();
+
+    auto& tp = panel.GetTurretPlacementPreview().data;
+    // Coverage should be between 0 and 1
+    assert(tp.coverage_score >= 0.0f && tp.coverage_score <= 1.0f);
+    // Max overlap should be between 0 and 1
+    assert(tp.max_overlap >= 0.0f && tp.max_overlap <= 1.0f);
+
+    ok("test_pcg_preview_turret_placement_overlap_validation");
+}
+
+void test_pcg_preview_clear_includes_new_modes() {
+    atlas::editor::PCGPreviewPanel panel;
+
+    // Generate a spine hull
+    atlas::editor::PCGPreviewSettings s = panel.Settings();
+    s.mode = atlas::editor::PCGPreviewMode::SpineHull;
+    panel.SetSettings(s);
+    panel.Generate();
+    assert(panel.GetSpineHullPreview().populated);
+
+    panel.ClearPreview();
+    assert(!panel.GetSpineHullPreview().populated);
+    assert(!panel.GetTurretPlacementPreview().populated);
+    assert(panel.Log().empty());
+
+    ok("test_pcg_preview_clear_includes_new_modes");
+}

@@ -77,6 +77,69 @@ void ViewportPanel::LoadStation(const pcg::GeneratedStation& station, uint64_t s
     m_log.push_back(oss.str());
 }
 
+void ViewportPanel::LoadSpineHull(const pcg::GeneratedSpineHull& hull,
+                                   const pcg::TurretPlacement* placement,
+                                   uint64_t seed) {
+    std::string hullName = pcg::SpineHullGenerator::spineTypeName(hull.spine)
+                         + "_" + pcg::ShipGenerator::hullClassName(hull.hull_class);
+
+    // Create zone objects along the spine.
+    float zoneStart = -hull.profile.length * 0.5f;
+    for (size_t i = 0; i < hull.zones.size(); ++i) {
+        const auto& z = hull.zones[i];
+        float zoneLen = z.length_fraction * hull.profile.length;
+
+        const char* zoneName = "Zone";
+        switch (z.zone) {
+            case pcg::FunctionalZone::Command:     zoneName = "Command";     break;
+            case pcg::FunctionalZone::MidHull:     zoneName = "MidHull";     break;
+            case pcg::FunctionalZone::Engineering: zoneName = "Engineering"; break;
+        }
+
+        // Width at this zone position (interpolate from profile).
+        float t = (static_cast<float>(i) + 0.5f) / static_cast<float>(hull.zones.size());
+        float width = hull.profile.width_fwd * (1.0f - t) + hull.profile.width_aft * t;
+        if (i == 1) width = hull.profile.width_mid;
+
+        ViewportObject obj;
+        obj.id   = m_nextId++;
+        obj.name = hullName + " " + zoneName;
+        obj.type = "HullZone";
+        obj.transform.posX   = zoneStart + zoneLen * 0.5f;
+        obj.transform.scaleX = zoneLen;
+        obj.transform.scaleY = width;
+        obj.transform.scaleZ = width * 0.5f;
+        m_objects.push_back(obj);
+        m_originalTransforms.push_back({obj.id, obj.transform});
+
+        zoneStart += zoneLen;
+    }
+
+    // Create turret mount objects if placement is provided.
+    if (placement) {
+        for (size_t i = 0; i < placement->mounts.size(); ++i) {
+            const auto& m = placement->mounts[i];
+            ViewportObject turret;
+            turret.id   = m_nextId++;
+            turret.name = hullName + " Turret " + std::to_string(m.socket_id);
+            turret.type = "TurretMount";
+            turret.transform.posX = m.x_offset;
+            turret.transform.posY = m.y_offset;
+            turret.transform.posZ = m.z_offset;
+            turret.transform.rotY = m.direction_deg;
+            m_objects.push_back(turret);
+            m_originalTransforms.push_back({turret.id, turret.transform});
+        }
+    }
+
+    size_t totalObjects = hull.zones.size()
+                        + (placement ? placement->mounts.size() : 0);
+    std::ostringstream oss;
+    oss << "[Viewport] Loaded spine hull '" << hullName << "' (seed=" << seed
+        << ") — " << totalObjects << " objects";
+    m_log.push_back(oss.str());
+}
+
 void ViewportPanel::ClearScene() {
     m_objects.clear();
     m_originalTransforms.clear();
