@@ -31,6 +31,16 @@ AstronautCharacter CharacterMeshSystem::generateCharacter(int seed, bool isFemal
     // No accessories by default
     character.accessories.clear();
 
+    // Carry reference mesh archive if one has been configured.
+    character.referenceMeshArchive = referenceMeshArchive_;
+    character.uniformScale = 1.0f;
+
+    // Seed initial morph weights from default slider values.
+    for (const auto& sl : character.sliders) {
+        float normalized = (sl.currentValue - sl.minValue) / (sl.maxValue - sl.minValue);
+        character.morphWeights[sl.name] = normalized;
+    }
+
     return character;
 }
 
@@ -67,12 +77,33 @@ void CharacterMeshSystem::applySlider(AstronautCharacter& character,
                 }
             }
         }
+
+        // Update the morph weight that corresponds to this slider.
+        float normalized = (slider.currentValue - slider.minValue)
+                         / (slider.maxValue - slider.minValue);
+        character.morphWeights[sliderName] = normalized;
+
+        // Recompute uniform scale from the height slider relative to
+        // the default value (1.0) so it matches the server convention.
+        if (sliderName == "height") {
+            constexpr float DEFAULT_HEIGHT_VALUE = 1.0f;
+            character.uniformScale = slider.currentValue / DEFAULT_HEIGHT_VALUE;
+        }
+
         return;
     }
 }
 
 void CharacterMeshSystem::assembleMeshes(AstronautCharacter& /*character*/) {
     // Stub: actual mesh combining happens in the render layer
+}
+
+void CharacterMeshSystem::setReferenceMeshArchive(const std::string& archivePath) {
+    referenceMeshArchive_ = archivePath;
+}
+
+const std::string& CharacterMeshSystem::referenceMeshArchive() const {
+    return referenceMeshArchive_;
 }
 
 } // namespace atlas

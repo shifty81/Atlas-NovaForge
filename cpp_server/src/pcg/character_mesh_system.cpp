@@ -130,6 +130,16 @@ void CharacterMeshSystem::applyCybernetics(DeterministicRNG& rng,
     }
 }
 
+// ── Reference mesh archive management ──────────────────────────────
+
+void CharacterMeshSystem::setReferenceMeshArchive(const std::string& archivePath) {
+    referenceMeshArchive_ = archivePath;
+}
+
+const std::string& CharacterMeshSystem::referenceMeshArchive() const {
+    return referenceMeshArchive_;
+}
+
 // ── Original generate (backward compatible — always Organic) ──────
 
 GeneratedCharacter CharacterMeshSystem::generate(uint64_t seed, Race race, const CharacterSliders& sliders) const {
@@ -158,6 +168,23 @@ GeneratedCharacter CharacterMeshSystem::generate(uint64_t seed, Race race,
 
     applyRacialTraits(character);
     applyCybernetics(rng, character, body);
+
+    // ── Reference mesh, uniform scale & morph weights ──────────
+    character.referenceMeshArchive = referenceMeshArchive_;
+
+    // Uniform scale derived from the computed height relative to a
+    // 1.75 m reference height, so the uploaded mesh matches the
+    // procedural proportions.
+    constexpr float REFERENCE_HEIGHT = 1.75f;
+    character.uniformScale = character.total_height / REFERENCE_HEIGHT;
+
+    // Procedurally derive morph weights from the character sliders
+    // so the uploaded mesh can be morphed at load time.
+    character.morphWeights["height"]           = sliders.height;
+    character.morphWeights["build"]            = sliders.build;
+    character.morphWeights["limb_length"]      = sliders.limb_length;
+    character.morphWeights["torso_proportion"] = sliders.torso_proportion;
+    character.morphWeights["head_shape"]       = sliders.head_shape;
 
     return character;
 }

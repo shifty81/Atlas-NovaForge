@@ -14613,6 +14613,65 @@ void testCharacterBackwardCompatibility() {
     assertTrue(ch.cyberLimbs.empty(), "Old API has no cyber limbs");
 }
 
+void testCharacterReferenceMeshArchive() {
+    std::cout << "\n=== PCG: Character reference mesh archive ===" << std::endl;
+    using namespace atlas::pcg;
+
+    CharacterMeshSystem cms;
+    assertTrue(cms.referenceMeshArchive().empty(), "No archive by default");
+
+    cms.setReferenceMeshArchive("human.zip");
+    assertTrue(cms.referenceMeshArchive() == "human.zip", "Archive path stored");
+
+    CharacterSliders sl;
+    auto ch = cms.generate(42, Race::TerranDescendant, BodyType::Organic, sl);
+    assertTrue(ch.referenceMeshArchive == "human.zip", "Generated character carries archive path");
+}
+
+void testCharacterUniformScale() {
+    std::cout << "\n=== PCG: Character uniform scale ===" << std::endl;
+    using namespace atlas::pcg;
+
+    CharacterMeshSystem cms;
+
+    // Short character
+    CharacterSliders shortSl;
+    shortSl.height = 0.0f; // minimum
+    auto shortCh = cms.generate(10, Race::TerranDescendant, BodyType::Organic, shortSl);
+
+    // Tall character
+    CharacterSliders tallSl;
+    tallSl.height = 1.0f; // maximum
+    auto tallCh = cms.generate(10, Race::TerranDescendant, BodyType::Organic, tallSl);
+
+    assertTrue(shortCh.uniformScale > 0.0f, "Short character has positive scale");
+    assertTrue(tallCh.uniformScale > shortCh.uniformScale, "Tall character has larger scale");
+}
+
+void testCharacterMorphWeights() {
+    std::cout << "\n=== PCG: Character morph weights ===" << std::endl;
+    using namespace atlas::pcg;
+
+    CharacterMeshSystem cms;
+    CharacterSliders sl;
+    sl.height = 0.8f;
+    sl.build = 0.3f;
+    sl.limb_length = 0.6f;
+    sl.torso_proportion = 0.7f;
+    sl.head_shape = 0.2f;
+
+    auto ch = cms.generate(55, Race::SynthBorn, BodyType::Organic, sl);
+    assertTrue(ch.morphWeights.count("height") > 0, "height morph present");
+    assertTrue(ch.morphWeights.count("build") > 0, "build morph present");
+    assertTrue(ch.morphWeights.count("limb_length") > 0, "limb_length morph present");
+    assertTrue(ch.morphWeights.count("torso_proportion") > 0, "torso_proportion morph present");
+    assertTrue(ch.morphWeights.count("head_shape") > 0, "head_shape morph present");
+    assertTrue(ch.morphWeights.at("height") >= 0.0f && ch.morphWeights.at("height") <= 1.0f,
+               "height morph in [0,1]");
+    assertTrue(ch.morphWeights.at("build") >= 0.0f && ch.morphWeights.at("build") <= 1.0f,
+               "build morph in [0,1]");
+}
+
 void testFleetDoctrineGeneration() {
     std::cout << "\n=== PCG: FleetDoctrine basic generation ===" << std::endl;
     atlas::pcg::PCGContext ctx{ 999, 1 };
@@ -15046,6 +15105,49 @@ void testAsteroidFieldPositiveValues() {
         }
     }
     assertTrue(allOk, "All asteroids have positive radius and yield");
+}
+
+void testAsteroidFieldScaleFactor() {
+    std::cout << "\n=== PCG: AsteroidFieldGenerator scale factor ===" << std::endl;
+    atlas::pcg::PCGContext ctx{ 5500, 1 };
+    auto field = atlas::pcg::AsteroidFieldGenerator::generate(ctx, 20, 0.5f);
+    bool allPositive = true;
+    bool scaleVaries = false;
+    float firstScale = 0.0f;
+    for (size_t i = 0; i < field.asteroids.size(); ++i) {
+        float sf = field.asteroids[i].scaleFactor;
+        if (sf <= 0.0f) { allPositive = false; break; }
+        if (i == 0) firstScale = sf;
+        else if (std::abs(sf - firstScale) > 0.01f) scaleVaries = true;
+    }
+    assertTrue(allPositive, "All asteroids have positive scale factor");
+    assertTrue(scaleVaries, "Scale factors vary across asteroids");
+}
+
+void testAsteroidFieldRockMeshArchive() {
+    std::cout << "\n=== PCG: AsteroidFieldGenerator rock mesh archive ===" << std::endl;
+    atlas::pcg::PCGContext ctx{ 5600, 1 };
+    auto field = atlas::pcg::AsteroidFieldGenerator::generate(
+        ctx, 15, 0.6f, "rocks_stylized_color.zip");
+    assertTrue(!field.asteroids.empty(), "Field has asteroids");
+    bool allTagged = true;
+    for (const auto& a : field.asteroids) {
+        if (a.meshArchive != "rocks_stylized_color.zip") { allTagged = false; break; }
+    }
+    assertTrue(allTagged, "All asteroids carry rock mesh archive path");
+    // Scale factors should still be set.
+    assertTrue(field.asteroids[0].scaleFactor > 0.0f, "First asteroid has positive scale");
+}
+
+void testAsteroidFieldNoArchiveByDefault() {
+    std::cout << "\n=== PCG: AsteroidFieldGenerator no archive by default ===" << std::endl;
+    atlas::pcg::PCGContext ctx{ 5700, 1 };
+    auto field = atlas::pcg::AsteroidFieldGenerator::generate(ctx, 10, 0.8f);
+    bool allEmpty = true;
+    for (const auto& a : field.asteroids) {
+        if (!a.meshArchive.empty()) { allEmpty = false; break; }
+    }
+    assertTrue(allEmpty, "Without archive arg, meshArchive is empty");
 }
 
 // ==================== Anomaly Generator Tests ====================
@@ -18726,6 +18828,9 @@ int main() {
     testAsteroidFieldHighSecTypes();
     testAsteroidFieldYieldCalculation();
     testAsteroidFieldPositiveValues();
+    testAsteroidFieldScaleFactor();
+    testAsteroidFieldRockMeshArchive();
+    testAsteroidFieldNoArchiveByDefault();
 
     // Anomaly Generator tests
     testAnomalyGeneration();
@@ -19052,6 +19157,9 @@ int main() {
     testCharacterBodyTypeMechFrame();
     testCharacterBodyTypeNames();
     testCharacterBackwardCompatibility();
+    testCharacterReferenceMeshArchive();
+    testCharacterUniformScale();
+    testCharacterMorphWeights();
 
     std::cout << "\n========================================" << std::endl;
     std::cout << "Results: " << testsPassed << "/" << testsRun << " tests passed" << std::endl;
