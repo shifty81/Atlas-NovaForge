@@ -6,6 +6,21 @@ add_executable(AtlasEditor
     panels/ConsolePanel.cpp
     tools/GamePackagerPanel.cpp
     tools/PCGPreviewPanel.cpp
+    tools/GenerationStylePanel.cpp
+    tools/AssetStylePanel.cpp
+    tools/ShipArchetypePanel.cpp
+    # PCG sources used by editor panels
+    ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/pcg_manager.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/ship_generator.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/station_generator.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/interior_generator.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/interior_budget.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/constraint_solver.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/pcg_trace.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/lowpoly_character_generator.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/generation_style.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/pcg_asset_style.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/ship_archetype.cpp
 )
 
 target_link_libraries(AtlasEditor AtlasEngine)
