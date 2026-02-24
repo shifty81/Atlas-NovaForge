@@ -1,7 +1,7 @@
 #include "CharacterSelectPanel.h"
 #include <algorithm>
 #include <sstream>
-#include <cstdlib>
+#include <random>
 
 namespace atlas::editor {
 
@@ -163,7 +163,9 @@ void CharacterSelectPanel::Generate() {
 }
 
 void CharacterSelectPanel::Randomize() {
-    m_settings.seed = static_cast<uint64_t>(std::rand()) * 31 + 7;
+    std::random_device rd;
+    std::mt19937_64 rng(rd());
+    m_settings.seed = rng();
     Generate();
     log("[CharacterSelect] Randomized — new seed: "
         + std::to_string(m_settings.seed));
