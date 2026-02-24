@@ -482,6 +482,8 @@ StyleGenerationResult GenerationStyleEngine::generateStarSystem(
     }
 
     // Generate stargates.
+    constexpr float kGateVerticalSpread = 2.0f;
+
     for (int i = 0; i < gateCount; ++i) {
         GeneratedStargate gate{};
         gate.gateId = static_cast<uint32_t>(i);
@@ -489,7 +491,7 @@ StyleGenerationResult GenerationStyleEngine::generateStarSystem(
         float angle = rng.rangeFloat(0.0f, 6.2831853f);
         float dist  = rng.rangeFloat(10.0f, 50.0f);
         gate.posX   = dist * std::cos(angle);
-        gate.posY   = rng.rangeFloat(-2.0f, 2.0f);
+        gate.posY   = rng.rangeFloat(-kGateVerticalSpread, kGateVerticalSpread);
         gate.posZ   = dist * std::sin(angle);
         sys.gates.push_back(gate);
     }
@@ -562,25 +564,34 @@ StyleGenerationResult GenerationStyleEngine::generateAsteroidField(
     field.fieldRadius  = fieldRadius;
     field.clusterCount = clusterCount;
 
-    // Number of asteroids scales with density and field volume (simplified).
+    // Asteroid count scales linearly with density and field diameter.
     int asteroidCount = std::max(1, static_cast<int>(
         density * fieldRadius * 2.0f));
+
+    // Layout constants: asteroid belts are disc-shaped (thin in Y).
+    constexpr float kClusterRadialFactor   = 0.7f;
+    constexpr float kClusterVerticalFactor = 0.1f;
+    constexpr float kClusterSpreadFactor   = 0.2f;
+    constexpr float kVerticalSpreadFactor  = 0.3f;
 
     uint32_t nextId = 0;
     for (int c = 0; c < clusterCount; ++c) {
         // Cluster centre within the field radius.
-        float cx = rng.rangeFloat(-fieldRadius * 0.7f, fieldRadius * 0.7f);
-        float cy = rng.rangeFloat(-fieldRadius * 0.1f, fieldRadius * 0.1f);
-        float cz = rng.rangeFloat(-fieldRadius * 0.7f, fieldRadius * 0.7f);
+        float cx = rng.rangeFloat(-fieldRadius * kClusterRadialFactor,
+                                   fieldRadius * kClusterRadialFactor);
+        float cy = rng.rangeFloat(-fieldRadius * kClusterVerticalFactor,
+                                   fieldRadius * kClusterVerticalFactor);
+        float cz = rng.rangeFloat(-fieldRadius * kClusterRadialFactor,
+                                   fieldRadius * kClusterRadialFactor);
 
         int perCluster = asteroidCount / clusterCount;
         for (int i = 0; i < perCluster; ++i) {
             GeneratedAsteroid ast{};
             ast.asteroidId = nextId++;
-            // Spread around cluster centre.
-            float spread = fieldRadius * 0.2f;
+            float spread = fieldRadius * kClusterSpreadFactor;
             ast.posX = cx + rng.rangeFloat(-spread, spread);
-            ast.posY = cy + rng.rangeFloat(-spread * 0.3f, spread * 0.3f);
+            ast.posY = cy + rng.rangeFloat(-spread * kVerticalSpreadFactor,
+                                            spread * kVerticalSpreadFactor);
             ast.posZ = cz + rng.rangeFloat(-spread, spread);
             ast.radius   = rng.rangeFloat(5.0f, 80.0f);
             ast.oreType  = rng.range(0, 7);
