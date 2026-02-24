@@ -301,6 +301,20 @@ int Server::getPlayerCount() const {
                          : (tcp_server_ ? tcp_server_->getClientCount() : 0);
 }
 
+std::vector<std::string> Server::getPlayerNames() const {
+    if (game_session_) {
+        return game_session_->getPlayerNames();
+    }
+    return {};
+}
+
+bool Server::kickPlayer(const std::string& character_name) {
+    if (game_session_) {
+        return game_session_->kickPlayer(character_name);
+    }
+    return false;
+}
+
 bool Server::saveWorld() {
     // Ensure save directory exists
     struct stat st;

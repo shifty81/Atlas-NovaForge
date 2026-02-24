@@ -169,6 +169,28 @@ void test_gs_generate_determinism();
 void test_gs_serialize_roundtrip();
 void test_gs_ship_parameter_overrides();
 
+// Star System generation tests
+void test_gs_generate_star_system();
+void test_gs_star_system_planet_count_override();
+void test_gs_star_system_gate_count_override();
+void test_gs_star_system_security_level();
+void test_gs_star_system_with_placements();
+void test_gs_star_system_determinism();
+
+// Asteroid Field generation tests
+void test_gs_generate_asteroid_field();
+void test_gs_asteroid_field_density_affects_count();
+void test_gs_asteroid_field_with_placements();
+void test_gs_asteroid_field_determinism();
+
+// Fleet Composition generation tests
+void test_gs_generate_fleet_composition();
+void test_gs_fleet_size_override();
+void test_gs_fleet_capital_ratio();
+void test_gs_fleet_support_ratio();
+void test_gs_fleet_with_placements();
+void test_gs_fleet_determinism();
+
 // Generation Style Panel tests
 void test_gsp_defaults();
 void test_gsp_new_style();
@@ -503,6 +525,31 @@ int main(int argc, char* argv[]) {
     RUN_TEST(test_gs_generate_determinism);
     RUN_TEST(test_gs_serialize_roundtrip);
     RUN_TEST(test_gs_ship_parameter_overrides);
+
+    // Star System Generation
+    log.BeginSection("Star System Generation");
+    RUN_TEST(test_gs_generate_star_system);
+    RUN_TEST(test_gs_star_system_planet_count_override);
+    RUN_TEST(test_gs_star_system_gate_count_override);
+    RUN_TEST(test_gs_star_system_security_level);
+    RUN_TEST(test_gs_star_system_with_placements);
+    RUN_TEST(test_gs_star_system_determinism);
+
+    // Asteroid Field Generation
+    log.BeginSection("Asteroid Field Generation");
+    RUN_TEST(test_gs_generate_asteroid_field);
+    RUN_TEST(test_gs_asteroid_field_density_affects_count);
+    RUN_TEST(test_gs_asteroid_field_with_placements);
+    RUN_TEST(test_gs_asteroid_field_determinism);
+
+    // Fleet Composition Generation
+    log.BeginSection("Fleet Composition Generation");
+    RUN_TEST(test_gs_generate_fleet_composition);
+    RUN_TEST(test_gs_fleet_size_override);
+    RUN_TEST(test_gs_fleet_capital_ratio);
+    RUN_TEST(test_gs_fleet_support_ratio);
+    RUN_TEST(test_gs_fleet_with_placements);
+    RUN_TEST(test_gs_fleet_determinism);
 
     // Generation Style Panel
     log.BeginSection("Generation Style Panel");

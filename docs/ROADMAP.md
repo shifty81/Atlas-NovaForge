@@ -237,6 +237,30 @@ All baseline systems are now implemented.
 | ~~SovereigntySystem~~ | ~~Medium~~ | ✅ Implemented (19 assertions) |
 | ~~WarDeclarationSystem~~ | ~~Medium~~ | ✅ Implemented (16 assertions) |
 
+### PCG Generation Status
+
+| Generator | Status | Tests |
+|-----------|--------|-------|
+| Ship Layout | ✅ Complete | Tested via GenerationStyleEngine |
+| Station Layout | ✅ Complete | Tested via GenerationStyleEngine |
+| Interior Layout | ✅ Complete | Tested via GenerationStyleEngine |
+| Star System | ✅ Complete | 6 tests (generation, parameters, placements, determinism) |
+| Asteroid Field | ✅ Complete | 4 tests (generation, density, placements, determinism) |
+| Fleet Composition | ✅ Complete | 6 tests (generation, size, capitals, support, placements, determinism) |
+
+### Server Console Status
+
+| Command | Status |
+|---------|--------|
+| help | ✅ Complete |
+| status | ✅ Complete |
+| players | ✅ Complete (with player enumeration) |
+| kick | ✅ Complete (with player management) |
+| metrics | ✅ Complete |
+| save | ✅ Complete |
+| load | ⬜ Deferred (runtime loading unsafe) |
+| stop | ✅ Complete |
+
 ---
 
 ## Current Status

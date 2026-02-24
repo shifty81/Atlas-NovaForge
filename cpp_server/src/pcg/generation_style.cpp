@@ -410,7 +410,19 @@ StyleGenerationResult GenerationStyleEngine::generateInteriorLayout(
     return result;
 }
 
-// ── Star system generation (stub — uses parameters only) ───────────
+// ── Star system generation ──────────────────────────────────────────
+
+static const char* kStarNames[] = {
+    "Helios", "Vega", "Altair", "Rigel", "Deneb",
+    "Sirius", "Capella", "Antares", "Polaris", "Arcturus",
+    "Betelgeuse", "Procyon", "Aldebaran", "Regulus", "Spica",
+};
+static constexpr int kStarNameCount = 15;
+
+static const char* kPlanetSuffixes[] = {
+    "I", "II", "III", "IV", "V", "VI", "VII", "VIII",
+    "IX", "X", "XI", "XII", "XIII", "XIV", "XV",
+};
 
 StyleGenerationResult GenerationStyleEngine::generateStarSystem(
         const PCGContext& ctx, const GenerationStyle& style) {
@@ -418,19 +430,105 @@ StyleGenerationResult GenerationStyleEngine::generateStarSystem(
     result.sourceType = style.type;
     result.styleName  = style.name;
 
+    DeterministicRNG rng(ctx.seed);
     int paramsApplied = 0;
-    (void)paramOr(style, "securityLevel", 0.5f);
+
+    float securityLevel = paramOr(style, "securityLevel", 0.5f);
     ++paramsApplied;
 
-    // Star system generation uses StarSystemGenerator (not linked in
-    // editor tests), so we produce a success stub with parameter counts.
-    result.placementsApplied = static_cast<int>(style.placements.size());
+    float planetCountF = paramOr(style, "planetCount", 0.0f);
+    int planetCount = (planetCountF >= 1.0f)
+        ? static_cast<int>(planetCountF)
+        : rng.range(3, 10);
+    if (planetCountF >= 1.0f) ++paramsApplied;
+
+    float beltCountF = paramOr(style, "beltCount", -1.0f);
+    int beltCount = (beltCountF >= 0.0f)
+        ? static_cast<int>(beltCountF)
+        : rng.range(0, 3);
+    if (beltCountF >= 0.0f) ++paramsApplied;
+
+    float stationCountF = paramOr(style, "stationCount", -1.0f);
+    int stationCount = (stationCountF >= 0.0f)
+        ? static_cast<int>(stationCountF)
+        : rng.range(0, 3);
+    if (stationCountF >= 0.0f) ++paramsApplied;
+
+    float gateCountF = paramOr(style, "gateCount", 0.0f);
+    int gateCount = (gateCountF >= 1.0f)
+        ? static_cast<int>(gateCountF)
+        : rng.range(1, 4);
+    if (gateCountF >= 1.0f) ++paramsApplied;
+
+    GeneratedStarSystem sys{};
+    sys.systemId       = rng.nextU32();
+    sys.systemName     = kStarNames[rng.range(0, kStarNameCount - 1)];
+    sys.securityLevel  = securityLevel;
+    sys.starType       = rng.range(0, 3);
+    sys.starLuminosity = rng.rangeFloat(0.5f, 5.0f);
+    sys.beltCount      = beltCount;
+    sys.stationCount   = stationCount;
+
+    // Generate planets.
+    for (int i = 0; i < planetCount; ++i) {
+        GeneratedCelestialBody planet{};
+        planet.bodyId      = static_cast<uint32_t>(i);
+        planet.name        = sys.systemName + " " + kPlanetSuffixes[i % 15];
+        planet.orbitRadius = 0.3f + static_cast<float>(i) * rng.rangeFloat(0.4f, 1.2f);
+        planet.orbitAngle  = rng.rangeFloat(0.0f, 6.2831853f);
+        planet.radius      = rng.rangeFloat(2000.0f, 70000.0f);
+        planet.bodyType    = rng.range(0, 3);
+        sys.planets.push_back(planet);
+    }
+
+    // Generate stargates.
+    for (int i = 0; i < gateCount; ++i) {
+        GeneratedStargate gate{};
+        gate.gateId = static_cast<uint32_t>(i);
+        gate.name   = sys.systemName + " Gate " + std::to_string(i + 1);
+        float angle = rng.rangeFloat(0.0f, 6.2831853f);
+        float dist  = rng.rangeFloat(10.0f, 50.0f);
+        gate.posX   = dist * std::cos(angle);
+        gate.posY   = rng.rangeFloat(-2.0f, 2.0f);
+        gate.posZ   = dist * std::sin(angle);
+        sys.gates.push_back(gate);
+    }
+
+    // Apply designer placements (pin specific celestials).
+    int placementsApplied = 0;
+    for (const auto& pe : style.placements) {
+        if (pe.slotIndex < sys.planets.size()) {
+            auto& planet = sys.planets[pe.slotIndex];
+            if (pe.contentType <= 3) {
+                planet.bodyType = pe.contentType;
+            }
+            if (pe.locked) {
+                planet.orbitRadius = pe.posX;
+                planet.orbitAngle  = pe.posY;
+                planet.radius      = pe.posZ;
+            }
+            ++placementsApplied;
+        }
+    }
+
+    sys.valid = (!sys.planets.empty() && !sys.gates.empty());
+
+    result.starSystemResult  = sys;
+    result.placementsApplied = placementsApplied;
     result.parametersApplied = paramsApplied;
-    result.success           = true;
+    result.success           = sys.valid;
+    if (!result.success) {
+        result.errorMessage = "Star system failed validation";
+    }
     return result;
 }
 
-// ── Asteroid field generation (stub) ───────────────────────────────
+// ── Asteroid field generation ───────────────────────────────────────
+
+static const char* kOreNames[] = {
+    "Veldspar", "Scordite", "Pyroxeres", "Plagioclase",
+    "Omber", "Kernite", "Dark Ochre", "Arkonor",
+};
 
 StyleGenerationResult GenerationStyleEngine::generateAsteroidField(
         const PCGContext& ctx, const GenerationStyle& style) {
@@ -438,18 +536,99 @@ StyleGenerationResult GenerationStyleEngine::generateAsteroidField(
     result.sourceType = style.type;
     result.styleName  = style.name;
 
+    DeterministicRNG rng(ctx.seed);
     int paramsApplied = 0;
+
     float density = paramOr(style, "density", 0.15f);
-    (void)density;
     ++paramsApplied;
 
-    result.placementsApplied = static_cast<int>(style.placements.size());
-    result.parametersApplied = paramsApplied;
-    result.success           = true;
+    float richness = paramOr(style, "richness", 0.1f);
+    ++paramsApplied;
+
+    float fieldRadius = paramOr(style, "fieldRadius", 50.0f);
+    ++paramsApplied;
+
+    float clusterCountF = paramOr(style, "clusterCount", 3.0f);
+    int clusterCount = static_cast<int>(clusterCountF);
+    if (clusterCount < 1) clusterCount = 1;
+    ++paramsApplied;
+
+    GeneratedAsteroidField field{};
+    field.fieldId      = rng.nextU32();
+    field.fieldName    = std::string("Belt-") + std::to_string(field.fieldId % 1000);
+    field.centerX      = 0.0f;
+    field.centerY      = 0.0f;
+    field.centerZ      = 0.0f;
+    field.fieldRadius  = fieldRadius;
+    field.clusterCount = clusterCount;
+
+    // Number of asteroids scales with density and field volume (simplified).
+    int asteroidCount = std::max(1, static_cast<int>(
+        density * fieldRadius * 2.0f));
+
+    uint32_t nextId = 0;
+    for (int c = 0; c < clusterCount; ++c) {
+        // Cluster centre within the field radius.
+        float cx = rng.rangeFloat(-fieldRadius * 0.7f, fieldRadius * 0.7f);
+        float cy = rng.rangeFloat(-fieldRadius * 0.1f, fieldRadius * 0.1f);
+        float cz = rng.rangeFloat(-fieldRadius * 0.7f, fieldRadius * 0.7f);
+
+        int perCluster = asteroidCount / clusterCount;
+        for (int i = 0; i < perCluster; ++i) {
+            GeneratedAsteroid ast{};
+            ast.asteroidId = nextId++;
+            // Spread around cluster centre.
+            float spread = fieldRadius * 0.2f;
+            ast.posX = cx + rng.rangeFloat(-spread, spread);
+            ast.posY = cy + rng.rangeFloat(-spread * 0.3f, spread * 0.3f);
+            ast.posZ = cz + rng.rangeFloat(-spread, spread);
+            ast.radius   = rng.rangeFloat(5.0f, 80.0f);
+            ast.oreType  = rng.range(0, 7);
+            ast.richness = richness * rng.rangeFloat(0.5f, 1.5f);
+            field.asteroids.push_back(ast);
+        }
+    }
+
+    // Apply designer placements.
+    int placementsApplied = 0;
+    for (const auto& pe : style.placements) {
+        if (pe.slotIndex < field.asteroids.size()) {
+            auto& ast = field.asteroids[pe.slotIndex];
+            if (pe.contentType <= 7) {
+                ast.oreType = pe.contentType;
+            }
+            if (pe.locked) {
+                ast.posX = pe.posX;
+                ast.posY = pe.posY;
+                ast.posZ = pe.posZ;
+            }
+            ++placementsApplied;
+        }
+    }
+
+    field.valid = !field.asteroids.empty();
+
+    result.asteroidFieldResult = field;
+    result.placementsApplied   = placementsApplied;
+    result.parametersApplied   = paramsApplied;
+    result.success             = field.valid;
+    if (!result.success) {
+        result.errorMessage = "Asteroid field failed validation";
+    }
     return result;
 }
 
-// ── Fleet composition generation (stub) ────────────────────────────
+// ── Fleet composition generation ────────────────────────────────────
+
+static const char* kDoctrineNames[] = {
+    "Wolfpack", "Shield Wall", "Hammer Fleet", "Skirmish Line",
+    "Iron Curtain", "Storm Front", "Vanguard", "Rearguard",
+};
+static constexpr int kDoctrineNameCount = 8;
+
+static const char* kFleetRoles[] = {
+    "dps", "logistics", "ewar", "tackle", "command",
+};
 
 StyleGenerationResult GenerationStyleEngine::generateFleetComposition(
         const PCGContext& ctx, const GenerationStyle& style) {
@@ -457,14 +636,106 @@ StyleGenerationResult GenerationStyleEngine::generateFleetComposition(
     result.sourceType = style.type;
     result.styleName  = style.name;
 
+    DeterministicRNG rng(ctx.seed);
     int paramsApplied = 0;
-    float fleetSize = paramOr(style, "fleetSize", 5.0f);
-    (void)fleetSize;
+
+    float fleetSizeF = paramOr(style, "fleetSize", 5.0f);
+    int fleetSize = std::max(1, static_cast<int>(fleetSizeF));
     ++paramsApplied;
 
-    result.placementsApplied = static_cast<int>(style.placements.size());
+    float capitalRatio = paramOr(style, "capitalRatio", 0.0f);
+    ++paramsApplied;
+
+    float aggression = paramOr(style, "doctrineAggression", 0.5f);
+    ++paramsApplied;
+
+    float supportRatio = paramOr(style, "supportRatio", 0.2f);
+    ++paramsApplied;
+
+    GeneratedFleetCompositionResult fleet{};
+    fleet.fleetId         = rng.nextU32();
+    fleet.doctrineName    = kDoctrineNames[rng.range(0, kDoctrineNameCount - 1)];
+    fleet.aggressionRating = aggression;
+
+    int capitalCount = static_cast<int>(
+        static_cast<float>(fleetSize) * capitalRatio);
+    int subcapCount = fleetSize - capitalCount;
+    fleet.capitalCount = capitalCount;
+    fleet.subcapCount  = subcapCount;
+
+    // Assign roles based on aggression and support ratio.
+    int supportSlots = static_cast<int>(
+        static_cast<float>(subcapCount) * supportRatio);
+    int dpsSlots     = subcapCount - supportSlots;
+
+    uint32_t nextShipId = 0;
+
+    // Capital ships.
+    HullClass capitalHulls[] = {
+        HullClass::Carrier, HullClass::Dreadnought, HullClass::Titan
+    };
+    for (int i = 0; i < capitalCount; ++i) {
+        GeneratedFleetShip ship{};
+        ship.shipId    = nextShipId++;
+        ship.hullClass = capitalHulls[rng.range(0, 2)];
+        ship.role      = (aggression > 0.6f) ? "dps" : "command";
+        ship.shipName  = fleet.doctrineName + " Cap-" + std::to_string(i + 1);
+        fleet.ships.push_back(ship);
+    }
+
+    // DPS subcaps.
+    HullClass dpsHulls[] = {
+        HullClass::Frigate, HullClass::Destroyer, HullClass::Cruiser,
+        HullClass::Battlecruiser, HullClass::Battleship,
+    };
+    for (int i = 0; i < dpsSlots; ++i) {
+        GeneratedFleetShip ship{};
+        ship.shipId    = nextShipId++;
+        ship.hullClass = dpsHulls[rng.range(0, 4)];
+        ship.role      = "dps";
+        ship.shipName  = fleet.doctrineName + " " + std::to_string(i + 1);
+        fleet.ships.push_back(ship);
+    }
+
+    // Support subcaps (logistics, ewar, tackle).
+    for (int i = 0; i < supportSlots; ++i) {
+        GeneratedFleetShip ship{};
+        ship.shipId    = nextShipId++;
+        // Alternate support roles.
+        int roleIdx = (i % 3) + 1;  // 1=logistics, 2=ewar, 3=tackle
+        ship.role = kFleetRoles[roleIdx];
+        ship.hullClass = (roleIdx == 1) ? HullClass::Cruiser
+                       : (roleIdx == 2) ? HullClass::Frigate
+                       :                  HullClass::Frigate;
+        ship.shipName  = fleet.doctrineName + " Sup-" + std::to_string(i + 1);
+        fleet.ships.push_back(ship);
+    }
+
+    fleet.valid = (!fleet.ships.empty() &&
+                   static_cast<int>(fleet.ships.size()) == fleetSize);
+
+    // Apply designer placements (pin specific ship assignments).
+    int placementsApplied = 0;
+    for (const auto& pe : style.placements) {
+        if (pe.slotIndex < fleet.ships.size()) {
+            auto& ship = fleet.ships[pe.slotIndex];
+            if (pe.contentType <= static_cast<uint32_t>(HullClass::Titan)) {
+                ship.hullClass = static_cast<HullClass>(pe.contentType);
+            }
+            if (!pe.label.empty()) {
+                ship.shipName = pe.label;
+            }
+            ++placementsApplied;
+        }
+    }
+
+    result.fleetResult       = fleet;
+    result.placementsApplied = placementsApplied;
     result.parametersApplied = paramsApplied;
-    result.success           = true;
+    result.success           = fleet.valid;
+    if (!result.success) {
+        result.errorMessage = "Fleet composition failed validation";
+    }
     return result;
 }
 

@@ -112,6 +112,31 @@ int GameSession::getPlayerCount() const {
     return static_cast<int>(players_.size());
 }
 
+std::vector<std::string> GameSession::getPlayerNames() const {
+    std::lock_guard<std::mutex> lock(players_mutex_);
+    std::vector<std::string> names;
+    names.reserve(players_.size());
+    for (const auto& kv : players_) {
+        names.push_back(kv.second.character_name);
+    }
+    return names;
+}
+
+bool GameSession::kickPlayer(const std::string& character_name) {
+    std::lock_guard<std::mutex> lock(players_mutex_);
+    for (auto it = players_.begin(); it != players_.end(); ++it) {
+        if (it->second.character_name == character_name) {
+            // Remove entity from world.
+            if (world_) {
+                world_->destroyEntity(it->second.entity_id);
+            }
+            players_.erase(it);
+            return true;
+        }
+    }
+    return false;
+}
+
 // ---------------------------------------------------------------------------
 // Incoming message dispatch
 // ---------------------------------------------------------------------------
