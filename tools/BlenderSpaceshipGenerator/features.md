@@ -617,7 +617,7 @@ the SDF hull skin wraps around them automatically.
 ### ✅ Implemented
 
 - [x] 18 ship classes (Shuttle → Titan + utility + NMS variants)
-- [x] 9-stage spine-first assembly pipeline (now 10 stages)
+- [x] 10-stage spine-first assembly pipeline
 - [x] Brick taxonomy (18 types, 5 categories)
 - [x] Scale hierarchy (primary / structural / detail)
 - [x] Grid snapping per ship class

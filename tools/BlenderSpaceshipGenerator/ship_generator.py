@@ -346,6 +346,7 @@ def generate_spaceship(ship_class='FIGHTER', seed=1, generate_interior=True,
     # ------------------------------------------------------------------
     # Stage 6 – Detail modules
     # ------------------------------------------------------------------
+    # Initialised before the conditional so Stage 7 always has a valid list.
     modules = []
     if module_slots > 0:
         modules = module_system.generate_modules(
