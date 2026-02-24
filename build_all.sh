@@ -222,7 +222,9 @@ fi
 echo ""
 echo "Building all targets (Engine, Editor, Client, Server, Tests)..."
 if [ "$IS_WINDOWS" = true ]; then
-    cmake --build . --config "$BUILD_TYPE" -- //m
+    # Use CMake's cross-platform --parallel flag to avoid MSYS2 path
+    # translation issues with MSBuild's /m flag.
+    cmake --build . --config "$BUILD_TYPE" --parallel
 else
     JOBS=$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)
     cmake --build . --config "$BUILD_TYPE" -- -j$JOBS

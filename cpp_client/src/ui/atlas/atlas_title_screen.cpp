@@ -2,6 +2,7 @@
 #include "ui/atlas/atlas_widgets.h"
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 #include <iostream>
 
 namespace atlas {
