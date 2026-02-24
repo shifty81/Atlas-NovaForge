@@ -4,6 +4,7 @@
 #include "pcg_context.h"
 #include "deterministic_rng.h"
 #include <vector>
+#include <string>
 #include <cstdint>
 
 namespace atlas {
@@ -28,6 +29,8 @@ struct AsteroidNode {
     float         radius;        ///< Metres.
     float         mineralYield;  ///< Units of ore available.
     float         posX, posY, posZ;
+    float         scaleFactor;   ///< Uniform scale multiplier for the mesh (default 1.0).
+    std::string   meshArchive;   ///< Optional zip archive with rock mesh (e.g. rocks_stylized_color.zip).
 };
 
 // ── Generated asteroid field / belt ─────────────────────────────────
@@ -64,6 +67,23 @@ public:
     static AsteroidField generate(const PCGContext& ctx,
                                   int asteroidCount,
                                   float secLevel);
+
+    /**
+     * @brief Generate a belt using a reference rock mesh archive.
+     *
+     * Each asteroid will carry the archive path and a per-asteroid
+     * scale factor derived from its procedural radius so the renderer
+     * can load and scale the rock mesh.
+     *
+     * @param ctx            PCG context.
+     * @param asteroidCount  Number of asteroids to place.
+     * @param secLevel       Security level 0.0 – 1.0.
+     * @param rockMeshArchive  Path to zip with rock mesh (e.g. rocks_stylized_color.zip).
+     */
+    static AsteroidField generate(const PCGContext& ctx,
+                                  int asteroidCount,
+                                  float secLevel,
+                                  const std::string& rockMeshArchive);
 
     /** Compute total mineral yield for a field. */
     static float calculateTotalYield(const AsteroidField& field);

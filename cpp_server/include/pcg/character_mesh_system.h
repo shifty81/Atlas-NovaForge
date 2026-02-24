@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <map>
 
 namespace atlas {
 namespace pcg {
@@ -71,6 +72,11 @@ struct GeneratedCharacter {
     float speed_multiplier;             ///< Base 1.0; cybernetics modify.
     int   integrated_weapon_count;      ///< Number of weapon-limbs.
     std::vector<CyberLimb> cyberLimbs;  ///< Replaced/augmented limbs.
+
+    // ── Reference mesh & morph fields ─────────────────
+    std::string referenceMeshArchive;   ///< Path to zip archive with base mesh (e.g. human.zip).
+    float uniformScale;                 ///< Uniform scale applied to the reference mesh.
+    std::map<std::string, float> morphWeights; ///< Named morph-target weights (0..1).
 };
 
 class CharacterMeshSystem {
@@ -95,10 +101,24 @@ public:
     /** Human-readable body type name. */
     static std::string bodyTypeName(BodyType bt);
 
+    /**
+     * @brief Set a zip archive containing a reference mesh for
+     *        human-type character generation (e.g. human.zip).
+     *
+     * When set, generated characters will carry this archive path
+     * so the renderer can extract and use the mesh at load time.
+     */
+    void setReferenceMeshArchive(const std::string& archivePath);
+
+    /** @return Current reference mesh archive path (empty if none). */
+    const std::string& referenceMeshArchive() const;
+
 private:
     static void applyCybernetics(DeterministicRNG& rng,
                                  GeneratedCharacter& character,
                                  BodyType body);
+
+    std::string referenceMeshArchive_;  ///< Optional zip with base mesh.
 };
 
 } // namespace pcg

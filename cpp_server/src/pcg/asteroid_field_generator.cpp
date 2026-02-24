@@ -54,8 +54,26 @@ AsteroidField AsteroidFieldGenerator::generate(const PCGContext& ctx,
         node.posY = rng.rangeFloat(-20.0f, 20.0f);  // slight vertical spread
         node.posZ = dist * std::sin(angle);
 
+        // Default scale factor: normalise to a 10 m reference mesh.
+        constexpr float REFERENCE_ROCK_RADIUS = 10.0f;
+        node.scaleFactor = node.radius / REFERENCE_ROCK_RADIUS;
+
         field.totalYield += node.mineralYield;
         field.asteroids.push_back(node);
+    }
+
+    return field;
+}
+
+AsteroidField AsteroidFieldGenerator::generate(const PCGContext& ctx,
+                                               int asteroidCount,
+                                               float secLevel,
+                                               const std::string& rockMeshArchive) {
+    AsteroidField field = generate(ctx, asteroidCount, secLevel);
+
+    // Tag every asteroid with the reference rock mesh archive.
+    for (auto& a : field.asteroids) {
+        a.meshArchive = rockMeshArchive;
     }
 
     return field;
