@@ -1,5 +1,6 @@
 #include "ScriptVM.h"
 
+#include <algorithm>
 #include <cmath>
 #include <cstring>
 
