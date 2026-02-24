@@ -87,7 +87,7 @@ build-editor: ## Build Atlas Editor (PCG design tools)
 	(cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ATLAS_ENGINE=ON -DBUILD_ATLAS_EDITOR=ON -DBUILD_CLIENT=OFF -DBUILD_SERVER=OFF -DBUILD_ATLAS_TESTS=OFF && cmake --build . --config Release --target AtlasEditor -j$$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)) 2>&1 | tee $(LOG_DIR)/build-editor_$(TIMESTAMP).log
 	@echo ""
 	@echo "Atlas Editor built successfully!"
-	@echo "Run with: ./build/editor/AtlasEditor"
+	@echo "Run with: ./build/bin/AtlasEditor"
 	@echo ""
 	@echo "Available editor panels:"
 	@echo "  - Ship Archetype    (design reference ships per hull class)"
