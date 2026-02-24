@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_LOWPOLY_CHARACTER_GENERATOR_H
-#define EVE_PCG_LOWPOLY_CHARACTER_GENERATOR_H
+#ifndef ATLAS_PCG_LOWPOLY_CHARACTER_GENERATOR_H
+#define ATLAS_PCG_LOWPOLY_CHARACTER_GENERATOR_H
 
 #include "pcg_context.h"
 #include "deterministic_rng.h"
@@ -240,4 +240,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_LOWPOLY_CHARACTER_GENERATOR_H
+#endif // ATLAS_PCG_LOWPOLY_CHARACTER_GENERATOR_H

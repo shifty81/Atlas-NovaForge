@@ -4,6 +4,22 @@
 namespace atlas {
 namespace pcg {
 
+// ── Palette region index constants ──────────────────────────────────
+static constexpr int SKIN_PALETTE_IDX  = 0;
+static constexpr int HAIR_PALETTE_IDX  = 1;
+static constexpr int SHIRT_PALETTE_IDX = 2;
+static constexpr int PANTS_PALETTE_IDX = 3;
+
+// ── Body part index constants (order matches buildBodyParts) ────────
+static constexpr int BODY_IDX_HEAD      = 0;
+static constexpr int BODY_IDX_TORSO     = 1;
+static constexpr int BODY_IDX_ARM_LEFT  = 2;
+static constexpr int BODY_IDX_ARM_RIGHT = 3;
+static constexpr int BODY_IDX_LEG_LEFT  = 4;
+static constexpr int BODY_IDX_LEG_RIGHT = 5;
+static constexpr int BODY_IDX_HANDS     = 6;
+static constexpr int BODY_IDX_FEET      = 7;
+
 // ── Name helpers ────────────────────────────────────────────────────
 
 const char* bodySlotName(BodySlot slot) {
@@ -227,59 +243,57 @@ void LowPolyCharacterGenerator::buildBodyParts(DeterministicRNG& rng,
                                                  GeneratedLowPolyCharacter& ch) {
     // Each body slot: pick a random variant and assign a position
     // offset matching the base skeleton layout.
-    int skinIdx = 0; // First palette region is always skin
+    // Parts are inserted in BODY_IDX_* order — do not reorder.
 
     int hi = rng.range(0, HEAD_VARIANT_COUNT - 1);
-    ch.bodyParts.push_back(makePiece(HEAD_VARIANTS[hi], skinIdx,
+    ch.bodyParts.push_back(makePiece(HEAD_VARIANTS[hi], SKIN_PALETTE_IDX,
                                       0.0f, 1.60f, 0.0f));
 
     int ti = rng.range(0, TORSO_VARIANT_COUNT - 1);
-    ch.bodyParts.push_back(makePiece(TORSO_VARIANTS[ti], skinIdx,
+    ch.bodyParts.push_back(makePiece(TORSO_VARIANTS[ti], SKIN_PALETTE_IDX,
                                       0.0f, 1.10f, 0.0f));
 
     int ali = rng.range(0, ARM_VARIANT_COUNT - 1);
-    ch.bodyParts.push_back(makePiece(ARM_VARIANTS[ali], skinIdx,
+    ch.bodyParts.push_back(makePiece(ARM_VARIANTS[ali], SKIN_PALETTE_IDX,
                                       -0.35f, 1.20f, 0.0f));
     int ari = rng.range(0, ARM_VARIANT_COUNT - 1);
-    ch.bodyParts.push_back(makePiece(ARM_VARIANTS[ari], skinIdx,
+    ch.bodyParts.push_back(makePiece(ARM_VARIANTS[ari], SKIN_PALETTE_IDX,
                                       0.35f, 1.20f, 0.0f));
 
     int lli = rng.range(0, LEG_VARIANT_COUNT - 1);
-    ch.bodyParts.push_back(makePiece(LEG_VARIANTS[lli], skinIdx,
+    ch.bodyParts.push_back(makePiece(LEG_VARIANTS[lli], SKIN_PALETTE_IDX,
                                       -0.12f, 0.50f, 0.0f));
     int lri = rng.range(0, LEG_VARIANT_COUNT - 1);
-    ch.bodyParts.push_back(makePiece(LEG_VARIANTS[lri], skinIdx,
+    ch.bodyParts.push_back(makePiece(LEG_VARIANTS[lri], SKIN_PALETTE_IDX,
                                       0.12f, 0.50f, 0.0f));
 
     int hdi = rng.range(0, HAND_VARIANT_COUNT - 1);
-    ch.bodyParts.push_back(makePiece(HAND_VARIANTS[hdi], skinIdx,
+    ch.bodyParts.push_back(makePiece(HAND_VARIANTS[hdi], SKIN_PALETTE_IDX,
                                       0.0f, 0.85f, 0.0f));
 
     int fi = rng.range(0, FEET_VARIANT_COUNT - 1);
-    ch.bodyParts.push_back(makePiece(FEET_VARIANTS[fi], skinIdx,
+    ch.bodyParts.push_back(makePiece(FEET_VARIANTS[fi], SKIN_PALETTE_IDX,
                                       0.0f, 0.05f, 0.0f));
 }
 
 void LowPolyCharacterGenerator::buildClothing(DeterministicRNG& rng,
                                                 GeneratedLowPolyCharacter& ch) {
-    // Shirt — always present (palette region index 2 = shirt color)
-    int shirtIdx = 2;
+    // Shirt — always present
     LowPolyMeshPiece shirt{};
     shirt.meshFile   = "Shirt_Default.obj";
     shirt.variant    = "default";
-    shirt.paletteIndex = shirtIdx;
+    shirt.paletteIndex = SHIRT_PALETTE_IDX;
     shirt.scaleX = shirt.scaleY = shirt.scaleZ = 1.0f;
     shirt.offsetX = 0.0f; shirt.offsetY = 1.10f; shirt.offsetZ = 0.0f;
     shirt.flatShaded = true;
     shirt.useVertexColors = true;
     ch.clothing.push_back(shirt);
 
-    // Pants — always present (palette region index 3 = pants color)
-    int pantsIdx = 3;
+    // Pants — always present
     LowPolyMeshPiece pants{};
     pants.meshFile   = "Pants_Default.obj";
     pants.variant    = "default";
-    pants.paletteIndex = pantsIdx;
+    pants.paletteIndex = PANTS_PALETTE_IDX;
     pants.scaleX = pants.scaleY = pants.scaleZ = 1.0f;
     pants.offsetX = 0.0f; pants.offsetY = 0.50f; pants.offsetZ = 0.0f;
     pants.flatShaded = true;
@@ -295,7 +309,7 @@ void LowPolyCharacterGenerator::buildClothing(DeterministicRNG& rng,
         auto& hv = HAT_VARIANTS[idx];
         if (std::string(hv.variant) != "none") {
             ch.clothing.push_back(makePiece(
-                {hv.file, hv.variant}, 1 /*hair palette*/, 0.0f, 1.72f, 0.0f));
+                {hv.file, hv.variant}, HAIR_PALETTE_IDX, 0.0f, 1.72f, 0.0f));
         }
     }
 
@@ -308,7 +322,7 @@ void LowPolyCharacterGenerator::buildClothing(DeterministicRNG& rng,
         auto& jv = JACKET_VARIANTS[idx];
         if (std::string(jv.variant) != "none") {
             ch.clothing.push_back(makePiece(
-                {jv.file, jv.variant}, shirtIdx, 0.0f, 1.15f, 0.0f));
+                {jv.file, jv.variant}, SHIRT_PALETTE_IDX, 0.0f, 1.15f, 0.0f));
         }
     }
 
@@ -321,7 +335,7 @@ void LowPolyCharacterGenerator::buildClothing(DeterministicRNG& rng,
         auto& bv = BACKPACK_VARIANTS[idx];
         if (std::string(bv.variant) != "none") {
             ch.clothing.push_back(makePiece(
-                {bv.file, bv.variant}, pantsIdx, 0.0f, 1.25f, -0.15f));
+                {bv.file, bv.variant}, PANTS_PALETTE_IDX, 0.0f, 1.25f, -0.15f));
         }
     }
 }
@@ -371,29 +385,30 @@ void LowPolyCharacterGenerator::buildFPSArms(DeterministicRNG& rng,
     // Find the arm body-part variants that were selected
     std::string leftArm  = "Arm_Standard.obj";
     std::string rightArm = "Arm_Standard.obj";
-    if (ch.bodyParts.size() > 3) {
-        leftArm  = ch.bodyParts[2].meshFile;  // ArmLeft
-        rightArm = ch.bodyParts[3].meshFile;   // ArmRight
+    if (static_cast<int>(ch.bodyParts.size()) > BODY_IDX_ARM_RIGHT) {
+        leftArm  = ch.bodyParts[BODY_IDX_ARM_LEFT].meshFile;
+        rightArm = ch.bodyParts[BODY_IDX_ARM_RIGHT].meshFile;
     }
 
     ch.fpsArms.leftArmMesh      = "FPS_" + leftArm;
     ch.fpsArms.rightArmMesh     = "FPS_" + rightArm;
-    ch.fpsArms.skinPaletteIndex = 0; // skin palette region
+    ch.fpsArms.skinPaletteIndex = SKIN_PALETTE_IDX;
 
     // Gloves — match the hand variant
     bool hasGloves = false;
-    if (ch.bodyParts.size() > 6 && ch.bodyParts[6].variant == "gloved") {
+    if (static_cast<int>(ch.bodyParts.size()) > BODY_IDX_HANDS &&
+        ch.bodyParts[BODY_IDX_HANDS].variant == "gloved") {
         hasGloves = true;
     }
 
     if (hasGloves) {
         ch.fpsArms.leftGloveMesh  = "FPS_Glove_L.obj";
         ch.fpsArms.rightGloveMesh = "FPS_Glove_R.obj";
-        ch.fpsArms.glovePaletteIndex = 3; // pants palette for dark gloves
+        ch.fpsArms.glovePaletteIndex = PANTS_PALETTE_IDX;
     } else {
         ch.fpsArms.leftGloveMesh.clear();
         ch.fpsArms.rightGloveMesh.clear();
-        ch.fpsArms.glovePaletteIndex = 0;
+        ch.fpsArms.glovePaletteIndex = SKIN_PALETTE_IDX;
     }
 
     // Sleeves — present if jacket was selected
@@ -409,11 +424,11 @@ void LowPolyCharacterGenerator::buildFPSArms(DeterministicRNG& rng,
     if (hasJacket) {
         ch.fpsArms.leftSleeveMesh   = "FPS_Sleeve_L.obj";
         ch.fpsArms.rightSleeveMesh  = "FPS_Sleeve_R.obj";
-        ch.fpsArms.sleevePaletteIndex = 2; // shirt color
+        ch.fpsArms.sleevePaletteIndex = SHIRT_PALETTE_IDX;
     } else {
         ch.fpsArms.leftSleeveMesh.clear();
         ch.fpsArms.rightSleeveMesh.clear();
-        ch.fpsArms.sleevePaletteIndex = 0;
+        ch.fpsArms.sleevePaletteIndex = SKIN_PALETTE_IDX;
     }
 
     (void)rng; // May be used for future variation
