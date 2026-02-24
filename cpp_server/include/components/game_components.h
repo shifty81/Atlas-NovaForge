@@ -2537,6 +2537,9 @@ public:
         ModMenu,
         MultiplayerMenu,
         CharacterCreation,
+        ShipSelection,
+        HangarSpawn,
+        FleetCommand,
         InGame,
         PauseMenu
     };
