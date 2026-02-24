@@ -44,6 +44,12 @@ struct GeneratedShip {
     int         engineCount;
     WeaponSize  maxWeaponSize;
     bool        valid;         // true if all constraints passed
+    float       armorHP;       // hit points
+    float       shieldHP;      // hit points
+    float       signatureRadius; // metres
+    float       targetingSpeed;  // seconds to lock
+    int         droneBay;      // m³ capacity (0 for no drones)
+    std::string shipName;      // procedurally generated name
 };
 
 /**
@@ -81,6 +87,7 @@ private:
     static void        attachEngines(DeterministicRNG& rng, GeneratedShip& ship);
     static void        attachWeapons(DeterministicRNG& rng, GeneratedShip& ship);
     static bool        validateConstraints(const GeneratedShip& ship);
+    static std::string generateName(DeterministicRNG& rng, HullClass hull);
 };
 
 } // namespace pcg
