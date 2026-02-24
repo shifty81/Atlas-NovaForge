@@ -55,9 +55,9 @@ if(glm_FOUND OR GLM_FOUND)
         test_game_state.cpp
         ${CMAKE_SOURCE_DIR}/cpp_client/src/rendering/camera.cpp
     )
-    message(STATUS "GLM found — camera tests enabled")
+    message(STATUS "GLM found -- camera tests enabled")
 else()
-    message(STATUS "GLM not found — camera tests disabled (test_game_state skipped)")
+    message(STATUS "GLM not found -- camera tests disabled (test_game_state skipped)")
 endif()
 
 add_executable(AtlasTests ${ATLAS_TEST_SOURCES})

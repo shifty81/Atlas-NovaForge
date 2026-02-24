@@ -25,6 +25,10 @@ int main() {
     engine.InitEditor();
 
     // ── Create editor panels ──────────────────────────────────
+    // All panels live on the stack in main(); they remain valid for the
+    // entire editor session because engine.Run() blocks until shutdown.
+    // C++ guarantees reverse-order destruction, so EditorLayout (declared
+    // after the panels) is destroyed first — no dangling-pointer risk.
     atlas::editor::ViewportPanel viewport;
     atlas::editor::PCGPreviewPanel pcgPreview;
     atlas::editor::GenerationStylePanel genStyle;
