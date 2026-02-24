@@ -14,6 +14,7 @@ add_subdirectory(server)
 # Example game modules
 add_subdirectory(projects/eveoffline/module)
 add_subdirectory(projects/arena2d/module)
+add_subdirectory(projects/novaforge/module)
 
 add_subdirectory(tileeditor)
 
