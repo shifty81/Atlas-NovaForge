@@ -126,6 +126,25 @@ void test_pcg_preview_set_settings();
 void test_pcg_preview_different_seeds_differ();
 void test_pcg_preview_draw_does_not_crash();
 
+// Low-Poly Character Generator tests
+void test_lowpoly_char_generate_default();
+void test_lowpoly_char_body_slot_count();
+void test_lowpoly_char_override_archetype();
+void test_lowpoly_char_override_gender();
+void test_lowpoly_char_palette_regions();
+void test_lowpoly_char_flat_shading();
+void test_lowpoly_char_fps_arms();
+void test_lowpoly_char_determinism();
+void test_lowpoly_char_different_seeds_differ();
+void test_lowpoly_char_clothing_always_has_basics();
+void test_lowpoly_char_archetype_names();
+void test_lowpoly_char_body_slot_names();
+void test_lowpoly_char_clothing_slot_names();
+void test_pcg_preview_generate_character();
+void test_pcg_preview_character_override_archetype();
+void test_pcg_preview_character_override_gender();
+void test_pcg_preview_character_clear();
+
 int main() {
     std::cout << "=== Atlas Engine Tests ===" << std::endl;
 
@@ -268,6 +287,26 @@ int main() {
     test_pcg_preview_set_settings();
     test_pcg_preview_different_seeds_differ();
     test_pcg_preview_draw_does_not_crash();
+
+    // Low-Poly Character Generator
+    std::cout << "\n--- Low-Poly Character Generator ---" << std::endl;
+    test_lowpoly_char_generate_default();
+    test_lowpoly_char_body_slot_count();
+    test_lowpoly_char_override_archetype();
+    test_lowpoly_char_override_gender();
+    test_lowpoly_char_palette_regions();
+    test_lowpoly_char_flat_shading();
+    test_lowpoly_char_fps_arms();
+    test_lowpoly_char_determinism();
+    test_lowpoly_char_different_seeds_differ();
+    test_lowpoly_char_clothing_always_has_basics();
+    test_lowpoly_char_archetype_names();
+    test_lowpoly_char_body_slot_names();
+    test_lowpoly_char_clothing_slot_names();
+    test_pcg_preview_generate_character();
+    test_pcg_preview_character_override_archetype();
+    test_pcg_preview_character_override_gender();
+    test_pcg_preview_character_clear();
 
     std::cout << "\n=== All tests passed! ===" << std::endl;
     return 0;

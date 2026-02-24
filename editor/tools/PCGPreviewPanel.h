@@ -5,6 +5,7 @@
 #include "../../cpp_server/include/pcg/ship_generator.h"
 #include "../../cpp_server/include/pcg/station_generator.h"
 #include "../../cpp_server/include/pcg/interior_generator.h"
+#include "../../cpp_server/include/pcg/lowpoly_character_generator.h"
 #include <string>
 #include <vector>
 #include <cstdint>
@@ -13,9 +14,10 @@ namespace atlas::editor {
 
 /// Generator domain the user can select in the panel.
 enum class PCGPreviewMode : int {
-    Ship     = 0,
-    Station  = 1,
-    Interior = 2,
+    Ship      = 0,
+    Station   = 1,
+    Interior  = 2,
+    Character = 3,
 };
 
 /// Editable parameters exposed through the panel UI.
@@ -34,6 +36,12 @@ struct PCGPreviewSettings {
 
     // Interior-specific
     int            shipClass    = 0;  ///< 0=Frigate .. 5=Capital
+
+    // Character-specific
+    pcg::CharacterArchetype characterArchetype = pcg::CharacterArchetype::Survivor;
+    bool           overrideArchetype = false;
+    bool           characterIsMale   = true;
+    bool           overrideGender    = false;
 };
 
 /// Snapshot of a generated ship shown in the preview area.
@@ -52,6 +60,12 @@ struct StationPreview {
 struct InteriorPreview {
     pcg::GeneratedInterior data{};
     bool                   populated = false;
+};
+
+/// Snapshot of a generated low-poly character shown in the preview area.
+struct CharacterPreview {
+    pcg::GeneratedLowPolyCharacter data{};
+    bool                           populated = false;
 };
 
 /**
@@ -85,9 +99,10 @@ public:
 
     // ── Accessors for generated previews ─────────────────────────────
 
-    const ShipPreview&     GetShipPreview()     const { return m_shipPreview; }
-    const StationPreview&  GetStationPreview()  const { return m_stationPreview; }
-    const InteriorPreview& GetInteriorPreview() const { return m_interiorPreview; }
+    const ShipPreview&      GetShipPreview()      const { return m_shipPreview; }
+    const StationPreview&   GetStationPreview()   const { return m_stationPreview; }
+    const InteriorPreview&  GetInteriorPreview()  const { return m_interiorPreview; }
+    const CharacterPreview& GetCharacterPreview() const { return m_characterPreview; }
 
     /// Status / log lines produced during the last generation.
     const std::vector<std::string>& Log() const { return m_log; }
@@ -96,15 +111,17 @@ private:
     PCGPreviewSettings m_settings;
     pcg::PCGManager    m_pcgManager;
 
-    ShipPreview     m_shipPreview;
-    StationPreview  m_stationPreview;
-    InteriorPreview m_interiorPreview;
+    ShipPreview      m_shipPreview;
+    StationPreview   m_stationPreview;
+    InteriorPreview  m_interiorPreview;
+    CharacterPreview m_characterPreview;
 
     std::vector<std::string> m_log;
 
     void generateShip();
     void generateStation();
     void generateInterior();
+    void generateCharacter();
     void log(const std::string& msg);
 };
 

@@ -14,6 +14,7 @@ add_executable(AtlasTests
     test_hud_panels.cpp
     test_game_state.cpp
     test_pcg_preview.cpp
+    test_lowpoly_character.cpp
     ${CMAKE_SOURCE_DIR}/editor/panels/ConsolePanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/tools/PCGPreviewPanel.cpp
     ${CMAKE_SOURCE_DIR}/cpp_client/src/ui/atlas/atlas_renderer.cpp
@@ -28,6 +29,7 @@ add_executable(AtlasTests
     ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/interior_budget.cpp
     ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/constraint_solver.cpp
     ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/pcg_trace.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/lowpoly_character_generator.cpp
 )
 
 target_compile_definitions(AtlasTests PRIVATE ATLAS_HEADLESS=1)

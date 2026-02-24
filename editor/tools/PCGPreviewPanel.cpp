@@ -7,9 +7,10 @@ namespace atlas::editor {
 
 static const char* previewModeName(PCGPreviewMode mode) {
     switch (mode) {
-        case PCGPreviewMode::Ship:     return "Ship";
-        case PCGPreviewMode::Station:  return "Station";
-        case PCGPreviewMode::Interior: return "Interior";
+        case PCGPreviewMode::Ship:      return "Ship";
+        case PCGPreviewMode::Station:   return "Station";
+        case PCGPreviewMode::Interior:  return "Interior";
+        case PCGPreviewMode::Character: return "Character";
     }
     return "Unknown";
 }
@@ -59,9 +60,10 @@ void PCGPreviewPanel::Generate() {
         + " (v" + std::to_string(m_settings.version) + ")");
 
     switch (m_settings.mode) {
-        case PCGPreviewMode::Ship:     generateShip();     break;
-        case PCGPreviewMode::Station:  generateStation();  break;
-        case PCGPreviewMode::Interior: generateInterior(); break;
+        case PCGPreviewMode::Ship:      generateShip();      break;
+        case PCGPreviewMode::Station:   generateStation();   break;
+        case PCGPreviewMode::Interior:  generateInterior();  break;
+        case PCGPreviewMode::Character: generateCharacter(); break;
     }
 }
 
@@ -74,9 +76,10 @@ void PCGPreviewPanel::Randomize() {
 }
 
 void PCGPreviewPanel::ClearPreview() {
-    m_shipPreview     = ShipPreview{};
-    m_stationPreview  = StationPreview{};
-    m_interiorPreview = InteriorPreview{};
+    m_shipPreview      = ShipPreview{};
+    m_stationPreview   = StationPreview{};
+    m_interiorPreview  = InteriorPreview{};
+    m_characterPreview = CharacterPreview{};
     m_log.clear();
 }
 
@@ -163,6 +166,65 @@ void PCGPreviewPanel::generateInterior() {
            << " deck " << room.deckLevel;
         log(rs.str());
     }
+}
+
+// ── Character generation ─────────────────────────────────────────────
+
+void PCGPreviewPanel::generateCharacter() {
+    pcg::PCGContext ctx = m_pcgManager.makeRootContext(
+        pcg::PCGDomain::Character, /*objectId=*/1, m_settings.version);
+
+    pcg::GeneratedLowPolyCharacter character;
+    if (m_settings.overrideArchetype && m_settings.overrideGender) {
+        character = pcg::LowPolyCharacterGenerator::generate(
+            ctx, m_settings.characterArchetype, m_settings.characterIsMale);
+    } else if (m_settings.overrideArchetype) {
+        character = pcg::LowPolyCharacterGenerator::generate(
+            ctx, m_settings.characterArchetype);
+    } else {
+        character = pcg::LowPolyCharacterGenerator::generate(ctx);
+    }
+
+    m_characterPreview.data      = character;
+    m_characterPreview.populated = true;
+
+    std::ostringstream os;
+    os << "Character: "
+       << pcg::LowPolyCharacterGenerator::archetypeClassName(character.archetype)
+       << " | Gender: " << (character.isMale ? "Male" : "Female")
+       << " | Body parts: " << character.bodyParts.size()
+       << " | Clothing: " << character.clothing.size()
+       << " | Palette regions: " << character.palette.size()
+       << " | Skeleton: " << character.skeletonId
+       << " | FlatShaded: " << (character.flatShaded ? "yes" : "no")
+       << " | VertexColors: " << (character.useVertexColors ? "yes" : "no")
+       << " | Valid: " << (character.valid ? "yes" : "NO");
+    log(os.str());
+
+    for (const auto& part : character.bodyParts) {
+        std::ostringstream ps;
+        ps << "  Body: " << part.variant << " (" << part.meshFile << ")";
+        log(ps.str());
+    }
+    for (const auto& item : character.clothing) {
+        std::ostringstream cs;
+        cs << "  Clothing: " << item.variant << " (" << item.meshFile << ")";
+        log(cs.str());
+    }
+    for (const auto& region : character.palette) {
+        if (region.chosen >= 0 &&
+            region.chosen < static_cast<int>(region.colors.size())) {
+            auto& c = region.colors[static_cast<size_t>(region.chosen)];
+            std::ostringstream rs;
+            rs << "  Palette [" << region.regionName << "]: RGB("
+               << c.r << ", " << c.g << ", " << c.b << ")";
+            log(rs.str());
+        }
+    }
+
+    // Log FPS arm config
+    log("  FPS Arms: L=" + character.fpsArms.leftArmMesh
+        + " R=" + character.fpsArms.rightArmMesh);
 }
 
 // ── Logging ─────────────────────────────────────────────────────────
