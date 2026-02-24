@@ -33,7 +33,7 @@ cd "$BUILD_DIR"
 
 # Configure
 echo "Configuring CMake ($BUILD_TYPE)..."
-cmake .. -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DUSE_SYSTEM_LIBS=ON
+cmake .. -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DUSE_SYSTEM_LIBS=ON -DBUILD_ATLAS_EDITOR=ON
 
 if [ $? -ne 0 ]; then
     echo ""

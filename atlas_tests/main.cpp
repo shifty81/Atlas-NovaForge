@@ -102,6 +102,7 @@ void test_existing_panel_toggles();
 void test_overview_tab_filter();
 
 // Game State & ViewMode tests
+#ifndef ATLAS_NO_GLM
 void test_camera_default_view_mode();
 void test_camera_set_view_mode_orbit();
 void test_camera_set_view_mode_fps();
@@ -111,6 +112,7 @@ void test_camera_fps_rotate();
 void test_camera_orbit_position_unchanged_in_fps();
 void test_camera_view_mode_kills_inertia();
 void test_camera_view_matrix_differs_by_mode();
+#endif
 
 // PCG Preview Panel tests
 void test_pcg_preview_defaults();
@@ -352,6 +354,7 @@ int main() {
     test_overview_tab_filter();
 
     // Game State & ViewMode
+#ifndef ATLAS_NO_GLM
     std::cout << "\n--- Game State & ViewMode ---" << std::endl;
     test_camera_default_view_mode();
     test_camera_set_view_mode_orbit();
@@ -362,6 +365,9 @@ int main() {
     test_camera_orbit_position_unchanged_in_fps();
     test_camera_view_mode_kills_inertia();
     test_camera_view_matrix_differs_by_mode();
+#else
+    std::cout << "\n--- Game State & ViewMode (SKIPPED — GLM not available) ---" << std::endl;
+#endif
 
     // PCG Preview Panel
     std::cout << "\n--- PCG Preview Panel ---" << std::endl;
