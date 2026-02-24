@@ -1,5 +1,5 @@
-#ifndef EVE_ECS_COMPONENT_H
-#define EVE_ECS_COMPONENT_H
+#ifndef NOVAFORGE_ECS_COMPONENT_H
+#define NOVAFORGE_ECS_COMPONENT_H
 
 #include <string>
 #include <memory>
@@ -37,4 +37,4 @@ public:
 } // namespace ecs
 } // namespace atlas
 
-#endif // EVE_ECS_COMPONENT_H
+#endif // NOVAFORGE_ECS_COMPONENT_H

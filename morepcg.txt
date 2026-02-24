@@ -4,7 +4,7 @@
 
 Claim offer
 You said:
-continue working on eveoffline pcg 
+continue working on novaforge pcg 
 
 ChatGPT said:
 Hell yes — let’s keep pushing EveOffline PCG 🚀
@@ -390,7 +390,7 @@ Example: system_0001.json
     { "orbit": 2.8, "type": "gas" }
   ],
   "belts": [
-    { "ore": "Veldspar", "density": 0.3 }
+    { "ore": "Ferrite", "density": 0.3 }
   ]
 }
 📌 This never changes unless you regen the galaxy.
@@ -1944,7 +1944,7 @@ Do you want me to do that next?
 
 
 You said:
-lets come up with a good project name for this considering what we have built so far  eveoffline dont sut it its someghing more
+lets come up with a good project name for this considering what we have built so far  novaforge dont sut it its someghing more
 
 ChatGPT said:
 Ohhhh yes — we can totally level this up.

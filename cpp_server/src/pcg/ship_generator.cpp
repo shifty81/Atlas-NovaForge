@@ -144,7 +144,7 @@ static const char* NAME_PREFIX[] = {
 static constexpr int NAME_PREFIX_COUNT = static_cast<int>(std::size(NAME_PREFIX));
 
 static const char* NAME_SUFFIX[] = {
-    "Mark", "Class", "Prime", "Alpha", "Vanguard",
+    "Mark", "Class", "Prime", "Foundry", "Vanguard",
     "Delta", "Core", "Edge", "Forge", "Crest",
 };
 static constexpr int NAME_SUFFIX_COUNT = static_cast<int>(std::size(NAME_SUFFIX));
@@ -306,7 +306,7 @@ void ShipGenerator::attachEngines(DeterministicRNG& rng, GeneratedShip& ship) {
     perEngine *= rng.rangeFloat(1.0f, 1.5f); // 0-50% extra
     ship.thrust = perEngine * static_cast<float>(ship.engineCount);
 
-    // Derive align time from the EVE formula approximation.
+    // Derive align time from the Astralis formula approximation.
     ship.alignTime = ship.mass / ship.thrust;
 }
 

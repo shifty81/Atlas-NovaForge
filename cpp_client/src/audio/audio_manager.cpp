@@ -6,7 +6,7 @@
 #include <cstring>
 #include <algorithm>
 
-namespace EVE {
+namespace novaforge {
 
 // ============================================================================
 // AudioBuffer Implementation
@@ -588,6 +588,6 @@ bool AudioManager::check_al_error(const std::string& operation) {
     return false;
 }
 
-} // namespace EVE
+} // namespace novaforge
 
 #endif // USE_OPENAL

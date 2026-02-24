@@ -1,6 +1,6 @@
 """
 EVE-Style Capacitor Display
-Circular energy gauge mimicking EVE Online's capacitor ring
+Circular energy gauge mimicking Astralis's capacitor ring
 """
 
 from direct.gui.DirectGui import DirectFrame
@@ -12,7 +12,7 @@ from panda3d.core import Vec3, Vec4
 import math
 from typing import Optional
 
-from .eve_style import EVEColorScheme, get_capacitor_color, get_health_color
+from .novaforge_style import EVEColorScheme, get_capacitor_color, get_health_color
 
 
 class CapacitorDisplay:

@@ -38,7 +38,7 @@ Comprehensive new player guide:
 - Ship fitting fundamentals
 - Mission running guide
 - Skills and training (recommended paths)
-- ISK making (5 methods with ISK/hour estimates)
+- Credits making (5 methods with Credits/hour estimates)
 - Short/medium/long term goals
 - FAQ and troubleshooting
 

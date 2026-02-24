@@ -2,7 +2,7 @@
 
 /**
  * @file atlas_widgets.h
- * @brief High-level Atlas UI widgets modelled after EVE Online's Atlas UI
+ * @brief High-level Atlas UI widgets modelled after Astralis's Atlas UI
  *
  * All widgets are free functions that take a AtlasContext& and draw
  * directly through its renderer.  This mirrors an immediate-mode API
@@ -38,7 +38,7 @@ struct PanelFlags {
     bool showHeader    = true;   // dark header bar with title text
     bool showClose     = true;   // × button in header
     bool showMinimize  = true;   // — button in header
-    bool compactMode   = false;  // reduced padding (EVE compact mode)
+    bool compactMode   = false;  // reduced padding (Astralis compact mode)
     bool locked        = false;  // prevent drag/resize
     bool drawBorder    = true;   // subtle border around panel
 };
@@ -65,7 +65,7 @@ void panelEnd(AtlasContext& ctx);
 /** Rectangular text button.  Returns true on click. */
 bool button(AtlasContext& ctx, const char* label, const Rect& r);
 
-/** Small icon-style square button (Neocom style). */
+/** Small icon-style square button (Nexcom style). */
 bool iconButton(AtlasContext& ctx, WidgetID id, const Rect& r,
                 const Color& iconColor, const char* symbol = nullptr);
 
@@ -274,7 +274,7 @@ void scrollbar(AtlasContext& ctx, const Rect& track,
 /**
  * Draw the sidebar (left edge, full height).
  *
- * Modelled after EVE Online's Neocom bar — a dark, minimalist,
+ * Modelled after Astralis's Nexcom bar — a dark, minimalist,
  * semi-transparent vertical bar with:
  *   - "A" (Atlas) menu icon at the top
  *   - Character portrait area
@@ -400,7 +400,7 @@ bool textInput(AtlasContext& ctx, const char* label,
 // ── Mode Indicator ──────────────────────────────────────────────────
 
 /**
- * Movement mode indicator — EVE-style on-screen text showing the
+ * Movement mode indicator — Astralis-style on-screen text showing the
  * currently active movement mode (Approach, Orbit, Keep at Range,
  * Dock) near the ship HUD.
  *

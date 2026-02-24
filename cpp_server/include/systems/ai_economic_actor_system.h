@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_AI_ECONOMIC_ACTOR_SYSTEM_H
-#define EVE_SYSTEMS_AI_ECONOMIC_ACTOR_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_AI_ECONOMIC_ACTOR_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_AI_ECONOMIC_ACTOR_SYSTEM_H
 
 #include "ecs/system.h"
 #include "ecs/entity.h"
@@ -31,10 +31,10 @@ public:
 
     // --- API ---
 
-    /** Record an NPC earning ISK (from trade, mining, bounty) */
+    /** Record an NPC earning Credits (from trade, mining, bounty) */
     void earnISK(const std::string& entity_id, double amount);
 
-    /** Record an NPC spending ISK (on repairs, modules, etc.) */
+    /** Record an NPC spending Credits (on repairs, modules, etc.) */
     bool spendISK(const std::string& entity_id, double amount);
 
     /** Handle ship destruction — NPC tries to buy replacement or permanently dies */
@@ -49,11 +49,11 @@ public:
     /** Get all actors with wallet below threshold */
     std::vector<std::string> getLowFundsActors(double threshold) const;
 
-    /** Get total economy ISK across all actors */
+    /** Get total economy Credits across all actors */
     double getTotalEconomyISK() const;
 };
 
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_AI_ECONOMIC_ACTOR_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_AI_ECONOMIC_ACTOR_SYSTEM_H

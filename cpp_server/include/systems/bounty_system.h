@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_BOUNTY_SYSTEM_H
-#define EVE_SYSTEMS_BOUNTY_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_BOUNTY_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_BOUNTY_SYSTEM_H
 
 #include "ecs/system.h"
 #include <string>
@@ -10,7 +10,7 @@ namespace systems {
 /**
  * @brief Processes NPC kill bounty payouts
  *
- * When an NPC is killed, the system awards the bounty ISK to the
+ * When an NPC is killed, the system awards the bounty Credits to the
  * killer's wallet and records the kill in a BountyLedger component
  * for history tracking.
  */
@@ -46,4 +46,4 @@ public:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_BOUNTY_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_BOUNTY_SYSTEM_H

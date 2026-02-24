@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_HASH_UTILS_H
-#define EVE_PCG_HASH_UTILS_H
+#ifndef NOVAFORGE_PCG_HASH_UTILS_H
+#define NOVAFORGE_PCG_HASH_UTILS_H
 
 #include <cstdint>
 
@@ -45,4 +45,4 @@ inline uint64_t deriveSeed(uint64_t parentSeed, uint64_t objectId) {
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_HASH_UTILS_H
+#endif // NOVAFORGE_PCG_HASH_UTILS_H

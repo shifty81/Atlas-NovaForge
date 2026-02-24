@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_ROOM_GRAPH_H
-#define EVE_PCG_ROOM_GRAPH_H
+#ifndef NOVAFORGE_PCG_ROOM_GRAPH_H
+#define NOVAFORGE_PCG_ROOM_GRAPH_H
 
 #include "pcg_context.h"
 #include "deterministic_rng.h"
@@ -49,4 +49,4 @@ std::vector<RoomNode> generateRoomsForDeck(int deckIndex,
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_ROOM_GRAPH_H
+#endif // NOVAFORGE_PCG_ROOM_GRAPH_H

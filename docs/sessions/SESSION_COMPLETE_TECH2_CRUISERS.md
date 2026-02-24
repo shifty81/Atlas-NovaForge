@@ -262,7 +262,7 @@ Created comprehensive documentation:
 
 ### Phase 7 Potential (Future)
 1. Mining & Resource Gathering
-2. Planetary Interaction
+2. Planetary Operations
 3. Research & Invention
 4. Wormhole Space
 5. Advanced Fleet Mechanics

@@ -3968,7 +3968,7 @@ Do you want me to produce that next?
 
 
 You said:
-i need all of this brought in line for my eveoffline repository if possible
+i need all of this brought in line for my novaforge repository if possible
 
 ChatGPT said:
 Absolutely — I can bring all of this into alignment with your EVEOffline codebase.
@@ -7415,7 +7415,7 @@ Generated image
 Share
 
 You said:
-can we bring this all in line with my eveoffline project and give a clear implementation path 
+can we bring this all in line with my novaforge project and give a clear implementation path 
 
 ChatGPT said:
 Absolutely — we can map all of this procedural exploration, salvage, modular interiors, ships, stations, tools, and FPS interactions directly into your EVEOFFLINE repo with a clear, step-by-step implementation path. Here’s how I’d structure it:
@@ -15573,7 +15573,7 @@ BaseValue
 × SecurityRisk
 × FactionBias
 Example
-Tritanium:
+Stellium:
 Core Systems → cheap, stable
 Frontier Regions → expensive, volatile
 War Zones → extreme demand spikes

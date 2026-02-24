@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_FLEET_SYSTEM_H
-#define EVE_SYSTEMS_FLEET_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_FLEET_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_FLEET_SYSTEM_H
 
 #include "ecs/system.h"
 #include <string>
@@ -48,7 +48,7 @@ struct Fleet {
 /**
  * @brief Manages fleet creation, membership, bonuses, and coordination
  *
- * Implements EVE Online-style fleet mechanics including hierarchical
+ * Implements Astralis-style fleet mechanics including hierarchical
  * organization (Fleet -> Wings -> Squads), role-based permissions,
  * fleet bonuses, target broadcasting, and fleet warp commands.
  */
@@ -214,4 +214,4 @@ private:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_FLEET_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_FLEET_SYSTEM_H

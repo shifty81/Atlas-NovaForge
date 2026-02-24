@@ -16,7 +16,7 @@ import math
 class MinimapRadar:
     """
     Minimap/Radar display showing nearby entities
-    Similar to EVE Online's tactical overlay
+    Similar to Astralis's tactical overlay
     """
     
     def __init__(self, parent, pos=(0.7, 0.5), size=0.25, max_range=500.0):

@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_SHIELD_RECHARGE_SYSTEM_H
-#define EVE_SYSTEMS_SHIELD_RECHARGE_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_SHIELD_RECHARGE_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_SHIELD_RECHARGE_SYSTEM_H
 
 #include "ecs/system.h"
 #include <string>
@@ -10,7 +10,7 @@ namespace systems {
 /**
  * @brief Handles shield recharge for all entities
  * 
- * Implements EVE Online-style passive shield recharge.
+ * Implements Astralis-style passive shield recharge.
  * Shields regenerate over time based on shield_recharge_rate.
  */
 class ShieldRechargeSystem : public ecs::System {
@@ -32,4 +32,4 @@ public:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_SHIELD_RECHARGE_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_SHIELD_RECHARGE_SYSTEM_H

@@ -34,10 +34,10 @@ void MissionSystem::update(float delta_time) {
             if (mission.allObjectivesDone()) {
                 mission.completed = true;
 
-                // Award ISK
+                // Award Credits
                 auto* player = entity->getComponent<components::Player>();
                 if (player) {
-                    player->isk += mission.isk_reward;
+                    player->credits += mission.isk_reward;
                 }
 
                 // Award standing

@@ -80,7 +80,7 @@ EVE OFFLINE is a PVE-focused space MMO inspired by EVE ONLINE, designed for smal
   - Missiles: Rockets, Light Missiles, Heavy Missiles, Cruise Missiles, Torpedoes
 - **Damage Application**: Tracking speed, signature radius, optimal range, falloff
 - **Resistances**: Ships and NPCs have per-type resistance profiles
-- **Pirate Hunting**: NPC pirates in asteroid belts and anomalies with ISK bounties
+- **Pirate Hunting**: NPC pirates in asteroid belts and anomalies with Credits bounties
 - **Data**: `data/npcs/pirates.json`, `data/modules/`
 
 ### 5. Fitting System
@@ -115,7 +115,7 @@ EVE OFFLINE is a PVE-focused space MMO inspired by EVE ONLINE, designed for smal
   - Agent quality and level determine rewards
   - Standing requirements to access higher-level agents
   - Research agents for scientific research
-- **Rewards**: ISK, Loyalty Points (LP), items, standings (personal, corporation, faction)
+- **Rewards**: Credits, Loyalty Points (LP), items, standings (personal, corporation, faction)
 - **Standings**:
   - Personal standing with agents
   - Corporation standing
@@ -126,12 +126,12 @@ EVE OFFLINE is a PVE-focused space MMO inspired by EVE ONLINE, designed for smal
 ### 7. Economy & Items
 *(Based on EVE Manual Chapters 6, 13, 15)*
 
-- **Currency**: ISK (InterStellar Kredits)
+- **Currency**: Credits (InterStellar Kredits)
 - **Item Types**: Ships, modules, ammo, ore, minerals, salvage, blueprints, skill books, implants
 - **Market**: Buy/sell orders with regional pricing
 - **Manufacturing**: Blueprint-based crafting with Material Efficiency and Time Efficiency research
 - **Mining**:
-  - Ore types: Veldspar, Scordite, Pyroxeres, Plagioclase, Kernite, and more
+  - Ore types: Ferrite, Galvite, Cryolite, Silvane, Heliore, and more
   - Mining lasers (civilian, Miner I), Strip Miners for barges
   - Refining ore into minerals at stations
 - **Contracts & Escrow**: Item exchange, courier contracts, and auctions with escrow protection
@@ -143,7 +143,7 @@ EVE OFFLINE is a PVE-focused space MMO inspired by EVE ONLINE, designed for smal
 
 - **Solar Systems**: Connected via stargates
 - **Security Levels**: High-sec (0.5-1.0), Low-sec (0.1-0.4), Null-sec (0.0)
-- **CONCORD**: Security enforcement in high-sec space with response times based on security level
+- **AEGIS**: Security enforcement in high-sec space with response times based on security level
 - **Locations**:
   - Stations: Docking, market, missions, repair, fitting, cloning, insurance
   - Asteroid Belts: Mining locations with ore spawns
@@ -156,7 +156,7 @@ EVE OFFLINE is a PVE-focused space MMO inspired by EVE ONLINE, designed for smal
 
 - **Clone System**: Medical clones retain skill points on pod death
   - Clone grades from Alpha (free) to Omega (maximum)
-  - Jump clones for instant travel (24-hour cooldown)
+  - Relay clones for instant travel (24-hour cooldown)
   - Implant destruction on pod death
 - **Implants**: Cybernetic implants that boost character attributes
   - One implant per attribute slot (5 slots)
@@ -185,8 +185,8 @@ EVE OFFLINE is a PVE-focused space MMO inspired by EVE ONLINE, designed for smal
 
 - **Security Status**: Personal security rating (-10.0 to +10.0) affecting access to high-sec
 - **Criminal Flags**: Suspect, criminal, and weapons timer mechanics
-- **CONCORD Response**: Automatic enforcement in high-sec with response times based on system security
-- **Data**: `data/security/concord_and_insurance.json`
+- **AEGIS Response**: Automatic enforcement in high-sec with response times based on system security
+- **Data**: `data/security/aegis_and_insurance.json`
 
 ### 12. Deadspace Complexes
 *(Based on EVE Manual Chapter 14)*
@@ -273,7 +273,7 @@ EVE OFFLINE is a PVE-focused space MMO inspired by EVE ONLINE, designed for smal
 - `data/npcs/`: NPC pirates and hireable pilots
 - `data/missions/`: Mission templates by level
 - `data/universe/`: Solar systems, stations, stargates
-- `data/security/`: CONCORD, insurance
+- `data/security/`: AEGIS, insurance
 - `data/corporations/`: NPC and player corporation mechanics
 - `data/contracts/`: Contract and escrow system
 - `data/exploration/`: Deadspace complexes and exploration sites
@@ -283,7 +283,7 @@ EVE OFFLINE is a PVE-focused space MMO inspired by EVE ONLINE, designed for smal
 
 **Database Tables** (for persistence):
 - `players`: Player accounts and metadata
-- `characters`: Character data, skills, ISK, attributes, clones
+- `characters`: Character data, skills, Credits, attributes, clones
 - `inventory`: Items owned by characters
 - `missions`: Active and completed missions
 
@@ -331,12 +331,12 @@ EVE OFFLINE is a PVE-focused space MMO inspired by EVE ONLINE, designed for smal
 2. Capital ships (Carriers, Dreadnoughts, Titans)
 3. Advanced mission content (28 missions, 5 levels)
 4. Mining barges and exhumers
-5. Ice mining and planetary interaction
+5. Ice mining and planetary operations
 
 ### Phase 7: Manual-Aligned Systems (In Progress)
 1. Character creation with races and bloodlines
 2. Clone system and implants
-3. CONCORD security enforcement
+3. AEGIS security enforcement
 4. Corporation system
 5. Contract/escrow system
 6. Deadspace complexes

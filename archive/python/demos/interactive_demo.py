@@ -385,9 +385,9 @@ class InteractiveDemo:
         
         print("\nAvailable Missions:")
         print("  1. Destroy Serpentis Rats (Combat)")
-        print("     Reward: 150,000 ISK + 500 LP")
+        print("     Reward: 150,000 Credits + 500 LP")
         print("  2. Reconnaissance Flight (Exploration)")
-        print("     Reward: 100,000 ISK + 300 LP")
+        print("     Reward: 100,000 Credits + 300 LP")
         
         choice = input("\nAccept mission (1-2, 0 to cancel)? ").strip()
         

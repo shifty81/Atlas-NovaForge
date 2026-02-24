@@ -1,7 +1,7 @@
 # C++ Client Dependencies Setup
 
 ## Overview
-This document describes the C++ client dependencies and how they are configured for the EVE Offline project.
+This document describes the C++ client dependencies and how they are configured for the Nova Forge project.
 
 ## Dependency Structure (Updated for vcpkg)
 

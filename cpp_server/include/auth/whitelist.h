@@ -1,5 +1,5 @@
-#ifndef EVE_WHITELIST_H
-#define EVE_WHITELIST_H
+#ifndef NOVAFORGE_WHITELIST_H
+#define NOVAFORGE_WHITELIST_H
 
 #include <string>
 #include <vector>
@@ -51,4 +51,4 @@ private:
 } // namespace auth
 } // namespace atlas
 
-#endif // EVE_WHITELIST_H
+#endif // NOVAFORGE_WHITELIST_H

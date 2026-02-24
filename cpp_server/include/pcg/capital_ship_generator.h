@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_CAPITAL_SHIP_GENERATOR_H
-#define EVE_PCG_CAPITAL_SHIP_GENERATOR_H
+#ifndef NOVAFORGE_PCG_CAPITAL_SHIP_GENERATOR_H
+#define NOVAFORGE_PCG_CAPITAL_SHIP_GENERATOR_H
 
 #include "pcg_context.h"
 #include "deck_graph.h"
@@ -47,4 +47,4 @@ public:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_CAPITAL_SHIP_GENERATOR_H
+#endif // NOVAFORGE_PCG_CAPITAL_SHIP_GENERATOR_H

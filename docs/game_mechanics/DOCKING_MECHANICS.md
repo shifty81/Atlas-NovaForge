@@ -110,7 +110,7 @@ NPC stations are highly detailed and designed around specific NPC factions:
 
 Upon docking, the main screen changes from the tactical space view to a menu-driven interface anchored by two primary elements:
 
-### The Neocom (Left Side Menu)
+### The Nexcom (Left Side Menu)
 
 **Description:**
 - Primary navigation menu on the left side of screen
@@ -189,7 +189,7 @@ Upon docking, the main screen changes from the tactical space view to a menu-dri
 - Corporation name and logo
 - Alliance name (if applicable)
 - Current location (station/structure name)
-- ISK wallet balance
+- Credits wallet balance
 - Skill queue status
 
 ### Structure Browser/Info Panel
@@ -289,7 +289,7 @@ Upon docking, the main screen changes from the tactical space view to a menu-dri
 4. **Docking Animation**: Ship approaches and enters station
 5. **Transition**: Screen transitions from space to hangar view
 6. **Hangar Scene**: 3D hangar loads with ship displayed
-7. **GUI Appears**: Neocom and Station Services become available
+7. **GUI Appears**: Nexcom and Station Services become available
 
 ### Undocking Sequence
 

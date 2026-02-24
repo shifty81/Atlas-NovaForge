@@ -41,7 +41,7 @@ std::string LootSystem::generateLoot(const std::string& entity_id) {
     auto inv = std::make_unique<components::Inventory>();
     inv->max_capacity = 10000.0f;  // wrecks have large capacity
 
-    // Add LootTable to wreck so we can store ISK bounty
+    // Add LootTable to wreck so we can store Credits bounty
     auto wreck_lt = std::make_unique<components::LootTable>();
     wreck_lt->isk_drop = loot_table->isk_drop;
 
@@ -111,10 +111,10 @@ bool LootSystem::collectLoot(const std::string& wreck_id,
     }
     wreck_inv->items.clear();
 
-    // Add ISK bounty
+    // Add Credits bounty
     auto* wreck_lt = wreck->getComponent<components::LootTable>();
     if (wreck_lt && player_comp) {
-        player_comp->isk += wreck_lt->isk_drop;
+        player_comp->credits += wreck_lt->isk_drop;
     }
 
     return true;

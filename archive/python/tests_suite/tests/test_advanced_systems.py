@@ -31,7 +31,7 @@ def test_mission_system():
     player.add_component(Player(
         player_id="player1",
         character_name="Test Pilot",
-        isk=1000000
+        credits=1000000
     ))
     player.add_component(Position(x=0, y=0, z=0))
     

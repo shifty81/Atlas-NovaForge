@@ -76,7 +76,7 @@ enum class ContextMenuType {
 };
 
 /**
- * EVE-style context menu system
+ * Astralis-style context menu system
  * Handles right-click context menus for entities and empty space.
  * Renders via the Atlas UI renderer.
  */

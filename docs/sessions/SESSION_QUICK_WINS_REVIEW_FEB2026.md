@@ -24,7 +24,7 @@ Review and continue the "next tasks" as outlined in NEXT_TASKS.md, focusing on t
   - Ship fitting system
   - Mission system walkthrough
   - Skills and training paths
-  - ISK making strategies (5 methods)
+  - Credits making strategies (5 methods)
   - Next steps and progression
   - FAQ section
   - Getting help resources

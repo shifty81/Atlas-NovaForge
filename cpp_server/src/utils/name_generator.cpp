@@ -71,7 +71,7 @@ void NameGenerator::initializeNameData() {
     
     // System names
     system_prefixes_ = {
-        "Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Zeta", "Theta", "Omega",
+        "Foundry", "Beta", "Gamma", "Delta", "Epsilon", "Zeta", "Theta", "Apex",
         "Nova", "Stellar", "Void", "Dark", "Deep", "High", "Low", "Outer"
     };
     
@@ -82,7 +82,7 @@ void NameGenerator::initializeNameData() {
     
     system_suffixes_ = {
         "Prime", "Secundus", "Tertius", "Major", "Minor", "Proxima",
-        "Alpha", "Beta", "One", "Two", "Three", "Central"
+        "Foundry", "Beta", "One", "Two", "Three", "Central"
     };
     
     // Station names

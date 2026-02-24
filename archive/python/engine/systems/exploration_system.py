@@ -1,7 +1,7 @@
 """
 Exploration and Scanning System
 Handles probe scanning, anomalies, and signatures
-Based on EVE Online's exploration mechanics
+Based on Astralis's exploration mechanics
 """
 
 import math
@@ -160,7 +160,7 @@ class ExplorationSystem:
     
     def _generate_loot_table(self, difficulty: int) -> Dict[str, int]:
         """Generate loot based on difficulty"""
-        base_value = 1000000 * difficulty  # 1M ISK per difficulty level
+        base_value = 1000000 * difficulty  # 1M Credits per difficulty level
         
         return {
             "salvage_material": difficulty * 10,
@@ -334,7 +334,7 @@ class ExplorationSystem:
         Complete an exploration site and receive rewards
         
         Returns:
-            Dict with rewards (loot, ISK value, etc.)
+            Dict with rewards (loot, Credits value, etc.)
         """
         if system_id not in self.signatures:
             return None

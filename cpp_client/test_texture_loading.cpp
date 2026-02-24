@@ -106,7 +106,7 @@ void testColorChannels() {
     
     std::vector<ChannelInfo> channels = {
         {1, "Grayscale", "Single channel (R)"},
-        {2, "Grayscale + Alpha", "Two channels (RG)"},
+        {2, "Grayscale + Foundry", "Two channels (RG)"},
         {3, "RGB", "Three channels (RGB)"},
         {4, "RGBA", "Four channels (RGBA)"}
     };

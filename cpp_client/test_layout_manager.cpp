@@ -74,16 +74,16 @@ void testSerializeRoundtrip() {
     inventory.opacity = 0.75f;
     original["inventory"] = inventory;
 
-    UI::PanelLayout dscan;
-    dscan.id = "dscan";
-    dscan.x = 920.0f;
-    dscan.y = 460.0f;
-    dscan.w = 350.0f;
-    dscan.h = 300.0f;
-    dscan.visible = true;
-    dscan.minimized = false;
-    dscan.opacity = 0.80f;
-    original["dscan"] = dscan;
+    UI::PanelLayout proxscan;
+    proxscan.id = "proxscan";
+    proxscan.x = 920.0f;
+    proxscan.y = 460.0f;
+    proxscan.w = 350.0f;
+    proxscan.h = 300.0f;
+    proxscan.visible = true;
+    proxscan.minimized = false;
+    proxscan.opacity = 0.80f;
+    original["proxscan"] = proxscan;
 
     // Serialize
     std::string json = UI::LayoutManager::SerializeToJson("test_layout", original);
@@ -118,11 +118,11 @@ void testSerializeRoundtrip() {
     assertTrue(inv.minimized == true, "Inventory minimized roundtrips");
     assertClose(inv.opacity, 0.75f, "Inventory opacity roundtrips");
 
-    // Verify dscan
-    assertTrue(loaded.count("dscan") == 1, "DScan panel found");
-    const auto& ds = loaded["dscan"];
-    assertClose(ds.opacity, 0.80f, "DScan opacity roundtrips");
-    assertTrue(ds.visible == true, "DScan visible roundtrips");
+    // Verify proxscan
+    assertTrue(loaded.count("proxscan") == 1, "Proxscan panel found");
+    const auto& ds = loaded["proxscan"];
+    assertClose(ds.opacity, 0.80f, "Proxscan opacity roundtrips");
+    assertTrue(ds.visible == true, "Proxscan visible roundtrips");
 }
 
 void testDeserializeInvalid() {
@@ -150,10 +150,10 @@ void testSaveLoad() {
     std::cout << "\n=== Save/Load File I/O ===" << std::endl;
 
     UI::LayoutManager mgr;
-    mgr.SetLayoutDirectory("/tmp/eveoffline_test_layouts");
+    mgr.SetLayoutDirectory("/tmp/novaforge_test_layouts");
 
     // Ensure directory exists
-    std::system("mkdir -p /tmp/eveoffline_test_layouts");
+    std::system("mkdir -p /tmp/novaforge_test_layouts");
 
     // Build test layout
     std::unordered_map<std::string, UI::PanelLayout> panels;
@@ -198,7 +198,7 @@ void testSaveLoad() {
     assertTrue(deleted, "DeletePreset succeeds");
 
     // Cleanup
-    std::system("rm -rf /tmp/eveoffline_test_layouts");
+    std::system("rm -rf /tmp/novaforge_test_layouts");
 }
 
 // ─── Default presets test ─────────────────────────────────────────────
@@ -207,8 +207,8 @@ void testDefaultPresets() {
     std::cout << "\n=== Default Presets ===" << std::endl;
 
     UI::LayoutManager mgr;
-    mgr.SetLayoutDirectory("/tmp/eveoffline_test_presets");
-    std::system("mkdir -p /tmp/eveoffline_test_presets");
+    mgr.SetLayoutDirectory("/tmp/novaforge_test_presets");
+    std::system("mkdir -p /tmp/novaforge_test_presets");
 
     // Create defaults
     mgr.CreateDefaultPresets(1280, 720);
@@ -225,9 +225,9 @@ void testDefaultPresets() {
     ok = mgr.LoadLayout("combat", panels);
     assertTrue(ok, "Combat layout loads");
     assertTrue(panels.size() == 9, "Combat has 9 panels");
-    // Combat layout should have dscan visible
-    if (panels.count("dscan")) {
-        assertTrue(panels["dscan"].visible, "Combat dscan is visible");
+    // Combat layout should have proxscan visible
+    if (panels.count("proxscan")) {
+        assertTrue(panels["proxscan"].visible, "Combat proxscan is visible");
     }
 
     ok = mgr.LoadLayout("mining", panels);
@@ -243,7 +243,7 @@ void testDefaultPresets() {
     assertTrue(presets.size() >= 3, "At least 3 presets available");
 
     // Cleanup
-    std::system("rm -rf /tmp/eveoffline_test_presets");
+    std::system("rm -rf /tmp/novaforge_test_presets");
 }
 
 // ─── Panel layout struct test ─────────────────────────────────────────

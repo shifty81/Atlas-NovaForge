@@ -61,7 +61,7 @@
 - **Combat Log Panel** (Bottom-Right): Position (0.45, 0, -0.75), Size (0.9, 0.3)
 
 ### Sides
-- **Neocom Sidebar** (Far-Left): Position (-0.94, 0, 0), Size (0.12, 1.8)
+- **Nexcom Sidebar** (Far-Left): Position (-0.94, 0, 0), Size (0.12, 1.8)
 - **Overview Panel** (Right): Position (0.5, 0, 0), Size (0.8, 1.2)
 
 ## Center HUD Detail
@@ -126,7 +126,7 @@ All sizes in Panda3D normalized coordinates (-1 to 1):
 | Navigation | 0.4 | 0.2 | 2:1 |
 | Combat Log | 0.9 | 0.3 | 3:1 |
 | Overview | 0.8 | 1.2 | 2:3 |
-| Neocom | 0.12 | 1.8 | 1:15 |
+| Nexcom | 0.12 | 1.8 | 1:15 |
 
 ## Z-Order (Layering)
 

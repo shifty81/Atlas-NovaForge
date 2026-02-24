@@ -59,7 +59,7 @@ All 27 baseline server systems are complete with 832/832 tests passing. The proj
 - Bottom-center anchored
 - Shield (outer), Armor (middle), Hull (inner) rings
 - Clockwise depletion from 12 o'clock
-- Use theme colors from `data/ui/eve_dark_theme.json`
+- Use theme colors from `data/ui/novaforge_dark_theme.json`
 
 ---
 
@@ -72,7 +72,7 @@ All 27 baseline server systems are complete with 832/832 tests passing. The proj
 - [ ] Design AI actor state machine (Idle → Patrol → Mine → Haul → Sell → Repeat)
 - [ ] Implement miner AI (select asteroid, activate lasers, fill cargo)
 - [ ] Implement hauler AI (travel to station, dock, sell ore)
-- [ ] Add AI wallet system (ISK tracking per NPC)
+- [ ] Add AI wallet system (Credits tracking per NPC)
 - [ ] Create AI goals (profit maximization)
 - [ ] Add AI decision-making (choose best ore based on market prices)
 
@@ -138,7 +138,7 @@ All 27 baseline server systems are complete with 832/832 tests passing. The proj
 
 **Technical Notes**:
 - Keep ImGui available for dev tools
-- Use theme from `data/ui/eve_dark_theme.json`
+- Use theme from `data/ui/novaforge_dark_theme.json`
 - Support window presets (combat, trading, mining)
 - Persist window layout in player profile
 

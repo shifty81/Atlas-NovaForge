@@ -15,13 +15,13 @@ def test_imports():
     print("Testing imports...")
     
     try:
-        from client_3d.ui.eve_style import (
+        from client_3d.ui.novaforge_style import (
             EVEColorScheme, EVEPanelStyle, EVELayoutPresets,
             get_health_color, get_capacitor_color, lerp_color
         )
-        print("✓ eve_style module imported successfully")
+        print("✓ novaforge_style module imported successfully")
     except Exception as e:
-        print(f"✗ Failed to import eve_style: {e}")
+        print(f"✗ Failed to import novaforge_style: {e}")
         return False
     
     try:
@@ -32,10 +32,10 @@ def test_imports():
         return False
     
     try:
-        from client_3d.ui.eve_hud import EVEStyledHUD
-        print("✓ eve_hud module imported successfully")
+        from client_3d.ui.novaforge_hud import EVEStyledHUD
+        print("✓ novaforge_hud module imported successfully")
     except Exception as e:
-        print(f"✗ Failed to import eve_hud: {e}")
+        print(f"✗ Failed to import novaforge_hud: {e}")
         return False
     
     try:
@@ -52,7 +52,7 @@ def test_color_scheme():
     """Test color scheme values"""
     print("\nTesting color scheme...")
     
-    from client_3d.ui.eve_style import EVEColorScheme, get_health_color, get_capacitor_color
+    from client_3d.ui.novaforge_style import EVEColorScheme, get_health_color, get_capacitor_color
     from panda3d.core import Vec4
     
     # Test that colors are Vec4
@@ -78,7 +78,7 @@ def test_panel_style():
     """Test panel style constants"""
     print("\nTesting panel style...")
     
-    from client_3d.ui.eve_style import EVEPanelStyle
+    from client_3d.ui.novaforge_style import EVEPanelStyle
     
     # Test constants exist
     assert hasattr(EVEPanelStyle, 'FONT_SIZE_NORMAL')
@@ -98,12 +98,12 @@ def test_layout_presets():
     """Test layout presets"""
     print("\nTesting layout presets...")
     
-    from client_3d.ui.eve_style import EVELayoutPresets
+    from client_3d.ui.novaforge_style import EVELayoutPresets
     
     # Test that presets exist
     assert hasattr(EVELayoutPresets, 'SHIP_STATUS')
     assert hasattr(EVELayoutPresets, 'TARGET_INFO')
-    assert hasattr(EVELayoutPresets, 'NEOCOM')
+    assert hasattr(EVELayoutPresets, 'NEXCOM')
     print("✓ Layout presets defined")
     
     # Test structure
@@ -157,11 +157,11 @@ def main():
         print("=" * 60)
         print("\nEVE-styled UI components are properly configured!")
         print("\nKey Features:")
-        print("  • EVE Online Photon UI color scheme")
+        print("  • Astralis Photon UI color scheme")
         print("  • Circular capacitor ring display")
         print("  • Concentric health rings (shield/armor/hull)")
         print("  • EVE-styled panels with borders and headers")
-        print("  • Neocom-style left sidebar")
+        print("  • Nexcom-style left sidebar")
         print("  • Overview panel")
         print("  • Combat log with proper styling")
         print("  • Target info panel")
@@ -169,7 +169,7 @@ def main():
         print("\nTo test with 3D client:")
         print("  python client_3d.py \"TestPilot\"")
         print("\nTo test standalone UI demo:")
-        print("  python test_eve_hud.py")
+        print("  python test_novaforge_hud.py")
         return 0
     else:
         print("✗ SOME TESTS FAILED")

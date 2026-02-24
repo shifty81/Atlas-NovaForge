@@ -1,7 +1,7 @@
 """
 Moon Mining System
 Handles moon extraction operations, chunk fracturing, and moon ore belts
-Based on EVE Online moon mining mechanics (Refinery-based)
+Based on Astralis moon mining mechanics (Refinery-based)
 """
 
 from typing import Optional, Dict, List, Tuple, Union
@@ -19,65 +19,65 @@ MOON_ORE_DATA = {
         "rarity": "R4",
         "name": "Ubiquitous Moon Ore",
         "volume_per_unit": 0.1,
-        "minerals": {"tritanium": 500, "pyerite": 200}
+        "minerals": {"stellium": 500, "vanthium": 200}
     },
     "common_moon_ore": {
         "rarity": "R4",
         "name": "Common Moon Ore",
         "volume_per_unit": 0.1,
-        "minerals": {"tritanium": 400, "mexallon": 150}
+        "minerals": {"stellium": 400, "cydrium": 150}
     },
     # R8 (Uncommon moon ores)
     "uncommon_moon_ore": {
         "rarity": "R8",
         "name": "Uncommon Moon Ore",
         "volume_per_unit": 0.1,
-        "minerals": {"pyerite": 300, "isogen": 100}
+        "minerals": {"vanthium": 300, "aethite": 100}
     },
     "sylvite": {
         "rarity": "R8",
         "name": "Sylvite",
         "volume_per_unit": 0.1,
-        "minerals": {"mexallon": 200, "nocxium": 50}
+        "minerals": {"cydrium": 200, "umbrium": 50}
     },
     # R16 (Rare moon ores)
     "rare_moon_ore": {
         "rarity": "R16",
         "name": "Rare Moon Ore",
         "volume_per_unit": 0.1,
-        "minerals": {"isogen": 200, "nocxium": 100, "zydrine": 20}
+        "minerals": {"aethite": 200, "umbrium": 100, "celestine": 20}
     },
     "cobaltite": {
         "rarity": "R16",
         "name": "Cobaltite",
         "volume_per_unit": 0.1,
-        "minerals": {"nocxium": 150, "zydrine": 30}
+        "minerals": {"umbrium": 150, "celestine": 30}
     },
     # R32 (Exceptional moon ores)
     "exceptional_moon_ore": {
         "rarity": "R32",
         "name": "Exceptional Moon Ore",
         "volume_per_unit": 0.1,
-        "minerals": {"nocxium": 200, "zydrine": 50, "megacyte": 10}
+        "minerals": {"umbrium": 200, "celestine": 50, "novarite": 10}
     },
     "carnotite": {
         "rarity": "R32",
         "name": "Carnotite",
         "volume_per_unit": 0.1,
-        "minerals": {"zydrine": 80, "megacyte": 20}
+        "minerals": {"celestine": 80, "novarite": 20}
     },
     # R64 (Legendary moon ores - very rare)
     "legendary_moon_ore": {
         "rarity": "R64",
         "name": "Legendary Moon Ore",
         "volume_per_unit": 0.1,
-        "minerals": {"zydrine": 100, "megacyte": 50, "morphite": 5}
+        "minerals": {"celestine": 100, "novarite": 50, "morphite": 5}
     },
     "xenotime": {
         "rarity": "R64",
         "name": "Xenotime",
         "volume_per_unit": 0.1,
-        "minerals": {"megacyte": 80, "morphite": 10}
+        "minerals": {"novarite": 80, "morphite": 10}
     },
 }
 

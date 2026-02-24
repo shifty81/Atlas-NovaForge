@@ -1,5 +1,5 @@
-#ifndef EVE_GAME_SESSION_H
-#define EVE_GAME_SESSION_H
+#ifndef NOVAFORGE_GAME_SESSION_H
+#define NOVAFORGE_GAME_SESSION_H
 
 #include "ecs/world.h"
 #include "network/tcp_server.h"
@@ -398,4 +398,4 @@ private:
 
 } // namespace atlas
 
-#endif // EVE_GAME_SESSION_H
+#endif // NOVAFORGE_GAME_SESSION_H

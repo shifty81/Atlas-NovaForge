@@ -1135,7 +1135,7 @@ void GameSession::handleRepairRequest(const network::ClientConnection& client,
     tcp_server_->sendToClient(client, 
         protocol_.createRepairResult(static_cast<float>(cost), shield_hp, armor_hp, hull_hp));
     
-    std::cout << "[GameSession] Player " << entity_id << " repaired for " << cost << " ISK" << std::endl;
+    std::cout << "[GameSession] Player " << entity_id << " repaired for " << cost << " Credits" << std::endl;
 }
 
 // ---------------------------------------------------------------------------

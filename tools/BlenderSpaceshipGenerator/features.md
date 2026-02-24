@@ -1,7 +1,7 @@
 # Feature Specification
 
 Structured feature list and design rules for the BlenderSpaceshipGenerator
-and the EVEOFFLINE game engine that consumes its output.
+and the NOVAFORGE game engine that consumes its output.
 
 > For engine-specific data structures, JSON schemas, and C++ mappings see
 > **[ENGINE_INTEGRATION.md](ENGINE_INTEGRATION.md)**.
@@ -25,7 +25,7 @@ and the EVEOFFLINE game engine that consumes its output.
 13. [Texture & Material System](#13-texture--material-system)
 14. [Station Generation](#14-station-generation)
 15. [Asteroid Belt Generation](#15-asteroid-belt-generation)
-16. [EVEOFFLINE / Atlas Integration](#16-eveoffline--atlas-integration)
+16. [NOVAFORGE / Atlas Integration](#16-novaforge--atlas-integration)
 17. [Damage Propagation & Salvage](#17-damage-propagation--salvage)
 18. [Player Build Mode UX](#18-player-build-mode-ux)
 19. [Implementation Status](#19-implementation-status)
@@ -304,7 +304,7 @@ Ship DNA is the canonical, reproducible serialisation of a ship.
   "seed": 917221,
   "class": "CRUISER",
   "style": "SOLARI",
-  "naming_prefix": "EVEOFFLINE",
+  "naming_prefix": "NOVAFORGE",
   "grid_size": 2.0,
   "bricks": [
     {"type": "STRUCTURAL_SPINE", "pos": [0, 0, 0]},
@@ -430,7 +430,7 @@ custom properties for engine mapping.
 | No Man's Sky    | Colorful, varied | Rounded + bevel hybrid |
 | Mixed           | Combination | Light bevel |
 
-### EVEOFFLINE Factions
+### NOVAFORGE Factions
 
 | Faction   | Visual Style | Tank Focus | Hull Modifier |
 |----------|-------------|------------|--------------|
@@ -494,7 +494,7 @@ palettes, giving each ship a unique but consistent scheme.
 
 ### Ore Types (16)
 
-All ore types from EVEOFFLINE, ranging from common highsec (Dustite) to
+All ore types from NOVAFORGE, ranging from common highsec (Dustite) to
 rare nullsec (Nexorite).  Each ore has distinct color, roughness, and
 metallic PBR values.
 
@@ -512,11 +512,11 @@ random rotation/size, and PBR material matching ore visual data.
 
 ---
 
-## 16. EVEOFFLINE / Atlas Integration
+## 16. NOVAFORGE / Atlas Integration
 
 ### Import Pipeline
 
-1. Load ship JSON from `EVEOFFLINE/data/ships/*.json`
+1. Load ship JSON from `NOVAFORGE/data/ships/*.json`
 2. Map `race` → faction style, `class` → ship class, `generation_seed` → seed
 3. Calculate module slots from high/mid/low slot totals
 4. Generate matching geometry
@@ -524,7 +524,7 @@ random rotation/size, and PBR material matching ore visual data.
 ### Export Pipeline
 
 1. Select hull object in Blender
-2. Set export path to `EVEOFFLINE/data/ships/obj_models/`
+2. Set export path to `NOVAFORGE/data/ships/obj_models/`
 3. Export OBJ (forward: −Z, up: Y)
 4. Rename file to match ship `id` from JSON
 
@@ -536,7 +536,7 @@ A batch script can generate all ships headlessly:
 blender --background --python batch_generate.py
 ```
 
-> **Full integration guide →** [EVEOFFLINE_GUIDE.md](EVEOFFLINE_GUIDE.md)
+> **Full integration guide →** [NOVAFORGE_GUIDE.md](NOVAFORGE_GUIDE.md)
 >
 > **Engine data formats →** [ENGINE_INTEGRATION.md](ENGINE_INTEGRATION.md)
 
@@ -630,11 +630,11 @@ the SDF hull skin wraps around them automatically.
 - [x] Module-specific interior rooms (armory, shield control, sensor ops, power core, hangar bay)
 - [x] Module system (6 types, progressive availability)
 - [x] Module-driven exterior influence (hull features per fitted module type)
-- [x] 4 game-inspired styles + 4 EVEOFFLINE factions + NMS
+- [x] 4 game-inspired styles + 4 NOVAFORGE factions + NMS
 - [x] Procedural PBR textures with weathering
 - [x] Station generation (8 types, 4 faction architectures)
 - [x] Asteroid belt generation (16 ore types, 4 layouts)
-- [x] EVEOFFLINE JSON import
+- [x] NOVAFORGE JSON import
 - [x] OBJ export for Atlas engine
 - [x] Naming prefix system
 - [x] Batch generation support

@@ -209,7 +209,7 @@ def demo_mission_system():
     player.add_component(Player(
         player_id="pilot1",
         character_name="Captain Kirk",
-        isk=5000000
+        credits=5000000
     ))
     player.add_component(Position(x=0, y=0, z=0))
     
@@ -237,7 +237,7 @@ def demo_mission_system():
         print(f"   Progress: {progress['progress']}")
     
     print("\n💰 Mission Rewards:")
-    print("   ISK: 150,000")
+    print("   Credits: 150,000")
     print("   Loyalty Points: 500")
 
 
@@ -417,7 +417,7 @@ def main():
             traceback.print_exc()
     
     print_header("DEMONSTRATION COMPLETE")
-    print("✅ All core EVE Online features demonstrated!")
+    print("✅ All core Astralis features demonstrated!")
     print("\n📚 For more information:")
     print("   • See docs/features/NEW_FEATURES.md for complete feature documentation")
     print("   • Run tests/test_engine.py for core system tests")

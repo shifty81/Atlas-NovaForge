@@ -1,5 +1,5 @@
-#ifndef EVE_ECS_WORLD_H
-#define EVE_ECS_WORLD_H
+#ifndef NOVAFORGE_ECS_WORLD_H
+#define NOVAFORGE_ECS_WORLD_H
 
 #include "entity.h"
 #include "system.h"
@@ -82,4 +82,4 @@ std::vector<Entity*> World::getEntities() {
 } // namespace ecs
 } // namespace atlas
 
-#endif // EVE_ECS_WORLD_H
+#endif // NOVAFORGE_ECS_WORLD_H

@@ -12,7 +12,7 @@ namespace atlas {
 /**
  * Represents a celestial object in a solar system that can be warped to.
  * 
- * In EVE Online, each system has a sun at the origin and static celestials
+ * In Astralis, each system has a sun at the origin and static celestials
  * (planets, moons, stations, stargates, asteroid belts) at fixed positions.
  * All are valid warp destinations. The sun casts directional light on the
  * entire system.

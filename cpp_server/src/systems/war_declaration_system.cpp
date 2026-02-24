@@ -35,9 +35,9 @@ std::string WarDeclarationSystem::declareWar(const std::string& aggressor_id,
     auto* player = aggressor_entity->getComponent<components::Player>();
     if (!player) return "";
 
-    if (player->isk < war_cost) return "";
+    if (player->credits < war_cost) return "";
 
-    player->isk -= war_cost;
+    player->credits -= war_cost;
 
     war_counter_++;
     std::string war_id = "war_" + std::to_string(war_counter_);

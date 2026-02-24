@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_SALVAGE_SYSTEM_H
-#define EVE_PCG_SALVAGE_SYSTEM_H
+#ifndef NOVAFORGE_PCG_SALVAGE_SYSTEM_H
+#define NOVAFORGE_PCG_SALVAGE_SYSTEM_H
 
 #include "pcg_context.h"
 #include "deterministic_rng.h"
@@ -25,7 +25,7 @@ enum class SalvageCategory : uint32_t {
 struct SalvageNode {
     int nodeId;
     SalvageCategory category;
-    float value;           // base ISK value
+    float value;           // base Credits value
     bool requiresScan;     // hidden until scanned
     bool requiresCutter;   // needs cutter tool to extract
     float posX, posY, posZ;
@@ -59,4 +59,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_SALVAGE_SYSTEM_H
+#endif // NOVAFORGE_PCG_SALVAGE_SYSTEM_H

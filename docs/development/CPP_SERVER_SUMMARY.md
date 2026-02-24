@@ -282,7 +282,7 @@ mission = NameGenerator.generate_mission_name()
 ### Systemd Service
 ```ini
 [Service]
-ExecStart=/opt/eve-offline/cpp_server/build/bin/eve_dedicated_server
+ExecStart=/opt/novaforge/cpp_server/build/bin/eve_dedicated_server
 ```
 
 ### Docker (Future)

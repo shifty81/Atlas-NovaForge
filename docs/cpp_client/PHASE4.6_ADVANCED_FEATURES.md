@@ -260,7 +260,7 @@ using QuickSellCallback = std::function<void(const std::string& item_id, int qua
 **Demo Data**:
 - **Inventory**: 5 cargo items, 8 hangar items (ores, minerals, modules, ships)
 - **Module Browser**: 16 modules across all categories and slots
-- **Market**: 10 items with buy/sell orders for 2 items (Veldspar, Tritanium)
+- **Market**: 10 items with buy/sell orders for 2 items (Ferrite, Stellium)
 
 **Build and Run**:
 ```bash

@@ -8,17 +8,17 @@ This document analyzes gameplay features from EVE Online that are missing or inc
 ### 1. **Sovereignty & Security Status System**
 **EVE Online Implementation:**
 - Security status ranges from 1.0 (high-sec) to -1.0 (null-sec)
-- CONCORD response in high-sec
+- AEGIS response in high-sec
 - Gate guns and faction police
 - Criminal flagging and suspect timers
 
-**Current Status:** Data structures defined (`data/security/concord_and_insurance.json`)
+**Current Status:** Data structures defined (`data/security/aegis_and_insurance.json`)
 **Implementation Needed:**
-- [x] CONCORD response time data per security level
+- [x] AEGIS response time data per security level
 - [x] Criminal flagging mechanics (suspect, criminal, weapons timer)
 - [x] Security status tracking range (-10.0 to +10.0) with effects
 - [x] Faction standing system consequences
-- [ ] Runtime CONCORD NPC spawning in server code
+- [ ] Runtime AEGIS NPC spawning in server code
 - [ ] Gate gun AI behavior
 
 ---
@@ -42,8 +42,8 @@ This document analyzes gameplay features from EVE Online that are missing or inc
 
 ### 3. **Bounty & Reward System**
 **EVE Online Implementation:**
-- ISK bounties on NPC kills
-- Mission rewards (ISK + LP + items)
+- Credits bounties on NPC kills
+- Mission rewards (Credits + LP + items)
 - Insurance payouts
 - Salvage from wrecks
 
@@ -52,7 +52,7 @@ This document analyzes gameplay features from EVE Online that are missing or inc
 - [ ] Automatic bounty payout on NPC destruction
 - [ ] Loyalty Points (LP) system
 - [ ] LP stores with unique items
-- [x] Insurance contract data (`data/security/concord_and_insurance.json`)
+- [x] Insurance contract data (`data/security/aegis_and_insurance.json`)
 - [ ] Salvaging mechanics with modules
 
 ---
@@ -61,7 +61,7 @@ This document analyzes gameplay features from EVE Online that are missing or inc
 **EVE Online Implementation:**
 - Wormhole space with no local chat
 - Sleeper NPCs and blue loot
-- Null-sec with no CONCORD
+- Null-sec with no AEGIS
 - Anomalies and signatures that spawn dynamically
 
 **Current Status:** Basic exploration signatures exist
@@ -96,7 +96,7 @@ This document analyzes gameplay features from EVE Online that are missing or inc
 
 ### 6. **Clone & Medical System**
 **EVE Online Implementation:**
-- Jump clones for fast travel
+- Relay clones for fast travel
 - Medical clones with implants
 - Skill point loss on pod death
 - Clone grades
@@ -104,15 +104,15 @@ This document analyzes gameplay features from EVE Online that are missing or inc
 **Current Status:** Data structures defined (`data/character_creation/clones.json`, `data/character_creation/implants.json`)
 **Implementation Needed:**
 - [x] Clone grades and skill point retention data
-- [x] Jump clone mechanics (24-hour cooldown, Infomorph Psychology skill)
+- [x] Relay clone mechanics (24-hour cooldown, Infomorph Psychology skill)
 - [x] Implant system (5 attribute slots, 4 grades)
 - [x] Death mechanics (pod kill, skill point loss, implant loss)
 - [ ] Clone bay station service in server code
-- [ ] Jump clone installation UI
+- [ ] Relay clone installation UI
 
 ---
 
-### 7. **Planetary Interaction (PI)**
+### 7. **Planetary Operations (PI)**
 **EVE Online Implementation:**
 - Extract resources from planets
 - Build command centers
@@ -226,7 +226,7 @@ This document analyzes gameplay features from EVE Online that are missing or inc
 1. Improved NPC AI
 2. Officer spawns
 3. Security status system
-4. CONCORD mechanics
+4. AEGIS mechanics
 
 ### Phase 3: Exploration & Space
 1. Wormhole system
@@ -242,7 +242,7 @@ This document analyzes gameplay features from EVE Online that are missing or inc
 
 ### Phase 5: Social & Endgame
 1. Incursions
-2. Planetary Interaction
+2. Planetary Operations
 3. Advanced corporation features
 4. Alliance mechanics
 

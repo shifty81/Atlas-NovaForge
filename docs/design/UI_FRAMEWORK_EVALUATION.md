@@ -137,7 +137,7 @@ system interface, plus migrating panel layouts from C++ to RML/RCSS.
 ## Recommendation: Hybrid RmlUi + ImGui
 
 **Primary UI**: Migrate to **RmlUi** for all game-facing panels (HUD, Overview,
-Fitting, Market, Neocom, etc.).
+Fitting, Market, Nexcom, etc.).
 
 **Debug/Dev UI**: Keep **ImGui** for developer tools, debug overlays, and
 performance metrics.
@@ -163,7 +163,7 @@ Phase 3: Complex Panels
   ├── Inventory Panel → RML tree/grid layout
   ├── Market Panel → RML with charts and tables
   ├── Mission Panel → RML with rich text
-  └── Neocom Sidebar → RML vertical icon bar
+  └── Nexcom Sidebar → RML vertical icon bar
 
 Phase 4: Advanced Features
   ├── Context Menu → RML popup

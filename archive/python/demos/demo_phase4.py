@@ -28,37 +28,37 @@ def demo_corporations():
     
     # Create a CEO
     ceo = world.create_entity("ceo_1")
-    ceo.add_component(Player(character_name="John Shepard", isk=5000000.0))
-    print(f"✓ Created CEO: John Shepard with 5M ISK")
+    ceo.add_component(Player(character_name="John Shepard", credits=5000000.0))
+    print(f"✓ Created CEO: John Shepard with 5M Credits")
     
     # Create a corporation
     corp_id = corp_system.create_corporation(
         ceo,
         "Normandy Industries",
         "NORM",
-        "Saving the galaxy, one ISK at a time"
+        "Saving the galaxy, one Credits at a time"
     )
     print(f"✓ Created corporation: Normandy Industries [NORM] (ID: {corp_id})")
-    print(f"  CEO has {ceo.get_component(Player).isk:,.0f} ISK remaining")
+    print(f"  CEO has {ceo.get_component(Player).credits:,.0f} Credits remaining")
     
     # Get corporation details
     corp = corp_system.get_corporation(corp_id)
     print(f"✓ Corporation details:")
     print(f"  - Members: {len(corp.members)}")
     print(f"  - Tax rate: {corp.tax_rate*100}%")
-    print(f"  - Wallet: {corp.wallet_balance:,.0f} ISK")
+    print(f"  - Wallet: {corp.wallet_balance:,.0f} Credits")
     
     # Add a member
     member = world.create_entity("member_1")
-    member.add_component(Player(character_name="Garrus Vakarian", isk=1000000.0))
+    member.add_component(Player(character_name="Garrus Vakarian", credits=1000000.0))
     corp_system.add_member(corp_id, member)
     print(f"✓ Added member: Garrus Vakarian")
     print(f"  - Total members: {len(corp.members)}")
     
     # Deposit to corporation wallet
     corp_system.deposit_to_wallet(corp_id, ceo, 500000.0)
-    print(f"✓ CEO deposited 500K ISK to corp wallet")
-    print(f"  - Corp wallet: {corp.wallet_balance:,.0f} ISK")
+    print(f"✓ CEO deposited 500K Credits to corp wallet")
+    print(f"  - Corp wallet: {corp.wallet_balance:,.0f} Credits")
     
     # Add items to hangar
     corp_system.add_to_hangar(corp_id, "Division 1", "item_rifter", 10)
@@ -70,9 +70,9 @@ def demo_corporations():
     # Apply taxes
     earnings = 100000.0
     after_tax = corp_system.apply_tax(member, earnings)
-    print(f"✓ Member earned 100K ISK")
-    print(f"  - After {corp.tax_rate*100}% tax: {after_tax:,.0f} ISK")
-    print(f"  - Corp wallet: {corp.wallet_balance:,.0f} ISK")
+    print(f"✓ Member earned 100K Credits")
+    print(f"  - After {corp.tax_rate*100}% tax: {after_tax:,.0f} Credits")
+    print(f"  - Corp wallet: {corp.wallet_balance:,.0f} Credits")
     
     print("✅ Corporation system demo complete!")
 
@@ -155,12 +155,12 @@ def demo_contracts():
     
     # Create two traders
     seller = world.create_entity("seller_1")
-    seller.add_component(Player(character_name="Alice Trader", isk=5000000.0))
+    seller.add_component(Player(character_name="Alice Trader", credits=5000000.0))
     inventory = Inventory(items={"item_rifter": 5, "item_ammo_emp": 1000}, cargo_capacity=1000.0)
     seller.add_component(inventory)
     
     buyer = world.create_entity("buyer_1")
-    buyer.add_component(Player(character_name="Bob Buyer", isk=2000000.0))
+    buyer.add_component(Player(character_name="Bob Buyer", credits=2000000.0))
     buyer.add_component(Inventory(cargo_capacity=1000.0))
     
     print(f"✓ Created traders: Alice (seller) and Bob (buyer)")
@@ -170,7 +170,7 @@ def demo_contracts():
         seller,
         items_offered={"item_rifter": 2},
         items_requested={},
-        price=500000.0,  # 500K ISK for 2 Rifters
+        price=500000.0,  # 500K Credits for 2 Rifters
         collateral=100000.0,
         expiration_days=7,
         availability="public",
@@ -178,8 +178,8 @@ def demo_contracts():
     )
     print(f"✓ Alice created item exchange contract (ID: {contract_id})")
     print(f"  - Offering: 2x Rifter")
-    print(f"  - Price: 500,000 ISK")
-    print(f"  - Alice's ISK: {seller.get_component(Player).isk:,.0f}")
+    print(f"  - Price: 500,000 Credits")
+    print(f"  - Alice's Credits: {seller.get_component(Player).credits:,.0f}")
     
     # List available contracts
     available = contract_system.list_available_contracts(buyer, location="Jita")
@@ -189,13 +189,13 @@ def demo_contracts():
     success = contract_system.accept_item_exchange_contract(buyer, contract_id)
     if success:
         print(f"✓ Bob accepted the contract")
-        print(f"  - Bob's ISK: {buyer.get_component(Player).isk:,.0f}")
+        print(f"  - Bob's Credits: {buyer.get_component(Player).credits:,.0f}")
         print(f"  - Bob's Rifters: {buyer.get_component(Inventory).items.get('item_rifter', 0)}")
-        print(f"  - Alice's ISK: {seller.get_component(Player).isk:,.0f}")
+        print(f"  - Alice's Credits: {seller.get_component(Player).credits:,.0f}")
     
     # Create courier contract
     courier_seller = world.create_entity("courier_1")
-    courier_seller.add_component(Player(character_name="Charlie Courier", isk=3000000.0))
+    courier_seller.add_component(Player(character_name="Charlie Courier", credits=3000000.0))
     courier_seller.add_component(Inventory(items={"item_ore_veldspar": 1000}, cargo_capacity=2000.0))
     
     contract_id2 = contract_system.create_courier_contract(
@@ -210,9 +210,9 @@ def demo_contracts():
     )
     print(f"\n✓ Charlie created courier contract (ID: {contract_id2})")
     print(f"  - Route: Jita → Amarr")
-    print(f"  - Cargo: 500x Veldspar Ore")
-    print(f"  - Reward: 100,000 ISK")
-    print(f"  - Collateral: 500,000 ISK")
+    print(f"  - Cargo: 500x Ferrite Ore")
+    print(f"  - Reward: 100,000 Credits")
+    print(f"  - Collateral: 500,000 Credits")
     
     print("✅ Contract system demo complete!")
 

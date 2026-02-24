@@ -13,7 +13,7 @@ namespace atlas {
 namespace UI {
 
 /**
- * EVE Online-style radial menu for in-space interaction.
+ * Astralis-style radial menu for in-space interaction.
  *
  * Activated by holding left mouse button on an entity in space.
  * Shows a circular menu with options: Orbit, Approach, Warp To, Lock,

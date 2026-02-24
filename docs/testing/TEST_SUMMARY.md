@@ -55,7 +55,7 @@ Comprehensive test suite for EVEOFFLINE's Phase 3 systems, covering exploration,
 
 ### 5. Market System Tests (`test_market.py`) - **NEW**
 **23 test functions** covering market and economy mechanics
-- Wallet ISK management
+- Wallet Credits management
 - Market order placement (buy/sell)
 - Instant transactions
 - Order cancellation with refunds

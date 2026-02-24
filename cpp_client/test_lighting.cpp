@@ -148,8 +148,8 @@ int main() {
     uiManager->AddCombatLogMessage("[12:35:00] Hit! 250 damage dealt");
     uiManager->AddCombatLogMessage("[12:35:02] Target shields depleted");
     
-    // Test 1: EVE-style lighting (3 directional lights)
-    std::cout << "\n=== Test 1: EVE-Style Lighting ===" << std::endl;
+    // Test 1: Astralis-style lighting (3 directional lights)
+    std::cout << "\n=== Test 1: Astralis-Style Lighting ===" << std::endl;
     lightManager->setupEVEStyleLighting();
     
     // Create some test objects (spheres)
@@ -170,7 +170,7 @@ int main() {
     std::cout << "  Right Mouse: Rotate camera" << std::endl;
     std::cout << "  Middle Mouse: Pan camera" << std::endl;
     std::cout << "  Mouse Wheel: Zoom in/out" << std::endl;
-    std::cout << "  1: EVE-style lighting (3 directional)" << std::endl;
+    std::cout << "  1: Astralis-style lighting (3 directional)" << std::endl;
     std::cout << "  2: Single directional light" << std::endl;
     std::cout << "  3: Point lights demo" << std::endl;
     std::cout << "  4: Spot lights demo" << std::endl;
@@ -188,7 +188,7 @@ int main() {
         
         // Check for test changes
         if (glfwGetKey(window.getHandle(), GLFW_KEY_1) == GLFW_PRESS && currentTest != 1) {
-            std::cout << "\n=== Test 1: EVE-Style Lighting ===" << std::endl;
+            std::cout << "\n=== Test 1: Astralis-Style Lighting ===" << std::endl;
             lightManager->setupEVEStyleLighting();
             currentTest = 1;
         }

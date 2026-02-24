@@ -1,6 +1,6 @@
 """
-EVE Online UI Style Configuration
-Mimics the Photon UI color scheme and styling from EVE Online
+Astralis UI Style Configuration
+Mimics the Photon UI color scheme and styling from Astralis
 """
 
 from panda3d.core import Vec4
@@ -9,8 +9,8 @@ from typing import Dict, Tuple
 
 class EVEColorScheme:
     """
-    EVE Online Photon UI color scheme
-    Based on the official EVE Online interface design
+    Astralis Photon UI color scheme
+    Based on the official Astralis interface design
     """
     
     # Primary UI Colors (RGBA normalized 0-1)
@@ -117,7 +117,7 @@ class EVEPanelStyle:
 
 class EVELayoutPresets:
     """
-    Common layout presets matching EVE Online's interface
+    Common layout presets matching Astralis's interface
     """
     
     # HUD Center (Ship status and capacitor)
@@ -161,8 +161,8 @@ class EVELayoutPresets:
         'anchor': 'bottom',
     }
     
-    # Neocom (Left sidebar)
-    NEOCOM = {
+    # Nexcom (Left sidebar)
+    NEXCOM = {
         'pos': (-1.0, 0, 0.0),
         'size': (0.12, 1.8),
         'anchor': 'left',
@@ -203,7 +203,7 @@ class EVEIconPaths:
     ICON_SHIP_DESTROYER = "icons/destroyer.png"
     ICON_SHIP_CRUISER = "icons/cruiser.png"
     
-    # Neocom menu items
+    # Nexcom menu items
     ICON_INVENTORY = "icons/inventory.png"
     ICON_FITTING = "icons/fitting.png"
     ICON_MAP = "icons/map.png"

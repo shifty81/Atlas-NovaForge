@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_MISSION_SYSTEM_H
-#define EVE_SYSTEMS_MISSION_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_MISSION_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_MISSION_SYSTEM_H
 
 #include "ecs/system.h"
 #include "components/game_components.h"
@@ -16,7 +16,7 @@ namespace systems {
  *  - Decrements time_remaining on timed missions
  *  - Checks if all objectives are satisfied
  *  - Marks missions completed/failed
- *  - Awards ISK + standing on completion
+ *  - Awards Credits + standing on completion
  */
 class MissionSystem : public ecs::System {
 public:
@@ -85,4 +85,4 @@ private:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_MISSION_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_MISSION_SYSTEM_H

@@ -75,7 +75,7 @@ PIRATE_FACTIONS = {
 # SECURITY / ORGANIZATIONS
 # ---------------------------------------------------------------------------
 ORGANIZATIONS = {
-    "CONCORD": "AEGIS",
+    "AEGIS": "AEGIS",
     "New Eden": "Astralis",
     "EVE OFFLINE": "EVEOFFLINE",  # project name stays
 }
@@ -98,12 +98,12 @@ NPC_CORPORATIONS = {
 # ORE MAPPINGS
 # ---------------------------------------------------------------------------
 ORES = {
-    "Veldspar": "Dustite",
-    "Scordite": "Ferrite",
-    "Pyroxeres": "Ignaite",
-    "Plagioclase": "Crystite",
-    "Omber": "Shadite",
-    "Kernite": "Corite",
+    "Ferrite": "Dustite",
+    "Galvite": "Ferrite",
+    "Cryolite": "Ignaite",
+    "Silvane": "Crystite",
+    "Duskite": "Shadite",
+    "Heliore": "Corite",
     "Jaspet": "Lumine",
     "Hemorphite": "Sangite",
     "Hedbergite": "Glacite",
@@ -119,13 +119,13 @@ ORES = {
 # MINERAL MAPPINGS
 # ---------------------------------------------------------------------------
 MINERALS = {
-    "Tritanium": "Ferrium",
-    "Pyerite": "Ignium",
-    "Mexallon": "Allonium",
-    "Isogen": "Isodium",
-    "Nocxium": "Noctium",
-    "Zydrine": "Zyrium",
-    "Megacyte": "Megrium",
+    "Stellium": "Ferrium",
+    "Vanthium": "Ignium",
+    "Cydrium": "Allonium",
+    "Aethite": "Isodium",
+    "Umbrium": "Noctium",
+    "Celestine": "Zyrium",
+    "Novarite": "Megrium",
     "Morphite": "Morphium",
 }
 
@@ -424,10 +424,10 @@ MISSIONS = {
 # ---------------------------------------------------------------------------
 LORE_TERMS = {
     "New Eden": "Astralis",
-    "capsuleer": "starhelm",
-    "capsuleers": "starhelms",
-    "Capsuleer": "Starhelm",
-    "Capsuleers": "Starhelms",
+    "voidrunner": "starhelm",
+    "voidrunners": "starhelms",
+    "Voidrunner": "Starhelm",
+    "Voidrunners": "Starhelms",
 }
 
 # ---------------------------------------------------------------------------

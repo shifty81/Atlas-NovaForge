@@ -125,7 +125,7 @@ int OverviewPanel::CalculateStanding(const std::string& faction, bool is_player)
     if (faction == "Caldari" || faction == "Gallente" || ...) return 0;
     
     // Friendly factions
-    if (faction == "CONCORD" || faction == "ORE" || ...) return 5;
+    if (faction == "AEGIS" || faction == "ORE" || ...) return 5;
     
     return 0; // Default neutral
 }
@@ -159,7 +159,7 @@ int OverviewPanel::CalculateStanding(const std::string& faction, bool is_player)
 - Standings > 5.0: NPCs provide assistance when attacked
 
 **Mission Rewards:**
-- ISK rewards increased by 5% per +1.0 standing (max 50%)
+- Credits rewards increased by 5% per +1.0 standing (max 50%)
 - LP gains increased by 10% per +1.0 standing (max 100%)
 
 ## Serialization

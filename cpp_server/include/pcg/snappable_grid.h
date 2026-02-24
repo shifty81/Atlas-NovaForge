@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_SNAPPABLE_GRID_H
-#define EVE_PCG_SNAPPABLE_GRID_H
+#ifndef NOVAFORGE_PCG_SNAPPABLE_GRID_H
+#define NOVAFORGE_PCG_SNAPPABLE_GRID_H
 
 #include "pcg_context.h"
 #include "deterministic_rng.h"
@@ -59,4 +59,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_SNAPPABLE_GRID_H
+#endif // NOVAFORGE_PCG_SNAPPABLE_GRID_H

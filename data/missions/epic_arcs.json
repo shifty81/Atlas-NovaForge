@@ -26,7 +26,7 @@
       }
     ],
     "rewards": {
-      "isk": 2000000,
+      "credits": 2000000,
       "loyalty_points": 3000,
       "standing_gain": 0.08,
       "faction_standing_gain": 0.03,
@@ -78,7 +78,7 @@
       }
     ],
     "rewards": {
-      "isk": 5000000,
+      "credits": 5000000,
       "loyalty_points": 5000,
       "standing_gain": 0.1,
       "faction_standing_gain": 0.04,
@@ -130,7 +130,7 @@
       }
     ],
     "rewards": {
-      "isk": 15000000,
+      "credits": 15000000,
       "loyalty_points": 12000,
       "standing_gain": 0.15,
       "faction_standing_gain": 0.06,
@@ -178,7 +178,7 @@
       }
     ],
     "rewards": {
-      "isk": 2000000,
+      "credits": 2000000,
       "loyalty_points": 3000,
       "standing_gain": 0.08,
       "faction_standing_gain": 0.03,
@@ -230,7 +230,7 @@
       }
     ],
     "rewards": {
-      "isk": 5000000,
+      "credits": 5000000,
       "loyalty_points": 5000,
       "standing_gain": 0.1,
       "faction_standing_gain": 0.04,
@@ -282,7 +282,7 @@
       }
     ],
     "rewards": {
-      "isk": 15000000,
+      "credits": 15000000,
       "loyalty_points": 12000,
       "standing_gain": 0.15,
       "faction_standing_gain": 0.06,
@@ -335,7 +335,7 @@
       }
     ],
     "rewards": {
-      "isk": 2000000,
+      "credits": 2000000,
       "loyalty_points": 3000,
       "standing_gain": 0.08,
       "faction_standing_gain": 0.03,
@@ -387,7 +387,7 @@
       }
     ],
     "rewards": {
-      "isk": 5000000,
+      "credits": 5000000,
       "loyalty_points": 5000,
       "standing_gain": 0.1,
       "faction_standing_gain": 0.04,
@@ -439,7 +439,7 @@
       }
     ],
     "rewards": {
-      "isk": 15000000,
+      "credits": 15000000,
       "loyalty_points": 12000,
       "standing_gain": 0.15,
       "faction_standing_gain": 0.06,
@@ -487,7 +487,7 @@
       }
     ],
     "rewards": {
-      "isk": 2000000,
+      "credits": 2000000,
       "loyalty_points": 3000,
       "standing_gain": 0.08,
       "faction_standing_gain": 0.03,
@@ -539,7 +539,7 @@
       }
     ],
     "rewards": {
-      "isk": 5000000,
+      "credits": 5000000,
       "loyalty_points": 5000,
       "standing_gain": 0.1,
       "faction_standing_gain": 0.04,
@@ -591,7 +591,7 @@
       }
     ],
     "rewards": {
-      "isk": 15000000,
+      "credits": 15000000,
       "loyalty_points": 12000,
       "standing_gain": 0.15,
       "faction_standing_gain": 0.06,

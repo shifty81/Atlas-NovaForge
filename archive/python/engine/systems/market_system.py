@@ -1,7 +1,7 @@
 """
 Market and Economy System
 Handles buy/sell orders, trading, and market mechanics
-Inspired by EVE Online's market system
+Inspired by Astralis's market system
 """
 
 from typing import Optional, Dict, List
@@ -22,7 +22,7 @@ class MarketOrder:
     order_id: str
     item_id: str
     order_type: OrderType
-    price: float  # ISK per unit
+    price: float  # Credits per unit
     quantity: int
     remaining: int
     min_volume: int = 1  # Minimum quantity per transaction
@@ -38,23 +38,23 @@ class MarketOrder:
 
 @dataclass
 class Wallet:
-    """ISK wallet component"""
-    isk: float = 10000000.0  # Start with 10M ISK
+    """Credits wallet component"""
+    credits: float = 10000000.0  # Start with 10M Credits
     
     def can_afford(self, amount: float) -> bool:
-        """Check if wallet has enough ISK"""
-        return self.isk >= amount
+        """Check if wallet has enough Credits"""
+        return self.credits >= amount
     
     def withdraw(self, amount: float) -> bool:
-        """Remove ISK from wallet"""
+        """Remove Credits from wallet"""
         if self.can_afford(amount):
-            self.isk -= amount
+            self.credits -= amount
             return True
         return False
     
     def deposit(self, amount: float):
-        """Add ISK to wallet"""
-        self.isk += amount
+        """Add Credits to wallet"""
+        self.credits += amount
 
 
 @dataclass
@@ -67,7 +67,7 @@ class MarketAccess:
 class MarketSystem:
     """
     Market and trading system
-    Based on EVE Online's regional market
+    Based on Astralis's regional market
     """
     
     def __init__(self, world: World):
@@ -104,7 +104,7 @@ class MarketSystem:
             entity: Entity placing the order (must have Wallet and MarketAccess)
             item_id: Item being traded
             order_type: BUY or SELL
-            price: Price per unit in ISK
+            price: Price per unit in Credits
             quantity: Total quantity
             current_time: Current game time
             duration: Order duration in seconds
@@ -132,7 +132,7 @@ class MarketSystem:
             inventory.remove_item(item_id, quantity)
             
         elif order_type == OrderType.BUY:
-            # Must have ISK to pay (escrow)
+            # Must have Credits to pay (escrow)
             total_cost = price * quantity
             broker_fee = total_cost * 0.03  # 3% broker fee
             total_with_fees = total_cost + broker_fee
@@ -249,7 +249,7 @@ class MarketSystem:
         if not wallet.withdraw(total_with_tax):
             return False
         
-        # Transfer items and ISK
+        # Transfer items and Credits
         for order, qty in purchases:
             order.remaining -= qty
             
@@ -409,7 +409,7 @@ class MarketSystem:
         inventory = entity.get_component(Inventory)
         
         if order.order_type == OrderType.BUY:
-            # Refund ISK (including broker fee for remaining amount)
+            # Refund Credits (including broker fee for remaining amount)
             if wallet:
                 # Broker fee is 3% of order value
                 refund_amount = order.remaining * order.price * 1.03

@@ -1,6 +1,6 @@
 """
 Context Menu System for 3D Client
-EVE Online-style right-click menus for tactical commands
+Astralis-style right-click menus for tactical commands
 """
 
 from direct.gui.DirectGui import DirectFrame, DirectButton, DGG

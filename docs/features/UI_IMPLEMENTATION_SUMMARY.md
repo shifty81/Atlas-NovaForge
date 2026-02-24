@@ -9,7 +9,7 @@ Implement UI enhancements for EVEOFFLINE that closely mimic EVE Online's Photon 
 Conducted extensive web research on EVE Online's official interface:
 
 1. **Core Interface Elements** (from EVE Online documentation)
-   - Neocom: Vertical left sidebar with quick-access icons
+   - Nexcom: Vertical left sidebar with quick-access icons
    - Overview Panel: Customizable list showing ships, structures, celestial objects
    - Selected Item Window: Shows information and actions for selected items
    - Chat Windows: Grouped, separable communication channels
@@ -59,7 +59,7 @@ Created comprehensive EVE-style UI system with 4 new modules:
 - `EVELayoutPresets` class: Standard panel positions
   - HUD center, ship status, target info
   - Speed display, overview, module rack
-  - Neocom sidebar, capacitor display
+  - Nexcom sidebar, capacitor display
 
 - Helper functions:
   - `get_health_color()`: Dynamic colors based on damage
@@ -125,7 +125,7 @@ Created comprehensive EVE-style UI system with 4 new modules:
    - Teal header
    - Placeholder for future sorting/filtering
 
-6. **Neocom Sidebar** (far left)
+6. **Nexcom Sidebar** (far left)
    - Narrow vertical strip
    - Cyan border accent
    - Menu icons: Inventory, Fitting, Map, Market, Character
@@ -261,7 +261,7 @@ Created comprehensive EVE-style UI system with 4 new modules:
 - ✅ Panel transparency and styling
 - ✅ Header design with borders
 - ✅ Text colors and sizing
-- ✅ Neocom left sidebar
+- ✅ Nexcom left sidebar
 - ✅ Overview panel layout
 - ✅ Combat log styling
 - ✅ Target info panel
@@ -269,7 +269,7 @@ Created comprehensive EVE-style UI system with 4 new modules:
 ### Close Approximations 🟡
 - 🟡 Module rack (simplified, placeholder icons)
 - 🟡 Overview content (structure done, needs data)
-- 🟡 Neocom icons (text placeholders vs real icons)
+- 🟡 Nexcom icons (text placeholders vs real icons)
 
 ### Future Enhancements 🔜
 - 🔜 Animated target lock brackets

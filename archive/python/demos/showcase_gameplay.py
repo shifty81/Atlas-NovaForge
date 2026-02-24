@@ -159,7 +159,7 @@ def main():
   ✅ NPC Enemies with AI
   ✅ Space Stations & Celestial Objects
   
-  🎮 EVE OFFLINE - Full EVE Online Experience!
+  🎮 EVE OFFLINE - Full Astralis Experience!
 """)
     
     print("=" * 80)

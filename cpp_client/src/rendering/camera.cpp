@@ -75,7 +75,7 @@ glm::vec3 Camera::getPosition() const {
 }
 
 void Camera::zoom(float delta) {
-    // EVE-style: scroll zooms logarithmically (proportional to current distance)
+    // Astralis-style: scroll zooms logarithmically (proportional to current distance)
     float zoomFactor = m_targetDistance * 0.12f;
     m_targetDistance -= delta * zoomFactor;
     m_targetDistance = std::clamp(m_targetDistance, MIN_DISTANCE, MAX_DISTANCE);

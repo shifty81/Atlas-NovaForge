@@ -13,7 +13,7 @@ The Mining & Resource Gathering system implements EVE Online-style asteroid mini
 ### Key Features
 
 - **Mining Laser Operations**: Cycle-based ore extraction with capacitor consumption
-- **15 Ore Types**: From common Veldspar to ultra-rare Mercoxit
+- **15 Ore Types**: From common Ferrite to ultra-rare Mercoxit
 - **Skill-Based Yields**: Mining and Astrogeology skills increase yield
 - **Module Bonuses**: Mining Laser Upgrades boost efficiency
 - **Ore Reprocessing**: Refine ore into minerals at stations
@@ -109,32 +109,32 @@ High-slot module for scanning asteroids to determine ore type and remaining quan
 ### 15 Ore Types by Security Level
 
 #### High-Sec Ores (0.5+)
-- **Veldspar**: Common. Yields Tritanium.
-- **Scordite**: Common. Yields Tritanium and Pyerite.
-- **Pyroxeres**: Uncommon. Yields Tritanium, Pyerite, Mexallon, Nocxium.
-- **Plagioclase**: Uncommon. Yields Tritanium, Pyerite, Mexallon.
+- **Ferrite**: Common. Yields Stellium.
+- **Galvite**: Common. Yields Stellium and Vanthium.
+- **Cryolite**: Uncommon. Yields Stellium, Vanthium, Cydrium, Umbrium.
+- **Silvane**: Uncommon. Yields Stellium, Vanthium, Cydrium.
 
 #### Mid-Sec Ores (0.2-0.7)
-- **Omber**: Uncommon. Yields Tritanium, Pyerite, Isogen.
-- **Kernite**: Rare. Yields Tritanium, Mexallon, Isogen.
-- **Jaspet**: Rare. Yields Mexallon, Nocxium, Zydrine.
+- **Duskite**: Uncommon. Yields Stellium, Vanthium, Aethite.
+- **Heliore**: Rare. Yields Stellium, Cydrium, Aethite.
+- **Jaspet**: Rare. Yields Cydrium, Umbrium, Celestine.
 
 #### Low-Sec Ores (0.0-0.2)
-- **Hemorphite**: Rare. Yields Tritanium, Isogen, Nocxium, Zydrine.
-- **Hedbergite**: Rare. Yields Pyerite, Isogen, Nocxium, Zydrine.
+- **Hemorphite**: Rare. Yields Stellium, Aethite, Umbrium, Celestine.
+- **Hedbergite**: Rare. Yields Vanthium, Aethite, Umbrium, Celestine.
 
 #### Null-Sec Ores (0.0 and below)
-- **Gneiss**: Very Rare. Yields Pyerite, Mexallon, Isogen.
-- **Dark Ochre**: Very Rare. Yields large amounts of Tritanium, Nocxium, Zydrine.
-- **Crokite**: Ultra Rare. Yields massive Tritanium, Nocxium, Zydrine.
-- **Bistot**: Ultra Rare. Yields massive Pyerite, Zydrine, Megacyte.
-- **Arkonor**: Ultra Rare. Yields massive Tritanium, Mexallon, Megacyte.
+- **Gneiss**: Very Rare. Yields Vanthium, Cydrium, Aethite.
+- **Dark Ochre**: Very Rare. Yields large amounts of Stellium, Umbrium, Celestine.
+- **Crokite**: Ultra Rare. Yields massive Stellium, Umbrium, Celestine.
+- **Bistot**: Ultra Rare. Yields massive Vanthium, Celestine, Novarite.
+- **Arkonor**: Ultra Rare. Yields massive Stellium, Cydrium, Novarite.
 - **Mercoxit**: Legendary. Yields Morphite (requires deep core mining).
 
 ### Reprocessing
 
 Each ore type reprocesses in batches:
-- Base batch size (e.g., Veldspar: 400 units, Scordite: 333 units)
+- Base batch size (e.g., Ferrite: 400 units, Galvite: 333 units)
 - Yields specific minerals based on ore type
 - Affected by station efficiency and skills
 
@@ -236,14 +236,14 @@ industry_system = IndustrySystem(world)
 # Reprocess ore into minerals
 minerals = industry_system.reprocess_ore(
     entity=miner_entity,
-    ore_type="veldspar",
+    ore_type="ferrite",
     quantity=400,  # Must match reprocessing_base for ore type
     ore_data=veldspar_data,
     station_efficiency=0.50,
     skills_bonus=0.15  # From skills
 )
 
-# Returns: {'tritanium': 207}  (415 base × 1 batch × 0.50 efficiency)
+# Returns: {'stellium': 207}  (415 base × 1 batch × 0.50 efficiency)
 ```
 
 ### Refining Efficiency
@@ -293,7 +293,7 @@ Mined ore is stored in:
 ### Market Integration
 
 Minerals from reprocessing can be sold on the market system:
-- Tritanium, Pyerite, Mexallon, Isogen, Nocxium, Zydrine, Megacyte, Morphite
+- Stellium, Vanthium, Cydrium, Aethite, Umbrium, Celestine, Novarite, Morphite
 - Prices determined by market supply/demand
 
 ---
@@ -343,12 +343,12 @@ industry_system = IndustrySystem(world)
 # Load ore data
 import json
 with open("data/asteroid_fields/ore_types.json") as f:
-    ore_data = json.load(f)["ore_types"]["veldspar"]
+    ore_data = json.load(f)["ore_types"]["ferrite"]
 
 # Reprocess ore
 minerals = industry_system.reprocess_ore(
     entity=miner,
-    ore_type="veldspar",
+    ore_type="ferrite",
     quantity=1200,  # 3 batches
     ore_data=ore_data,
     station_efficiency=0.50,
@@ -356,7 +356,7 @@ minerals = industry_system.reprocess_ore(
 )
 
 print(f"Gained minerals: {minerals}")
-# Output: {'tritanium': 933}  (415 × 3 × 0.75)
+# Output: {'stellium': 933}  (415 × 3 × 0.75)
 ```
 
 ---

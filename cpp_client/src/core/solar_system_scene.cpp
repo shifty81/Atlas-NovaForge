@@ -465,7 +465,7 @@ void SolarSystemScene::generateSystem(uint32_t seed, const std::string& systemNa
         "Veyren Navy Assembly Plant", "Aurelian Federation Bureau",
         "Solari Imperial Academy", "Keldari Fleet Logistics",
         "Crimson Order Assembly Plant", "Venom Syndicate Corporation Depot",
-        "ORE Refinery", "Sisters of EVE Bureau",
+        "ORE Refinery", "Sisters of Astralis Bureau",
     };
     std::uniform_int_distribution<int> stationCountDist(1, 3);
     int numStations = stationCountDist(rng);

@@ -21,11 +21,11 @@ Medium-large combat vessels suitable for Level 3 missions:
 
 | NPC ID | Name | Faction | HP Total | Bounty |
 |--------|------|---------|----------|--------|
-| `serpentis_battlecruiser` | Serpentis Supremacy | Serpentis | 8,400 | 380,000 ISK |
-| `guristas_battlecruiser` | Guristas Warlord | Guristas | 8,350 | 400,000 ISK |
-| `blood_raiders_battlecruiser` | Blood Raiders Prophet | Blood Raiders | 8,900 | 420,000 ISK |
-| `sansha_battlecruiser` | Sansha's Centii Manslayer | Sansha's Nation | 9,500 | 450,000 ISK |
-| `angel_battlecruiser` | Angel Cartel Gistum Centurion | Angel Cartel | 9,200 | 475,000 ISK |
+| `serpentis_battlecruiser` | Serpentis Supremacy | Serpentis | 8,400 | 380,000 Credits |
+| `guristas_battlecruiser` | Guristas Warlord | Guristas | 8,350 | 400,000 Credits |
+| `blood_raiders_battlecruiser` | Blood Raiders Prophet | Blood Raiders | 8,900 | 420,000 Credits |
+| `sansha_battlecruiser` | Sansha's Centii Manslayer | Sansha's Nation | 9,500 | 450,000 Credits |
+| `angel_battlecruiser` | Angel Cartel Gistum Centurion | Angel Cartel | 9,200 | 475,000 Credits |
 
 **Characteristics:**
 - **Damage Output**: 165-195 DPS
@@ -40,11 +40,11 @@ Massive capital-class vessels suitable for Level 4 missions:
 
 | NPC ID | Name | Faction | HP Total | Bounty |
 |--------|------|---------|----------|--------|
-| `serpentis_battleship` | Serpentis Dominator | Serpentis | 17,500 | 850,000 ISK |
-| `guristas_battleship` | Guristas Dreadnought | Guristas | 17,500 | 920,000 ISK |
-| `blood_raiders_battleship` | Blood Raiders Bhaalgorn | Blood Raiders | 19,200 | 1,050,000 ISK |
-| `sansha_battleship` | Sansha's True Nightmare | Sansha's Nation | 20,400 | 1,150,000 ISK |
-| `angel_battleship` | Angel Cartel Machariel | Angel Cartel | 19,800 | 1,250,000 ISK |
+| `serpentis_battleship` | Serpentis Dominator | Serpentis | 17,500 | 850,000 Credits |
+| `guristas_battleship` | Guristas Dreadnought | Guristas | 17,500 | 920,000 Credits |
+| `blood_raiders_battleship` | Blood Raiders Bhaalgorn | Blood Raiders | 19,200 | 1,050,000 Credits |
+| `sansha_battleship` | Sansha's True Nightmare | Sansha's Nation | 20,400 | 1,150,000 Credits |
+| `angel_battleship` | Angel Cartel Machariel | Angel Cartel | 19,800 | 1,250,000 Credits |
 
 **Characteristics:**
 - **Damage Output**: 385-465 DPS
@@ -68,11 +68,11 @@ Missions have been reorganized into clear level tiers with appropriate difficult
 
 #### Level 1 Missions (6 missions)
 **Ship Recommendation**: Frigates  
-**Average Reward**: 50,000-120,000 ISK
+**Average Reward**: 50,000-120,000 Credits
 
 Example missions:
 - **Serpentis Infestation** - Combat (5 Serpentis Scouts)
-- **Mining Operation** - Mining (1000 units Veldspar)
+- **Mining Operation** - Mining (1000 units Ferrite)
 - **Urgent Delivery** - Courier (Transport documents)
 - **Emergency Supply Run** - Courier (50 medical supplies)
 - **Blood Raider Patrol** - Combat (4 Blood Raiders frigates)
@@ -80,20 +80,20 @@ Example missions:
 
 #### Level 2 Missions (7 missions)
 **Ship Recommendation**: Destroyers, Cruisers  
-**Average Reward**: 160,000-280,000 ISK
+**Average Reward**: 160,000-280,000 Credits
 
 Example missions:
 - **Angel Cartel Threat** - Combat (6 Angel frigates)
 - **Sansha's Nation Scouts** - Combat (5 Sansha frigates)
 - **Rogue Drone Cleanup** - Combat (8 Rogue Drone frigates)
 - **Exploration Site** - Exploration (Scan and retrieve artifacts)
-- **Rare Ore Collection** - Mining (1000 kernite, 500 plagioclase)
+- **Rare Ore Collection** - Mining (1000 heliore, 500 silvane)
 - **Destroyer Ambush** - Combat (2 destroyers, 3 frigates)
 - **Cruiser Patrol** - Combat (1 cruiser, 4 frigates)
 
 #### Level 3 Missions (7 missions) - NEW!
 **Ship Recommendation**: Battlecruisers, Tech II Cruisers  
-**Average Reward**: 420,000-650,000 ISK
+**Average Reward**: 420,000-650,000 Credits
 
 New missions:
 - **Destroyer Patrol** - Combat (3 Serpentis + 2 Guristas destroyers)
@@ -106,17 +106,17 @@ New missions:
 
 #### Level 4 Missions (8 missions) - NEW!
 **Ship Recommendation**: Battleships, Command Ships  
-**Average Reward**: 550,000-2,850,000 ISK
+**Average Reward**: 550,000-2,850,000 Credits
 
 New missions:
 - **Elite Cruiser Squadron** - Combat (2 Serpentis + 1 Blood Raiders cruisers)
 - **Faction Warfare Sortie** - Combat (4 frigates, 2 Angel cruisers, 1 Sansha cruiser)
-- **Battleship Interdiction** - Combat (1 Serpentis battleship, 2 battlecruisers, 3 destroyers) - **1,250,000 ISK**
-- **Guristas Dreadnought Strike** - Combat (1 Guristas battleship, 3 battlecruisers) - **1,480,000 ISK**
-- **Blood Raiders Flagship** - Combat (1 Blood Raiders battleship, 2 battlecruisers, 2 cruisers) - **1,650,000 ISK**
-- **Sansha's Incursion Capital** - Combat (1 Sansha battleship, 3 battlecruisers, 2 cruisers) - **1,850,000 ISK**
-- **Hunt for the Machariel** - Combat (1 Angel battleship, 2 battlecruisers, 3 cruisers) - **2,100,000 ISK**
-- **Pirate Armada** - Combat (2 battleships, 4 battlecruisers) - **2,850,000 ISK** 🔥
+- **Battleship Interdiction** - Combat (1 Serpentis battleship, 2 battlecruisers, 3 destroyers) - **1,250,000 Credits**
+- **Guristas Dreadnought Strike** - Combat (1 Guristas battleship, 3 battlecruisers) - **1,480,000 Credits**
+- **Blood Raiders Flagship** - Combat (1 Blood Raiders battleship, 2 battlecruisers, 2 cruisers) - **1,650,000 Credits**
+- **Sansha's Incursion Capital** - Combat (1 Sansha battleship, 3 battlecruisers, 2 cruisers) - **1,850,000 Credits**
+- **Hunt for the Machariel** - Combat (1 Angel battleship, 2 battlecruisers, 3 cruisers) - **2,100,000 Credits**
+- **Pirate Armada** - Combat (2 battleships, 4 battlecruisers) - **2,850,000 Credits** 🔥
 
 ---
 
@@ -124,20 +124,20 @@ New missions:
 
 | Mission Level | Recommended Ships | Enemy Types | Avg Reward | Difficulty |
 |--------------|------------------|-------------|------------|------------|
-| **Level 1** | Frigates | Frigates | 65K ISK | Easy |
-| **Level 2** | Destroyers, Cruisers | Frigates, Destroyers, Cruisers | 210K ISK | Medium |
-| **Level 3** | Battlecruisers | Destroyers, Cruisers, Battlecruisers | 550K ISK | Hard |
-| **Level 4** | Battleships | Cruisers, Battlecruisers, Battleships | 1.4M ISK | Extreme |
+| **Level 1** | Frigates | Frigates | 65K Credits | Easy |
+| **Level 2** | Destroyers, Cruisers | Frigates, Destroyers, Cruisers | 210K Credits | Medium |
+| **Level 3** | Battlecruisers | Destroyers, Cruisers, Battlecruisers | 550K Credits | Hard |
+| **Level 4** | Battleships | Cruisers, Battlecruisers, Battleships | 1.4M Credits | Extreme |
 
 ---
 
 ## Reward Structure
 
-### ISK Rewards by Level
-- **Level 1**: 35,000 - 120,000 ISK
-- **Level 2**: 160,000 - 280,000 ISK
-- **Level 3**: 320,000 - 650,000 ISK
-- **Level 4**: 550,000 - 2,850,000 ISK
+### Credits Rewards by Level
+- **Level 1**: 35,000 - 120,000 Credits
+- **Level 2**: 160,000 - 280,000 Credits
+- **Level 3**: 320,000 - 650,000 Credits
+- **Level 4**: 550,000 - 2,850,000 Credits
 
 ### Loyalty Points by Level
 - **Level 1**: 100 - 300 LP

@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_DECK_GRAPH_H
-#define EVE_PCG_DECK_GRAPH_H
+#ifndef NOVAFORGE_PCG_DECK_GRAPH_H
+#define NOVAFORGE_PCG_DECK_GRAPH_H
 
 #include "pcg_context.h"
 #include "room_graph.h"
@@ -47,4 +47,4 @@ std::vector<Corridor> connectRooms(const std::vector<RoomNode>& rooms);
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_DECK_GRAPH_H
+#endif // NOVAFORGE_PCG_DECK_GRAPH_H

@@ -75,7 +75,7 @@ Each AI owns ships, has a wallet, responds to market prices, and can die permane
 ### Custom UI Strategy (Replacing ImGui for Game UI)
 - **Retained-mode** windowed UI system
 - **Window docking** (DockNode tree with split/leaf nodes)
-- **EVE-style dark theme** (defined in `data/ui/eve_dark_theme.json`)
+- **EVE-style dark theme** (defined in `data/ui/novaforge_dark_theme.json`)
 - **Ship HUD**: Control ring (shield/armor/hull), capacitor bar, module rack, target brackets
 - **Keyboard-first** interaction with mouse support
 - **Data binding** via observer pattern (no polling)
@@ -320,7 +320,7 @@ All baseline systems are now implemented.
   - Prerequisite validation
 - [x] **Mission System**
   - Accept, track, complete missions
-  - Mission rewards (ISK, LP, items)
+  - Mission rewards (Credits, LP, items)
   - Multiple mission types
 - [x] **Navigation & Warp**
   - FTL travel mechanics
@@ -377,7 +377,7 @@ All baseline systems are now implemented.
   - Buy/sell order placement
   - Market order book with price sorting
   - Instant buy/sell transactions
-  - ISK wallet management
+  - Credits wallet management
   - Broker fees (3%) and sales tax (2%)
   - Transaction history tracking
   - NPC base prices
@@ -396,13 +396,13 @@ All baseline systems are now implemented.
   - Scan strength calculations
   - Progressive scan completion (0-100%)
   - Site completion with rewards
-  - Directional scanner (D-Scan) with cone angles
+  - Directional scanner (Proxscan) with cone angles
 - [x] **Loot System**
   - NPC loot drops on death
   - Loot containers (wrecks, cargo cans)
   - Weighted loot tables with rarities
   - Guaranteed + random loot
-  - ISK drops
+  - Credits drops
   - Wreck salvaging mechanics
   - Container despawning timers
   - Loot quality tiers (Common to Officer)
@@ -443,7 +443,7 @@ All baseline systems are now implemented.
 
 #### Corporation Management
 - [x] **Corporation System**
-  - Corporation creation and management (1M ISK creation cost)
+  - Corporation creation and management (1M Credits creation cost)
   - Member roles: CEO, Director, Member
   - Corporation tickers (3-5 characters)
   - Member management (invite, remove, role changes)
@@ -456,7 +456,7 @@ All baseline systems are now implemented.
   - Division 3: CEO only
   - Item storage and retrieval
 - [x] **Corporation Wallet**
-  - Shared ISK pool
+  - Shared Credits pool
   - Deposit/withdrawal with permission system
   - Directors and CEO have wallet access
   - Automatic tax collection from member earnings
@@ -495,8 +495,8 @@ All baseline systems are now implemented.
 #### Additional Economy
 - [x] **Contract System**
   - Item Exchange Contracts
-    - Buy/sell items for ISK
-    - Item + ISK exchange
+    - Buy/sell items for Credits
+    - Item + Credits exchange
     - Collateral support
     - Public/private availability
   - Courier Contracts
@@ -774,11 +774,11 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 ### 📋 Phase 7: Advanced Systems (COMPLETE) ✅
 **Timeline**: Q4 2026+  
 **Priority**: High
-**Status**: Mining, Ice Mining, Planetary Interaction, Research & Invention, C++ Server–Client Integration, Wormhole Space, and Advanced Fleet Mechanics complete.
+**Status**: Mining, Ice Mining, Planetary Operations, Research & Invention, C++ Server–Client Integration, Wormhole Space, and Advanced Fleet Mechanics complete.
 
 #### ✅ Mining & Resource Gathering (COMPLETE)
 - [x] **Mining Laser Operations** - Cycle-based ore extraction
-- [x] **15 Ore Types** - From common Veldspar to legendary Mercoxit
+- [x] **15 Ore Types** - From common Ferrite to legendary Mercoxit
 - [x] **Mining Components** - MiningLaser, MiningYield, OreHold
 - [x] **Mining Modules** - 4 laser types, 3 upgrades, survey scanner
 - [x] **Mining Skills** - Mining, Astrogeology, Mining Upgrades, etc.
@@ -837,7 +837,7 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 - [x] Mining crystals (improved yield) — 30 crystals (Tech I/II for 15 ore types)
 - [x] Mining missions (10 missions, levels 1-4)
 
-#### ✅ Planetary Interaction (COMPLETE)
+#### ✅ Planetary Operations (COMPLETE)
 - [x] **Planet scanning** - 8 planet types with resource deposits
 - [x] **Colony management** - Command center with CPU/PG management
 - [x] **Resource extraction** - ECU with 5 extraction heads
@@ -1027,10 +1027,10 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 - [x] NPC behavior trees (per archetype) — NPCBehaviorTreeSystem with per-archetype phase tables (10 tests)
 - [x] NPC rerouting based on system danger — NPCRouteState component + NPCReroutingSystem with danger_threshold and route filtering (3 tests)
 - [x] Ambient traffic spawns driven by system state — AmbientTrafficSystem with AmbientTrafficState component (7 tests)
-- [x] AI as real economic actors (wallets, ship ownership, permanent death) — AIEconomicActor component + AIEconomicActorSystem with earn/spend ISK, ship destruction/replacement, permanent death (7 tests, 27 assertions)
+- [x] AI as real economic actors (wallets, ship ownership, permanent death) — AIEconomicActor component + AIEconomicActorSystem with earn/spend Credits, ship destruction/replacement, permanent death (7 tests, 27 assertions)
 - [x] Local reputation per system — LocalReputation component + LocalReputationSystem with decay, modify, and standing query (4 tests)
 - [x] Wreck persistence and salvage NPCs — WreckPersistence component + WreckPersistenceSystem with lifetime tracking, NPC assignment, and expiry (3 tests)
-- [x] Security response delay — SecurityResponseSystem with CONCORD-style delayed response (7 tests)
+- [x] Security response delay — SecurityResponseSystem with AEGIS-style delayed response (7 tests)
 - [x] System threat adjustment from combat — CombatThreatSystem with damage/destruction tracking (5 tests)
 - [x] Station news feed — StationNewsFeed component + StationNewsSystem with combat/economy/exploration event reporting (3 tests)
 - [ ] Rumors about player actions (`AtlasInformationPropagationSystem`)
@@ -1476,7 +1476,7 @@ Player undocks → Scans anomaly → Fights pirates → Ship explodes → Wreck 
 - ✅ **C++ Server ShipDatabase** - Data-driven ship stats from 66 JSON ship templates
 - ✅ **C++ Server FleetSystem** - Fleet creation, membership, roles, bonuses, target broadcast, fleet warp
 - ✅ **C++ Server InventorySystem** - Item add/remove/transfer with capacity limits (m3)
-- ✅ **C++ Server LootSystem** - Wreck creation from NPC LootTable, loot collection with ISK payout
+- ✅ **C++ Server LootSystem** - Wreck creation from NPC LootTable, loot collection with Credits payout
 - ✅ **C++ Server NpcDatabase** - Data-driven NPC stats from 32 JSON templates
 
 ### Phase 7 Goals (COMPLETE)
@@ -1554,9 +1554,9 @@ Have questions about the roadmap? Want to suggest features?
 
 ### R&D - Manual-Aligned Systems (Current)
 - Character creation system with 4 races, bloodlines, and attributes
-- Clone system with medical clones and jump clones
+- Clone system with medical clones and relay clones
 - Implant system for attribute enhancement (5 slots, 4 grades)
-- CONCORD security enforcement and criminal flag mechanics
+- AEGIS security enforcement and criminal flag mechanics
 - Insurance system with 6 coverage levels
 - Contract and escrow system (item exchange, courier, auction)
 - Corporation system with NPC and player corp mechanics

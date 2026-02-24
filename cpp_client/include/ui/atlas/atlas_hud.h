@@ -2,13 +2,13 @@
 
 /**
  * @file atlas_hud.h
- * @brief Full EVE-style HUD layout compositor using Atlas widgets
+ * @brief Full Astralis-style HUD layout compositor using Atlas widgets
  *
  * AtlasHUD assembles all individual Atlas widgets into the complete
- * EVE Online-style game HUD layout:
+ * Astralis-style game HUD layout:
  *
  *   ┌─────────┬───────────────────────────────────────┬──────────────┐
- *   │ Neocom  │   Locked Target Cards (top-center)    │ Selected     │
+ *   │ Nexcom  │   Locked Target Cards (top-center)    │ Selected     │
  *   │ sidebar │                                       │ Item panel   │
  *   │         │                                       ├──────────────┤
  *   │         │          3D Space View                │ Overview     │
@@ -68,7 +68,7 @@ struct ShipHUDData {
 };
 
 /**
- * AtlasHUD — assembles Atlas widgets into a complete EVE-style HUD.
+ * AtlasHUD — assembles Atlas widgets into a complete Astralis-style HUD.
  *
  * All layout is computed automatically based on window size.
  * Panels are movable via PanelState when unlocked.
@@ -104,7 +104,7 @@ public:
     void toggleFitting()       { m_fittingState.open = !m_fittingState.open; }
     void toggleMarket()        { m_marketState.open = !m_marketState.open; }
     void toggleMission()       { m_missionState.open = !m_missionState.open; }
-    void toggleDScan()         { m_dscanState.open = !m_dscanState.open; }
+    void toggleProxscan()         { m_proxscanState.open = !m_proxscanState.open; }
     void toggleChat()          { m_chatState.open = !m_chatState.open; }
     void toggleDronePanel()    { m_dronePanelState.open = !m_dronePanelState.open; }
     void toggleProbeScanner()  { m_probeScannerState.open = !m_probeScannerState.open; }
@@ -115,7 +115,7 @@ public:
     bool isFittingOpen()       const { return m_fittingState.open; }
     bool isMarketOpen()        const { return m_marketState.open; }
     bool isMissionOpen()       const { return m_missionState.open; }
-    bool isDScanOpen()         const { return m_dscanState.open; }
+    bool isProxscanOpen()         const { return m_proxscanState.open; }
     bool isChatOpen()          const { return m_chatState.open; }
     bool isDronePanelOpen()    const { return m_dronePanelState.open; }
     bool isProbeScannerOpen()  const { return m_probeScannerState.open; }
@@ -201,7 +201,7 @@ public:
     /**
      * Check if an entity type should appear under a given overview tab.
      *
-     * Tab filter rules (PvE-focused, EVE-style):
+     * Tab filter rules (PvE-focused, Astralis-style):
      *   Travel   — Stations, Stargates, Planets, Moons, Wormholes, Celestials
      *   Combat   — Frigates, Cruisers, Battleships, Destroyers, NPCs, hostiles
      *   Industry — Asteroids, Asteroid Belts, Wrecks, Containers, mining objects
@@ -228,24 +228,24 @@ public:
     /** Check if any damage flash is currently active. */
     bool hasDamageFlash() const;
 
-    // ── D-Scan data ────────────────────────────────────────────────────
+    // ── Proxscan data ────────────────────────────────────────────────────
 
-    struct DScanEntry {
+    struct ProxscanEntry {
         std::string name;
         std::string type;
         float distance = 0.0f;  // AU
     };
 
-    /** Set D-Scan parameters and results. */
-    void setDScanAngle(float degrees) { m_dscanAngle = degrees; }
-    void setDScanRange(float au)      { m_dscanRange = au; }
-    void setDScanResults(const std::vector<DScanEntry>& results) { m_dscanResults = results; }
-    float getDScanAngle() const { return m_dscanAngle; }
-    float getDScanRange() const { return m_dscanRange; }
-    const std::vector<DScanEntry>& getDScanResults() const { return m_dscanResults; }
+    /** Set Proxscan parameters and results. */
+    void setProxscanAngle(float degrees) { m_proxscanAngle = degrees; }
+    void setProxscanRange(float au)      { m_proxscanRange = au; }
+    void setProxscanResults(const std::vector<ProxscanEntry>& results) { m_proxscanResults = results; }
+    float getProxscanAngle() const { return m_proxscanAngle; }
+    float getProxscanRange() const { return m_proxscanRange; }
+    const std::vector<ProxscanEntry>& getProxscanResults() const { return m_proxscanResults; }
 
-    /** Set callback for D-Scan button presses. */
-    void setDScanCallback(const std::function<void()>& cb) { m_dscanCallback = cb; }
+    /** Set callback for Proxscan button presses. */
+    void setProxscanCallback(const std::function<void()>& cb) { m_proxscanCallback = cb; }
 
     // ── Mission data ────────────────────────────────────────────────────
 
@@ -457,7 +457,7 @@ private:
     PanelState m_fittingState;
     PanelState m_marketState;
     PanelState m_missionState;
-    PanelState m_dscanState;
+    PanelState m_proxscanState;
     PanelState m_chatState;
     PanelState m_dronePanelState;
     PanelState m_probeScannerState;
@@ -479,7 +479,7 @@ private:
     std::function<void()>    m_selApproachCb;
     std::function<void()>    m_selWarpCb;
     std::function<void()>    m_selInfoCb;
-    std::function<void()>    m_dscanCallback;
+    std::function<void()>    m_proxscanCallback;
     std::function<void()>    m_probeScanCallback;
     std::function<void()>    m_stationDockCb;
     std::function<void()>    m_stationUndockCb;
@@ -541,10 +541,10 @@ private:
     std::vector<FleetBroadcast> m_broadcasts;
     static constexpr int MAX_BROADCASTS = 5;
 
-    // D-Scan data
-    float m_dscanAngle = 360.0f;
-    float m_dscanRange = 14.3f;
-    std::vector<DScanEntry> m_dscanResults;
+    // Proxscan data
+    float m_proxscanAngle = 360.0f;
+    float m_proxscanRange = 14.3f;
+    std::vector<ProxscanEntry> m_proxscanResults;
 
     // Mission data
     MissionInfo m_missionInfo;

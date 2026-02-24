@@ -22,7 +22,7 @@ void AtlasTitleScreen::render(AtlasContext& ctx) {
     Rect bg(0.0f, 0.0f, windowW, windowH);
     r.drawRect(bg, Color(0.02f, 0.03f, 0.05f, 1.0f));
 
-    // Sidebar strip (Atlas/Neocom style left edge)
+    // Sidebar strip (Atlas/Nexcom style left edge)
     Rect sidebar(0.0f, 0.0f, SIDEBAR_WIDTH, windowH);
     r.drawRect(sidebar, theme.bgHeader);
 

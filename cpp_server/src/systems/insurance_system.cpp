@@ -52,10 +52,10 @@ bool InsuranceSystem::purchaseInsurance(const std::string& entity_id,
     }
 
     double premium = ship_value * premium_rate;
-    if (player->isk < premium) return false;
+    if (player->credits < premium) return false;
 
     // Deduct premium
-    player->isk -= premium;
+    player->credits -= premium;
 
     // Create policy component
     auto policy = std::make_unique<components::InsurancePolicy>();
@@ -85,7 +85,7 @@ double InsuranceSystem::claimInsurance(const std::string& entity_id) {
     policy->claimed = true;
 
     if (player) {
-        player->isk += payout;
+        player->credits += payout;
     }
 
     return payout;

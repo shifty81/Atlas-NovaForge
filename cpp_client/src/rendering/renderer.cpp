@@ -160,7 +160,7 @@ void Renderer::renderScene(Camera& camera) {
     // Render entities
     renderEntities(camera);
     
-    // Note: Health bars are NOT rendered in 3D space in EVE Online
+    // Note: Health bars are NOT rendered in 3D space in Astralis
     // They are displayed in the target list UI panel instead
 }
 
@@ -522,7 +522,7 @@ void Renderer::renderSun(Camera& camera, const glm::vec3& sunPosition,
     m_entityShader->setVec3("viewPos", camera.getPosition());
     
     // Enforce a minimum apparent size so the sun is always visible as a
-    // bright point from anywhere in the solar system, matching EVE Online's
+    // bright point from anywhere in the solar system, matching Astralis's
     // behaviour where the star is always a visible glow in the skybox.
     float dist = glm::length(camera.getPosition() - sunPosition);
     float minApparentRadius = dist * 0.004f;  // ~0.4% of distance = always visible

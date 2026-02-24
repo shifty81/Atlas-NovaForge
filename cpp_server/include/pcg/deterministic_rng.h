@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_DETERMINISTIC_RNG_H
-#define EVE_PCG_DETERMINISTIC_RNG_H
+#ifndef NOVAFORGE_PCG_DETERMINISTIC_RNG_H
+#define NOVAFORGE_PCG_DETERMINISTIC_RNG_H
 
 #include <cstdint>
 
@@ -62,4 +62,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_DETERMINISTIC_RNG_H
+#endif // NOVAFORGE_PCG_DETERMINISTIC_RNG_H

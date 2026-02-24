@@ -1,5 +1,5 @@
-#ifndef EVE_SERVER_CONFIG_H
-#define EVE_SERVER_CONFIG_H
+#ifndef NOVAFORGE_SERVER_CONFIG_H
+#define NOVAFORGE_SERVER_CONFIG_H
 
 #include <string>
 #include <vector>
@@ -54,4 +54,4 @@ struct ServerConfig {
 
 } // namespace atlas
 
-#endif // EVE_SERVER_CONFIG_H
+#endif // NOVAFORGE_SERVER_CONFIG_H

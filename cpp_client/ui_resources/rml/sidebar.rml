@@ -89,7 +89,7 @@
         <div class="sidebar-separator"></div>
 
         <button class="sb-btn" id="sb-map"><span class="icon">*</span></button>
-        <button class="sb-btn" id="sb-dscan"><span class="icon">D</span></button>
+        <button class="sb-btn" id="sb-proxscan"><span class="icon">D</span></button>
         <button class="sb-btn" id="sb-missions"><span class="icon">J</span></button>
 
         <div class="sidebar-separator"></div>

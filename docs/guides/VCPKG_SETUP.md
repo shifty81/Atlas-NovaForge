@@ -145,7 +145,7 @@ For automated dependency management, create `vcpkg.json` in the project root:
 
 ```json
 {
-  "name": "eveoffline",
+  "name": "novaforge",
   "version": "1.0.0",
   "dependencies": [
     "glfw3",

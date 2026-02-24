@@ -1,6 +1,6 @@
 """
-Enhanced HUD System with EVE Online Photon UI Styling
-Comprehensive heads-up display mimicking EVE Online's interface
+Enhanced HUD System with Astralis Photon UI Styling
+Comprehensive heads-up display mimicking Astralis's interface
 """
 
 from direct.gui.OnscreenText import OnscreenText
@@ -8,7 +8,7 @@ from direct.gui.DirectGui import DirectFrame, DirectButton
 from panda3d.core import TextNode, Vec3, Vec4, TransparencyAttrib
 from typing import Optional, Dict, Any, List
 
-from .eve_style import (
+from .novaforge_style import (
     EVEColorScheme, EVEPanelStyle, EVELayoutPresets,
     get_health_color, get_capacitor_color
 )
@@ -17,8 +17,8 @@ from .capacitor_display import CapacitorDisplay, ShipHealthRings
 
 class EVEStyledHUD:
     """
-    Enhanced HUD system with EVE Online Photon UI styling
-    Provides complete interface similar to EVE Online
+    Enhanced HUD system with Astralis Photon UI styling
+    Provides complete interface similar to Astralis
     """
     
     def __init__(self, aspect2d, render2d):
@@ -38,7 +38,7 @@ class EVEStyledHUD:
         self.speed_panel = None
         self.combat_log_panel = None
         self.overview_panel = None
-        self.neocom_panel = None
+        self.nexcom_panel = None
         
         # EVE-style circular displays
         self.capacitor_display = None
@@ -72,8 +72,8 @@ class EVEStyledHUD:
         # Create EVE-style overview panel
         self._create_overview_panel()
         
-        # Create Neocom menu (left sidebar)
-        self._create_neocom_panel()
+        # Create Nexcom menu (left sidebar)
+        self._create_nexcom_panel()
     
     def _create_center_hud(self):
         """Create the center HUD with capacitor and health rings"""
@@ -482,33 +482,33 @@ class EVEStyledHUD:
             parent=self.overview_panel
         )
     
-    def _create_neocom_panel(self):
-        """Create Neocom-style left sidebar menu"""
-        self.neocom_panel = DirectFrame(
+    def _create_nexcom_panel(self):
+        """Create Nexcom-style left sidebar menu"""
+        self.nexcom_panel = DirectFrame(
             frameColor=EVEColorScheme.BACKGROUND_PRIMARY,
             frameSize=(-0.06, 0.06, -0.9, 0.9),
             pos=(-0.94, 0, 0),
             parent=self.aspect2d
         )
-        self.neocom_panel.setTransparency(TransparencyAttrib.MAlpha)
+        self.nexcom_panel.setTransparency(TransparencyAttrib.MAlpha)
         
         # Border
-        neocom_border = DirectFrame(
+        nexcom_border = DirectFrame(
             frameColor=EVEColorScheme.BORDER_HIGHLIGHT,
             frameSize=(-0.002, 0.002, -0.9, 0.9),
             pos=(0.06, 0, 0),
-            parent=self.neocom_panel
+            parent=self.nexcom_panel
         )
-        neocom_border.setTransparency(TransparencyAttrib.MAlpha)
+        nexcom_border.setTransparency(TransparencyAttrib.MAlpha)
         
-        # Neocom title (top)
+        # Nexcom title (top)
         OnscreenText(
             text="≡",
             pos=(0, 0.85),
             scale=0.08,
             fg=EVEColorScheme.ACCENT_PRIMARY,
             align=TextNode.ACenter,
-            parent=self.neocom_panel
+            parent=self.nexcom_panel
         )
         
         # Menu items (simplified - would normally be icons)
@@ -525,7 +525,7 @@ class EVEStyledHUD:
                 frameColor=EVEColorScheme.BUTTON_NORMAL,
                 frameSize=(-0.05, 0.05, -0.05, 0.05),
                 pos=(0, 0, y_pos),
-                parent=self.neocom_panel
+                parent=self.nexcom_panel
             )
             btn_frame.setTransparency(TransparencyAttrib.MAlpha)
             
@@ -663,8 +663,8 @@ class EVEStyledHUD:
             self.combat_log_panel.show()
         if self.overview_panel:
             self.overview_panel.show()
-        if self.neocom_panel:
-            self.neocom_panel.show()
+        if self.nexcom_panel:
+            self.nexcom_panel.show()
         if self.capacitor_display:
             self.capacitor_display.show()
         if self.health_rings:
@@ -682,8 +682,8 @@ class EVEStyledHUD:
             self.combat_log_panel.hide()
         if self.overview_panel:
             self.overview_panel.hide()
-        if self.neocom_panel:
-            self.neocom_panel.hide()
+        if self.nexcom_panel:
+            self.nexcom_panel.hide()
         if self.capacitor_display:
             self.capacitor_display.hide()
         if self.health_rings:

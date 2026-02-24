@@ -169,7 +169,7 @@ netMgr.setFittingCallback([this](const FittingResponse& response) {
 netMgr.setMarketCallback([this](const MarketResponse& response) {
     if (response.success) {
         std::cout << "✓ Bought " << response.quantity << "x " << response.itemId 
-                  << " for " << response.totalCost << " ISK" << std::endl;
+                  << " for " << response.totalCost << " Credits" << std::endl;
         // Update wallet and inventory
         m_marketPanel->refresh();
         m_inventoryPanel->refresh();
@@ -271,7 +271,7 @@ netMgr.setErrorCallback([this](const std::string& message) {
     "type": "market_transaction_error",
     "timestamp": 1738787234.567,
     "data": {
-        "message": "Insufficient ISK",
+        "message": "Insufficient Credits",
         "item_id": "ore_veldspar",
         "quantity": 5000,
         "price": 5.5,
@@ -363,7 +363,7 @@ Now UI can respond to server confirmations:
 - Disable buy/sell buttons during transaction
 - Update wallet on successful transaction
 - Show confirmation with transaction details
-- Display error if insufficient ISK/items
+- Display error if insufficient Credits/items
 
 ---
 

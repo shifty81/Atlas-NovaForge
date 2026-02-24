@@ -26,12 +26,12 @@ Expected output: `✅ ALL MARKET TESTS PASSED!`
 
 #### 2. Order Placement (4 tests)
 - `test_place_buy_order` - Buy orders with 3% broker fee escrow
-- `test_place_buy_order_insufficient_isk` - Error handling for insufficient ISK
+- `test_place_buy_order_insufficient_isk` - Error handling for insufficient Credits
 - `test_place_sell_order` - Sell orders with item escrow
 - `test_place_sell_order_insufficient_items` - Error handling for insufficient items
 
 #### 3. Order Management (2 tests)
-- `test_cancel_buy_order` - Cancel buy orders with ISK refund
+- `test_cancel_buy_order` - Cancel buy orders with Credits refund
 - `test_cancel_sell_order` - Cancel sell orders with item return
 
 #### 4. Transactions (6 tests)
@@ -55,7 +55,7 @@ Expected output: `✅ ALL MARKET TESTS PASSED!`
 ## Feature Coverage
 
 ### ✅ Wallet Management
-- ISK deposit/withdrawal
+- Credits deposit/withdrawal
 - Balance tracking
 - Affordability checks
 - Escrow management
@@ -71,7 +71,7 @@ Expected output: `✅ ALL MARKET TESTS PASSED!`
 - Instant sell execution
 - Partial order fulfillment
 - Multi-order matching with price priority
-- Item and ISK transfers
+- Item and Credits transfers
 
 ### ✅ Fee & Tax System
 - 3% broker fee on buy orders (escrowed upfront)
@@ -81,7 +81,7 @@ Expected output: `✅ ALL MARKET TESTS PASSED!`
 
 ### ✅ Error Handling
 - Insufficient items detection
-- Insufficient ISK detection
+- Insufficient Credits detection
 - Price limit enforcement
 - Invalid order rejection
 
@@ -176,16 +176,16 @@ Testing Market and Trading System
 ============================================================
 
 === Testing Wallet Basic Operations ===
-✓ Wallet created with 10,000,000 ISK
+✓ Wallet created with 10,000,000 Credits
 ✓ can_afford() works correctly
-✓ Deposit works: 11,000,000 ISK
-✓ Withdraw success: 10,000,000 ISK
+✓ Deposit works: 11,000,000 Credits
+✓ Withdraw success: 10,000,000 Credits
 ✓ Withdraw failure handled correctly
 
 === Testing Placing Buy Order ===
 ✓ Buy order placed: order_1
-  1000 units at 100 ISK (total with fee: 103,000 ISK)
-  Remaining ISK: 9,897,000
+  1000 units at 100 Credits (total with fee: 103,000 Credits)
+  Remaining Credits: 9,897,000
 
 ... [20+ more test sections] ...
 

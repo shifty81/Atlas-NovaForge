@@ -86,7 +86,7 @@ inventory = InventoryPanel(
 
 # Update inventory display
 inventory.update_inventory(
-    items={"Tritanium": 1000, "Pyerite": 500},
+    items={"Stellium": 1000, "Vanthium": 500},
     capacity_used=25.5,
     capacity_max=100.0
 )
@@ -171,8 +171,8 @@ market = MarketWindow(
 
 # Update orders
 market.update_orders([
-    {"item_id": "Tritanium", "price": 5.50, "quantity": 10000, "location": "Jita"},
-    {"item_id": "Pyerite", "price": 8.25, "quantity": 5000, "location": "Jita"}
+    {"item_id": "Stellium", "price": 5.50, "quantity": 10000, "location": "Jita"},
+    {"item_id": "Vanthium", "price": 8.25, "quantity": 5000, "location": "Jita"}
 ])
 
 # Set callbacks

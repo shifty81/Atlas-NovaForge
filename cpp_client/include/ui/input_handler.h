@@ -10,7 +10,7 @@ namespace atlas {
  * Input handler for keyboard and mouse.
  *
  * Tracks per-frame button transitions (clicked/released), scroll
- * deltas, and double-click detection — all needed to drive EVE-style
+ * deltas, and double-click detection — all needed to drive Astralis-style
  * camera orbit, zoom, and the Atlas immediate-mode UI widgets.
  */
 class InputHandler {

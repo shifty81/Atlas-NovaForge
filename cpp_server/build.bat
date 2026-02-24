@@ -68,12 +68,12 @@ echo ==================================
 echo Build complete!
 echo ==================================
 echo.
-echo Executable: build\bin\%BUILD_TYPE%\eve_dedicated_server.exe
+echo Executable: build\bin\%BUILD_TYPE%\novaforge_server.exe
 echo Config: build\bin\config\server.json
 echo.
 echo To run the server:
 echo   cd build\bin\%BUILD_TYPE%
-echo   eve_dedicated_server.exe
+echo   novaforge_server.exe
 echo.
 
 cd ..

@@ -1,4 +1,4 @@
-# Session Complete: Phase 4.5 HUD / Phase 4.6 Module Rack / Phase 4.8 D-Scan & Neocom
+# Session Complete: Phase 4.5 HUD / Phase 4.6 Module Rack / Phase 4.8 Proxscan & Nexcom
 
 **Date**: February 9, 2026  
 **Task**: Continue Next Tasks on GUI Implementation  
@@ -8,7 +8,7 @@
 
 ## Summary
 
-Continued GUI implementation by completing the HUD class, adding data-bound module rack rendering, implementing the D-Scan panel, and adding the Neocom sidebar. These correspond to Phase 4.5 (HUD completion), Phase 4.6 (module slot data binding), and Phase 4.8 (D-Scan + Neocom) from the EVE UI Roadmap.
+Continued GUI implementation by completing the HUD class, adding data-bound module rack rendering, implementing the Proxscan panel, and adding the Nexcom sidebar. These correspond to Phase 4.5 (HUD completion), Phase 4.6 (module slot data binding), and Phase 4.8 (Proxscan + Nexcom) from the EVE UI Roadmap.
 
 ---
 
@@ -36,9 +36,9 @@ Added `ModuleSlotState` struct and `RenderModuleRack()` function:
 - Hover tooltips show module name and status
 - Color-coded by slot type (green/blue/orange)
 
-### 3. D-Scan Panel ✅
+### 3. Proxscan Panel ✅
 
-**Files**: `cpp_client/include/ui/dscan_panel.h`, `cpp_client/src/ui/dscan_panel.cpp`
+**Files**: `cpp_client/include/ui/proxscan_panel.h`, `cpp_client/src/ui/proxscan_panel.cpp`
 
 Full directional scanner implementation:
 - Scan angle slider (5° – 360°)
@@ -49,12 +49,12 @@ Full directional scanner implementation:
 - Callback system for scan requests
 - Registered as a dockable panel via DockingManager
 
-### 4. Neocom Sidebar ✅
+### 4. Nexcom Sidebar ✅
 
-**Files**: `cpp_client/include/ui/neocom_panel.h`, `cpp_client/src/ui/neocom_panel.cpp`
+**Files**: `cpp_client/include/ui/nexcom_panel.h`, `cpp_client/src/ui/nexcom_panel.cpp`
 
 EVE Online-style vertical icon sidebar:
-- 9 service buttons: Character, Inventory, Fitting, Market, Map, D-Scan, Missions, Corporation, Settings
+- 9 service buttons: Character, Inventory, Fitting, Market, Map, Proxscan, Missions, Corporation, Settings
 - Collapse/expand toggle (icon-only vs. icon + label)
 - Semi-transparent dark background
 - Hover tooltips with keyboard shortcut hints
@@ -65,17 +65,17 @@ EVE Online-style vertical icon sidebar:
 
 **Files**: `cpp_client/include/ui/ui_manager.h`, `cpp_client/src/ui/ui_manager.cpp`
 
-- Added D-Scan and Neocom as managed sub-panels
-- D-Scan registered as dockable panel with DockingManager
-- Neocom rendered independently (not dockable — always on left edge)
-- Neocom callbacks wired to toggle Inventory, Fitting, Market, Missions, D-Scan, and Overview
-- Added `ToggleDScan()`, `GetDScanPanel()`, `GetNeocomPanel()` accessors
+- Added Proxscan and Nexcom as managed sub-panels
+- Proxscan registered as dockable panel with DockingManager
+- Nexcom rendered independently (not dockable — always on left edge)
+- Nexcom callbacks wired to toggle Inventory, Fitting, Market, Missions, Proxscan, and Overview
+- Added `ToggleProxscan()`, `GetProxscanPanel()`, `GetNexcomPanel()` accessors
 
 ### 6. Build & Test ✅
 
-- Added `dscan_panel.cpp`, `neocom_panel.cpp` to CMake CLIENT_SOURCES
-- Added `dscan_panel.h`, `neocom_panel.h` to CMake CLIENT_HEADERS
-- Created `test_phase48_panels.cpp` — interactive test with demo data for D-Scan, Neocom, and data-bound module rack
+- Added `proxscan_panel.cpp`, `nexcom_panel.cpp` to CMake CLIENT_SOURCES
+- Added `proxscan_panel.h`, `nexcom_panel.h` to CMake CLIENT_HEADERS
+- Created `test_phase48_panels.cpp` — interactive test with demo data for Proxscan, Nexcom, and data-bound module rack
 - Added `test_phase48_panels` CMake target
 
 ### 7. Documentation Updates ✅
@@ -83,7 +83,7 @@ EVE Online-style vertical icon sidebar:
 - Updated `docs/cpp_client/EVE_UI_ROADMAP.md`:
   - Phase 4.5 HUD marked complete
   - Phase 4.6 Module Slots marked partially complete
-  - Phase 4.8 Neocom and D-Scan marked partially complete
+  - Phase 4.8 Nexcom and Proxscan marked partially complete
   - Updated current status line
 
 ---
@@ -96,12 +96,12 @@ EVE Online-style vertical icon sidebar:
 | `cpp_client/src/ui/hud.cpp` | Modified | Wired render() to RenderShipStatusCircular() |
 | `cpp_client/include/ui/eve_panels.h` | Modified | Added ModuleSlotState struct, RenderModuleRack() |
 | `cpp_client/src/ui/eve_panels.cpp` | Modified | Implemented RenderModuleRack() with cooldown/overheat |
-| `cpp_client/include/ui/dscan_panel.h` | Created | D-Scan panel header |
-| `cpp_client/src/ui/dscan_panel.cpp` | Created | D-Scan panel implementation |
-| `cpp_client/include/ui/neocom_panel.h` | Created | Neocom sidebar header |
-| `cpp_client/src/ui/neocom_panel.cpp` | Created | Neocom sidebar implementation |
-| `cpp_client/include/ui/ui_manager.h` | Modified | Added D-Scan/Neocom members and accessors |
-| `cpp_client/src/ui/ui_manager.cpp` | Modified | Integrated D-Scan/Neocom construction and rendering |
+| `cpp_client/include/ui/proxscan_panel.h` | Created | Proxscan panel header |
+| `cpp_client/src/ui/proxscan_panel.cpp` | Created | Proxscan panel implementation |
+| `cpp_client/include/ui/nexcom_panel.h` | Created | Nexcom sidebar header |
+| `cpp_client/src/ui/nexcom_panel.cpp` | Created | Nexcom sidebar implementation |
+| `cpp_client/include/ui/ui_manager.h` | Modified | Added Proxscan/Nexcom members and accessors |
+| `cpp_client/src/ui/ui_manager.cpp` | Modified | Integrated Proxscan/Nexcom construction and rendering |
 | `cpp_client/CMakeLists.txt` | Modified | Added new source/header files and test target |
 | `cpp_client/test_phase48_panels.cpp` | Created | Interactive test for new panels |
 | `docs/cpp_client/EVE_UI_ROADMAP.md` | Modified | Updated completion status |

@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_VERSION_H
-#define EVE_PCG_VERSION_H
+#ifndef NOVAFORGE_PCG_VERSION_H
+#define NOVAFORGE_PCG_VERSION_H
 
 #include <cstdint>
 
@@ -81,4 +81,4 @@ inline constexpr PCGVersion CURRENT_PCG_VERSION = {
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_VERSION_H
+#endif // NOVAFORGE_PCG_VERSION_H

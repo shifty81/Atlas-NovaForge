@@ -1,5 +1,5 @@
-#ifndef EVE_LOGGER_H
-#define EVE_LOGGER_H
+#ifndef NOVAFORGE_LOGGER_H
+#define NOVAFORGE_LOGGER_H
 
 #include <string>
 #include <fstream>
@@ -17,7 +17,7 @@ namespace utils {
 #ifdef ERROR
 #pragma push_macro("ERROR")
 #undef ERROR
-#define EVE_LOGGER_RESTORE_ERROR_MACRO
+#define NOVAFORGE_LOGGER_RESTORE_ERROR_MACRO
 #endif
 
 enum class LogLevel {
@@ -28,9 +28,9 @@ enum class LogLevel {
     FATAL = 4
 };
 
-#ifdef EVE_LOGGER_RESTORE_ERROR_MACRO
+#ifdef NOVAFORGE_LOGGER_RESTORE_ERROR_MACRO
 #pragma pop_macro("ERROR")
-#undef EVE_LOGGER_RESTORE_ERROR_MACRO
+#undef NOVAFORGE_LOGGER_RESTORE_ERROR_MACRO
 #endif
 
 /**
@@ -107,4 +107,4 @@ private:
 } // namespace utils
 } // namespace atlas
 
-#endif // EVE_LOGGER_H
+#endif // NOVAFORGE_LOGGER_H

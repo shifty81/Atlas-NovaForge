@@ -1,5 +1,5 @@
-#ifndef EVE_DATA_WORLD_PERSISTENCE_H
-#define EVE_DATA_WORLD_PERSISTENCE_H
+#ifndef NOVAFORGE_DATA_WORLD_PERSISTENCE_H
+#define NOVAFORGE_DATA_WORLD_PERSISTENCE_H
 
 #include "ecs/world.h"
 #include <string>
@@ -66,4 +66,4 @@ private:
 } // namespace data
 } // namespace atlas
 
-#endif // EVE_DATA_WORLD_PERSISTENCE_H
+#endif // NOVAFORGE_DATA_WORLD_PERSISTENCE_H

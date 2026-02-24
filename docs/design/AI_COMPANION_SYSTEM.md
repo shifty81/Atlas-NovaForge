@@ -119,7 +119,7 @@ class AIPilot:
 - Mission rewards
 
 #### Cost Structure
-| Skill Level | Base Salary (ISK/hour) | Hiring Fee |
+| Skill Level | Base Salary (Credits/hour) | Hiring Fee |
 |-------------|------------------------|------------|
 | 1 (Novice) | 10,000 | 100,000 |
 | 2 (Competent) | 25,000 | 500,000 |
@@ -835,8 +835,8 @@ def test_combat_support():
 - Task completion rates
 
 ### Economic Impact
-- Total ISK spent on AI salaries
-- ISK earned through AI assistance
+- Total Credits spent on AI salaries
+- Credits earned through AI assistance
 - ROI for players using AI pilots
 
 ### System Performance

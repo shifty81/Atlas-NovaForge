@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 def setup_logging(
-    name: str = "eve_offline",
+    name: str = "novaforge",
     level: str = "INFO",
     log_to_file: bool = True,
     log_dir: str = "logs"

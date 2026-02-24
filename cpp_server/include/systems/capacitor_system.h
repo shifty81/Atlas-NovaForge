@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_CAPACITOR_SYSTEM_H
-#define EVE_SYSTEMS_CAPACITOR_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_CAPACITOR_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_CAPACITOR_SYSTEM_H
 
 #include "ecs/system.h"
 #include <string>
@@ -10,7 +10,7 @@ namespace systems {
 /**
  * @brief Handles capacitor recharge for all entities
  * 
- * Implements EVE Online-style capacitor recharge.
+ * Implements Astralis-style capacitor recharge.
  * Capacitor is the energy resource used for module activation (weapons, EWAR, etc.).
  */
 class CapacitorSystem : public ecs::System {
@@ -40,4 +40,4 @@ public:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_CAPACITOR_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_CAPACITOR_SYSTEM_H

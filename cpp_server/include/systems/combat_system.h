@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_COMBAT_SYSTEM_H
-#define EVE_SYSTEMS_COMBAT_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_COMBAT_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_COMBAT_SYSTEM_H
 
 #include "ecs/system.h"
 #include "ecs/entity.h"
@@ -13,7 +13,7 @@ namespace systems {
  * @brief Handles combat mechanics
  * 
  * Manages weapon firing, damage calculation, and health management.
- * Implements EVE Online's damage and resistance system.
+ * Implements Astralis's damage and resistance system.
  */
 class CombatSystem : public ecs::System {
 public:
@@ -70,4 +70,4 @@ private:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_COMBAT_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_COMBAT_SYSTEM_H

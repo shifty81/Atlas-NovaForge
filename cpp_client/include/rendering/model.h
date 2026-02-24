@@ -62,7 +62,7 @@ struct ShipDesignTraits {
  * 
  * Supports both file-based model loading and procedural generation of ship models.
  * The procedural generation system creates faction-specific ships with distinctive
- * visual characteristics based on EVE Online's design language.
+ * visual characteristics based on Astralis's design language.
  * 
  * Features:
  * - Procedural generation for all ship classes (frigates to titans)

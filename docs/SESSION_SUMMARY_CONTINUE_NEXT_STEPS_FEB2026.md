@@ -161,7 +161,7 @@ Breakdown by system:
 - Market System: 11 assertions
 - Corporation: 37 assertions
 - Contract System: 36 assertions
-- Planetary Interaction: 14 assertions
+- Planetary Operations: 14 assertions
 - Manufacturing: 21 assertions
 - Research & Invention: 18 assertions
 - Chat System: 28 assertions

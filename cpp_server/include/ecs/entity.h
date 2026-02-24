@@ -1,5 +1,5 @@
-#ifndef EVE_ECS_ENTITY_H
-#define EVE_ECS_ENTITY_H
+#ifndef NOVAFORGE_ECS_ENTITY_H
+#define NOVAFORGE_ECS_ENTITY_H
 
 #include "component.h"
 #include <string>
@@ -92,4 +92,4 @@ bool Entity::hasComponent() const {
 } // namespace ecs
 } // namespace atlas
 
-#endif // EVE_ECS_ENTITY_H
+#endif // NOVAFORGE_ECS_ENTITY_H

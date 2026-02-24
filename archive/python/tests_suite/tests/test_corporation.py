@@ -39,7 +39,7 @@ class TestCorporationSystem(unittest.TestCase):
         """Test creating a new corporation"""
         # Create CEO entity
         ceo = self.world.create_entity()
-        player = Player(character_name="Test CEO", isk=2000000.0)
+        player = Player(character_name="Test CEO", credits=2000000.0)
         ceo.add_component(player)
         
         # Create corporation
@@ -66,8 +66,8 @@ class TestCorporationSystem(unittest.TestCase):
         member = corp.members[ceo.id]
         self.assertEqual(member.role, CorporationRole.CEO)
         
-        # Check ISK was charged
-        self.assertEqual(player.isk, 1000000.0)
+        # Check Credits was charged
+        self.assertEqual(player.credits, 1000000.0)
         
         # Check CEO has membership component
         membership = ceo.get_component(CorporationMembership)
@@ -76,9 +76,9 @@ class TestCorporationSystem(unittest.TestCase):
         self.assertEqual(membership.role, "ceo")
     
     def test_create_corporation_insufficient_isk(self):
-        """Test that corporation creation fails with insufficient ISK"""
+        """Test that corporation creation fails with insufficient Credits"""
         ceo = self.world.create_entity()
-        player = Player(character_name="Poor CEO", isk=500000.0)
+        player = Player(character_name="Poor CEO", credits=500000.0)
         ceo.add_component(player)
         
         corp_id = self.corp_system.create_corporation(
@@ -90,12 +90,12 @@ class TestCorporationSystem(unittest.TestCase):
         )
         
         self.assertIsNone(corp_id)
-        self.assertEqual(player.isk, 500000.0)
+        self.assertEqual(player.credits, 500000.0)
     
     def test_create_corporation_invalid_ticker(self):
         """Test that corporation creation fails with invalid ticker"""
         ceo = self.world.create_entity()
-        player = Player(character_name="Test CEO", isk=2000000.0)
+        player = Player(character_name="Test CEO", credits=2000000.0)
         ceo.add_component(player)
         
         # Too short
@@ -110,14 +110,14 @@ class TestCorporationSystem(unittest.TestCase):
         """Test adding members to a corporation"""
         # Create corporation
         ceo = self.world.create_entity()
-        player_ceo = Player(character_name="CEO", isk=2000000.0)
+        player_ceo = Player(character_name="CEO", credits=2000000.0)
         ceo.add_component(player_ceo)
         
         corp_id = self.corp_system.create_corporation(ceo, "Test Corp", "TEST", "")
         
         # Create new member
         member = self.world.create_entity()
-        player_member = Player(character_name="New Member", isk=100000.0)
+        player_member = Player(character_name="New Member", credits=100000.0)
         member.add_component(player_member)
         
         # Add member
@@ -142,13 +142,13 @@ class TestCorporationSystem(unittest.TestCase):
         """Test removing members from a corporation"""
         # Create corporation with members
         ceo = self.world.create_entity()
-        player_ceo = Player(character_name="CEO", isk=2000000.0)
+        player_ceo = Player(character_name="CEO", credits=2000000.0)
         ceo.add_component(player_ceo)
         
         corp_id = self.corp_system.create_corporation(ceo, "Test Corp", "TEST", "")
         
         member = self.world.create_entity()
-        player_member = Player(character_name="Member", isk=100000.0)
+        player_member = Player(character_name="Member", credits=100000.0)
         member.add_component(player_member)
         self.corp_system.add_member(corp_id, member)
         
@@ -167,7 +167,7 @@ class TestCorporationSystem(unittest.TestCase):
     def test_cannot_remove_ceo(self):
         """Test that CEO cannot be removed"""
         ceo = self.world.create_entity()
-        player_ceo = Player(character_name="CEO", isk=2000000.0)
+        player_ceo = Player(character_name="CEO", credits=2000000.0)
         ceo.add_component(player_ceo)
         
         corp_id = self.corp_system.create_corporation(ceo, "Test Corp", "TEST", "")
@@ -179,13 +179,13 @@ class TestCorporationSystem(unittest.TestCase):
         """Test changing member roles"""
         # Create corporation with members
         ceo = self.world.create_entity()
-        player_ceo = Player(character_name="CEO", isk=2000000.0)
+        player_ceo = Player(character_name="CEO", credits=2000000.0)
         ceo.add_component(player_ceo)
         
         corp_id = self.corp_system.create_corporation(ceo, "Test Corp", "TEST", "")
         
         member = self.world.create_entity()
-        player_member = Player(character_name="Member", isk=100000.0)
+        player_member = Player(character_name="Member", credits=100000.0)
         member.add_component(player_member)
         self.corp_system.add_member(corp_id, member)
         
@@ -210,18 +210,18 @@ class TestCorporationSystem(unittest.TestCase):
     def test_only_ceo_can_set_roles(self):
         """Test that only CEO can change roles"""
         ceo = self.world.create_entity()
-        player_ceo = Player(character_name="CEO", isk=2000000.0)
+        player_ceo = Player(character_name="CEO", credits=2000000.0)
         ceo.add_component(player_ceo)
         
         corp_id = self.corp_system.create_corporation(ceo, "Test Corp", "TEST", "")
         
         member1 = self.world.create_entity()
-        player_member1 = Player(character_name="Member1", isk=100000.0)
+        player_member1 = Player(character_name="Member1", credits=100000.0)
         member1.add_component(player_member1)
         self.corp_system.add_member(corp_id, member1)
         
         member2 = self.world.create_entity()
-        player_member2 = Player(character_name="Member2", isk=100000.0)
+        player_member2 = Player(character_name="Member2", credits=100000.0)
         member2.add_component(player_member2)
         self.corp_system.add_member(corp_id, member2)
         
@@ -235,26 +235,26 @@ class TestCorporationSystem(unittest.TestCase):
         self.assertFalse(result)
     
     def test_wallet_deposit(self):
-        """Test depositing ISK to corporation wallet"""
+        """Test depositing Credits to corporation wallet"""
         ceo = self.world.create_entity()
-        player_ceo = Player(character_name="CEO", isk=2000000.0)
+        player_ceo = Player(character_name="CEO", credits=2000000.0)
         ceo.add_component(player_ceo)
         
         corp_id = self.corp_system.create_corporation(ceo, "Test Corp", "TEST", "")
         
-        # Deposit ISK
+        # Deposit Credits
         result = self.corp_system.deposit_to_wallet(corp_id, ceo, 500000.0)
         self.assertTrue(result)
         
         # Check balances
         corp = self.corp_system.corporations[corp_id]
         self.assertEqual(corp.wallet_balance, 500000.0)
-        self.assertEqual(player_ceo.isk, 500000.0)  # 2M - 1M creation - 500k deposit
+        self.assertEqual(player_ceo.credits, 500000.0)  # 2M - 1M creation - 500k deposit
     
     def test_wallet_withdraw(self):
-        """Test withdrawing ISK from corporation wallet"""
+        """Test withdrawing Credits from corporation wallet"""
         ceo = self.world.create_entity()
-        player_ceo = Player(character_name="CEO", isk=2000000.0)
+        player_ceo = Player(character_name="CEO", credits=2000000.0)
         ceo.add_component(player_ceo)
         
         corp_id = self.corp_system.create_corporation(ceo, "Test Corp", "TEST", "")
@@ -267,12 +267,12 @@ class TestCorporationSystem(unittest.TestCase):
         # Check balances
         corp = self.corp_system.corporations[corp_id]
         self.assertEqual(corp.wallet_balance, 300000.0)
-        self.assertEqual(player_ceo.isk, 700000.0)  # 2M - 1M creation - 500k + 200k
+        self.assertEqual(player_ceo.credits, 700000.0)  # 2M - 1M creation - 500k + 200k
     
     def test_wallet_permissions(self):
         """Test that only authorized roles can withdraw from wallet"""
         ceo = self.world.create_entity()
-        player_ceo = Player(character_name="CEO", isk=2000000.0)
+        player_ceo = Player(character_name="CEO", credits=2000000.0)
         ceo.add_component(player_ceo)
         
         corp_id = self.corp_system.create_corporation(ceo, "Test Corp", "TEST", "")
@@ -280,7 +280,7 @@ class TestCorporationSystem(unittest.TestCase):
         
         # Add regular member
         member = self.world.create_entity()
-        player_member = Player(character_name="Member", isk=100000.0)
+        player_member = Player(character_name="Member", credits=100000.0)
         member.add_component(player_member)
         self.corp_system.add_member(corp_id, member)
         
@@ -291,7 +291,7 @@ class TestCorporationSystem(unittest.TestCase):
     def test_hangar_add_remove(self):
         """Test adding and removing items from corporation hangars"""
         ceo = self.world.create_entity()
-        player_ceo = Player(character_name="CEO", isk=2000000.0)
+        player_ceo = Player(character_name="CEO", credits=2000000.0)
         ceo.add_component(player_ceo)
         
         corp_id = self.corp_system.create_corporation(ceo, "Test Corp", "TEST", "")
@@ -317,7 +317,7 @@ class TestCorporationSystem(unittest.TestCase):
     def test_hangar_permissions(self):
         """Test hangar access permissions"""
         ceo = self.world.create_entity()
-        player_ceo = Player(character_name="CEO", isk=2000000.0)
+        player_ceo = Player(character_name="CEO", credits=2000000.0)
         ceo.add_component(player_ceo)
         
         corp_id = self.corp_system.create_corporation(ceo, "Test Corp", "TEST", "")
@@ -325,7 +325,7 @@ class TestCorporationSystem(unittest.TestCase):
         
         # Add regular member
         member = self.world.create_entity()
-        player_member = Player(character_name="Member", isk=100000.0)
+        player_member = Player(character_name="Member", credits=100000.0)
         member.add_component(player_member)
         self.corp_system.add_member(corp_id, member)
         
@@ -342,7 +342,7 @@ class TestCorporationSystem(unittest.TestCase):
     def test_apply_tax(self):
         """Test applying corporation tax to earnings"""
         ceo = self.world.create_entity()
-        player_ceo = Player(character_name="CEO", isk=2000000.0)
+        player_ceo = Player(character_name="CEO", credits=2000000.0)
         ceo.add_component(player_ceo)
         
         corp_id = self.corp_system.create_corporation(ceo, "Test Corp", "TEST", "")

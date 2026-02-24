@@ -137,7 +137,7 @@ Shows:
 - Nearby objects (placeholder)
 - Future: filtering and sorting
 
-### Neocom Sidebar
+### Nexcom Sidebar
 **Location**: Far left edge
 
 Shows:

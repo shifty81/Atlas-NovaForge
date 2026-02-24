@@ -10,7 +10,7 @@
 
 This document outlines the comprehensive plan to implement the Atlas UI system in the C++ OpenGL client. The UI features dense information displays, extensive customization, and sophisticated interaction patterns.
 
-> **Note**: UI framework was renamed from "Photon" to "Atlas" and sidebar from "Neocom" to "Sidebar" to establish an original naming convention. See [NAMING_CONVENTION.md](../NAMING_CONVENTION.md).
+> **Note**: UI framework was renamed from "Photon" to "Atlas" and sidebar from "Nexcom" to "Sidebar" to establish an original naming convention. See [NAMING_CONVENTION.md](../NAMING_CONVENTION.md).
 
 ## Current Status (Phase 4.10 In Progress)
 
@@ -268,12 +268,12 @@ This document outlines the comprehensive plan to implement the Atlas UI system i
 
 ---
 
-### Phase 4.8: Neocom & Additional Panels (3 weeks)
+### Phase 4.8: Nexcom & Additional Panels (3 weeks)
 
 **Priority**: Medium - Important for functionality
 **Status**: Partial ✅ (Feb 9, 2026)
 
-#### Neocom (Main Menu)
+#### Nexcom (Main Menu)
 - [x] **Icon Bar**
   - Vertical bar on left side
   - Icons for main services
@@ -296,7 +296,7 @@ This document outlines the comprehensive plan to implement the Atlas UI system i
   - Badge notifications
   - Collapse/expand button
 
-#### D-Scan Window
+#### Proxscan Window
 - [x] **Scanner Interface**
   - Scan angle slider (5° to 360°)
   - Range slider (0 to max)
@@ -350,8 +350,8 @@ This document outlines the comprehensive plan to implement the Atlas UI system i
   - Share fitting (export)
 
 **Deliverables**:
-- Neocom menu system
-- D-Scan window
+- Nexcom menu system
+- Proxscan window
 - Inventory system
 - Fitting window
 
@@ -584,8 +584,8 @@ Render (draw all UI)
 **Should Have** (Phases 4.7-4.8):
 1. Context menus
 2. Radial menu
-3. Neocom menu
-4. D-Scan window
+3. Nexcom menu
+4. Proxscan window
 
 **Nice to Have** (Phases 4.9-4.11):
 1. Drone controls
@@ -613,7 +613,7 @@ Render (draw all UI)
 | 4.5 - Overview & HUD | 3 weeks | 120 hours |
 | 4.6 - Modules | 2-3 weeks | 100 hours |
 | 4.7 - Menus | 1-2 weeks | 60 hours |
-| 4.8 - Neocom & Panels | 3 weeks | 120 hours |
+| 4.8 - Nexcom & Panels | 3 weeks | 120 hours |
 | 4.9 - Drones & Movement | 1-2 weeks | 60 hours |
 | 4.10 - Customization | 2 weeks | 80 hours |
 | 4.11 - Polish | 2-3 weeks | 100 hours |
@@ -635,8 +635,8 @@ Render (draw all UI)
 
 ### Should Meet
 - ✅ Radial menu for quick actions
-- ✅ Neocom with core services
-- ✅ D-Scan functionality
+- ✅ Nexcom with core services
+- ✅ Proxscan functionality
 - ✅ Inventory and fitting windows
 - ✅ Window customization
 
@@ -674,9 +674,9 @@ integration is available via `-DUSE_RMLUI=ON` with panel templates in
 
 Implementing EVE Online's complete UI is a major undertaking requiring 4-6 months of focused development. The phased approach allows for incremental delivery of working features while building toward the complete system.
 
-**Current Status**: Phase 4.5 Complete (HUD + Overview), Phase 4.6 Partial (Module Slots), Phase 4.8 Partial (D-Scan + Neocom + Inventory + Fitting RmlUi templates)  
+**Current Status**: Phase 4.5 Complete (HUD + Overview), Phase 4.6 Partial (Module Slots), Phase 4.8 Partial (Proxscan + Nexcom + Inventory + Fitting RmlUi templates)  
 **Next Priority**: Phase 4.7 (Context & Radial Menus), Phase 4.9 (Drone & Movement)  
-**RmlUi Panels Completed**: Ship HUD, Overview, Fitting, Target List, Inventory, D-Scan, Neocom  
+**RmlUi Panels Completed**: Ship HUD, Overview, Fitting, Target List, Inventory, Proxscan, Nexcom  
 **Target Completion**: Q3 2026
 
 ---

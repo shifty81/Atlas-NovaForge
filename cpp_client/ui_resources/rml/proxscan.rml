@@ -1,8 +1,8 @@
 <!-- EVE OFFLINE — Directional Scanner Panel (RML)
-     D-Scan interface with angle/range controls and sortable results table. -->
+     Proxscan interface with angle/range controls and sortable results table. -->
 <rml>
 <head>
-    <title>D-Scan</title>
+    <title>Proxscan</title>
     <link type="text/rcss" href="../rcss/atlas_ui.rcss"/>
     <style>
         body {
@@ -10,7 +10,7 @@
             color: #E6EDF3;
         }
 
-        #dscan {
+        #proxscan {
             position: fixed;
             top: 120dp;
             right: 10dp;
@@ -180,7 +180,7 @@
     </style>
 </head>
 <body>
-    <div id="dscan">
+    <div id="proxscan">
         <div class="panel-header">
             <span class="title">DIRECTIONAL SCANNER</span>
             <span class="window-btn" id="btn-close">x</span>
@@ -220,7 +220,7 @@
                         <td style="text-align: right;">Distance</td>
                     </tr>
                 </thead>
-                <tbody id="dscan-body">
+                <tbody id="proxscan-body">
                     <!-- Results populated from C++ -->
                 </tbody>
             </table>

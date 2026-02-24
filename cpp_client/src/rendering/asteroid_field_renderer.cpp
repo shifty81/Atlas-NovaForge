@@ -331,7 +331,7 @@ glm::vec4 AsteroidFieldRenderer::getAsteroidColor(int meshType, int seed) const 
     float r1 = hash(seed, 1);
     float r2 = hash(seed, 2);
     
-    // Base colors for different ore types (matching EVE)
+    // Base colors for different ore types (matching Astralis ore types)
     std::vector<glm::vec3> baseColors = {
         {0.6f, 0.5f, 0.4f},  // Gray/brown (common ores)
         {0.5f, 0.6f, 0.5f},  // Greenish (some ores)

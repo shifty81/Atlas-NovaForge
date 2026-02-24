@@ -1,7 +1,7 @@
 """
 NPC Bounty System
 Handles bounty rewards when NPCs are destroyed.
-In EVE Online, NPC pirate ships have bounties that are paid instantly
+In Astralis, NPC pirate ships have bounties that are paid instantly
 to the player (or split among fleet members) upon destruction.
 """
 
@@ -23,8 +23,8 @@ class BountyPayment:
     timestamp: float = 0.0
 
 
-# NPC bounty values by type and size (ISK)
-# Based on EVE Online bounty amounts
+# NPC bounty values by type and size (Credits)
+# Based on Astralis bounty amounts
 NPC_BOUNTIES = {
     # Serpentis
     "serpentis_scout": 15000,
@@ -100,7 +100,7 @@ SECURITY_BOUNTY_MULTIPLIER = {
 class BountySystem:
     """
     Manages NPC bounty rewards.
-    When NPCs are destroyed, the killer receives ISK bounty payment.
+    When NPCs are destroyed, the killer receives Credits bounty payment.
     In fleet, bounty is split evenly among members on grid.
     """
 
@@ -125,7 +125,7 @@ class BountySystem:
             security_status: System security status (0.0 to 1.0)
 
         Returns:
-            Bounty amount in ISK
+            Bounty amount in Credits
         """
         base_bounty = NPC_BOUNTIES.get(npc_type, 0)
         if base_bounty == 0:
@@ -223,7 +223,7 @@ class BountySystem:
         return history[-limit:]
 
     def get_total_earned(self, player_id: str) -> float:
-        """Get total ISK earned from bounties"""
+        """Get total Credits earned from bounties"""
         return self.total_earned.get(player_id, 0.0)
 
     def get_session_earnings(
@@ -231,7 +231,7 @@ class BountySystem:
         player_id: str,
         session_start_time: float
     ) -> float:
-        """Get ISK earned from bounties since session start"""
+        """Get Credits earned from bounties since session start"""
         history = self.payment_history.get(player_id, [])
         return sum(
             p.individual_share

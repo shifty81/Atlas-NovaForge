@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_SHIP_DESIGNER_H
-#define EVE_PCG_SHIP_DESIGNER_H
+#ifndef NOVAFORGE_PCG_SHIP_DESIGNER_H
+#define NOVAFORGE_PCG_SHIP_DESIGNER_H
 
 #include "deck_graph.h"
 #include "room_graph.h"
@@ -50,4 +50,4 @@ ShipDesignerSave saveShipLayout(const std::vector<Deck>& decks,
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_SHIP_DESIGNER_H
+#endif // NOVAFORGE_PCG_SHIP_DESIGNER_H

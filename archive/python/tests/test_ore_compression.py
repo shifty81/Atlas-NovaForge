@@ -35,13 +35,13 @@ class TestOreCompressionSystem(unittest.TestCase):
     
     def test_compress_ore_basic(self):
         """Test basic ore compression"""
-        # Add raw veldspar to ore hold
+        # Add raw ferrite to ore hold
         ore_hold = self.miner.get_component(OreHold)
-        ore_hold.ore["veldspar"] = 500.0
+        ore_hold.ore["ferrite"] = 500.0
         ore_hold.ore_hold_used = 500.0
         
         result = self.compression_system.compress_ore(
-            self.miner, "veldspar", 500.0
+            self.miner, "ferrite", 500.0
         )
         
         self.assertIsNotNone(result)
@@ -53,26 +53,26 @@ class TestOreCompressionSystem(unittest.TestCase):
     def test_compress_ore_partial_batch(self):
         """Test compression with partial batches (only full batches processed)"""
         ore_hold = self.miner.get_component(OreHold)
-        ore_hold.ore["veldspar"] = 250.0
+        ore_hold.ore["ferrite"] = 250.0
         ore_hold.ore_hold_used = 250.0
         
         result = self.compression_system.compress_ore(
-            self.miner, "veldspar", 250.0
+            self.miner, "ferrite", 250.0
         )
         
         self.assertIsNotNone(result)
         self.assertEqual(result["batches"], 2)
         self.assertEqual(result["ore_consumed"], 200.0)
         # 50 m3 should remain
-        self.assertAlmostEqual(ore_hold.ore["veldspar"], 50.0)
+        self.assertAlmostEqual(ore_hold.ore["ferrite"], 50.0)
     
     def test_compress_ore_insufficient(self):
         """Test compression fails with insufficient ore"""
         ore_hold = self.miner.get_component(OreHold)
-        ore_hold.ore["veldspar"] = 50.0
+        ore_hold.ore["ferrite"] = 50.0
         
         result = self.compression_system.compress_ore(
-            self.miner, "veldspar", 200.0
+            self.miner, "ferrite", 200.0
         )
         
         self.assertIsNone(result)
@@ -80,11 +80,11 @@ class TestOreCompressionSystem(unittest.TestCase):
     def test_compress_ore_below_batch_size(self):
         """Test compression fails with less than one batch"""
         ore_hold = self.miner.get_component(OreHold)
-        ore_hold.ore["veldspar"] = 50.0
+        ore_hold.ore["ferrite"] = 50.0
         ore_hold.ore_hold_used = 50.0
         
         result = self.compression_system.compress_ore(
-            self.miner, "veldspar", 50.0
+            self.miner, "ferrite", 50.0
         )
         
         self.assertIsNone(result)
@@ -103,10 +103,10 @@ class TestOreCompressionSystem(unittest.TestCase):
     def test_compress_ore_not_at_station(self):
         """Test compression fails when not at a station"""
         ore_hold = self.miner.get_component(OreHold)
-        ore_hold.ore["veldspar"] = 500.0
+        ore_hold.ore["ferrite"] = 500.0
         
         result = self.compression_system.compress_ore(
-            self.miner, "veldspar", 500.0, at_station=False
+            self.miner, "ferrite", 500.0, at_station=False
         )
         
         self.assertIsNone(result)
@@ -114,13 +114,13 @@ class TestOreCompressionSystem(unittest.TestCase):
     def test_compress_ore_from_inventory(self):
         """Test compression from regular inventory"""
         inventory = self.miner.get_component(Inventory)
-        inventory.items["scordite"] = 300
+        inventory.items["galvite"] = 300
         
         # Remove ore hold to test inventory path
         self.miner.remove_component(OreHold)
         
         result = self.compression_system.compress_ore(
-            self.miner, "scordite", 300.0
+            self.miner, "galvite", 300.0
         )
         
         self.assertIsNotNone(result)
@@ -130,7 +130,7 @@ class TestOreCompressionSystem(unittest.TestCase):
     def test_compress_ore_with_skills(self):
         """Test compression with ore compression skill bonus"""
         ore_hold = self.miner.get_component(OreHold)
-        ore_hold.ore["veldspar"] = 500.0
+        ore_hold.ore["ferrite"] = 500.0
         ore_hold.ore_hold_used = 500.0
         
         # Set ore compression skill to level 5
@@ -138,7 +138,7 @@ class TestOreCompressionSystem(unittest.TestCase):
         skills.skills["ore_compression"] = 5
         
         result = self.compression_system.compress_ore(
-            self.miner, "veldspar", 500.0
+            self.miner, "ferrite", 500.0
         )
         
         self.assertIsNotNone(result)
@@ -148,11 +148,11 @@ class TestOreCompressionSystem(unittest.TestCase):
     def test_compress_ore_volume_reduction(self):
         """Test that compression significantly reduces volume"""
         ore_hold = self.miner.get_component(OreHold)
-        ore_hold.ore["veldspar"] = 1000.0
+        ore_hold.ore["ferrite"] = 1000.0
         ore_hold.ore_hold_used = 1000.0
         
         result = self.compression_system.compress_ore(
-            self.miner, "veldspar", 1000.0
+            self.miner, "ferrite", 1000.0
         )
         
         self.assertIsNotNone(result)
@@ -240,7 +240,7 @@ class TestOreCompressionSystem(unittest.TestCase):
     
     def test_get_compression_info_ore(self):
         """Test getting compression info for ore"""
-        info = self.compression_system.get_compression_info("veldspar")
+        info = self.compression_system.get_compression_info("ferrite")
         
         self.assertIsNotNone(info)
         self.assertEqual(info["type"], "ore")
@@ -267,27 +267,27 @@ class TestOreCompressionSystem(unittest.TestCase):
         
         self.assertEqual(len(ores), 15)
         self.assertEqual(len(ice), 12)
-        self.assertIn("veldspar", ores)
+        self.assertIn("ferrite", ores)
         self.assertIn("clear_icicle", ice)
     
     def test_ore_consumed_after_compression(self):
         """Test that ore is properly consumed after compression"""
         ore_hold = self.miner.get_component(OreHold)
-        ore_hold.ore["veldspar"] = 500.0
+        ore_hold.ore["ferrite"] = 500.0
         ore_hold.ore_hold_used = 500.0
         
-        self.compression_system.compress_ore(self.miner, "veldspar", 500.0)
+        self.compression_system.compress_ore(self.miner, "ferrite", 500.0)
         
         # All 500 m3 consumed (5 full batches of 100)
-        self.assertNotIn("veldspar", ore_hold.ore)
+        self.assertNotIn("ferrite", ore_hold.ore)
     
     def test_compressed_ore_added_to_inventory(self):
         """Test that compressed ore is added to inventory"""
         ore_hold = self.miner.get_component(OreHold)
-        ore_hold.ore["veldspar"] = 300.0
+        ore_hold.ore["ferrite"] = 300.0
         ore_hold.ore_hold_used = 300.0
         
-        self.compression_system.compress_ore(self.miner, "veldspar", 300.0)
+        self.compression_system.compress_ore(self.miner, "ferrite", 300.0)
         
         inventory = self.miner.get_component(Inventory)
         self.assertIn("compressed_veldspar", inventory.items)

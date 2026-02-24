@@ -1,7 +1,7 @@
 """
 Loot System
 Handles loot drops, loot tables, and loot containers
-Based on EVE Online's loot mechanics
+Based on Astralis's loot mechanics
 """
 
 from typing import Optional, Dict, List, Tuple
@@ -28,7 +28,7 @@ class LootItem:
     name: str
     quantity: int = 1
     quality: LootQuality = LootQuality.COMMON
-    value: float = 0.0  # ISK value
+    value: float = 0.0  # Credits value
     volume: float = 1.0  # m3
 
 
@@ -136,11 +136,11 @@ class LootSystem:
         # Generate loot
         loot = self.generate_loot(loot_table_id)
         
-        # Generate ISK
+        # Generate Credits
         loot_table = self.loot_tables.get(loot_table_id)
-        isk = 0.0
+        credits = 0.0
         if loot_table and loot_table.isk_max > 0:
-            isk = random.uniform(loot_table.isk_min, loot_table.isk_max)
+            credits = random.uniform(loot_table.isk_min, loot_table.isk_max)
         
         # Create container
         self.container_counter += 1
@@ -148,7 +148,7 @@ class LootSystem:
             container_id=f"container_{self.container_counter}",
             container_type=container_type,
             contents=loot,
-            isk_contents=isk,
+            isk_contents=credits,
             owner_id=owner_id,
             created_at=current_time
         )

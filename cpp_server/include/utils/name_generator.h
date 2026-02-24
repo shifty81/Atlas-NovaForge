@@ -1,5 +1,5 @@
-#ifndef EVE_NAME_GENERATOR_H
-#define EVE_NAME_GENERATOR_H
+#ifndef NOVAFORGE_NAME_GENERATOR_H
+#define NOVAFORGE_NAME_GENERATOR_H
 
 #include <string>
 #include <vector>
@@ -11,7 +11,7 @@ namespace utils {
 /**
  * @brief Random name generator for game elements
  * 
- * Generates EVE-like names for characters, ships, corporations, etc.
+ * Generates Astralis-like names for characters, ships, corporations, etc.
  */
 class NameGenerator {
 public:
@@ -90,4 +90,4 @@ private:
 } // namespace utils
 } // namespace atlas
 
-#endif // EVE_NAME_GENERATOR_H
+#endif // NOVAFORGE_NAME_GENERATOR_H

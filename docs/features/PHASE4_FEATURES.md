@@ -15,8 +15,8 @@ Phase 4 introduces comprehensive Corporation and Social features to EVE OFFLINE,
 ### Corporation Management
 
 **Creating a Corporation**
-- Cost: 1,000,000 ISK
-- Requirements: Sufficient ISK balance
+- Cost: 1,000,000 Credits
+- Requirements: Sufficient Credits balance
 - Ticker: 3-5 character corporation ticker (e.g., "TEST", "NORM")
 - Initial members: CEO automatically added as first member
 - Max members: 50 players per corporation
@@ -55,7 +55,7 @@ Phase 4 introduces comprehensive Corporation and Social features to EVE OFFLINE,
 ### Corporation Wallet
 
 **Features:**
-- Shared ISK pool
+- Shared Credits pool
 - Deposit: Any member
 - Withdraw: Directors and CEO only
 - Transaction tracking
@@ -153,19 +153,19 @@ Four NPC corporations initialized:
 
 #### 1. Item Exchange Contracts
 
-**Description**: Trade items for ISK, or items for items + ISK.
+**Description**: Trade items for Credits, or items for items + Credits.
 
 **Features:**
-- Offer items and/or ISK
-- Request items and/or ISK
+- Offer items and/or Credits
+- Request items and/or Credits
 - Optional collateral
 - Public or private availability
 - Location-based
 - Expiration date (1-30 days)
 
 **Example Use Cases:**
-- Sell 5 Rifters for 1M ISK
-- Trade 10 modules for 500K ISK
+- Sell 5 Rifters for 1M Credits
+- Trade 10 modules for 500K Credits
 - Exchange items with specific players
 
 #### 2. Courier Contracts
@@ -389,7 +389,7 @@ python demo_phase4.py
 ### Corporation Gameplay
 
 **Starting a Corporation:**
-1. Accumulate 1M ISK
+1. Accumulate 1M Credits
 2. Create corporation with name and ticker
 3. Invite friends to join
 4. Set up hangar divisions for shared resources

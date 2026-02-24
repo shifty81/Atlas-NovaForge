@@ -434,7 +434,7 @@ class StructureSystem:
                 container_id=f"structure_wreck_{structure_entity_id}",
                 container_type="secure",  # Secure container - only owner corp can access initially
                 contents=inventory_comp.items.copy(),
-                isk_contents=0.0,  # ISK stored separately in corp wallet
+                isk_contents=0.0,  # Credits stored separately in corp wallet
                 owner_id=structure_comp.owner_corporation_id,
                 created_at=time_module.time(),
                 despawn_time=3600.0  # 1 hour for structure loot

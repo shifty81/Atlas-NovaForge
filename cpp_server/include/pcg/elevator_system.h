@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_ELEVATOR_SYSTEM_H
-#define EVE_PCG_ELEVATOR_SYSTEM_H
+#ifndef NOVAFORGE_PCG_ELEVATOR_SYSTEM_H
+#define NOVAFORGE_PCG_ELEVATOR_SYSTEM_H
 
 #include "pcg_context.h"
 #include "deck_graph.h"
@@ -42,4 +42,4 @@ ElevatorNode generateElevator(const Deck& deck,
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_ELEVATOR_SYSTEM_H
+#endif // NOVAFORGE_PCG_ELEVATOR_SYSTEM_H

@@ -132,8 +132,8 @@ public:
                              const std::vector<float>& volumes,
                              float capacityUsed, float capacityMax);
 
-    // ---- D-Scan ----
-    void UpdateDScanResults(const std::vector<std::string>& names,
+    // ---- Proxscan ----
+    void UpdateProxscanResults(const std::vector<std::string>& names,
                             const std::vector<std::string>& types,
                             const std::vector<float>& distances);
 

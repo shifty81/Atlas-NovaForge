@@ -101,8 +101,8 @@ behavior.
 | Ore Reprocessing | Reprocessing system exists | ✅ |
 | Industry/Manufacturing | `IndustrySystem` with blueprints, material requirements | ✅ |
 | Market System | `MarketSystem` with buy/sell orders, order matching | ✅ |
-| Wallet/Currency | `Wallet` component with ISK | ✅ |
-| Planetary Interaction | `PlanetaryInteractionSystem` implemented | ✅ |
+| Wallet/Currency | `Wallet` component with Credits | ✅ |
+| Planetary Operations | `PlanetaryInteractionSystem` implemented | ✅ |
 | Missions | `MissionSystem` with objectives, rewards | ✅ |
 | Exploration Sites | `ExplorationSystem` implemented | ✅ |
 | Dynamic Respawning | Asteroid respawn mechanics | ⚠️ |

@@ -214,19 +214,19 @@ Versatile medium-class ships for sustained combat.
 
 ## 🎯 New Missions (10 Total)
 
-### Level 2 Missions (160k-210k ISK)
+### Level 2 Missions (160k-210k Credits)
 1. **Angel Cartel Threat** - Eliminate 6 Angel frigates
 2. **Sansha's Nation Scouts** - Destroy 5 Sansha frigates
 3. **Rogue Drone Cleanup** - Exterminate 8 rogue drones
 4. **Emergency Supply Run** - Courier mission
-5. **Rare Ore Collection** - Mining mission (Kernite + Plagioclase)
+5. **Rare Ore Collection** - Mining mission (Heliore + Silvane)
 6. **Exploration Site** - Scan and retrieve artifacts
 
-### Level 3 Missions (320k-420k ISK)
+### Level 3 Missions (320k-420k Credits)
 7. **Destroyer Patrol** - Eliminate 5 destroyers (Serpentis + Guristas)
 8. **Drone Hive Assault** - Destroy drone hive including Mother ship
 
-### Level 4 Missions (550k-680k ISK)
+### Level 4 Missions (550k-680k Credits)
 9. **Cruiser Showdown** - High-threat cruiser targets (Serpentis + Blood Raiders)
 10. **Faction Warfare Sortie** - Major multi-faction operation (Angel + Sansha)
 
@@ -269,9 +269,9 @@ Technical reference for EVE Online mechanics:
 ## 🎮 Game Balance
 
 ### Ship Progression
-- **Frigates**: 50-125k ISK missions, fast and agile
-- **Destroyers**: 160-320k ISK missions, high firepower
-- **Cruisers**: 320-680k ISK missions, versatile and durable
+- **Frigates**: 50-125k Credits missions, fast and agile
+- **Destroyers**: 160-320k Credits missions, high firepower
+- **Cruisers**: 320-680k Credits missions, versatile and durable
 
 ### Damage Type Distribution
 - **EM**: Amarr lasers, Blood Raiders, Sansha (vs shields)

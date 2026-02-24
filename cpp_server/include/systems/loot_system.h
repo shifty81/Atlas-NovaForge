@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_LOOT_SYSTEM_H
-#define EVE_SYSTEMS_LOOT_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_LOOT_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_LOOT_SYSTEM_H
 
 #include "ecs/system.h"
 #include <string>
@@ -30,7 +30,7 @@ public:
     std::string generateLoot(const std::string& entity_id);
 
     /**
-     * @brief Transfer all items from wreck to player inventory and add ISK
+     * @brief Transfer all items from wreck to player inventory and add Credits
      * @return true if collection succeeded
      */
     bool collectLoot(const std::string& wreck_id, const std::string& player_id);
@@ -51,4 +51,4 @@ private:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_LOOT_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_LOOT_SYSTEM_H

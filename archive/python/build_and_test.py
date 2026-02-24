@@ -379,7 +379,7 @@ class BuildSystem:
         """Run UI component tests"""
         self.print_step("Running UI tests")
         
-        ui_test = self.root_dir / "test_eve_ui_components.py"
+        ui_test = self.root_dir / "test_novaforge_ui_components.py"
         if not ui_test.exists():
             self.print_warning("UI tests not found")
             return True

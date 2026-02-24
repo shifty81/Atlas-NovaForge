@@ -19,7 +19,7 @@ except ImportError:
     print("Install with: pip install panda3d")
     sys.exit(1)
 
-from client_3d.ui.eve_hud import EVEStyledHUD
+from client_3d.ui.novaforge_hud import EVEStyledHUD
 from client_3d.rendering.starfield import StarField
 
 

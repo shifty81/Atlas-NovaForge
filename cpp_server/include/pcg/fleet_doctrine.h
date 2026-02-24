@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_FLEET_DOCTRINE_H
-#define EVE_PCG_FLEET_DOCTRINE_H
+#ifndef NOVAFORGE_PCG_FLEET_DOCTRINE_H
+#define NOVAFORGE_PCG_FLEET_DOCTRINE_H
 
 #include "pcg_context.h"
 #include "ship_generator.h"
@@ -10,7 +10,7 @@ namespace atlas {
 namespace pcg {
 
 /**
- * @brief Fleet doctrine types modelled after EVE fleet compositions.
+ * @brief Fleet doctrine types modelled after Astralis fleet compositions.
  */
 enum class FleetDoctrine : uint32_t {
     Brawler,         ///< Close-range, high-tank fleet.
@@ -84,4 +84,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_FLEET_DOCTRINE_H
+#endif // NOVAFORGE_PCG_FLEET_DOCTRINE_H

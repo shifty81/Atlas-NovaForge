@@ -72,7 +72,7 @@ void AtlasHUD::init(int windowW, int windowH) {
     m_infoPanelState.open = false;
     m_infoPanelState.minimized = false;
 
-    // Dockable panels (opened via Neocom sidebar)
+    // Dockable panels (opened via Nexcom sidebar)
     m_inventoryState.bounds = {50.0f, 300.0f, 350.0f, 400.0f};
     m_inventoryState.open = false;
 
@@ -85,8 +85,8 @@ void AtlasHUD::init(int windowW, int windowH) {
     m_missionState.bounds = {50.0f, 50.0f, 400.0f, 350.0f};
     m_missionState.open = false;
 
-    m_dscanState.bounds = {w - 360.0f, 460.0f, 350.0f, 300.0f};
-    m_dscanState.open = false;
+    m_proxscanState.bounds = {w - 360.0f, 460.0f, 350.0f, 300.0f};
+    m_proxscanState.open = false;
 
     m_chatState.bounds = {60.0f, 420.0f, 380.0f, 300.0f};
     m_chatState.open = false;
@@ -120,7 +120,7 @@ void AtlasHUD::update(AtlasContext& ctx,
         m_fittingState.open,     // 1: Fitting
         m_marketState.open,      // 2: Market
         m_missionState.open,     // 3: Missions
-        m_dscanState.open,       // 4: D-Scan
+        m_proxscanState.open,       // 4: Proxscan
         m_overviewState.open,    // 5: Overview
         m_chatState.open,        // 6: Chat
         m_dronePanelState.open,  // 7: Drones
@@ -163,12 +163,12 @@ void AtlasHUD::update(AtlasContext& ctx,
     // 10. Info panel (if open)
     drawInfoPanel(ctx);
 
-    // 11. Dockable panels (opened via Neocom sidebar)
+    // 11. Dockable panels (opened via Nexcom sidebar)
     drawDockablePanel(ctx, "Inventory", m_inventoryState);
     drawDockablePanel(ctx, "Ship Fitting", m_fittingState);
     drawDockablePanel(ctx, "Market", m_marketState);
     drawDockablePanel(ctx, "Missions", m_missionState);
-    drawDockablePanel(ctx, "D-Scan", m_dscanState);
+    drawDockablePanel(ctx, "Proxscan", m_proxscanState);
     drawDockablePanel(ctx, "Chat", m_chatState);
     drawDockablePanel(ctx, "Drones", m_dronePanelState);
     drawDockablePanel(ctx, "Probe Scanner", m_probeScannerState);
@@ -415,7 +415,7 @@ void AtlasHUD::drawOverviewPanel(AtlasContext& ctx,
 
         // Left-click: select the entity
         if (clicked && !entry.entityId.empty()) {
-            // Ctrl+Click = lock target (EVE standard)
+            // Ctrl+Click = lock target (Astralis standard)
             if (ctx.input().keyDown[Key::LeftControl] && m_overviewCtrlClickCb) {
                 m_overviewCtrlClickCb(entry.entityId);
             } else if (m_overviewSelectCb) {
@@ -1011,7 +1011,7 @@ void AtlasHUD::drawDockablePanel(AtlasContext& ctx, const char* title,
                 y += 16.0f;
                 if (m_missionInfo.iskReward > 0) {
                     char iskBuf[64];
-                    std::snprintf(iskBuf, sizeof(iskBuf), "ISK: %.0f",
+                    std::snprintf(iskBuf, sizeof(iskBuf), "Credits: %.0f",
                                   m_missionInfo.iskReward);
                     r.drawText(iskBuf, Vec2(x + 8.0f, y), t.warning, 1.0f);
                     y += 14.0f;
@@ -1026,22 +1026,22 @@ void AtlasHUD::drawDockablePanel(AtlasContext& ctx, const char* title,
             }
         }
 
-    } else if (titleStr == "D-Scan") {
+    } else if (titleStr == "Proxscan") {
         // Scan controls
         char angleBuf[32];
-        std::snprintf(angleBuf, sizeof(angleBuf), "Angle: %.0f deg", m_dscanAngle);
+        std::snprintf(angleBuf, sizeof(angleBuf), "Angle: %.0f deg", m_proxscanAngle);
         r.drawText(angleBuf, Vec2(x, y), t.textSecondary, 1.0f);
         y += 16.0f;
         char rangeBuf[32];
-        std::snprintf(rangeBuf, sizeof(rangeBuf), "Range: %.1f AU", m_dscanRange);
+        std::snprintf(rangeBuf, sizeof(rangeBuf), "Range: %.1f AU", m_proxscanRange);
         r.drawText(rangeBuf, Vec2(x, y), t.textSecondary, 1.0f);
         y += 20.0f;
         // Scan button (also triggered by V key)
         Rect scanBtn(x, y, 80.0f, 22.0f);
         bool scanPressed = button(ctx, "SCAN", scanBtn);
         if (ctx.input().keyPressed[Key::V]) scanPressed = true;
-        if (scanPressed && m_dscanCallback) {
-            m_dscanCallback();
+        if (scanPressed && m_proxscanCallback) {
+            m_proxscanCallback();
         }
         y += 30.0f;
         separator(ctx, Vec2(x, y), contentW);
@@ -1050,11 +1050,11 @@ void AtlasHUD::drawDockablePanel(AtlasContext& ctx, const char* title,
         // Results header
         char countBuf[32];
         std::snprintf(countBuf, sizeof(countBuf), "Results: %d",
-                      static_cast<int>(m_dscanResults.size()));
+                      static_cast<int>(m_proxscanResults.size()));
         r.drawText(countBuf, Vec2(x, y), t.textPrimary, 1.0f);
         y += 18.0f;
 
-        if (m_dscanResults.empty()) {
+        if (m_proxscanResults.empty()) {
             label(ctx, Vec2(x, y), "No scan results", t.textSecondary);
         } else {
             // Column headers
@@ -1065,18 +1065,18 @@ void AtlasHUD::drawDockablePanel(AtlasContext& ctx, const char* title,
             separator(ctx, Vec2(x, y), contentW);
             y += 4.0f;
 
-            for (size_t i = 0; i < m_dscanResults.size() && y < maxY - 16.0f; ++i) {
+            for (size_t i = 0; i < m_proxscanResults.size() && y < maxY - 16.0f; ++i) {
                 if (i % 2 == 1) {
                     r.drawRect(Rect(x, y, contentW, 16.0f),
                                t.bgHeader.withAlpha(0.3f));
                 }
-                r.drawText(m_dscanResults[i].name,
+                r.drawText(m_proxscanResults[i].name,
                            Vec2(x + 2, y + 1), t.textPrimary, 1.0f);
-                r.drawText(m_dscanResults[i].type,
+                r.drawText(m_proxscanResults[i].type,
                            Vec2(x + contentW * 0.5f, y + 1), t.textSecondary, 1.0f);
                 char distBuf[32];
                 std::snprintf(distBuf, sizeof(distBuf), "%.1f AU",
-                              m_dscanResults[i].distance);
+                              m_proxscanResults[i].distance);
                 r.drawText(distBuf,
                            Vec2(x + contentW * 0.8f, y + 1), t.textSecondary, 1.0f);
                 y += 16.0f;
@@ -1271,7 +1271,7 @@ void AtlasHUD::drawDockablePanel(AtlasContext& ctx, const char* title,
         // Repair cost
         if (m_stationData.repairCostIsk > 0.0f) {
             char costBuf[64];
-            std::snprintf(costBuf, sizeof(costBuf), "Repair Cost: %.0f ISK", m_stationData.repairCostIsk);
+            std::snprintf(costBuf, sizeof(costBuf), "Repair Cost: %.0f Credits", m_stationData.repairCostIsk);
             r.drawText(costBuf, Vec2(x, y), t.warning, 1.0f);
             y += 20.0f;
         }

@@ -11,7 +11,7 @@ Welcome to Atlas! This tutorial will guide you through your first steps in the g
 6. [Fitting Your Ship](#fitting-your-ship)
 7. [Your First Mission](#your-first-mission)
 8. [Skills and Training](#skills-and-training)
-9. [Making ISK](#making-isk)
+9. [Making Credits](#making-credits)
 10. [Next Steps](#next-steps)
 
 ---
@@ -269,7 +269,7 @@ Your ship has **limited resources**:
 
 ## Your First Mission
 
-Missions are PVE content that rewards ISK and LP (Loyalty Points).
+Missions are PVE content that rewards Credits and LP (Loyalty Points).
 
 ### Getting a Mission
 
@@ -359,44 +359,44 @@ You begin with basic skills:
 
 ---
 
-## Making ISK
+## Making Credits
 
-ISK (Interstellar Kredits) is the game currency. Here's how to earn it:
+Credits (Interstellar Kredits) is the game currency. Here's how to earn it:
 
 ### Method 1: Missions (Easiest)
 - **Effort**: Medium
-- **ISK/hour**: 1-5M for Level 1-2
+- **Credits/hour**: 1-5M for Level 1-2
 - **Requirements**: Combat ship
 - Accept missions, complete objectives, collect rewards
 
 ### Method 2: Ratting (Simplest)
 - **Effort**: Low
-- **ISK/hour**: 0.5-2M
+- **Credits/hour**: 0.5-2M
 - **Requirements**: Combat ship
 - Hunt NPCs in asteroid belts, loot wrecks, sell loot
 
 ### Method 3: Mining (Peaceful)
 - **Effort**: Low
-- **ISK/hour**: 1-3M
+- **Credits/hour**: 1-3M
 - **Requirements**: Mining ship, mining lasers
 - Mine asteroids, refine ore, sell minerals
 
 ### Method 4: Trading (Advanced)
 - **Effort**: High
-- **ISK/hour**: 5-50M (with capital)
-- **Requirements**: Market knowledge, ISK
+- **Credits/hour**: 5-50M (with capital)
+- **Requirements**: Market knowledge, Credits
 - Buy low, transport, sell high
 
 ### Method 5: Exploration (Exciting)
 - **Effort**: High
-- **ISK/hour**: 0-20M (luck-based)
+- **Credits/hour**: 0-20M (luck-based)
 - **Requirements**: Probe scanner, exploration ship
 - Scan signatures, run sites, loot valuable items
 
-### Spending ISK Wisely
+### Spending Credits Wisely
 
 **Priorities:**
-1. **Skills** - Many skills cost ISK to inject (if applicable)
+1. **Skills** - Many skills cost Credits to inject (if applicable)
 2. **Ships** - Buy better ships as you progress
 3. **Modules** - Upgrade your fitting
 4. **Ammo** - Always have spare ammunition
@@ -406,7 +406,7 @@ ISK (Interstellar Kredits) is the game currency. Here's how to earn it:
 - Buy what you can't afford to lose
 - Fly expensive ships without proper skills
 - Neglect repairs and ammunition
-- Gamble ISK in risky situations
+- Gamble Credits in risky situations
 
 ---
 
@@ -418,7 +418,7 @@ Congratulations! You've mastered the basics. Here's what to do next:
 
 - [ ] Complete 10 Level 1 missions
 - [ ] Train core skills to level 3
-- [ ] Earn your first 10M ISK
+- [ ] Earn your first 10M Credits
 - [ ] Buy and fit a destroyer
 - [ ] Try mining for an hour
 - [ ] Join a corporation (optional)
@@ -427,7 +427,7 @@ Congratulations! You've mastered the basics. Here's what to do next:
 
 - [ ] Complete Level 2 missions
 - [ ] Train into a cruiser
-- [ ] Earn 100M ISK
+- [ ] Earn 100M Credits
 - [ ] Try exploration
 - [ ] Experiment with different fits
 - [ ] Run missions in a group
@@ -445,7 +445,7 @@ Congratulations! You've mastered the basics. Here's what to do next:
 
 ## Common Questions
 
-### Q: How do I make ISK faster?
+### Q: How do I make Credits faster?
 **A**: Run missions, upgrade your ship, train skills, use efficient fits. Don't rush - enjoy the journey!
 
 ### Q: What's the best ship?
@@ -502,7 +502,7 @@ Congratulations! You've mastered the basics. Here's what to do next:
 
 ---
 
-*Welcome to New Eden, capsuleer. Your adventure begins now.* 🚀
+*Welcome to New Eden, voidrunner. Your adventure begins now.* 🚀
 
 ---
 

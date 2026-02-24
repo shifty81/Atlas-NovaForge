@@ -35,7 +35,7 @@ static const StarTemplate STAR_TEMPLATES[STAR_CLASS_COUNT] = {
 // ── Faction names for stations ─────────────────────────────────────
 static const char* FACTIONS[] = {
     "Caldari Navy",    "Gallente Federation", "Amarr Empire",
-    "Minmatar Republic", "ORE Consortium",    "Sisters of EVE",
+    "Minmatar Republic", "ORE Consortium",    "Sisters of Astralis",
     "Mordu's Legion",  "Serpentis Corp",      "Angel Cartel",
     "Guristas Pirates",
 };

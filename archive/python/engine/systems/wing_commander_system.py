@@ -101,7 +101,7 @@ class PilotStats:
     ore_hauled: float = 0.0         # m3 of cargo hauled
     distance_traveled: float = 0.0  # meters traveled
     npcs_killed: int = 0
-    isk_earned: float = 0.0         # ISK generated
+    isk_earned: float = 0.0         # Credits generated
     time_active: float = 0.0        # seconds active
 
 
@@ -118,7 +118,7 @@ class AIPilot:
     skill_level: int = 1            # 1 (Novice) to 5 (Elite)
     experience: int = 0             # XP toward next level
     loyalty: int = 50               # 0-100, affects performance and quit chance
-    salary_per_hour: float = 10000  # ISK per hour
+    salary_per_hour: float = 10000  # Credits per hour
     hiring_fee: float = 100000      # One-time hiring cost
 
     # Ship assignment
@@ -254,7 +254,7 @@ class WingCommanderSystem:
             skill_level: Starting skill level (1-5)
             personality: Personality trait
             current_time: Current game timestamp
-            wallet_isk: Player's current ISK
+            wallet_isk: Player's current Credits
 
         Returns:
             AIPilot if hired successfully, None otherwise

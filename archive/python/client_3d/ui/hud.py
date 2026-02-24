@@ -13,7 +13,7 @@ from typing import Optional, Dict, Any
 
 # Import EVE-styled HUD
 try:
-    from .eve_hud import EVEStyledHUD
+    from .novaforge_hud import EVEStyledHUD
     EVE_HUD_AVAILABLE = True
 except ImportError as e:
     print(f"[HUD] Warning: EVE-styled HUD not available: {e}")
@@ -409,7 +409,7 @@ def create_hud(aspect2d, render2d=None, style='eve'):
     Args:
         aspect2d: Panda3D aspect2d node
         render2d: Panda3D render2d node (optional, for EVE style)
-        style: HUD style - 'eve' for EVE Online style, 'legacy' for original
+        style: HUD style - 'eve' for Astralis style, 'legacy' for original
         
     Returns:
         HUD instance (EVEStyledHUD or HUDSystem)

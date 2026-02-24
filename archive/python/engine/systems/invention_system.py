@@ -1,7 +1,7 @@
 """
 Research & Invention System for EVE OFFLINE
 
-Implements Tech II blueprint invention mechanics based on EVE Online:
+Implements Tech II blueprint invention mechanics based on Astralis:
 - Invent T2 BPCs from T1 BPCs
 - Consumes datacores and optional decryptors
 - Success chance based on skills and decryptors

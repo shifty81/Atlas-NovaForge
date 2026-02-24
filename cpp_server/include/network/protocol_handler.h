@@ -1,5 +1,5 @@
-#ifndef EVE_PROTOCOL_HANDLER_H
-#define EVE_PROTOCOL_HANDLER_H
+#ifndef NOVAFORGE_PROTOCOL_HANDLER_H
+#define NOVAFORGE_PROTOCOL_HANDLER_H
 
 #include <string>
 #include <functional>
@@ -16,7 +16,7 @@ namespace network {
 #ifdef ERROR
 #pragma push_macro("ERROR")
 #undef ERROR
-#define EVE_PROTOCOL_RESTORE_ERROR_MACRO
+#define NOVAFORGE_PROTOCOL_RESTORE_ERROR_MACRO
 #endif
 
 enum class MessageType {
@@ -67,9 +67,9 @@ enum class MessageType {
     ERROR
 };
 
-#ifdef EVE_PROTOCOL_RESTORE_ERROR_MACRO
+#ifdef NOVAFORGE_PROTOCOL_RESTORE_ERROR_MACRO
 #pragma pop_macro("ERROR")
-#undef EVE_PROTOCOL_RESTORE_ERROR_MACRO
+#undef NOVAFORGE_PROTOCOL_RESTORE_ERROR_MACRO
 #endif
 
 /**
@@ -140,4 +140,4 @@ private:
 } // namespace network
 } // namespace atlas
 
-#endif // EVE_PROTOCOL_HANDLER_H
+#endif // NOVAFORGE_PROTOCOL_HANDLER_H

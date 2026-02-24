@@ -1,6 +1,6 @@
 {
   "player_structures_2026": {
-    "description": "EVE Online 2026 player-owned structures following Equinox and Vaillant expansions",
+    "description": "Astralis 2026 player-owned structures following Equinox and Vaillant expansions",
     "nullsec_strategic": {
       "orbital_skyhook": {
         "name": "Orbital Skyhook",
@@ -15,7 +15,7 @@
         },
         "functionality": {
           "primary_role": "Passive PI harvesting",
-          "income_stream": "Replaces older, less efficient planetary interaction methods",
+          "income_stream": "Replaces older, less efficient planetary operations methods",
           "resources_produced": [
             "planetary_commodities",
             "raw_materials"

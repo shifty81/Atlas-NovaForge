@@ -1,5 +1,5 @@
 """
-Test Planetary Interaction (PI) System
+Test Planetary Operations (PI) System
 Tests colony creation, resource extraction, and material processing
 """
 
@@ -9,11 +9,11 @@ from engine.components.game_components import (
     PlanetaryColony, PIStructure, PIResource, ExtractorQueue,
     Player, Inventory, Skills
 )
-from engine.systems.planetary_interaction_system import PlanetaryInteractionSystem
+from engine.systems.planetary_operations_system import PlanetaryInteractionSystem
 
 
 class TestPlanetaryInteractionSystem(unittest.TestCase):
-    """Test planetary interaction mechanics"""
+    """Test planetary operations mechanics"""
     
     def setUp(self):
         """Set up test world and systems"""

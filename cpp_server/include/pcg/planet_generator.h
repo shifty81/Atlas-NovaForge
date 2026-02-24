@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_PLANET_GENERATOR_H
-#define EVE_PCG_PLANET_GENERATOR_H
+#ifndef NOVAFORGE_PCG_PLANET_GENERATOR_H
+#define NOVAFORGE_PCG_PLANET_GENERATOR_H
 
 #include "pcg_context.h"
 #include "deterministic_rng.h"
@@ -45,4 +45,4 @@ public:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_PLANET_GENERATOR_H
+#endif // NOVAFORGE_PCG_PLANET_GENERATOR_H

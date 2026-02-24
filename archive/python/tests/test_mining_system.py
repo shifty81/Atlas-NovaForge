@@ -44,7 +44,7 @@ class TestMiningSystem(unittest.TestCase):
         # Add test asteroid
         self.test_asteroid = Asteroid(
             id="test_ast_1",
-            ore_type="veldspar",
+            ore_type="ferrite",
             variant="standard",
             position=(1000.0, 0.0, 0.0),
             size=AsteroidSize.MEDIUM,
@@ -158,8 +158,8 @@ class TestMiningSystem(unittest.TestCase):
         
         # Check ore was mined
         inventory = self.miner.get_component(Inventory)
-        self.assertIn("veldspar", inventory.items)
-        self.assertGreater(inventory.items["veldspar"], 0)
+        self.assertIn("ferrite", inventory.items)
+        self.assertGreater(inventory.items["ferrite"], 0)
         
         # Check capacitor was consumed
         cap = self.miner.get_component(Capacitor)
@@ -185,7 +185,7 @@ class TestMiningSystem(unittest.TestCase):
         
         # Base yield is 40, with skills should be ~57-58
         inventory = self.miner.get_component(Inventory)
-        mined = inventory.items.get("veldspar", 0)
+        mined = inventory.items.get("ferrite", 0)
         self.assertGreater(mined, 40)  # More than base
         self.assertGreater(mined, 55)  # At least 55 with bonuses
     
@@ -224,9 +224,9 @@ class TestMiningSystem(unittest.TestCase):
         ore_hold = self.miner.get_component(OreHold)
         inventory = self.miner.get_component(Inventory)
         
-        self.assertIn("veldspar", ore_hold.ore)
-        self.assertGreater(ore_hold.ore["veldspar"], 0)
-        self.assertNotIn("veldspar", inventory.items)
+        self.assertIn("ferrite", ore_hold.ore)
+        self.assertGreater(ore_hold.ore["ferrite"], 0)
+        self.assertNotIn("ferrite", inventory.items)
     
     def test_multiple_mining_cycles(self):
         """Test multiple consecutive mining cycles"""
@@ -247,7 +247,7 @@ class TestMiningSystem(unittest.TestCase):
         
         # Check ore was stored
         inventory = self.miner.get_component(Inventory)
-        self.assertGreater(inventory.items.get("veldspar", 0), 100)
+        self.assertGreater(inventory.items.get("ferrite", 0), 100)
     
     def test_mining_stats_tracking(self):
         """Test mining statistics are tracked"""
@@ -262,8 +262,8 @@ class TestMiningSystem(unittest.TestCase):
         self.mining_system.update(60.0)
         
         # Check stats
-        self.assertIn("veldspar", mining_yield.total_ore_mined)
-        self.assertGreater(mining_yield.total_ore_mined["veldspar"], 0)
+        self.assertIn("ferrite", mining_yield.total_ore_mined)
+        self.assertGreater(mining_yield.total_ore_mined["ferrite"], 0)
     
     def test_get_nearby_asteroids(self):
         """Test finding nearby asteroids"""
@@ -351,7 +351,7 @@ class TestMiningBarges(unittest.TestCase):
         # Add test asteroid
         self.test_asteroid = Asteroid(
             id="test_ast_1",
-            ore_type="veldspar",
+            ore_type="ferrite",
             variant="standard",
             position=(1000.0, 0.0, 0.0),
             size=AsteroidSize.MEDIUM,
@@ -520,7 +520,7 @@ class TestExhumers(unittest.TestCase):
         # Add test asteroid with lots of ore
         self.test_asteroid = Asteroid(
             id="test_ast_1",
-            ore_type="veldspar",
+            ore_type="ferrite",
             variant="standard",
             position=(1000.0, 0.0, 0.0),
             size=AsteroidSize.MEDIUM,

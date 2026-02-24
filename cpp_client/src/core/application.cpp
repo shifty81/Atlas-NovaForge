@@ -123,38 +123,38 @@ void Application::initialize() {
     
     // Wire Atlas sidebar icon callbacks so clicking sidebar opens panels
     m_atlasHUD->setSidebarCallback([this](int icon) {
-        std::cout << "[Neocom] Sidebar icon " << icon << " clicked" << std::endl;
+        std::cout << "[Nexcom] Sidebar icon " << icon << " clicked" << std::endl;
         switch (icon) {
             case 0:
-                std::cout << "[Neocom] Toggle Inventory" << std::endl;
+                std::cout << "[Nexcom] Toggle Inventory" << std::endl;
                 m_atlasHUD->toggleInventory();
                 break;
             case 1:
-                std::cout << "[Neocom] Toggle Fitting" << std::endl;
+                std::cout << "[Nexcom] Toggle Fitting" << std::endl;
                 m_atlasHUD->toggleFitting();
                 break;
             case 2:
-                std::cout << "[Neocom] Toggle Market" << std::endl;
+                std::cout << "[Nexcom] Toggle Market" << std::endl;
                 m_atlasHUD->toggleMarket();
                 break;
             case 3:
-                std::cout << "[Neocom] Toggle Missions" << std::endl;
+                std::cout << "[Nexcom] Toggle Missions" << std::endl;
                 m_atlasHUD->toggleMission();
                 break;
             case 4:
-                std::cout << "[Neocom] Toggle D-Scan" << std::endl;
-                m_atlasHUD->toggleDScan();
+                std::cout << "[Nexcom] Toggle Proxscan" << std::endl;
+                m_atlasHUD->toggleProxscan();
                 break;
             case 5:
-                std::cout << "[Neocom] Toggle Overview" << std::endl;
+                std::cout << "[Nexcom] Toggle Overview" << std::endl;
                 m_atlasHUD->toggleOverview();
                 break;
             case 6:
-                std::cout << "[Neocom] Toggle Chat" << std::endl;
+                std::cout << "[Nexcom] Toggle Chat" << std::endl;
                 m_atlasHUD->toggleChat();
                 break;
             case 7:
-                std::cout << "[Neocom] Toggle Drones" << std::endl;
+                std::cout << "[Nexcom] Toggle Drones" << std::endl;
                 m_atlasHUD->toggleDronePanel();
                 break;
         }
@@ -182,7 +182,7 @@ void Application::initialize() {
     });
     m_titleScreen->setQuitCallback([this]() { shutdown(); });
     
-    // Set up input callbacks — EVE Online style controls
+    // Set up input callbacks — Astralis style controls
     // Left-click: select/target, Double-click: approach
     // Right-click: context menu
     // Left-drag: nothing (UI uses it for interaction)
@@ -235,7 +235,7 @@ void Application::initialize() {
         m_inputHandler->handleMouseButton(button, action, mods, x, y);
     });
     
-    // Scroll callback — EVE uses mousewheel for camera zoom
+    // Scroll callback — Astralis uses mousewheel for camera zoom
     m_window->setScrollCallback([this](double xoffset, double yoffset) {
         m_inputHandler->handleScroll(xoffset, yoffset);
         handleScroll(xoffset, yoffset);
@@ -516,7 +516,7 @@ void Application::setupUICallbacks() {
         std::cout << "[Overview] Right-click empty space context menu" << std::endl;
     });
 
-    // Ctrl+Click on overview row = lock target (EVE standard)
+    // Ctrl+Click on overview row = lock target (Astralis standard)
     m_atlasHUD->setOverviewCtrlClickCb([this](const std::string& entityId) {
         targetEntity(entityId, true);  // addToTargets = true for lock
         std::cout << "[Overview] Ctrl+Click lock target: " << entityId << std::endl;
@@ -556,7 +556,7 @@ void Application::update(float deltaTime) {
     // Update game client
     m_gameClient->update(deltaTime);
     
-    // Update local movement (PVE mode — EVE-style movement commands)
+    // Update local movement (PVE mode — Astralis-style movement commands)
     // Only process flight movement when in space or docking
     if (m_gameState == GameState::InSpace) {
         updateLocalMovement(deltaTime);
@@ -903,26 +903,26 @@ void Application::handleKeyInput(int key, int action, int mods) {
         return;
     }
 
-    // Module activation (F1-F8) — EVE standard
+    // Module activation (F1-F8) — Astralis standard
     if (key >= GLFW_KEY_F1 && key <= GLFW_KEY_F8) {
         int slot = key - GLFW_KEY_F1 + 1;  // F1 = slot 1
         activateModule(slot);
         return;
     }
     
-    // Tab — cycle targets (EVE standard)
+    // Tab — cycle targets (Astralis standard)
     if (key == GLFW_KEY_TAB) {
         cycleTarget();
         return;
     }
     
-    // CTRL+SPACE — stop ship (EVE standard)
+    // CTRL+SPACE — stop ship (Astralis standard)
     if (key == GLFW_KEY_SPACE && (mods & GLFW_MOD_CONTROL)) {
         commandStopShip();
         return;
     }
     
-    // EVE-style shortcut keys with modifier:
+    // Astralis-style shortcut keys with modifier:
     // Q + click = Approach (we just toggle approach mode)
     // W + click = Orbit
     // E + click = Keep at Range
@@ -960,10 +960,10 @@ void Application::handleKeyInput(int key, int action, int mods) {
         m_activeModeText = "DOCK / JUMP - click a station or gate";
         std::cout << "[Controls] Docking mode active — click a station or gate" << std::endl;
     } else if (key == GLFW_KEY_S && (mods & GLFW_MOD_CONTROL)) {
-        // Ctrl+S = stop ship (EVE standard) — checked before bare S
+        // Ctrl+S = stop ship (Astralis standard) — checked before bare S
         commandStopShip();
     } else if (key == GLFW_KEY_S) {
-        // S + Click = Warp To (EVE standard)
+        // S + Click = Warp To (Astralis standard)
         m_approachActive = false;
         m_orbitActive = false;
         m_keepRangeActive = false;
@@ -972,7 +972,7 @@ void Application::handleKeyInput(int key, int action, int mods) {
         m_activeModeText = "WARP TO - click a target";
         std::cout << "[Controls] Warp mode active — click a target" << std::endl;
     } else if (key == GLFW_KEY_F) {
-        // F = Engage/Recall drones (EVE standard)
+        // F = Engage/Recall drones (Astralis standard)
         std::cout << "[Controls] Drone command: engage/recall" << std::endl;
         // TODO: Send drone engage/recall command to server
     } else if (key == GLFW_KEY_V) {
@@ -1003,7 +1003,7 @@ void Application::handleMouseButton(int button, int action, int mods, double x, 
                     double dy = y - m_lastMouseDragY;
                     double dist = std::sqrt(dx * dx + dy * dy);
                     if (dist < 5.0) {
-                        // Quick right-click — show EVE context menu
+                        // Quick right-click — show context menu
                         // Pick entity at mouse position
                         auto entities = m_gameClient->getEntityManager().getAllEntities();
                         std::vector<std::shared_ptr<Entity>> entityList;
@@ -1047,7 +1047,7 @@ void Application::handleMouseButton(int button, int action, int mods, double x, 
             m_radialMenuStartY = y;
             m_radialMenuHoldStartTime = glfwGetTime();
 
-            // Close context menu when clicking elsewhere (EVE behaviour)
+            // Close context menu when clicking elsewhere (Astralis behaviour)
             if (m_contextMenu && m_contextMenu->IsOpen()) {
                 m_contextMenu->Close();
             }
@@ -1086,7 +1086,7 @@ void Application::handleMouseButton(int button, int action, int mods, double x, 
         );
         
         if (!pickedEntityId.empty()) {
-            // EVE-style: Apply pending movement command if one is active
+            // Astralis-style: Apply pending movement command if one is active
             if (m_approachActive) {
                 commandApproach(pickedEntityId);
                 m_approachActive = false;
@@ -1114,14 +1114,14 @@ void Application::handleMouseButton(int button, int action, int mods, double x, 
                 m_dockingModeActive = false;
                 m_activeModeText.clear();
             } else if (m_warpModeActive) {
-                // S+Click for warp to (EVE standard)
+                // S+Click for warp to (Astralis standard)
                 commandWarpTo(pickedEntityId);
                 m_warpModeActive = false;
                 m_activeModeText.clear();
             } else {
                 // Default: select / CTRL+click to lock target / double-click to approach
                 if (m_inputHandler->isDoubleClick()) {
-                    // EVE-style double-click: approach the entity
+                    // Astralis-style double-click: approach the entity
                     commandApproach(pickedEntityId);
                 } else {
                     bool addToTargets = (mods & GLFW_MOD_CONTROL) != 0;
@@ -1183,7 +1183,7 @@ void Application::handleMouseMove(double x, double y, double deltaX, double delt
         }
     }
     
-    // EVE-style camera: Right-click drag to orbit camera around ship
+    // Astralis-style camera: Right-click drag to orbit camera around ship
     // In FPS/Cockpit mode, right-drag does mouse-look instead
     if (m_rightMouseDown) {
         if (!m_atlasConsumedMouse) {
@@ -1201,7 +1201,7 @@ void Application::handleMouseMove(double x, double y, double deltaX, double delt
 }
 
 void Application::handleScroll(double xoffset, double yoffset) {
-    // EVE-style: mousewheel zooms camera
+    // Astralis-style: mousewheel zooms camera
     if (!m_atlasConsumedMouse) {
         m_camera->zoom(static_cast<float>(yoffset));
     }
@@ -1294,7 +1294,7 @@ void Application::activateModule(int slotNumber) {
     }
 }
 
-// === EVE-style movement commands (PVE) ===
+// === Astralis-style movement commands (PVE) ===
 
 void Application::showSpaceContextMenu(double x, double y) {
     // Check if clicking on an entity
@@ -1538,7 +1538,7 @@ void Application::updateLocalMovement(float deltaTime) {
     auto playerEntity = m_gameClient->getEntityManager().getEntity(m_localPlayerId);
     if (!playerEntity) return;
     
-    // Movement physics constants — tuned for EVE-style feel with proper align time
+    // Movement physics constants — tuned for Astralis-style feel with proper align time
     static constexpr float ACCELERATION = 25.0f;           // m/s² (reduced for gradual ramp-up)
     static constexpr float DECELERATION = 30.0f;            // m/s² when stopping (faster than accel for responsive stop)
     static constexpr float APPROACH_DECEL_DIST = 50.0f;     // Start slowing at this range
@@ -1581,7 +1581,7 @@ void Application::updateLocalMovement(float deltaTime) {
         
         switch (m_currentMoveCommand) {
             case MoveCommand::Approach: {
-                // EVE-style exponential acceleration towards target
+                // Astralis-style exponential acceleration towards target
                 // Ship gradually ramps up speed, giving time to align
                 float targetSpeed = m_playerMaxSpeed;
                 if (dist < APPROACH_DECEL_DIST) {

@@ -42,7 +42,7 @@ Comprehensive documentation covering:
 
 Complete guide to docking including:
 - **Docked Scene**: Hangar view, NPC vs player-owned visuals, supercapital docking
-- **Docked GUI**: Neocom, Station Services, interface elements
+- **Docked GUI**: Nexcom, Station Services, interface elements
 - **Key Differences**: NPC vs Player-Owned comparison table
 - **Special Situations**: Wormhole docking, old POS, access denial
 - **User Experience**: Docking/undocking sequences, QoL features

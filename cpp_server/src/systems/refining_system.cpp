@@ -108,43 +108,43 @@ bool RefiningSystem::installDefaultRecipes(const std::string& station_id) {
 
     facility->recipes.clear();
 
-    // Veldspar → Tritanium
+    // Ferrite → Stellium
     {
         components::RefiningFacility::RefineRecipe r;
-        r.ore_type = "Veldspar";
+        r.ore_type = "Ferrite";
         r.ore_units_required = 100;
-        r.outputs.push_back({"Tritanium", 415});
+        r.outputs.push_back({"Stellium", 415});
         facility->recipes.push_back(r);
     }
 
-    // Scordite → Tritanium + Pyerite
+    // Galvite → Stellium + Vanthium
     {
         components::RefiningFacility::RefineRecipe r;
-        r.ore_type = "Scordite";
+        r.ore_type = "Galvite";
         r.ore_units_required = 100;
-        r.outputs.push_back({"Tritanium", 346});
-        r.outputs.push_back({"Pyerite", 173});
+        r.outputs.push_back({"Stellium", 346});
+        r.outputs.push_back({"Vanthium", 173});
         facility->recipes.push_back(r);
     }
 
-    // Pyroxeres → Pyerite + Nocxidium
+    // Cryolite → Vanthium + Nocxidium
     {
         components::RefiningFacility::RefineRecipe r;
-        r.ore_type = "Pyroxeres";
+        r.ore_type = "Cryolite";
         r.ore_units_required = 100;
-        r.outputs.push_back({"Pyerite", 315});
+        r.outputs.push_back({"Vanthium", 315});
         r.outputs.push_back({"Nocxidium", 11});
         facility->recipes.push_back(r);
     }
 
-    // Plagioclase → Tritanium + Pyerite + Mexallon
+    // Silvane → Stellium + Vanthium + Cydrium
     {
         components::RefiningFacility::RefineRecipe r;
-        r.ore_type = "Plagioclase";
+        r.ore_type = "Silvane";
         r.ore_units_required = 100;
-        r.outputs.push_back({"Tritanium", 256});
-        r.outputs.push_back({"Pyerite", 512});
-        r.outputs.push_back({"Mexallon", 256});
+        r.outputs.push_back({"Stellium", 256});
+        r.outputs.push_back({"Vanthium", 512});
+        r.outputs.push_back({"Cydrium", 256});
         facility->recipes.push_back(r);
     }
 

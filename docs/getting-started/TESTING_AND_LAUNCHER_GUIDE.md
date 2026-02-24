@@ -205,9 +205,9 @@ Logs are saved to the `logs/` directory with timestamps:
 
 ```
 logs/
-├── eve_offline_3d_20260202_033800.log
-├── eve_offline_3d_20260202_034512.log
-└── eve_offline_3d_20260202_035223.log
+├── novaforge_3d_20260202_033800.log
+├── novaforge_3d_20260202_034512.log
+└── novaforge_3d_20260202_035223.log
 ```
 
 ### Log Levels
@@ -246,9 +246,9 @@ python client_3d.py "TestPilot" --log-dir my_logs
 
 **File** (detailed):
 ```
-2026-02-02 15:38:00 - eve_offline_3d - INFO - [client_3d.py:75] - Character: TestPilot
-2026-02-02 15:38:01 - eve_offline_3d - INFO - [network_client.py:45] - Connecting to server...
-2026-02-02 15:38:02 - eve_offline_3d - INFO - [network_client.py:70] - Connected successfully
+2026-02-02 15:38:00 - novaforge_3d - INFO - [client_3d.py:75] - Character: TestPilot
+2026-02-02 15:38:01 - novaforge_3d - INFO - [network_client.py:45] - Connecting to server...
+2026-02-02 15:38:02 - novaforge_3d - INFO - [network_client.py:70] - Connected successfully
 ```
 
 ### Viewing Logs
@@ -262,10 +262,10 @@ python launcher.py
 **Via Command Line**:
 ```bash
 # View most recent log
-cat logs/eve_offline_3d_*.log | tail -50
+cat logs/novaforge_3d_*.log | tail -50
 
 # View specific log
-cat logs/eve_offline_3d_20260202_033800.log
+cat logs/novaforge_3d_20260202_033800.log
 
 # Search logs for errors
 grep ERROR logs/*.log
@@ -293,7 +293,7 @@ python client_3d.py "TestPilot" --debug
 
 **Step 2**: Check the log file
 ```bash
-cat logs/eve_offline_3d_*.log | tail -50
+cat logs/novaforge_3d_*.log | tail -50
 ```
 
 **Step 3**: Look for ERROR or CRITICAL messages
@@ -327,7 +327,7 @@ DEBUG - Render time: 50ms
 
 **Check the end of the log file**:
 ```bash
-tail -100 logs/eve_offline_3d_*.log
+tail -100 logs/novaforge_3d_*.log
 ```
 
 Look for:
@@ -473,7 +473,7 @@ python client_3d.py "YourName" 192.168.1.100 8765 --debug
 ls -lt logs/
 
 # View last 50 lines of most recent log
-tail -50 logs/eve_offline_3d_*.log | tail -50
+tail -50 logs/novaforge_3d_*.log | tail -50
 
 # Search for errors
 grep ERROR logs/*.log

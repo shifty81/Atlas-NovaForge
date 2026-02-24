@@ -102,7 +102,7 @@ class ManufacturingQueue:
 class IndustrySystem:
     """
     Handles manufacturing, research, and invention
-    Based on EVE Online's industry mechanics
+    Based on Astralis's industry mechanics
     """
     
     def __init__(self, world: World):
@@ -356,7 +356,7 @@ class IndustrySystem:
         
         Args:
             entity: Entity with Inventory or OreHold
-            ore_type: Type of ore to reprocess (e.g., 'veldspar')
+            ore_type: Type of ore to reprocess (e.g., 'ferrite')
             quantity: Amount of ore in m3 to reprocess
             ore_data: Ore type data dict with mineral yields
             station_efficiency: Base station efficiency (0.0-1.0, default 0.50)

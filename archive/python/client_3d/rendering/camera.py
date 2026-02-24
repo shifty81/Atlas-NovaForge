@@ -1,6 +1,6 @@
 """
 Camera System for 3D Client
-EVE Online-style camera controls
+Astralis-style camera controls
 """
 
 from panda3d.core import Vec3, Point3

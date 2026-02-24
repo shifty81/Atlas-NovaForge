@@ -1,7 +1,7 @@
 """
 Corporation System
 Handles corporation management, member roles, hangars, and wallets
-Based on EVE Online's corporation system
+Based on Astralis's corporation system
 """
 
 from typing import Optional, Dict, List, Set
@@ -43,7 +43,7 @@ class Corporation:
     max_members: int = 50  # Small corps for this game
     
     # Corporation wallet
-    wallet_balance: float = 0.0  # Corporation ISK
+    wallet_balance: float = 0.0  # Corporation Credits
     
     # Corporation hangars (shared storage)
     hangars: Dict[str, Dict[str, int]] = field(default_factory=lambda: {
@@ -110,7 +110,7 @@ class CorporationSystem:
         corporation_name: str,
         ticker: str,
         description: str = "",
-        creation_cost: float = 1000000.0  # 1M ISK to create corp
+        creation_cost: float = 1000000.0  # 1M Credits to create corp
     ) -> Optional[str]:
         """
         Create a new player corporation
@@ -120,7 +120,7 @@ class CorporationSystem:
             corporation_name: Name of the corporation
             ticker: 3-5 character ticker symbol
             description: Corporation description
-            creation_cost: ISK cost to create corporation
+            creation_cost: Credits cost to create corporation
             
         Returns:
             corporation_id if successful, None if failed
@@ -131,13 +131,13 @@ class CorporationSystem:
         if len(ticker) < 3 or len(ticker) > 5:
             return None
         
-        # Check if CEO has enough ISK
+        # Check if CEO has enough Credits
         player_comp = ceo_entity.get_component(Player)
-        if not player_comp or player_comp.isk < creation_cost:
+        if not player_comp or player_comp.credits < creation_cost:
             return None
         
-        # Charge ISK
-        player_comp.isk -= creation_cost
+        # Charge Credits
+        player_comp.credits -= creation_cost
         
         # Generate corp ID
         self.corp_counter += 1
@@ -385,7 +385,7 @@ class CorporationSystem:
         amount: float
     ) -> bool:
         """
-        Deposit ISK to corporation wallet
+        Deposit Credits to corporation wallet
         
         Args:
             corp_id: Corporation ID
@@ -406,11 +406,11 @@ class CorporationSystem:
             return False
         
         player_comp = entity.get_component(Player)
-        if not player_comp or player_comp.isk < amount:
+        if not player_comp or player_comp.credits < amount:
             return False
         
-        # Transfer ISK
-        player_comp.isk -= amount
+        # Transfer Credits
+        player_comp.credits -= amount
         corp.wallet_balance += amount
         
         return True
@@ -422,7 +422,7 @@ class CorporationSystem:
         amount: float
     ) -> bool:
         """
-        Withdraw ISK from corporation wallet
+        Withdraw Credits from corporation wallet
         
         Args:
             corp_id: Corporation ID
@@ -451,9 +451,9 @@ class CorporationSystem:
         if not player_comp:
             return False
         
-        # Transfer ISK
+        # Transfer Credits
         corp.wallet_balance -= amount
-        player_comp.isk += amount
+        player_comp.credits += amount
         
         return True
     
@@ -557,7 +557,7 @@ class CorporationSystem:
         Apply corporation tax to earnings
         
         Args:
-            entity: Entity earning ISK
+            entity: Entity earning Credits
             earnings: Amount earned
             
         Returns:

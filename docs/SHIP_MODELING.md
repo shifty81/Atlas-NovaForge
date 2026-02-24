@@ -174,12 +174,12 @@ The system uses distinctive color schemes for each faction to match EVE Online's
 - Natural, unrefined appearance
 
 **Ore Types**:
-- **Veldspar**: Brown-orange (0.6, 0.4, 0.2)
-- **Scordite**: Gray metallic (0.5, 0.5, 0.55)
-- **Pyroxeres**: Red-brown (0.7, 0.3, 0.2)
-- **Plagioclase**: Green-gray (0.3, 0.5, 0.4)
-- **Omber**: Golden-brown (0.8, 0.6, 0.3)
-- **Kernite**: Blue-cyan (0.3, 0.6, 0.7)
+- **Ferrite**: Brown-orange (0.6, 0.4, 0.2)
+- **Galvite**: Gray metallic (0.5, 0.5, 0.55)
+- **Cryolite**: Red-brown (0.7, 0.3, 0.2)
+- **Silvane**: Green-gray (0.3, 0.5, 0.4)
+- **Duskite**: Golden-brown (0.8, 0.6, 0.3)
+- **Heliore**: Blue-cyan (0.3, 0.6, 0.7)
 - **Jaspet**: Dark red (0.6, 0.2, 0.3)
 - **Hemorphite**: Bright red-orange (0.9, 0.3, 0.2)
 
@@ -264,8 +264,8 @@ model->draw();
 auto carrier = Model::createShipModel("Archon", "Amarr");
 carrier->draw();
 
-// Create a Veldspar asteroid
-auto asteroid = Model::createShipModel("Veldspar", "");
+// Create a Ferrite asteroid
+auto asteroid = Model::createShipModel("Ferrite", "");
 asteroid->draw();
 ```
 

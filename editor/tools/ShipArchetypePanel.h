@@ -26,7 +26,7 @@ namespace atlas::editor {
  *   8. Save the archetype for the game to use.
  *
  * In-game, every ship is generated from its archetype.  When the
- * player fits modules, the ship's appearance morphs (like EVE T3
+ * player fits modules, the ship's appearance morphs (like Astralis T3
  * ships) via applySubsystems() and applyModuleVisuals().
  */
 class ShipArchetypePanel : public EditorPanel {

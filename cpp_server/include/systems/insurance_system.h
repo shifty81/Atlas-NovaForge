@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_INSURANCE_SYSTEM_H
-#define EVE_SYSTEMS_INSURANCE_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_INSURANCE_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_INSURANCE_SYSTEM_H
 
 #include "ecs/system.h"
 #include <string>
@@ -11,7 +11,7 @@ namespace systems {
  * @brief Manages ship insurance policies and payouts
  *
  * Players can purchase insurance on their ships. If a ship is
- * destroyed the player can claim the policy for an ISK payout
+ * destroyed the player can claim the policy for an Credits payout
  * proportional to the ship value and the tier purchased.
  */
 class InsuranceSystem : public ecs::System {
@@ -26,7 +26,7 @@ public:
      * @brief Purchase an insurance policy for an entity
      * @param entity_id The entity (ship) to insure
      * @param tier "basic", "standard", or "platinum"
-     * @param ship_value The appraised value of the ship in ISK
+     * @param ship_value The appraised value of the ship in Credits
      * @return true if policy was purchased successfully
      */
     bool purchaseInsurance(const std::string& entity_id,
@@ -36,7 +36,7 @@ public:
     /**
      * @brief Claim insurance payout on a lost ship
      * @param entity_id The entity whose policy to claim
-     * @return ISK payout amount (0.0 if no valid policy)
+     * @return Credits payout amount (0.0 if no valid policy)
      */
     double claimInsurance(const std::string& entity_id);
 
@@ -49,4 +49,4 @@ public:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_INSURANCE_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_INSURANCE_SYSTEM_H

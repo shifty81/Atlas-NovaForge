@@ -275,7 +275,7 @@ void ShipPhysics::updateAcceleration(float deltaTime) {
         return;
     }
     
-    // EVE Online uses exponential acceleration
+    // Astralis uses exponential acceleration
     // Formula: v(t) = v_max * (1 - e^(-t * k))
     // where k = 1 / (agility / acceleration_constant)
     
@@ -341,7 +341,7 @@ void ShipPhysics::updateOrbit(float deltaTime) {
 }
 
 void ShipPhysics::applySpaceFriction(float deltaTime) {
-    // In EVE, ships experience "space friction" - they slow down without thrust
+    // In Astralis, ships experience "space friction" - they slow down without thrust
     // This is NOT realistic physics but makes gameplay better
     
     if (m_navMode == NavigationMode::STOPPED || glm::length(m_desiredDirection) < 0.001f) {

@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_INTERIOR_BUDGET_H
-#define EVE_PCG_INTERIOR_BUDGET_H
+#ifndef NOVAFORGE_PCG_INTERIOR_BUDGET_H
+#define NOVAFORGE_PCG_INTERIOR_BUDGET_H
 
 #include "pcg_context.h"
 #include "deterministic_rng.h"
@@ -166,4 +166,4 @@ HullInfluence computeHullInfluence(InteriorRoomType type,
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_INTERIOR_BUDGET_H
+#endif // NOVAFORGE_PCG_INTERIOR_BUDGET_H

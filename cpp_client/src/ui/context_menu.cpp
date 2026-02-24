@@ -44,7 +44,7 @@ void ContextMenu::RenderAtlas(atlas::AtlasContext& ctx) {
     const atlas::Theme& t = ctx.theme();
     auto& r = ctx.renderer();
 
-    // ── EVE-style dark translucent context menu ─────────────────────
+    // ── Astralis-style dark translucent context menu ─────────────────────
     // Menu items for entity context menu
     struct MenuItem {
         const char* label;
@@ -117,7 +117,7 @@ void ContextMenu::RenderAtlas(atlas::AtlasContext& ctx) {
             r.drawRect(itemRect, t.hover);
             ctx.setHot(id);
 
-            // EVE-style: submenus open on hover, not click
+            // Astralis-style: submenus open on hover, not click
             if (items[i].submenuIdx >= 0) {
                 m_activeSubmenu = items[i].submenuIdx;
             } else {

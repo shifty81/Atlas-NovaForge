@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_GENERATION_STYLE_H
-#define EVE_PCG_GENERATION_STYLE_H
+#ifndef NOVAFORGE_PCG_GENERATION_STYLE_H
+#define NOVAFORGE_PCG_GENERATION_STYLE_H
 
 #include "pcg_context.h"
 #include "pcg_manager.h"
@@ -155,4 +155,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_GENERATION_STYLE_H
+#endif // NOVAFORGE_PCG_GENERATION_STYLE_H

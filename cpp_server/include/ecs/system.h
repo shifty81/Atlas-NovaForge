@@ -1,5 +1,5 @@
-#ifndef EVE_ECS_SYSTEM_H
-#define EVE_ECS_SYSTEM_H
+#ifndef NOVAFORGE_ECS_SYSTEM_H
+#define NOVAFORGE_ECS_SYSTEM_H
 
 #include <string>
 
@@ -38,4 +38,4 @@ protected:
 } // namespace ecs
 } // namespace atlas
 
-#endif // EVE_ECS_SYSTEM_H
+#endif // NOVAFORGE_ECS_SYSTEM_H

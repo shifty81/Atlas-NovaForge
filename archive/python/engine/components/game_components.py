@@ -144,7 +144,7 @@ class Player(Component):
     """Player-controlled entity"""
     player_id: str = ""
     character_name: str = "Pilot"
-    isk: float = 1000000.0  # Starting ISK
+    credits: float = 1000000.0  # Starting Credits
     corporation: str = "NPC Corp"
     
 
@@ -153,7 +153,7 @@ class NPC(Component):
     """NPC-specific data"""
     npc_type: str = "Serpentis Scout"
     faction: str = "Serpentis"
-    bounty: float = 10000.0  # ISK reward for killing
+    bounty: float = 10000.0  # Credits reward for killing
     loot_table: List[str] = field(default_factory=list)  # possible loot items
 
 
@@ -233,7 +233,7 @@ class Mission(Component):
     mission_type: str = "combat"  # combat, courier, mining, exploration
     objectives: List[Dict[str, any]] = field(default_factory=list)
     completed_objectives: List[int] = field(default_factory=list)
-    rewards: Dict[str, float] = field(default_factory=dict)  # isk, lp, items
+    rewards: Dict[str, float] = field(default_factory=dict)  # credits, lp, items
     status: str = "active"  # active, completed, failed
 
 
@@ -443,13 +443,13 @@ class StructureService(Component):
     service_bonus: float = 0.0  # Service-specific bonus percentage
 
 
-# === Planetary Interaction Components ===
+# === Planetary Operations Components ===
 
 @dataclass
 class PlanetaryColony(Component):
     """
     Represents a player's colony on a planet
-    Based on EVE Online Planetary Interaction mechanics
+    Based on Astralis Planetary Operations mechanics
     """
     planet_id: str = ""
     planet_type: str = "barren"  # barren, temperate, oceanic, lava, gas, ice, storm, plasma

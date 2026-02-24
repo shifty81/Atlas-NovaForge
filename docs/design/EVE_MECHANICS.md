@@ -356,11 +356,11 @@ drone_damage_per_second = drone_damage / cycle_time
 5. **Exploration**: Scan sites, retrieve items
 
 ### Mission Levels
-- **Level 1**: Frigates, easy, 50-100k ISK
-- **Level 2**: Frigates/Destroyers, 100-250k ISK
-- **Level 3**: Cruisers, 250-500k ISK
-- **Level 4**: Battleships, 1-5M ISK (EVE Online)
-- **Level 5**: Fleet, 10M+ ISK (EVE Online)
+- **Level 1**: Frigates, easy, 50-100k Credits
+- **Level 2**: Frigates/Destroyers, 100-250k Credits
+- **Level 3**: Cruisers, 250-500k Credits
+- **Level 4**: Battleships, 1-5M Credits (EVE Online)
+- **Level 5**: Fleet, 10M+ Credits (EVE Online)
 
 ### Standing Mechanics
 - Completing missions increases standing
@@ -371,7 +371,7 @@ drone_damage_per_second = drone_damage / cycle_time
 ### Blitz Missions
 - Complete only required objectives
 - Ignore unnecessary rats
-- Faster ISK/hour
+- Faster Credits/hour
 - May reduce loyalty points
 
 ---

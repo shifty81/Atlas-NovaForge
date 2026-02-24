@@ -1,7 +1,7 @@
 """
 Gas Harvesting System
 Handles gas cloud harvester operations, gas extraction, and gas storage
-Based on EVE Online gas harvesting mechanics
+Based on Astralis gas harvesting mechanics
 """
 
 import json

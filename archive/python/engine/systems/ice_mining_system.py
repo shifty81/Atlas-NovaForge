@@ -1,7 +1,7 @@
 """
 Ice Mining System
 Handles ice harvester operations, ice extraction, and ice storage
-Based on EVE Online ice mining mechanics
+Based on Astralis ice mining mechanics
 """
 
 import json

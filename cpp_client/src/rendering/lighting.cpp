@@ -207,7 +207,7 @@ void LightManager::calculateAttenuation(float range, float& linear, float& quadr
 }
 
 void LightManager::setupEVEStyleLighting() {
-    std::cout << "[LightManager] Setting up EVE-style lighting..." << std::endl;
+    std::cout << "[LightManager] Setting up Astralis-style lighting..." << std::endl;
     
     // Clear existing lights
     clearLights();
@@ -239,7 +239,7 @@ void LightManager::setupEVEStyleLighting() {
     );
     addLight(rim);
     
-    std::cout << "[LightManager] EVE-style lighting setup complete: "
+    std::cout << "[LightManager] Astralis-style lighting setup complete: "
               << m_lights.size() << " lights" << std::endl;
 }
 

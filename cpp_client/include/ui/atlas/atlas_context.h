@@ -13,10 +13,10 @@
  *   // … widget calls (panel, button, bar, etc.) …
  *   ctx.endFrame();
  *
- * Layout reference (from EVE Online screenshot analysis):
+ * Layout reference (from Astralis screenshot analysis):
  *
  *   ┌─────────┬────────────────────────────────────────────┬──────────────┐
- *   │ Neocom  │  Locked Targets (top-center row)           │ Selected     │
+ *   │ Nexcom  │  Locked Targets (top-center row)           │ Selected     │
  *   │ (left   │                                            │ Item panel   │
  *   │ 15-56px)│                                            │ (top-right)  │
  *   │         │         3D Space View                      │──────────────│

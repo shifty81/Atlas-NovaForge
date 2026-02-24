@@ -134,7 +134,7 @@ Based on extensive research of EVE Online's Photon UI:
   - Object types and distances
   - Status indicators
 
-### 7. Neocom Panel (Left Sidebar)
+### 7. Nexcom Panel (Left Sidebar)
 
 **Location**: Far left edge of screen
 
@@ -277,7 +277,7 @@ hud = create_hud(aspect2d, style='legacy')
 ✅ Panel layouts and positioning
 ✅ Header styling with accent borders
 ✅ Text styling and colors
-✅ Neocom-style left sidebar
+✅ Nexcom-style left sidebar
 ✅ Overview panel concept
 ✅ Combat log with proper formatting
 ✅ Target info panel

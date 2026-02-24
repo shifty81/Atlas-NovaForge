@@ -1,6 +1,6 @@
 {
   "incursion_info": {
-    "description": "Incursions are large-scale Hollow Collective invasions of known space. They require coordinated fleet efforts to repel and offer substantial ISK and loyalty point rewards.",
+    "description": "Incursions are large-scale Hollow Collective invasions of known space. They require coordinated fleet efforts to repel and offer substantial Credits and loyalty point rewards.",
     "mechanic": "Incursions spawn in constellation-sized areas, reducing system security and spawning encounter sites. Players must complete encounters to reduce the incursion influence bar. Once influence reaches 0%, the mothership site spawns for the final battle.",
     "site_types": [
       "vanguard",
@@ -107,7 +107,7 @@
         }
       ],
       "rewards": {
-        "isk": 10000000,
+        "credits": 10000000,
         "loyalty_points": 3500,
         "aegis_lp": 3500,
         "standing_gain": 0.05
@@ -183,7 +183,7 @@
         }
       ],
       "rewards": {
-        "isk": 10000000,
+        "credits": 10000000,
         "loyalty_points": 3500,
         "aegis_lp": 3500,
         "standing_gain": 0.05
@@ -251,7 +251,7 @@
         }
       ],
       "rewards": {
-        "isk": 12000000,
+        "credits": 12000000,
         "loyalty_points": 4000,
         "aegis_lp": 4000,
         "standing_gain": 0.07
@@ -358,7 +358,7 @@
         }
       ],
       "rewards": {
-        "isk": 25000000,
+        "credits": 25000000,
         "loyalty_points": 7000,
         "aegis_lp": 7000,
         "standing_gain": 0.1
@@ -458,7 +458,7 @@
         }
       ],
       "rewards": {
-        "isk": 28000000,
+        "credits": 28000000,
         "loyalty_points": 7500,
         "aegis_lp": 7500,
         "standing_gain": 0.1
@@ -570,7 +570,7 @@
         }
       ],
       "rewards": {
-        "isk": 60000000,
+        "credits": 60000000,
         "loyalty_points": 14000,
         "aegis_lp": 14000,
         "standing_gain": 0.15
@@ -679,7 +679,7 @@
         }
       ],
       "rewards": {
-        "isk": 80000000,
+        "credits": 80000000,
         "loyalty_points": 18000,
         "aegis_lp": 18000,
         "standing_gain": 0.2
@@ -793,7 +793,7 @@
         }
       ],
       "rewards": {
-        "isk": 200000000,
+        "credits": 200000000,
         "loyalty_points": 50000,
         "aegis_lp": 50000,
         "standing_gain": 0.5

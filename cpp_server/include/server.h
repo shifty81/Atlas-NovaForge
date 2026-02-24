@@ -1,5 +1,5 @@
-#ifndef EVE_SERVER_H
-#define EVE_SERVER_H
+#ifndef NOVAFORGE_SERVER_H
+#define NOVAFORGE_SERVER_H
 
 #include <string>
 #include <memory>
@@ -81,4 +81,4 @@ private:
 
 } // namespace atlas
 
-#endif // EVE_SERVER_H
+#endif // NOVAFORGE_SERVER_H

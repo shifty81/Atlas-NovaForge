@@ -3299,7 +3299,7 @@ Sortable table
 
 Filter presets
 
-Neocom
+Nexcom
 
 Vertical icon bar
 
@@ -3401,7 +3401,7 @@ If v0.1 is not fun, nothing else matters.
 /ui
   HUD
   Overview
-  Neocom
+  Nexcom
 /render
 /sim
   Economy

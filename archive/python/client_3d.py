@@ -87,7 +87,7 @@ def main():
     # Setup logging
     log_level = "DEBUG" if args.debug else "INFO"
     logger = setup_logging(
-        name="eve_offline_3d",
+        name="novaforge_3d",
         level=log_level,
         log_to_file=True,
         log_dir=args.log_dir

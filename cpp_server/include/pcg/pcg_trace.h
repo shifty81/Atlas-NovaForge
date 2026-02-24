@@ -1,5 +1,5 @@
-#ifndef EVE_PCG_TRACE_H
-#define EVE_PCG_TRACE_H
+#ifndef NOVAFORGE_PCG_TRACE_H
+#define NOVAFORGE_PCG_TRACE_H
 
 #include "pcg_context.h"
 #include <cstdint>
@@ -85,4 +85,4 @@ private:
 } // namespace pcg
 } // namespace atlas
 
-#endif // EVE_PCG_TRACE_H
+#endif // NOVAFORGE_PCG_TRACE_H

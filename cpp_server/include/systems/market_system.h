@@ -1,5 +1,5 @@
-#ifndef EVE_SYSTEMS_MARKET_SYSTEM_H
-#define EVE_SYSTEMS_MARKET_SYSTEM_H
+#ifndef NOVAFORGE_SYSTEMS_MARKET_SYSTEM_H
+#define NOVAFORGE_SYSTEMS_MARKET_SYSTEM_H
 
 #include "ecs/system.h"
 #include <string>
@@ -69,7 +69,7 @@ public:
     /**
      * @brief Seed a station's market with NPC sell orders for common minerals
      *
-     * Creates permanent sell orders for Tritanium, Pyerite, Mexallon, and
+     * Creates permanent sell orders for Stellium, Vanthium, Cydrium, and
      * Nocxidium at baseline prices so players can always buy basic materials.
      *
      * @param station_id Entity id of the station with a MarketHub component
@@ -84,4 +84,4 @@ private:
 } // namespace systems
 } // namespace atlas
 
-#endif // EVE_SYSTEMS_MARKET_SYSTEM_H
+#endif // NOVAFORGE_SYSTEMS_MARKET_SYSTEM_H

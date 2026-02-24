@@ -57,7 +57,7 @@ def demo_mission_board():
     for i, (level, reward) in enumerate(zip(levels, rewards)):
         mission_name = NameGenerator.generate_mission_name()
         print(f"  [{i+1}] {mission_name}")
-        print(f"      Level: {level} | Reward: {reward:,} ISK")
+        print(f"      Level: {level} | Reward: {reward:,} Credits")
     
     print()
 

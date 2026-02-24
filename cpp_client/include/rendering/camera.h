@@ -8,7 +8,7 @@ namespace atlas {
 /**
  * View mode for the camera system.
  *
- * ORBIT  – Default EVE-style third-person orbit (RTS-style) around the ship.
+ * ORBIT  – Default Astralis-style third-person orbit (RTS-style) around the ship.
  * FPS    – First-person view for walking inside ship interiors / stations.
  * COCKPIT – First-person cockpit view with flight controls visible.
  */
@@ -20,7 +20,7 @@ enum class ViewMode {
 
 /**
  * Camera class for 3D view
- * Implements EVE-style orbit camera with smooth zoom and orbit inertia,
+ * Implements Astralis-style orbit camera with smooth zoom and orbit inertia,
  * plus FPS and cockpit first-person modes for interior navigation.
  */
 class Camera {
@@ -76,7 +76,7 @@ public:
     void setDistance(float distance);
 
     /**
-     * EVE-style tracking camera: snap yaw/pitch to look at a world
+     * Astralis-style tracking camera: snap yaw/pitch to look at a world
      * position from the current distance.
      */
     void lookAt(const glm::vec3& worldPos);
@@ -139,7 +139,7 @@ private:
     glm::vec3 m_right;
     glm::vec3 m_up;
 
-    // EVE-style smooth interpolation targets
+    // Astralis-style smooth interpolation targets
     float m_targetDistance;     // desired zoom distance
     float m_yawVelocity  = 0.0f;  // angular velocity for inertia
     float m_pitchVelocity = 0.0f;

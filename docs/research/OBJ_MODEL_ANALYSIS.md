@@ -14,7 +14,7 @@ with the reference models, while still allowing controlled variation.
 ## Factions Analyzed
 
 15 factions represented across 311 models:
-Amarr (58), Angel (13), Caldari (61), Concord (8), Gallente (56), Jove (3),
+Amarr (58), Angel (13), Caldari (61), Aegis (8), Gallente (56), Jove (3),
 Minmatar (56), Mordu (3), ORE (13), Sansha (9), Sleeper (7), SOCT (4),
 SOE (3), Triglavian (14), Upwell (3).
 
@@ -33,7 +33,7 @@ Shuttle, Titan.
 | Amarr        |    58 | 2.199          | 1.020 – 4.573       | 3.954          |  8,955       | Tall vertical spires, ornate   |
 | Angel        |    13 | 2.338          | 1.156 – 5.755       | 3.808          |  7,281       | Aggressive, modified hulls     |
 | Caldari      |    61 | 1.834          | 1.003 – 5.094       | 3.515          | 10,760       | Compact blocky, angular        |
-| Concord      |     8 | 1.622          | 1.104 – 2.750       | 2.853          |  8,905       | Balanced, authoritative        |
+| Aegis      |     8 | 1.622          | 1.104 – 2.750       | 2.853          |  8,905       | Balanced, authoritative        |
 | Gallente     |    56 | 2.278          | 1.035 – 10.442      | 3.664          |  7,327       | Wide organic curves            |
 | Jove         |     3 | 1.612          | 1.077 – 2.214       | 2.762          |  5,072       | Alien, compact                 |
 | Minmatar     |    56 | 2.284          | 1.010 – 5.755       | 4.631          | 12,305       | High L:H, tall industrial      |
