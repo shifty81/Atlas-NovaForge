@@ -18,6 +18,7 @@ void WarDeclarationSystem::update(float delta_time) {
 
         if (war->status == "active" || war->status == "mutual") {
             war->elapsed_hours += dt_hours;
+            // Mutual wars have no time limit; only non-mutual wars auto-finish
             if (!war->is_mutual && war->elapsed_hours >= war->duration_hours) {
                 war->status = "finished";
             }

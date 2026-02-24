@@ -206,7 +206,10 @@ Data-driven modding without code injection:
 | MissionTemplateSystem | ✅ Complete | 6 assertions |
 | MissionGeneratorSystem | ✅ Complete | 4 assertions |
 | ReputationSystem | ✅ Complete | 6 assertions |
-| **Total** | **38 systems** | **1996 assertions** |
+| AllianceSystem | ✅ Complete | 17 assertions |
+| SovereigntySystem | ✅ Complete | 19 assertions |
+| WarDeclarationSystem | ✅ Complete | 16 assertions |
+| **Total** | **41 systems** | **2048 assertions** |
 
 ### Data Loaders Status
 
@@ -227,6 +230,12 @@ Data-driven modding without code injection:
 | ~~LeaderboardSystem~~ | ~~Low~~ | ✅ Implemented (23 assertions) |
 
 All baseline systems are now implemented.
+
+| System | Priority | Description |
+|--------|----------|-------------|
+| ~~AllianceSystem~~ | ~~Medium~~ | ✅ Implemented (17 assertions) |
+| ~~SovereigntySystem~~ | ~~Medium~~ | ✅ Implemented (19 assertions) |
+| ~~WarDeclarationSystem~~ | ~~Medium~~ | ✅ Implemented (16 assertions) |
 
 ---
 
