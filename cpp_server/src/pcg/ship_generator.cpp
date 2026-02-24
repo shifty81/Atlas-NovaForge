@@ -1,4 +1,5 @@
 #include "pcg/ship_generator.h"
+#include "pcg/constraint_solver.h"
 #include "pcg/pcg_trace.h"
 #include <iterator>
 
@@ -194,23 +195,56 @@ void ShipGenerator::attachEngines(DeterministicRNG& rng, GeneratedShip& ship) {
     ship.alignTime = ship.mass / ship.thrust;
 }
 
+// File-scope state for ConstraintSolver callbacks (single-threaded PCG).
+static int*   s_turretSlots = nullptr;
+static float  s_pgPerTurret = 0.0f;
+static float* s_usedPg      = nullptr;
+static PowerGridConstraint* s_pgConstraint = nullptr;
+
+static void weaponMutator(DeterministicRNG& /*rng*/) {
+    if (s_turretSlots && *s_turretSlots > 0) {
+        (*s_turretSlots)--;
+        if (s_usedPg) {
+            *s_usedPg = s_pgPerTurret * static_cast<float>(*s_turretSlots);
+            if (s_pgConstraint) s_pgConstraint->setUsedPower(*s_usedPg);
+        }
+    }
+}
+
+static void weaponFallback() {
+    if (s_turretSlots) *s_turretSlots = 0;
+    if (s_usedPg)      *s_usedPg = 0.0f;
+    if (s_pgConstraint) s_pgConstraint->setUsedPower(0.0f);
+}
+
 void ShipGenerator::attachWeapons(DeterministicRNG& rng, GeneratedShip& ship) {
-    // Weapon slots are already set by deriveStats().
-    // Here we just sanity-check that the powergrid budget is sufficient.
-    // (A full fitting solver would iterate here.)
     float pgPerTurret = 0.0f;
     switch (ship.maxWeaponSize) {
         case WeaponSize::Small:  pgPerTurret = rng.rangeFloat(3.0f, 8.0f);   break;
         case WeaponSize::Medium: pgPerTurret = rng.rangeFloat(80.0f, 160.0f); break;
         case WeaponSize::Large:  pgPerTurret = rng.rangeFloat(1000.0f, 2500.0f); break;
     }
-    float totalPgNeeded = pgPerTurret * static_cast<float>(ship.turretSlots);
 
-    // If weapons exceed budget, trim turret count (constraint retry).
-    while (totalPgNeeded > ship.powergrid * 0.85f && ship.turretSlots > 0) {
-        ship.turretSlots--;
-        totalPgNeeded = pgPerTurret * static_cast<float>(ship.turretSlots);
-    }
+    float usedPg = pgPerTurret * static_cast<float>(ship.turretSlots);
+    PowerGridConstraint pgConstraint(usedPg, ship.powergrid);
+
+    // Wire file-scope state for solver callbacks.
+    s_turretSlots  = &ship.turretSlots;
+    s_pgPerTurret  = pgPerTurret;
+    s_usedPg       = &usedPg;
+    s_pgConstraint = &pgConstraint;
+
+    ConstraintSolver solver;
+    solver.add(&pgConstraint);
+    solver.setMutator(weaponMutator);
+    solver.setFallback(weaponFallback);
+    solver.solve(rng);
+
+    // Clear file-scope state.
+    s_turretSlots  = nullptr;
+    s_pgPerTurret  = 0.0f;
+    s_usedPg       = nullptr;
+    s_pgConstraint = nullptr;
 }
 
 bool ShipGenerator::validateConstraints(const GeneratedShip& ship) {
