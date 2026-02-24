@@ -25,7 +25,7 @@ cd build
 
 REM Configure
 echo Configuring CMake (%BUILD_TYPE%)...
-cmake .. -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DUSE_SYSTEM_LIBS=ON
+cmake .. -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DUSE_SYSTEM_LIBS=ON -DBUILD_ATLAS_EDITOR=ON
 
 if errorlevel 1 (
     echo.

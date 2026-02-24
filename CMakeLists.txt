@@ -20,7 +20,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(BUILD_CLIENT "Build C++ OpenGL client" ON)
 option(BUILD_SERVER "Build C++ dedicated server" ON)
 option(BUILD_ATLAS_ENGINE "Build Atlas Engine library" ON)
-option(BUILD_ATLAS_EDITOR "Build Atlas Editor" OFF)
+option(BUILD_ATLAS_EDITOR "Build Atlas Editor" ON)
 option(BUILD_ATLAS_TESTS "Build Atlas Engine tests" ON)
 
 # --- Atlas Engine (core library) ---

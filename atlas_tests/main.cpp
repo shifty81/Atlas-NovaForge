@@ -102,6 +102,7 @@ void test_existing_panel_toggles();
 void test_overview_tab_filter();
 
 // Game State & ViewMode tests
+#ifndef ATLAS_NO_GLM
 void test_camera_default_view_mode();
 void test_camera_set_view_mode_orbit();
 void test_camera_set_view_mode_fps();
@@ -111,6 +112,7 @@ void test_camera_fps_rotate();
 void test_camera_orbit_position_unchanged_in_fps();
 void test_camera_view_mode_kills_inertia();
 void test_camera_view_matrix_differs_by_mode();
+#endif
 
 // PCG Preview Panel tests
 void test_pcg_preview_defaults();
@@ -235,6 +237,28 @@ void test_archp_generate_preview_with_modules();
 void test_archp_save_load_string();
 void test_archp_draw_does_not_crash();
 
+// Viewport Panel tests
+void test_viewport_defaults();
+void test_viewport_load_ship();
+void test_viewport_load_station();
+void test_viewport_clear_scene();
+void test_viewport_select_object();
+void test_viewport_deselect_all();
+void test_viewport_translate_selected();
+void test_viewport_rotate_selected();
+void test_viewport_scale_selected();
+void test_viewport_scale_clamps_positive();
+void test_viewport_gizmo_mode();
+void test_viewport_camera_orbit();
+void test_viewport_camera_pitch_clamp();
+void test_viewport_camera_distance();
+void test_viewport_commit_changes();
+void test_viewport_discard_changes();
+void test_viewport_grid_toggle();
+void test_viewport_draw_does_not_crash();
+void test_viewport_log_entries();
+void test_viewport_no_op_without_selection();
+
 int main() {
     std::cout << "=== Atlas Engine Tests ===" << std::endl;
 
@@ -352,6 +376,7 @@ int main() {
     test_overview_tab_filter();
 
     // Game State & ViewMode
+#ifndef ATLAS_NO_GLM
     std::cout << "\n--- Game State & ViewMode ---" << std::endl;
     test_camera_default_view_mode();
     test_camera_set_view_mode_orbit();
@@ -362,6 +387,9 @@ int main() {
     test_camera_orbit_position_unchanged_in_fps();
     test_camera_view_mode_kills_inertia();
     test_camera_view_matrix_differs_by_mode();
+#else
+    std::cout << "\n--- Game State & ViewMode (SKIPPED — GLM not available) ---" << std::endl;
+#endif
 
     // PCG Preview Panel
     std::cout << "\n--- PCG Preview Panel ---" << std::endl;
@@ -493,6 +521,29 @@ int main() {
     test_archp_generate_preview_with_modules();
     test_archp_save_load_string();
     test_archp_draw_does_not_crash();
+
+    // Viewport Panel
+    std::cout << "\n--- Viewport Panel ---" << std::endl;
+    test_viewport_defaults();
+    test_viewport_load_ship();
+    test_viewport_load_station();
+    test_viewport_clear_scene();
+    test_viewport_select_object();
+    test_viewport_deselect_all();
+    test_viewport_translate_selected();
+    test_viewport_rotate_selected();
+    test_viewport_scale_selected();
+    test_viewport_scale_clamps_positive();
+    test_viewport_gizmo_mode();
+    test_viewport_camera_orbit();
+    test_viewport_camera_pitch_clamp();
+    test_viewport_camera_distance();
+    test_viewport_commit_changes();
+    test_viewport_discard_changes();
+    test_viewport_grid_toggle();
+    test_viewport_draw_does_not_crash();
+    test_viewport_log_entries();
+    test_viewport_no_op_without_selection();
 
     std::cout << "\n=== All tests passed! ===" << std::endl;
     return 0;
