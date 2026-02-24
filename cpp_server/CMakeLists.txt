@@ -132,6 +132,7 @@ set(SERVER_SOURCES
     src/systems/market_order_system.cpp
     src/systems/ai_economic_actor_system.cpp
     src/systems/turret_ai_system.cpp
+    src/systems/titan_assembly_system.cpp
     src/data/ship_database.cpp
     src/data/npc_database.cpp
     src/data/wormhole_database.cpp
@@ -272,6 +273,7 @@ set(SERVER_HEADERS
     include/systems/market_order_system.h
     include/systems/ai_economic_actor_system.h
     include/systems/turret_ai_system.h
+    include/systems/titan_assembly_system.h
     include/data/ship_database.h
     include/data/npc_database.h
     include/data/wormhole_database.h
@@ -478,6 +480,7 @@ if(BUILD_TESTS)
         src/systems/market_order_system.cpp
         src/systems/ai_economic_actor_system.cpp
         src/systems/turret_ai_system.cpp
+        src/systems/titan_assembly_system.cpp
         src/data/world_persistence.cpp
         src/utils/logger.cpp
         src/utils/server_metrics.cpp
