@@ -73,6 +73,23 @@ build-engine: ## Build Atlas Engine library only
 	@mkdir -p build
 	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ATLAS_ENGINE=ON -DBUILD_CLIENT=OFF -DBUILD_SERVER=OFF -DBUILD_ATLAS_TESTS=OFF && cmake --build . --config Release --target AtlasEngine -j$$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)
 
+.PHONY: build-editor
+build-editor: ## Build Atlas Editor (PCG design tools)
+	@mkdir -p build
+	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ATLAS_ENGINE=ON -DBUILD_ATLAS_EDITOR=ON -DBUILD_CLIENT=OFF -DBUILD_SERVER=OFF -DBUILD_ATLAS_TESTS=OFF && cmake --build . --config Release --target AtlasEditor -j$$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)
+	@echo ""
+	@echo "Atlas Editor built successfully!"
+	@echo "Run with: ./build/editor/AtlasEditor"
+	@echo ""
+	@echo "Available editor panels:"
+	@echo "  - Ship Archetype    (design reference ships per hull class)"
+	@echo "  - Generation Style  (create PCG generation blueprints)"
+	@echo "  - Asset Style       (modify shapes and visual styles)"
+	@echo "  - PCG Preview       (preview generated content)"
+	@echo "  - ECS Inspector     (inspect entity-component state)"
+	@echo "  - Game Packager     (package builds)"
+	@echo ""
+
 .PHONY: test
 test: test-server test-engine ## Run all tests
 
