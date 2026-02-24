@@ -1577,6 +1577,67 @@ void test_material_editor_preview_mode();
 void test_material_editor_summary();
 void test_material_editor_clear();
 
+// Ship Hull Graph tests
+void test_ship_hull_from_control_points();
+void test_ship_hull_minimum_points();
+void test_ship_hull_two_points();
+void test_ship_turret_mount();
+void test_ship_turret_sizes();
+void test_ship_light_fixture();
+void test_ship_light_interior_vs_exterior();
+void test_ship_interior_volume();
+void test_ship_visual_feature();
+void test_ship_default_control_points_frigate();
+void test_ship_default_control_points_capital();
+void test_ship_default_control_points_deterministic();
+void test_ship_default_hardpoints();
+void test_ship_default_interiors();
+void test_ship_default_interiors_large_ship();
+void test_ship_default_lights();
+void test_ship_graph_add_nodes();
+void test_ship_graph_remove_node();
+void test_ship_graph_compile_empty();
+void test_ship_graph_control_points();
+void test_ship_graph_turret_hardpoints();
+void test_ship_graph_lights();
+void test_ship_graph_interiors();
+void test_ship_graph_visual_features();
+void test_ship_graph_generate_from_seed();
+void test_ship_graph_full_pipeline();
+void test_ship_graph_export();
+void test_ship_pcg_record_edits();
+void test_ship_pcg_learning_profile();
+void test_ship_pcg_apply_learning();
+
+// Ship Editor Panel tests
+void test_ship_editor_name();
+void test_ship_editor_no_ship();
+void test_ship_editor_new_ship();
+void test_ship_editor_new_ship_classes();
+void test_ship_editor_compile_and_generate();
+void test_ship_editor_selection();
+void test_ship_editor_tools();
+void test_ship_editor_view_modes();
+void test_ship_editor_move_control_point();
+void test_ship_editor_add_control_point();
+void test_ship_editor_remove_control_point();
+void test_ship_editor_add_turret();
+void test_ship_editor_remove_turret();
+void test_ship_editor_add_light();
+void test_ship_editor_remove_light();
+void test_ship_editor_add_interior();
+void test_ship_editor_remove_interior();
+void test_ship_editor_add_visual_feature();
+void test_ship_editor_remove_visual_feature();
+void test_ship_editor_has_cockpit();
+void test_ship_editor_export_import();
+void test_ship_editor_pcg_learning();
+void test_ship_editor_summary();
+void test_ship_editor_draw();
+void test_ship_editor_draw_no_ship();
+void test_ship_editor_set_ship_info();
+void test_ship_editor_mark_clean();
+
 // Prefab Editor Panel tests
 void test_prefab_editor_name();
 void test_prefab_editor_empty();
@@ -3682,6 +3743,69 @@ int main() {
     test_material_editor_preview_mode();
     test_material_editor_summary();
     test_material_editor_clear();
+
+    // Ship Hull Graph
+    std::cout << "\n--- Ship Hull Graph ---" << std::endl;
+    test_ship_hull_from_control_points();
+    test_ship_hull_minimum_points();
+    test_ship_hull_two_points();
+    test_ship_turret_mount();
+    test_ship_turret_sizes();
+    test_ship_light_fixture();
+    test_ship_light_interior_vs_exterior();
+    test_ship_interior_volume();
+    test_ship_visual_feature();
+    test_ship_default_control_points_frigate();
+    test_ship_default_control_points_capital();
+    test_ship_default_control_points_deterministic();
+    test_ship_default_hardpoints();
+    test_ship_default_interiors();
+    test_ship_default_interiors_large_ship();
+    test_ship_default_lights();
+    test_ship_graph_add_nodes();
+    test_ship_graph_remove_node();
+    test_ship_graph_compile_empty();
+    test_ship_graph_control_points();
+    test_ship_graph_turret_hardpoints();
+    test_ship_graph_lights();
+    test_ship_graph_interiors();
+    test_ship_graph_visual_features();
+    test_ship_graph_generate_from_seed();
+    test_ship_graph_full_pipeline();
+    test_ship_graph_export();
+    test_ship_pcg_record_edits();
+    test_ship_pcg_learning_profile();
+    test_ship_pcg_apply_learning();
+
+    // Ship Editor Panel
+    std::cout << "\n--- Ship Editor Panel ---" << std::endl;
+    test_ship_editor_name();
+    test_ship_editor_no_ship();
+    test_ship_editor_new_ship();
+    test_ship_editor_new_ship_classes();
+    test_ship_editor_compile_and_generate();
+    test_ship_editor_selection();
+    test_ship_editor_tools();
+    test_ship_editor_view_modes();
+    test_ship_editor_move_control_point();
+    test_ship_editor_add_control_point();
+    test_ship_editor_remove_control_point();
+    test_ship_editor_add_turret();
+    test_ship_editor_remove_turret();
+    test_ship_editor_add_light();
+    test_ship_editor_remove_light();
+    test_ship_editor_add_interior();
+    test_ship_editor_remove_interior();
+    test_ship_editor_add_visual_feature();
+    test_ship_editor_remove_visual_feature();
+    test_ship_editor_has_cockpit();
+    test_ship_editor_export_import();
+    test_ship_editor_pcg_learning();
+    test_ship_editor_summary();
+    test_ship_editor_draw();
+    test_ship_editor_draw_no_ship();
+    test_ship_editor_set_ship_info();
+    test_ship_editor_mark_clean();
 
     // Prefab Editor Panel
     std::cout << "\n--- Prefab Editor Panel ---" << std::endl;

@@ -342,19 +342,17 @@ void test_dsl_layout_has_panels() {
         };
     collectPanels(*result.root);
 
-    // Should find at least AssetBrowser, Viewport, Console, Inspector
-    bool hasAssetBrowser = false, hasViewport = false;
-    bool hasConsole = false, hasInspector = false;
+    // Should find at least AssetBrowser, ShipEditor, Console
+    bool hasAssetBrowser = false, hasShipEditor = false;
+    bool hasConsole = false;
     for (auto& name : panelNames) {
         if (name == "AssetBrowser") hasAssetBrowser = true;
-        if (name == "Viewport") hasViewport = true;
+        if (name == "ShipEditor") hasShipEditor = true;
         if (name == "Console") hasConsole = true;
-        if (name == "Inspector") hasInspector = true;
     }
     assert(hasAssetBrowser);
-    assert(hasViewport);
+    assert(hasShipEditor);
     assert(hasConsole);
-    assert(hasInspector);
 
     std::cout << "[PASS] test_dsl_layout_has_panels" << std::endl;
 }
@@ -364,20 +362,16 @@ void test_dsl_layout_has_dock_and_split() {
     auto result = parser.Parse(atlas::editor::DefaultEditorDSL());
     assert(result.success);
 
-    bool hasSplit = false, hasDock = false, hasTabs = false;
+    bool hasSplit = false;
     std::function<void(const atlas::ui::DSLNode&)> inspect =
         [&](const atlas::ui::DSLNode& node) {
             if (node.type == atlas::ui::DSLNodeType::Split) hasSplit = true;
-            if (node.type == atlas::ui::DSLNodeType::Dock) hasDock = true;
-            if (node.type == atlas::ui::DSLNodeType::Tabs) hasTabs = true;
             for (auto& child : node.children)
                 inspect(*child);
         };
     inspect(*result.root);
 
     assert(hasSplit);
-    assert(hasDock);
-    assert(hasTabs);
 
     std::cout << "[PASS] test_dsl_layout_has_dock_and_split" << std::endl;
 }

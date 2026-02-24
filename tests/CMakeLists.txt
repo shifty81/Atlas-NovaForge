@@ -196,6 +196,8 @@ add_executable(AtlasTests
     test_menu_actions.cpp
     test_renderer_backend.cpp
     test_script_and_abi.cpp
+    test_ship_hull_graph.cpp
+    test_ship_editor_panel.cpp
     ${CMAKE_SOURCE_DIR}/editor/panels/ConsolePanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/panels/InteractionDebugger.cpp
     ${CMAKE_SOURCE_DIR}/editor/panels/ECSInspectorPanel.cpp
@@ -236,6 +238,7 @@ add_executable(AtlasTests
     ${CMAKE_SOURCE_DIR}/editor/panels/PrefabEditorPanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/panels/DesyncVisualizerPanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/panels/AIDebuggerPanel.cpp
+    ${CMAKE_SOURCE_DIR}/editor/panels/ShipEditorPanel.cpp
 )
 
 target_link_libraries(AtlasTests AtlasEngine AtlasGameplay EveOfflineModule Arena2DModule)

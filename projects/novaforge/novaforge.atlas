@@ -2,7 +2,7 @@
   "schema": "atlas.project.v1",
   "name": "NOVAFORGE",
   "version": "0.1.0",
-  "description": "NovaForge — PVE space simulator built on Atlas Engine",
+  "description": "NovaForge — FPS space combat simulator built on Atlas Engine",
   "modules": {
     "worldGraph": "worlds/galaxy.worldgraph",
     "tileGraphs": "worlds/",
@@ -11,6 +11,20 @@
     "behaviorGraphs": "ai/",
     "ai": true,
     "content": "data/"
+  },
+  "gameplay": {
+    "primaryMode": "fps_flight",
+    "secondaryMode": "rts_fleet_command",
+    "shipEditor": true,
+    "pcgShipGeneration": true,
+    "fpsInteriors": true,
+    "cockpitView": true
+  },
+  "ships": {
+    "dataPath": "data/ships/",
+    "pcgGraphPath": "data/ships/pcg/",
+    "blueprintPath": "data/ships/blueprints/",
+    "learningProfilePath": "data/ships/pcg/learning/"
   },
   "runtime": {
     "entryWorld": "worlds/galaxy.worldgraph",

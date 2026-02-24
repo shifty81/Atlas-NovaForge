@@ -135,6 +135,8 @@ add_library(AtlasEngine STATIC
     procedural/ProceduralMaterialNodes.cpp
     procedural/LODBakingGraph.cpp
     procedural/LODBakingNodes.cpp
+    procedural/ShipHullGraph.cpp
+    procedural/ShipHullNodes.cpp
     sim/ReplayProofExporter.cpp
     sim/ReplayRecorder.cpp
     sim/StateHasher.cpp

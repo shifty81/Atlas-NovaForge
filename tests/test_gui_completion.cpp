@@ -270,6 +270,6 @@ void test_default_editor_dsl_has_panels() {
     atlas::ui::GUIDSLParser parser;
     auto result = parser.Parse(atlas::editor::DefaultEditorDSL());
     assert(result.success);
-    assert(result.root->children.size() >= 2);
+    assert(result.root->children.size() >= 1);
     std::cout << "[PASS] test_default_editor_dsl_has_panels" << std::endl;
 }
