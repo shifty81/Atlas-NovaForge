@@ -1,5 +1,7 @@
 # Nova Forge — Next Tasks Recommendations
 
+> **Update (February 24, 2026)**: **Social & Territorial Systems**. AllianceSystem: corporation alliance management with create/join/leave/disband, executor transfers, max corp limits. SovereigntySystem: territory control with claim/relinquish/contest, military/industrial index tracking, infrastructure upgrades (0-5), time-based control level decay for contested systems. WarDeclarationSystem: war lifecycle with declare/activate/mutual/surrender/retract states, ISK cost enforcement, kill/ISK-destroyed tracking, automatic war expiry after duration. 3 new systems, 3 new components, 6 new source files, 52 new test assertions. **2995 test assertions passing**.
+
 > **Update (February 23, 2026)**: **Living Universe + Phase 15 CONTINUED**. AIEconomicActorSystem: NPCs as real economic participants with wallets, ship ownership (owned_ship_type + ship_value), ship destruction/replacement lifecycle, permanent death when broke. Extends SimNPCIntent wallet for economic transactions via earnISK/spendISK. TurretAISystem (Phase 15): automated turret targeting with firing arc validation (isWithinArc), tracking penalty computation (sigmoid falloff), cooldown management, damage accumulation. TurretAIState component per turret with arc_degrees, direction_deg, tracking_speed, engagement state. 2 new systems, 2 new components, 4 new source files, 55 new test assertions. **2674 test assertions passing**.
 
 > **Update (February 23, 2026)**: **PCG Systems Phase 12/14/15 CONTINUED**. SpineHullGenerator (Phase 12): spine-based hull grammar with 5 spine types (Needle, Wedge, Hammer, Slab, Ring), functional zone ordering (Command→MidHull→Engineering), bilateral symmetry enforcement, aspect ratio clamping [1.5, 15], engine cluster generation (1-12 per class), 4-faction shape language (Solari elegant/narrow, Veyren angular/wide, Aurelian sleek/organic, Keldari rugged/industrial), greeble cosmetic pass. TerrainGenerator (Phase 14): noise-based planet terrain with deterministic 2D heightmaps, 8 biome types (Plains, Mountains, Valleys, Plateaus, Craters, Dunes, Tundra, Volcanic), mineable deposit placement, landing zone detection. TurretPlacementSystem (Phase 15): deterministic socket-based turret mounting with hull-spine distribution, faction placement rules, angular coverage scoring, pairwise arc overlap validation (<30%). New PCG domains (SpineHull, Terrain) and version entries added to pcg_context.h/pcg_version.h. 3 new systems, 6 new source files, 59 new test assertions. **2576 test assertions passing**.
@@ -55,7 +57,7 @@
 - Alternative priorities if vertical slice isn't the goal
 - Development process and testing requirements
 
-**TL;DR**: Phases 1–11 ✅ **LARGELY COMPLETE**. **Phase 12 (Ship Gen Overhaul) IN PROGRESS**: Spine-based hull grammar, faction shape language, engine clusters. **Phase 13 (FPS & Interiors) IN PROGRESS**: Character mesh, rig system, survival, docking, crew, salvage, ancient tech. **Phase 14 (Vehicles & Planets) IN PROGRESS**: Planet generation, terrain generation, grav bikes, habitats. **Phase 15 (Turrets, Market, Legends) IN PROGRESS**: Turret generation, turret placement, turret AI + firing arcs, market orders, player legends, menu system. **Living Universe**: AI economic actors with wallets, ship ownership, permanent death. **2674 test assertions passing**.
+**TL;DR**: Phases 1–11 ✅ **LARGELY COMPLETE**. **Phase 12 (Ship Gen Overhaul) IN PROGRESS**: Spine-based hull grammar, faction shape language, engine clusters. **Phase 13 (FPS & Interiors) IN PROGRESS**: Character mesh, rig system, survival, docking, crew, salvage, ancient tech. **Phase 14 (Vehicles & Planets) IN PROGRESS**: Planet generation, terrain generation, grav bikes, habitats. **Phase 15 (Turrets, Market, Legends) IN PROGRESS**: Turret generation, turret placement, turret AI + firing arcs, market orders, player legends, menu system. **Living Universe**: AI economic actors with wallets, ship ownership, permanent death. **Social & Territorial**: Alliance management, sovereignty control, war declarations. **2995 test assertions passing**.
 
 ## Current Status (February 2026)
 
@@ -212,6 +214,9 @@ From ROADMAP.md "In Progress" section:
 - PvP toggle option (optional for those who want it)
 - ✅ Tournament system — TournamentSystem with brackets, scoring, elimination, prizes (24 assertions)
 - ✅ Leaderboards and achievements — LeaderboardSystem with stat tracking, rankings, achievement unlocks (23 assertions)
+- ✅ Alliance system — AllianceSystem with create/join/leave/disband, executor transfers, max corp limits (17 assertions)
+- ✅ Sovereignty system — SovereigntySystem with territory control, military/industrial indices, infrastructure upgrades (19 assertions)
+- ✅ War declarations — WarDeclarationSystem with war lifecycle, ISK costs, kill tracking, auto-expiry (16 assertions)
 - In-game web browser (dotlan-style maps)
 
 #### 3.4 Community & Modding
