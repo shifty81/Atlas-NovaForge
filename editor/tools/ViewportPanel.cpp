@@ -99,7 +99,7 @@ void ViewportPanel::LoadSpineHull(const pcg::GeneratedSpineHull& hull,
         // Width at this zone position (interpolate from profile).
         float t = (static_cast<float>(i) + 0.5f) / static_cast<float>(hull.zones.size());
         float width = hull.profile.width_fwd * (1.0f - t) + hull.profile.width_aft * t;
-        if (i == 1) width = hull.profile.width_mid;
+        if (z.zone == pcg::FunctionalZone::MidHull) width = hull.profile.width_mid;
 
         ViewportObject obj;
         obj.id   = m_nextId++;
