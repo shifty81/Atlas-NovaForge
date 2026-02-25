@@ -3003,6 +3003,62 @@ public:
     COMPONENT_TYPE(StationMonument)
 };
 
+// ==================== Living Universe: Information Propagation ====================
+
+/**
+ * @brief Tracks rumors about player actions in a star system.
+ * Rumors propagate to neighboring systems over time and decay if unconfirmed.
+ */
+class InformationPropagation : public ecs::Component {
+public:
+    struct Rumor {
+        std::string rumor_id;
+        std::string player_id;
+        std::string action_type;  // "combat", "mining", "trade", "exploration", "piracy"
+        std::string origin_system;
+        float belief_strength = 1.0f;  // 0.0 to 1.0
+        float age = 0.0f;              // seconds since creation
+        int hops = 0;                  // how many systems this has propagated through
+        bool personally_witnessed = false;
+    };
+
+    std::vector<Rumor> rumors;
+    std::vector<std::string> neighbor_system_ids;  // systems this can propagate to
+    float propagation_interval = 30.0f;     // seconds between propagation attempts
+    float propagation_timer = 0.0f;
+    float decay_rate = 0.01f;               // belief decay per second
+    float max_rumor_age = 300.0f;           // rumors older than this are removed
+    int max_rumors = 50;
+    int max_hops = 5;                       // max propagation distance
+
+    void addRumor(const std::string& rumor_id, const std::string& player_id,
+                  const std::string& action_type, const std::string& origin_system,
+                  bool witnessed = true) {
+        // Don't add duplicate rumors
+        for (auto& r : rumors) {
+            if (r.rumor_id == rumor_id) {
+                if (witnessed) r.belief_strength = std::min(r.belief_strength + 0.3f, 1.0f);
+                return;
+            }
+        }
+        Rumor rumor;
+        rumor.rumor_id = rumor_id;
+        rumor.player_id = player_id;
+        rumor.action_type = action_type;
+        rumor.origin_system = origin_system;
+        rumor.belief_strength = witnessed ? 1.0f : 0.5f;
+        rumor.personally_witnessed = witnessed;
+        rumors.push_back(rumor);
+        if (static_cast<int>(rumors.size()) > max_rumors) {
+            rumors.erase(rumors.begin());
+        }
+    }
+
+    int getRumorCount() const { return static_cast<int>(rumors.size()); }
+
+    COMPONENT_TYPE(InformationPropagation)
+};
+
 } // namespace components
 } // namespace atlas
 

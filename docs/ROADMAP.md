@@ -1057,7 +1057,7 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 - [x] Security response delay — SecurityResponseSystem with AEGIS-style delayed response (7 tests)
 - [x] System threat adjustment from combat — CombatThreatSystem with damage/destruction tracking (5 tests)
 - [x] Station news feed — StationNewsFeed component + StationNewsSystem with combat/economy/exploration event reporting (3 tests)
-- [ ] Rumors about player actions (`AtlasInformationPropagationSystem`)
+- [x] Rumors about player actions (`AtlasInformationPropagationSystem`)
 - [ ] Visual cues (lockdowns, traffic density)
 - [ ] Economy engine: supply/demand curves driven by NPC activity
 
