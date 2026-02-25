@@ -3059,6 +3059,42 @@ public:
     COMPONENT_TYPE(InformationPropagation)
 };
 
+// ==================== Phase 13: Crew Activity AI ====================
+
+/**
+ * @brief Tracks crew member activity state and room assignment.
+ * Crew AI transitions between activities based on ship state and needs.
+ */
+class CrewActivity : public ecs::Component {
+public:
+    enum class Activity { Idle, Working, Walking, Resting, Eating, Repairing, Manning };
+
+    std::string crew_member_id;
+    std::string assigned_room_id;
+    Activity current_activity = Activity::Idle;
+    float activity_timer = 0.0f;        // time in current activity
+    float activity_duration = 60.0f;    // how long to stay in activity
+    float fatigue = 0.0f;               // 0.0 to 1.0
+    float hunger = 0.0f;                // 0.0 to 1.0
+    bool ship_damaged = false;          // triggers repair activity
+    bool station_manned = false;        // at workstation
+
+    static std::string activityToString(Activity a) {
+        switch (a) {
+            case Activity::Idle:      return "Idle";
+            case Activity::Working:   return "Working";
+            case Activity::Walking:   return "Walking";
+            case Activity::Resting:   return "Resting";
+            case Activity::Eating:    return "Eating";
+            case Activity::Repairing: return "Repairing";
+            case Activity::Manning:   return "Manning";
+            default:                  return "Unknown";
+        }
+    }
+
+    COMPONENT_TYPE(CrewActivity)
+};
+
 } // namespace components
 } // namespace atlas
 
