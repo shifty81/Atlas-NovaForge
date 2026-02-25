@@ -140,6 +140,7 @@ set(SERVER_SOURCES
     src/systems/crew_activity_system.cpp
     src/systems/visual_cue_system.cpp
     src/systems/supply_demand_system.cpp
+    src/systems/black_market_system.cpp
     src/data/ship_database.cpp
     src/data/npc_database.cpp
     src/data/wormhole_database.cpp
@@ -294,6 +295,7 @@ set(SERVER_HEADERS
     include/systems/crew_activity_system.h
     include/systems/visual_cue_system.h
     include/systems/supply_demand_system.h
+    include/systems/black_market_system.h
     include/data/ship_database.h
     include/data/npc_database.h
     include/data/wormhole_database.h
@@ -517,6 +519,7 @@ if(BUILD_TESTS)
         src/systems/crew_activity_system.cpp
         src/systems/visual_cue_system.cpp
         src/systems/supply_demand_system.cpp
+        src/systems/black_market_system.cpp
         src/data/world_persistence.cpp
         src/utils/logger.cpp
         src/utils/server_metrics.cpp
