@@ -16,9 +16,11 @@ add_executable(AtlasEditor
     tools/GalaxyMapPanel.cpp
     tools/FleetFormationPanel.cpp
     tools/MissionEditorPanel.cpp
+    tools/SceneGraphPanel.cpp
     ai/AIAggregator.cpp
     ai/TemplateAIBackend.cpp
     ui/UndoStack.cpp
+    ui/KeybindManager.cpp
     # PCG sources used by editor panels
     ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/pcg_manager.cpp
     ${CMAKE_SOURCE_DIR}/cpp_server/src/pcg/ship_generator.cpp

@@ -12,7 +12,9 @@
 #include "tools/LiveSceneManager.h"
 #include "tools/CharacterSelectPanel.h"
 #include "tools/MissionEditorPanel.h"
+#include "tools/SceneGraphPanel.h"
 #include "ai/TemplateAIBackend.h"
+#include "ui/KeybindManager.h"
 #include "assets/AssetRegistry.h"
 #include "../cpp_client/include/ui/atlas/atlas_context.h"
 #include <iostream>
@@ -43,6 +45,10 @@ int main() {
     atlas::editor::GamePackagerPanel packager;
     atlas::editor::CharacterSelectPanel characterSelect;
     atlas::editor::MissionEditorPanel missionEditor;
+    atlas::editor::SceneGraphPanel sceneGraph;
+
+    // ── Keyboard shortcut manager ────────────────────────────────
+    atlas::editor::KeybindManager keybinds;
 
     // ── AI backend: template-based offline suggestions ────────────
     atlas::ai::TemplateAIBackend templateAI;
@@ -78,6 +84,7 @@ int main() {
     layout.RegisterPanel(&packager);
     layout.RegisterPanel(&characterSelect);
     layout.RegisterPanel(&missionEditor);
+    layout.RegisterPanel(&sceneGraph);
     layout.RegisterPanel(&liveScene);
 
     // Root: horizontal split — left (viewport area) | right (tool panels)
@@ -95,7 +102,7 @@ int main() {
     root.a->b = std::make_unique<atlas::editor::DockNode>();
     root.a->a->panel = &viewport;
     root.a->b->split = atlas::editor::DockSplit::Tab;
-    root.a->b->tabs = {&console, &ecsInspector, &netInspector};
+    root.a->b->tabs = {&console, &ecsInspector, &netInspector, &sceneGraph};
     root.a->b->activeTab = 0;
 
     // Right side: vertical split — top (PCG preview + tools) | bottom (asset/packager)
@@ -130,7 +137,7 @@ int main() {
     std::cout << "[Editor] Layout built with " << layout.Panels().size()
               << " panels" << std::endl;
     std::cout << "[Editor] Panels: Viewport, PCG Preview, Character Select, "
-              << "Mission Editor, Generation Style, "
+              << "Mission Editor, Scene Graph, Generation Style, "
               << "Asset Style, Ship Archetype, ECS Inspector, Net Inspector, "
               << "Console, Game Packager, Live Scene Manager" << std::endl;
 

@@ -543,6 +543,83 @@ void test_template_ai_add_empty_keyword_ignored();
 void test_template_ai_clear_templates();
 void test_template_ai_with_aggregator();
 
+// NetworkInterpolationBuffer tests
+void test_interp_defaults();
+void test_interp_custom_config();
+void test_interp_push_snapshot();
+void test_interp_push_multiple_entities();
+void test_interp_buffer_depth_limit();
+void test_interp_lerp_midpoint();
+void test_interp_lerp_quarter();
+void test_interp_lerp_at_exact_tick();
+void test_interp_clamp_before_first();
+void test_interp_extrapolation();
+void test_interp_extrapolation_max_exceeded();
+void test_interp_unknown_entity();
+void test_interp_remove_entity();
+void test_interp_clear();
+void test_interp_duplicate_tick_replaces();
+void test_interp_out_of_order_ticks();
+void test_interp_multiple_segments();
+void test_interp_snapshot_count_nonexistent();
+
+// SceneGraphPanel tests
+void test_sg_defaults();
+void test_sg_add_node();
+void test_sg_add_child_node();
+void test_sg_add_child_invalid_parent();
+void test_sg_remove_node();
+void test_sg_remove_cascades_children();
+void test_sg_remove_nonexistent();
+void test_sg_rename_node();
+void test_sg_rename_nonexistent();
+void test_sg_reparent();
+void test_sg_reparent_to_root();
+void test_sg_reparent_self_rejected();
+void test_sg_reparent_cycle_prevented();
+void test_sg_reparent_nonexistent_parent();
+void test_sg_root_nodes();
+void test_sg_children();
+void test_sg_depth();
+void test_sg_select_node();
+void test_sg_select_nonexistent_ignored();
+void test_sg_clear_selection();
+void test_sg_remove_clears_selection();
+void test_sg_select_locked_ignored();
+void test_sg_set_visible();
+void test_sg_set_locked();
+void test_sg_lock_deselects();
+void test_sg_toggle_expanded();
+void test_sg_expand_all();
+void test_sg_collapse_all();
+void test_sg_search_filter();
+void test_sg_search_by_type();
+void test_sg_draw_does_not_crash();
+void test_sg_log_after_actions();
+
+// KeybindManager tests
+void test_kb_defaults_installed();
+void test_kb_clear();
+void test_kb_add_binding();
+void test_kb_add_duplicate_action_rejected();
+void test_kb_add_empty_action_rejected();
+void test_kb_remove_binding();
+void test_kb_remove_nonexistent();
+void test_kb_rebind();
+void test_kb_rebind_nonexistent();
+void test_kb_set_enabled();
+void test_kb_find_by_key();
+void test_kb_bindings_in_category();
+void test_kb_conflict_detection();
+void test_kb_conflict_with_exclude();
+void test_kb_handle_key_press();
+void test_kb_handle_key_press_no_match();
+void test_kb_disabled_binding_not_dispatched();
+void test_kb_callback_replacement();
+void test_kb_describe_binding();
+void test_kb_describe_action();
+void test_kb_default_bindings();
+
 int main(int argc, char* argv[]) {
     std::string logPath;
     for (int i = 1; i < argc; ++i) {
@@ -1144,6 +1221,86 @@ int main(int argc, char* argv[]) {
     RUN_TEST(test_template_ai_add_empty_keyword_ignored);
     RUN_TEST(test_template_ai_clear_templates);
     RUN_TEST(test_template_ai_with_aggregator);
+
+    // Network Interpolation Buffer
+    log.BeginSection("Network Interpolation Buffer");
+    RUN_TEST(test_interp_defaults);
+    RUN_TEST(test_interp_custom_config);
+    RUN_TEST(test_interp_push_snapshot);
+    RUN_TEST(test_interp_push_multiple_entities);
+    RUN_TEST(test_interp_buffer_depth_limit);
+    RUN_TEST(test_interp_lerp_midpoint);
+    RUN_TEST(test_interp_lerp_quarter);
+    RUN_TEST(test_interp_lerp_at_exact_tick);
+    RUN_TEST(test_interp_clamp_before_first);
+    RUN_TEST(test_interp_extrapolation);
+    RUN_TEST(test_interp_extrapolation_max_exceeded);
+    RUN_TEST(test_interp_unknown_entity);
+    RUN_TEST(test_interp_remove_entity);
+    RUN_TEST(test_interp_clear);
+    RUN_TEST(test_interp_duplicate_tick_replaces);
+    RUN_TEST(test_interp_out_of_order_ticks);
+    RUN_TEST(test_interp_multiple_segments);
+    RUN_TEST(test_interp_snapshot_count_nonexistent);
+
+    // Scene Graph Panel
+    log.BeginSection("Scene Graph Panel");
+    RUN_TEST(test_sg_defaults);
+    RUN_TEST(test_sg_add_node);
+    RUN_TEST(test_sg_add_child_node);
+    RUN_TEST(test_sg_add_child_invalid_parent);
+    RUN_TEST(test_sg_remove_node);
+    RUN_TEST(test_sg_remove_cascades_children);
+    RUN_TEST(test_sg_remove_nonexistent);
+    RUN_TEST(test_sg_rename_node);
+    RUN_TEST(test_sg_rename_nonexistent);
+    RUN_TEST(test_sg_reparent);
+    RUN_TEST(test_sg_reparent_to_root);
+    RUN_TEST(test_sg_reparent_self_rejected);
+    RUN_TEST(test_sg_reparent_cycle_prevented);
+    RUN_TEST(test_sg_reparent_nonexistent_parent);
+    RUN_TEST(test_sg_root_nodes);
+    RUN_TEST(test_sg_children);
+    RUN_TEST(test_sg_depth);
+    RUN_TEST(test_sg_select_node);
+    RUN_TEST(test_sg_select_nonexistent_ignored);
+    RUN_TEST(test_sg_clear_selection);
+    RUN_TEST(test_sg_remove_clears_selection);
+    RUN_TEST(test_sg_select_locked_ignored);
+    RUN_TEST(test_sg_set_visible);
+    RUN_TEST(test_sg_set_locked);
+    RUN_TEST(test_sg_lock_deselects);
+    RUN_TEST(test_sg_toggle_expanded);
+    RUN_TEST(test_sg_expand_all);
+    RUN_TEST(test_sg_collapse_all);
+    RUN_TEST(test_sg_search_filter);
+    RUN_TEST(test_sg_search_by_type);
+    RUN_TEST(test_sg_draw_does_not_crash);
+    RUN_TEST(test_sg_log_after_actions);
+
+    // Keybind Manager
+    log.BeginSection("Keybind Manager");
+    RUN_TEST(test_kb_defaults_installed);
+    RUN_TEST(test_kb_clear);
+    RUN_TEST(test_kb_add_binding);
+    RUN_TEST(test_kb_add_duplicate_action_rejected);
+    RUN_TEST(test_kb_add_empty_action_rejected);
+    RUN_TEST(test_kb_remove_binding);
+    RUN_TEST(test_kb_remove_nonexistent);
+    RUN_TEST(test_kb_rebind);
+    RUN_TEST(test_kb_rebind_nonexistent);
+    RUN_TEST(test_kb_set_enabled);
+    RUN_TEST(test_kb_find_by_key);
+    RUN_TEST(test_kb_bindings_in_category);
+    RUN_TEST(test_kb_conflict_detection);
+    RUN_TEST(test_kb_conflict_with_exclude);
+    RUN_TEST(test_kb_handle_key_press);
+    RUN_TEST(test_kb_handle_key_press_no_match);
+    RUN_TEST(test_kb_disabled_binding_not_dispatched);
+    RUN_TEST(test_kb_callback_replacement);
+    RUN_TEST(test_kb_describe_binding);
+    RUN_TEST(test_kb_describe_action);
+    RUN_TEST(test_kb_default_bindings);
 
     if (!logPath.empty()) {
         log.WriteLogFile(logPath);

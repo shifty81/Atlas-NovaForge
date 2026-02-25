@@ -9,6 +9,7 @@ add_library(AtlasEngine STATIC
     assets/AssetBinary.cpp
     net/NetContext.cpp
     net/NetworkQualityMonitor.cpp
+    net/NetworkInterpolationBuffer.cpp
     sim/TickScheduler.cpp
     world/CubeSphereLayout.cpp
     world/VoxelGridLayout.cpp
