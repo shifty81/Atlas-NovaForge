@@ -449,6 +449,48 @@ void test_galaxy_panel_determinism();
 void test_galaxy_panel_different_seeds_differ();
 void test_galaxy_panel_draw_does_not_crash();
 
+// EventBus tests
+void test_eventbus_initial_state();
+void test_eventbus_subscribe_and_count();
+void test_eventbus_subscribe_null_callback();
+void test_eventbus_unsubscribe();
+void test_eventbus_unsubscribe_invalid_noop();
+void test_eventbus_publish_invokes_callback();
+void test_eventbus_publish_only_matching_type();
+void test_eventbus_multiple_subscribers_same_type();
+void test_eventbus_wildcard_receives_all();
+void test_eventbus_enqueue_and_flush();
+void test_eventbus_flush_fifo_order();
+void test_eventbus_enqueue_during_flush_deferred();
+void test_eventbus_total_published();
+void test_eventbus_reset();
+void test_eventbus_sender_id_and_str_param();
+void test_eventbus_no_subscribers_no_crash();
+void test_eventbus_unsubscribe_wildcard();
+
+// Fleet Formation Panel tests
+void test_fmtn_defaults();
+void test_fmtn_set_formation_type();
+void test_fmtn_formation_type_names();
+void test_fmtn_set_fleet_size();
+void test_fmtn_fleet_size_clamped_low();
+void test_fmtn_fleet_size_clamped_high();
+void test_fmtn_set_spacing();
+void test_fmtn_spacing_clamped();
+void test_fmtn_commander_at_origin();
+void test_fmtn_arrow_offsets_nonzero();
+void test_fmtn_line_offsets_lateral();
+void test_fmtn_spread_circular();
+void test_fmtn_bounding_radius();
+void test_fmtn_centre_of_mass();
+void test_fmtn_select_slot();
+void test_fmtn_select_invalid_ignored();
+void test_fmtn_import_fleet();
+void test_fmtn_none_formation_no_offsets();
+void test_fmtn_spacing_affects_offsets();
+void test_fmtn_draw_does_not_crash();
+void test_fmtn_log_after_actions();
+
 int main(int argc, char* argv[]) {
     std::string logPath;
     for (int i = 1; i < argc; ++i) {
@@ -890,6 +932,50 @@ int main(int argc, char* argv[]) {
     RUN_TEST(test_galaxy_panel_determinism);
     RUN_TEST(test_galaxy_panel_different_seeds_differ);
     RUN_TEST(test_galaxy_panel_draw_does_not_crash);
+
+    // EventBus
+    log.BeginSection("EventBus");
+    RUN_TEST(test_eventbus_initial_state);
+    RUN_TEST(test_eventbus_subscribe_and_count);
+    RUN_TEST(test_eventbus_subscribe_null_callback);
+    RUN_TEST(test_eventbus_unsubscribe);
+    RUN_TEST(test_eventbus_unsubscribe_invalid_noop);
+    RUN_TEST(test_eventbus_publish_invokes_callback);
+    RUN_TEST(test_eventbus_publish_only_matching_type);
+    RUN_TEST(test_eventbus_multiple_subscribers_same_type);
+    RUN_TEST(test_eventbus_wildcard_receives_all);
+    RUN_TEST(test_eventbus_enqueue_and_flush);
+    RUN_TEST(test_eventbus_flush_fifo_order);
+    RUN_TEST(test_eventbus_enqueue_during_flush_deferred);
+    RUN_TEST(test_eventbus_total_published);
+    RUN_TEST(test_eventbus_reset);
+    RUN_TEST(test_eventbus_sender_id_and_str_param);
+    RUN_TEST(test_eventbus_no_subscribers_no_crash);
+    RUN_TEST(test_eventbus_unsubscribe_wildcard);
+
+    // Fleet Formation Panel
+    log.BeginSection("Fleet Formation Panel");
+    RUN_TEST(test_fmtn_defaults);
+    RUN_TEST(test_fmtn_set_formation_type);
+    RUN_TEST(test_fmtn_formation_type_names);
+    RUN_TEST(test_fmtn_set_fleet_size);
+    RUN_TEST(test_fmtn_fleet_size_clamped_low);
+    RUN_TEST(test_fmtn_fleet_size_clamped_high);
+    RUN_TEST(test_fmtn_set_spacing);
+    RUN_TEST(test_fmtn_spacing_clamped);
+    RUN_TEST(test_fmtn_commander_at_origin);
+    RUN_TEST(test_fmtn_arrow_offsets_nonzero);
+    RUN_TEST(test_fmtn_line_offsets_lateral);
+    RUN_TEST(test_fmtn_spread_circular);
+    RUN_TEST(test_fmtn_bounding_radius);
+    RUN_TEST(test_fmtn_centre_of_mass);
+    RUN_TEST(test_fmtn_select_slot);
+    RUN_TEST(test_fmtn_select_invalid_ignored);
+    RUN_TEST(test_fmtn_import_fleet);
+    RUN_TEST(test_fmtn_none_formation_no_offsets);
+    RUN_TEST(test_fmtn_spacing_affects_offsets);
+    RUN_TEST(test_fmtn_draw_does_not_crash);
+    RUN_TEST(test_fmtn_log_after_actions);
 
     // Live Scene Manager
     log.BeginSection("Live Scene Manager");
