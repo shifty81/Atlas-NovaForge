@@ -31,6 +31,8 @@ set(ATLAS_TEST_SOURCES
     test_live_scene.cpp
     test_sim_systems.cpp
     test_galaxy_map.cpp
+    test_eventbus.cpp
+    test_fleet_formation.cpp
     ${CMAKE_SOURCE_DIR}/editor/panels/ConsolePanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/tools/PCGPreviewPanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/tools/GenerationStylePanel.cpp
@@ -41,6 +43,7 @@ set(ATLAS_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/editor/tools/PCGOverrideStore.cpp
     ${CMAKE_SOURCE_DIR}/editor/tools/LiveSceneManager.cpp
     ${CMAKE_SOURCE_DIR}/editor/tools/GalaxyMapPanel.cpp
+    ${CMAKE_SOURCE_DIR}/editor/tools/FleetFormationPanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/ai/AIAggregator.cpp
     ${CMAKE_SOURCE_DIR}/editor/panels/ECSInspectorPanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/panels/NetInspectorPanel.cpp
