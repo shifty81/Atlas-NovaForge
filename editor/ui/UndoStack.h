@@ -68,7 +68,7 @@ public:
 
 private:
     std::vector<UndoAction> m_actions;
-    size_t m_undoIndex = 0;   ///< Points past the last undoable action
+    size_t m_undoIndex = 0;   ///< Number of executed (undoable) actions; equals the redo start position
     size_t m_maxDepth  = 64;
 };
 

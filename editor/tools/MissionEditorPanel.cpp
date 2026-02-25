@@ -128,7 +128,7 @@ void MissionEditorPanel::SetTypeFilter(const std::string& type) {
 }
 
 void MissionEditorPanel::SetLevelFilter(int level) {
-    m_levelFilter = std::max(0, std::min(level, 5));
+    m_levelFilter = std::max(0, std::min(level, kMaxMissionLevel));
 }
 
 size_t MissionEditorPanel::FilteredCount() const {
@@ -159,8 +159,8 @@ bool MissionEditorPanel::ValidateTemplate(const MissionTemplateEntry& entry,
         errorOut = "Mission type is empty";
         return false;
     }
-    if (entry.level < 1 || entry.level > 5) {
-        errorOut = "Level must be 1-5";
+    if (entry.level < 1 || entry.level > kMaxMissionLevel) {
+        errorOut = "Level must be 1-" + std::to_string(kMaxMissionLevel);
         return false;
     }
     if (entry.objectives.empty()) {
@@ -215,16 +215,39 @@ size_t MissionEditorPanel::ValidateAll() {
 
 // ── Export / Import ────────────────────────────────────────────────
 
+/** Escape a string for JSON output (handles quotes, backslashes, control chars). */
+static std::string jsonEscape(const std::string& s) {
+    std::string out;
+    out.reserve(s.size() + 4);
+    for (char c : s) {
+        switch (c) {
+        case '"':  out += "\\\""; break;
+        case '\\': out += "\\\\"; break;
+        case '\n': out += "\\n";  break;
+        case '\r': out += "\\r";  break;
+        case '\t': out += "\\t";  break;
+        default:
+            if (static_cast<unsigned char>(c) < 0x20) {
+                // Control character — skip
+            } else {
+                out += c;
+            }
+            break;
+        }
+    }
+    return out;
+}
+
 std::string MissionEditorPanel::ExportToJson() const {
     std::ostringstream os;
     os << "{ \"mission_templates\": [\n";
     for (size_t i = 0; i < m_templates.size(); ++i) {
         const auto& t = m_templates[i];
-        os << "  { \"template_id\": \"" << t.templateId << "\","
-           << " \"name_pattern\": \"" << t.namePattern << "\","
-           << " \"type\": \"" << t.type << "\","
+        os << "  { \"template_id\": \"" << jsonEscape(t.templateId) << "\","
+           << " \"name_pattern\": \"" << jsonEscape(t.namePattern) << "\","
+           << " \"type\": \"" << jsonEscape(t.type) << "\","
            << " \"level\": " << t.level << ","
-           << " \"faction\": \"" << t.faction << "\","
+           << " \"faction\": \"" << jsonEscape(t.faction) << "\","
            << " \"min_standing\": " << t.minStanding << ","
            << " \"base_isk\": " << t.baseIsk << ","
            << " \"isk_per_level\": " << t.iskPerLevel << ","
@@ -234,8 +257,8 @@ std::string MissionEditorPanel::ExportToJson() const {
            << " \"objectives\": [";
         for (size_t j = 0; j < t.objectives.size(); ++j) {
             const auto& o = t.objectives[j];
-            os << "{ \"type\": \"" << o.type << "\","
-               << " \"target\": \"" << o.target << "\","
+            os << "{ \"type\": \"" << jsonEscape(o.type) << "\","
+               << " \"target\": \"" << jsonEscape(o.target) << "\","
                << " \"count_min\": " << o.countMin << ","
                << " \"count_max\": " << o.countMax << " }";
             if (j + 1 < t.objectives.size()) os << ", ";

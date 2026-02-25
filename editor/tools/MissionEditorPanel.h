@@ -8,6 +8,9 @@
 
 namespace atlas::editor {
 
+/// Maximum mission level (1-based).
+static constexpr int kMaxMissionLevel = 5;
+
 /**
  * Represents a single mission template being authored in the editor.
  * Maps closely to the server-side MissionTemplate component but lives
