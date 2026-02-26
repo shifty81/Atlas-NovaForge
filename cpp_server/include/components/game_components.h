@@ -3503,6 +3503,25 @@ public:
     COMPONENT_TYPE(MythBossEncounter)
 };
 
+// ==================== Ancient Tech Upgrade State ====================
+
+/**
+ * @brief Tracks the upgrade process for ancient tech modules
+ * 
+ * Paired with AncientTechModule to track the upgrade from Repaired → Upgraded state,
+ * where modules gain rule-breaking stat bonuses exceeding modern limits.
+ */
+class AncientTechUpgradeState : public ecs::Component {
+public:
+    bool upgrading = false;
+    float upgrade_progress = 0.0f;
+    float upgrade_cost = 200.0f;    // Time units to complete upgrade
+    std::string bonus_type;          // e.g. "shield", "weapon", "engine"
+    float bonus_magnitude = 0.0f;    // Actual bonus value (computed on upgrade complete)
+
+    COMPONENT_TYPE(AncientTechUpgradeState)
+};
+
 } // namespace components
 } // namespace atlas
 
