@@ -211,34 +211,43 @@ bool KeybindManager::DeserializeFromJSON(const std::string& json) {
         Keybind kb;
 
         // action
-        size_t q1 = json.find('\"', json.find(':', pos) + 1);
-        size_t q2 = json.find('\"', q1 + 1);
+        size_t colon = json.find(':', pos);
+        if (colon == std::string::npos) break;
+        size_t q1 = json.find('\"', colon + 1);
+        size_t q2 = (q1 != std::string::npos) ? json.find('\"', q1 + 1) : std::string::npos;
         if (q1 == std::string::npos || q2 == std::string::npos) break;
         kb.action = json.substr(q1 + 1, q2 - q1 - 1);
 
         // category
         size_t catKey = json.find("\"category\"", pos);
         if (catKey != std::string::npos) {
-            size_t cq1 = json.find('\"', json.find(':', catKey) + 1);
-            size_t cq2 = json.find('\"', cq1 + 1);
-            if (cq1 != std::string::npos && cq2 != std::string::npos)
-                kb.category = json.substr(cq1 + 1, cq2 - cq1 - 1);
+            size_t cc = json.find(':', catKey);
+            if (cc != std::string::npos) {
+                size_t cq1 = json.find('\"', cc + 1);
+                size_t cq2 = (cq1 != std::string::npos) ? json.find('\"', cq1 + 1) : std::string::npos;
+                if (cq1 != std::string::npos && cq2 != std::string::npos)
+                    kb.category = json.substr(cq1 + 1, cq2 - cq1 - 1);
+            }
         }
 
         // key
         size_t keyKey = json.find("\"key\"", pos);
         if (keyKey != std::string::npos) {
             size_t kc = json.find(':', keyKey);
-            if (kc != std::string::npos)
-                kb.key = std::stoi(json.substr(kc + 1));
+            if (kc != std::string::npos) {
+                try { kb.key = std::stoi(json.substr(kc + 1)); }
+                catch (...) { /* keep default */ }
+            }
         }
 
         // mods
         size_t modKey = json.find("\"mods\"", pos);
         if (modKey != std::string::npos) {
             size_t mc = json.find(':', modKey);
-            if (mc != std::string::npos)
-                kb.mods = static_cast<KeyMod>(std::stoi(json.substr(mc + 1)));
+            if (mc != std::string::npos) {
+                try { kb.mods = static_cast<KeyMod>(std::stoi(json.substr(mc + 1))); }
+                catch (...) { /* keep default */ }
+            }
         }
 
         // enabled
@@ -247,7 +256,8 @@ bool KeybindManager::DeserializeFromJSON(const std::string& json) {
             size_t ec = json.find(':', enKey);
             if (ec != std::string::npos) {
                 size_t vs = json.find_first_not_of(" \t\n\r", ec + 1);
-                kb.enabled = (json.substr(vs, 4) == "true");
+                if (vs != std::string::npos && vs + 4 <= json.size())
+                    kb.enabled = (json.substr(vs, 4) == "true");
             }
         }
 
