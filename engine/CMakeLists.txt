@@ -19,6 +19,8 @@ add_library(AtlasEngine STATIC
     sim/AIWalletSystem.cpp
     sim/AITraderStateMachine.cpp
     sim/AIIndustrialistStateMachine.cpp
+    sim/AdvancedMissionGenerator.cpp
+    sim/UniverseMapSystem.cpp
     world/CubeSphereLayout.cpp
     world/VoxelGridLayout.cpp
 )
