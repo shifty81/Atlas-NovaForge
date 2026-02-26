@@ -26,6 +26,7 @@ endif()
 add_executable(AtlasEditor
     main.cpp
     ui/EditorLayout.cpp
+    ui/EditorMenuBar.cpp
     panels/ECSInspectorPanel.cpp
     panels/NetInspectorPanel.cpp
     panels/ConsolePanel.cpp

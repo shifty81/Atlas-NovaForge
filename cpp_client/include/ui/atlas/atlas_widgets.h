@@ -561,4 +561,45 @@ struct FleetBroadcast {
 void fleetBroadcastBanner(AtlasContext& ctx, const Rect& r,
                           const std::vector<FleetBroadcast>& broadcasts);
 
+// ── Menu Bar (Win32-style) ──────────────────────────────────────────
+
+/**
+ * A single item inside a dropdown menu.
+ */
+struct MenuItem {
+    std::string label;           ///< Display text (empty = separator)
+    bool        enabled = true;  ///< Greyed out when false
+    bool        checked = false; ///< Show a check mark when true
+};
+
+/**
+ * A top-level menu (e.g. "File", "View", "PCG Content").
+ */
+struct Menu {
+    std::string            label;  ///< Top-level label
+    std::vector<MenuItem>  items;  ///< Dropdown items
+};
+
+/**
+ * Persistent state for the menu bar (tracks which menu is open).
+ */
+struct MenuBarState {
+    int  openMenu = -1;  ///< Index of the currently open top-level menu (-1 = none)
+};
+
+/**
+ * Draw a Win32-style horizontal menu bar across the top of the window.
+ *
+ * Returns the index of the clicked menu item encoded as
+ * (menuIndex * 1000 + itemIndex), or -1 if nothing was clicked.
+ * This encoding supports up to 1000 items per menu.
+ *
+ * @param ctx     Context.
+ * @param r       Bounding rectangle for the menu bar (full width, ~22px tall).
+ * @param menus   List of top-level menus with their dropdown items.
+ * @param state   Persistent state tracking which menu is open.
+ */
+int menuBar(AtlasContext& ctx, const Rect& r,
+            const std::vector<Menu>& menus, MenuBarState& state);
+
 } // namespace atlas

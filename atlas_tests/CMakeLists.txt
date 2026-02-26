@@ -50,6 +50,7 @@ set(ATLAS_TEST_SOURCES
     test_ai_profile.cpp
     test_economy_rules.cpp
     test_engine_frame_callback.cpp
+    test_editor_menubar.cpp
     ${CMAKE_SOURCE_DIR}/editor/panels/ConsolePanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/tools/PCGPreviewPanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/tools/GenerationStylePanel.cpp
@@ -70,6 +71,7 @@ set(ATLAS_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/editor/panels/ECSInspectorPanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/panels/NetInspectorPanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/ui/EditorLayout.cpp
+    ${CMAKE_SOURCE_DIR}/editor/ui/EditorMenuBar.cpp
     ${CMAKE_SOURCE_DIR}/cpp_client/src/ui/atlas/atlas_renderer.cpp
     ${CMAKE_SOURCE_DIR}/cpp_client/src/ui/atlas/atlas_context.cpp
     ${CMAKE_SOURCE_DIR}/cpp_client/src/ui/atlas/atlas_widgets.cpp

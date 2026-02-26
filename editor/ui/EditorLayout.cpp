@@ -8,15 +8,27 @@ namespace atlas::editor {
 
 void EditorLayout::RegisterPanel(EditorPanel* panel) {
     m_panels.push_back(panel);
+    m_menuBar.RegisterPanel(panel);
 }
 
 void EditorLayout::SetContext(atlas::AtlasContext* ctx) {
+    m_ctx = ctx;
     for (auto* panel : m_panels) {
         if (panel) panel->SetContext(ctx);
     }
 }
 
 void EditorLayout::Draw() {
+    // Draw the menu bar at the top of the editor window.
+    // The menu bar consumes MenuBarHeight pixels from the top; dock panels
+    // render below it.  In headless mode (no context) this still returns
+    // the height so tests can verify the offset.
+    float windowW = 1600.0f;
+    if (m_ctx) {
+        windowW = static_cast<float>(m_ctx->input().windowW);
+    }
+    m_menuBar.Draw(m_ctx, windowW);
+
     DrawNode(m_root);
 }
 
