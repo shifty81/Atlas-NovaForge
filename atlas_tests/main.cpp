@@ -768,6 +768,54 @@ void test_industrialist_count_in_state();
 void test_industrialist_market_distance();
 void test_industrialist_multiple();
 
+// Advanced Mission Generator tests
+void test_mission_gen_defaults();
+void test_mission_gen_install_defaults();
+void test_mission_gen_add_template();
+void test_mission_gen_add_duplicate_rejected();
+void test_mission_gen_remove_template();
+void test_mission_gen_remove_nonexistent();
+void test_mission_gen_get_by_category();
+void test_mission_gen_generate_for_system();
+void test_mission_gen_generate_empty_templates();
+void test_mission_gen_generate_zero_count();
+void test_mission_gen_from_template();
+void test_mission_gen_from_nonexistent_template();
+void test_mission_gen_difficulty_scaling();
+void test_mission_gen_reward_scaling();
+void test_mission_gen_branching();
+void test_mission_gen_no_branching();
+void test_mission_gen_level_filtering();
+void test_mission_gen_deterministic();
+void test_mission_gen_unique_ids();
+void test_mission_gen_time_limit();
+void test_mission_gen_standing_reward();
+
+// Universe Map System tests
+void test_universe_defaults();
+void test_universe_add_system();
+void test_universe_add_duplicate_rejected();
+void test_universe_remove_system();
+void test_universe_remove_nonexistent();
+void test_universe_add_gate();
+void test_universe_add_gate_duplicate_rejected();
+void test_universe_add_gate_self_rejected();
+void test_universe_add_gate_missing_system();
+void test_universe_remove_gate();
+void test_universe_remove_gate_nonexistent();
+void test_universe_route_direct();
+void test_universe_route_multi_hop();
+void test_universe_route_no_path();
+void test_universe_route_same_system();
+void test_universe_route_by_distance();
+void test_universe_safe_route();
+void test_universe_safe_route_no_path();
+void test_universe_security_classification();
+void test_universe_travel_time();
+void test_universe_travel_time_empty();
+void test_universe_systems_by_security();
+void test_universe_neighbours_nonexistent();
+
 int main(int argc, char* argv[]) {
     std::string logPath;
     for (int i = 1; i < argc; ++i) {
@@ -1605,6 +1653,56 @@ int main(int argc, char* argv[]) {
     RUN_TEST(test_industrialist_count_in_state);
     RUN_TEST(test_industrialist_market_distance);
     RUN_TEST(test_industrialist_multiple);
+
+    // Advanced Mission Generator
+    log.BeginSection("Advanced Mission Generator");
+    RUN_TEST(test_mission_gen_defaults);
+    RUN_TEST(test_mission_gen_install_defaults);
+    RUN_TEST(test_mission_gen_add_template);
+    RUN_TEST(test_mission_gen_add_duplicate_rejected);
+    RUN_TEST(test_mission_gen_remove_template);
+    RUN_TEST(test_mission_gen_remove_nonexistent);
+    RUN_TEST(test_mission_gen_get_by_category);
+    RUN_TEST(test_mission_gen_generate_for_system);
+    RUN_TEST(test_mission_gen_generate_empty_templates);
+    RUN_TEST(test_mission_gen_generate_zero_count);
+    RUN_TEST(test_mission_gen_from_template);
+    RUN_TEST(test_mission_gen_from_nonexistent_template);
+    RUN_TEST(test_mission_gen_difficulty_scaling);
+    RUN_TEST(test_mission_gen_reward_scaling);
+    RUN_TEST(test_mission_gen_branching);
+    RUN_TEST(test_mission_gen_no_branching);
+    RUN_TEST(test_mission_gen_level_filtering);
+    RUN_TEST(test_mission_gen_deterministic);
+    RUN_TEST(test_mission_gen_unique_ids);
+    RUN_TEST(test_mission_gen_time_limit);
+    RUN_TEST(test_mission_gen_standing_reward);
+
+    // Universe Map System
+    log.BeginSection("Universe Map System");
+    RUN_TEST(test_universe_defaults);
+    RUN_TEST(test_universe_add_system);
+    RUN_TEST(test_universe_add_duplicate_rejected);
+    RUN_TEST(test_universe_remove_system);
+    RUN_TEST(test_universe_remove_nonexistent);
+    RUN_TEST(test_universe_add_gate);
+    RUN_TEST(test_universe_add_gate_duplicate_rejected);
+    RUN_TEST(test_universe_add_gate_self_rejected);
+    RUN_TEST(test_universe_add_gate_missing_system);
+    RUN_TEST(test_universe_remove_gate);
+    RUN_TEST(test_universe_remove_gate_nonexistent);
+    RUN_TEST(test_universe_route_direct);
+    RUN_TEST(test_universe_route_multi_hop);
+    RUN_TEST(test_universe_route_no_path);
+    RUN_TEST(test_universe_route_same_system);
+    RUN_TEST(test_universe_route_by_distance);
+    RUN_TEST(test_universe_safe_route);
+    RUN_TEST(test_universe_safe_route_no_path);
+    RUN_TEST(test_universe_security_classification);
+    RUN_TEST(test_universe_travel_time);
+    RUN_TEST(test_universe_travel_time_empty);
+    RUN_TEST(test_universe_systems_by_security);
+    RUN_TEST(test_universe_neighbours_nonexistent);
 
     if (!logPath.empty()) {
         log.WriteLogFile(logPath);

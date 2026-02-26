@@ -164,8 +164,8 @@ Data-driven modding without code injection:
 7. 🔄 Ship HUD (control ring, module rack, brackets)
 8. 🔄 AI economic actors (miners, haulers, traders) — AI mining behavior complete
 9. 🔄 Full economy simulation — Refining system complete, market pricing validated
-10. ⬜ Advanced mission generation
-11. ⬜ Universe map & travel
+10. 🔄 Advanced mission generation
+11. 🔄 Universe map & travel
 12. ⬜ Polish & modding tools
 
 ### C++ Server Systems Status
@@ -211,7 +211,9 @@ Data-driven modding without code injection:
 | WarDeclarationSystem | ✅ Complete | 16 assertions |
 | AITraderStateMachine | ✅ Complete | 18 assertions |
 | AIIndustrialistStateMachine | ✅ Complete | 16 assertions |
-| **Total** | **43 systems** | **2082 assertions** |
+| AdvancedMissionGenerator | ✅ Complete | 21 assertions |
+| UniverseMapSystem | ✅ Complete | 23 assertions |
+| **Total** | **45 systems** | **2126 assertions** |
 
 ### Data Loaders Status
 
