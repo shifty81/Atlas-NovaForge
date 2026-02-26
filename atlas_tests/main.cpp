@@ -890,6 +890,20 @@ void test_layout_file_roundtrip();
 void test_layout_load_nonexistent_file();
 void test_layout_roundtrip_nested();
 
+// EditorMenuBar tests
+void test_menubar_empty();
+void test_menubar_file_menu_items();
+void test_menubar_view_menu_lists_panels();
+void test_menubar_pcg_menu_filters_panels();
+void test_menubar_no_pcg_menu_if_no_pcg_panels();
+void test_menubar_view_checked_state();
+void test_menubar_draw_returns_height();
+void test_menubar_initial_state();
+void test_menu_item_defaults();
+void test_menu_bar_state_defaults();
+void test_layout_menubar_panels_registered();
+void test_layout_draw_with_menubar();
+
 int main(int argc, char* argv[]) {
     std::string logPath;
     for (int i = 1; i < argc; ++i) {
@@ -1853,6 +1867,21 @@ int main(int argc, char* argv[]) {
     RUN_TEST(test_layout_file_roundtrip);
     RUN_TEST(test_layout_load_nonexistent_file);
     RUN_TEST(test_layout_roundtrip_nested);
+
+    // EditorMenuBar
+    log.BeginSection("EditorMenuBar");
+    RUN_TEST(test_menubar_empty);
+    RUN_TEST(test_menubar_file_menu_items);
+    RUN_TEST(test_menubar_view_menu_lists_panels);
+    RUN_TEST(test_menubar_pcg_menu_filters_panels);
+    RUN_TEST(test_menubar_no_pcg_menu_if_no_pcg_panels);
+    RUN_TEST(test_menubar_view_checked_state);
+    RUN_TEST(test_menubar_draw_returns_height);
+    RUN_TEST(test_menubar_initial_state);
+    RUN_TEST(test_menu_item_defaults);
+    RUN_TEST(test_menu_bar_state_defaults);
+    RUN_TEST(test_layout_menubar_panels_registered);
+    RUN_TEST(test_layout_draw_with_menubar);
 
     if (!logPath.empty()) {
         log.WriteLogFile(logPath);

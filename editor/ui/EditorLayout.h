@@ -1,5 +1,6 @@
 #pragma once
 #include "DockNode.h"
+#include "EditorMenuBar.h"
 #include <vector>
 #include <memory>
 #include <string>
@@ -25,6 +26,10 @@ public:
     DockNode& Root() { return m_root; }
     const std::vector<EditorPanel*>& Panels() const { return m_panels; }
 
+    /** Access the menu bar for wiring up callbacks. */
+    EditorMenuBar& MenuBar() { return m_menuBar; }
+    const EditorMenuBar& MenuBar() const { return m_menuBar; }
+
     // ── Persistence ──────────────────────────────────────────────
 
     /** Serialise the dock layout tree to a JSON string. */
@@ -43,6 +48,8 @@ public:
 private:
     DockNode m_root;
     std::vector<EditorPanel*> m_panels;
+    atlas::AtlasContext* m_ctx = nullptr;
+    EditorMenuBar m_menuBar;
 
     static void DrawNode(DockNode& node);
     std::string serializeNode(const DockNode& node, int indent) const;

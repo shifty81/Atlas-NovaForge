@@ -171,6 +171,28 @@ int main() {
               << "Asset Style, Ship Archetype, ECS Inspector, Net Inspector, "
               << "Console, Game Packager, Live Scene Manager" << std::endl;
 
+    // ── Build editor menu bar ────────────────────────────────────
+    layout.MenuBar().Build();
+
+    // Wire menu bar callbacks
+    layout.MenuBar().onSaveLayout = [&layout]() {
+        layout.SaveToFile("data/editor_layout.json");
+        std::cout << "[Editor] Layout saved" << std::endl;
+    };
+    layout.MenuBar().onLoadLayout = [&layout]() {
+        layout.LoadFromFile("data/editor_layout.json");
+        std::cout << "[Editor] Layout loaded" << std::endl;
+    };
+    layout.MenuBar().onExit = [&engine]() {
+        engine.Shutdown();
+    };
+    layout.MenuBar().onPCGContentSelected = [](const std::string& name) {
+        std::cout << "[Editor] PCG panel toggled: " << name << std::endl;
+    };
+
+    std::cout << "[Editor] Menu bar initialized with "
+              << layout.MenuBar().Menus().size() << " menus" << std::endl;
+
     // ── Atlas UI context for editor panels ────────────────────
     // Create the editor window (GLFW + OpenGL context) before UI init
     atlas::Window window("Atlas Editor", 1600, 900);
