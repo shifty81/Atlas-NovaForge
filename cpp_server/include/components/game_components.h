@@ -3522,6 +3522,56 @@ public:
     COMPONENT_TYPE(AncientTechUpgradeState)
 };
 
+// ==================== Mod Registry ====================
+
+/**
+ * @brief Registry of installed mod manifests
+ * 
+ * Stores all registered mod manifests with their metadata, dependencies,
+ * and enabled/disabled state. Used by ModManifestSystem for validation
+ * and load ordering.
+ */
+class ModRegistry : public ecs::Component {
+public:
+    struct ModInfo {
+        std::string mod_id;
+        std::string name;
+        std::string version;
+        std::string author;
+        std::vector<std::string> dependencies;
+        bool enabled = true;
+    };
+
+    std::vector<ModInfo> mods;
+    int max_mods = 50;
+
+    ModInfo* findMod(const std::string& mod_id) {
+        for (auto& m : mods) {
+            if (m.mod_id == mod_id) return &m;
+        }
+        return nullptr;
+    }
+
+    const ModInfo* findMod(const std::string& mod_id) const {
+        for (const auto& m : mods) {
+            if (m.mod_id == mod_id) return &m;
+        }
+        return nullptr;
+    }
+
+    bool removeMod(const std::string& mod_id) {
+        for (auto it = mods.begin(); it != mods.end(); ++it) {
+            if (it->mod_id == mod_id) {
+                mods.erase(it);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    COMPONENT_TYPE(ModRegistry)
+};
+
 } // namespace components
 } // namespace atlas
 

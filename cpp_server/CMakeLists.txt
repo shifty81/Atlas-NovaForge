@@ -146,6 +146,7 @@ set(SERVER_SOURCES
     src/systems/rest_station_system.cpp
     src/systems/myth_boss_system.cpp
     src/systems/ancient_tech_upgrade_system.cpp
+    src/systems/mod_manifest_system.cpp
     src/data/ship_database.cpp
     src/data/npc_database.cpp
     src/data/wormhole_database.cpp
@@ -306,6 +307,7 @@ set(SERVER_HEADERS
     include/systems/rest_station_system.h
     include/systems/myth_boss_system.h
     include/systems/ancient_tech_upgrade_system.h
+    include/systems/mod_manifest_system.h
     include/data/ship_database.h
     include/data/npc_database.h
     include/data/wormhole_database.h
@@ -535,6 +537,7 @@ if(BUILD_TESTS)
         src/systems/rest_station_system.cpp
         src/systems/myth_boss_system.cpp
         src/systems/ancient_tech_upgrade_system.cpp
+        src/systems/mod_manifest_system.cpp
         src/data/world_persistence.cpp
         src/utils/logger.cpp
         src/utils/server_metrics.cpp
