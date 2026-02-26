@@ -1,3 +1,6 @@
+# OpenGL (required by atlas_renderer.cpp when not in headless mode)
+find_package(OpenGL REQUIRED)
+
 # GLM (header-only, required by character_mesh_system.h)
 find_package(glm QUIET)
 if(NOT glm_FOUND)
@@ -58,7 +61,7 @@ add_executable(AtlasEditor
     ${CMAKE_SOURCE_DIR}/cpp_client/src/ui/atlas/atlas_widgets.cpp
 )
 
-target_link_libraries(AtlasEditor AtlasEngine)
+target_link_libraries(AtlasEditor AtlasEngine OpenGL::GL)
 
 if(glm_FOUND)
     target_link_libraries(AtlasEditor glm::glm)
