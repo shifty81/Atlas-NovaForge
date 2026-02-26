@@ -4,11 +4,17 @@ REM Generates Visual Studio solution and builds the project
 
 setlocal
 
-REM --- Logging Setup ---
+REM --- Resolve project root (parent of scripts/) ---
 set "SCRIPT_DIR=%~dp0"
-if not exist "%SCRIPT_DIR%logs" mkdir "%SCRIPT_DIR%logs"
+set "PROJECT_ROOT=%SCRIPT_DIR%.."
+pushd "%PROJECT_ROOT%"
+set "PROJECT_ROOT=%CD%"
+popd
+
+REM --- Logging Setup ---
+if not exist "%PROJECT_ROOT%\logs" mkdir "%PROJECT_ROOT%\logs"
 for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value') do set "datetime=%%I"
-set "LOG_FILE=%SCRIPT_DIR%logs\build_vs_%datetime:~0,8%_%datetime:~8,6%.log"
+set "LOG_FILE=%PROJECT_ROOT%\logs\build_vs_%datetime:~0,8%_%datetime:~8,6%.log"
 echo Build log will be saved to: %LOG_FILE%
 call :main %* > "%LOG_FILE%" 2>&1
 set "EXIT_CODE=%ERRORLEVEL%"
@@ -86,7 +92,7 @@ echo Build Type: %BUILD_TYPE%
 echo.
 
 REM Navigate to cpp_client directory
-cd /d "%~dp0cpp_client"
+cd /d "%PROJECT_ROOT%\cpp_client"
 
 REM Clean build if requested
 if %CLEAN_BUILD% EQU 1 (
