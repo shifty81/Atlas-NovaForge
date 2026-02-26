@@ -19838,10 +19838,10 @@ void testModManifestLoadOrder() {
     assertTrue(order.size() == 3, "All 3 mods in load order");
     // foundation must come before graphics and gameplay
     int foundIdx = -1, gfxIdx = -1, gameIdx = -1;
-    for (int i = 0; i < static_cast<int>(order.size()); i++) {
-        if (order[i] == "foundation") foundIdx = i;
-        if (order[i] == "graphics") gfxIdx = i;
-        if (order[i] == "gameplay") gameIdx = i;
+    for (size_t i = 0; i < order.size(); i++) {
+        if (order[i] == "foundation") foundIdx = static_cast<int>(i);
+        if (order[i] == "graphics") gfxIdx = static_cast<int>(i);
+        if (order[i] == "gameplay") gameIdx = static_cast<int>(i);
     }
     assertTrue(foundIdx < gfxIdx, "Foundation loads before Graphics");
     assertTrue(foundIdx < gameIdx, "Foundation loads before Gameplay");

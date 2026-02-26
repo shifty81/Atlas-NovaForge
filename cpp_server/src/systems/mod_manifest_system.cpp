@@ -112,7 +112,7 @@ std::vector<std::string> ModManifestSystem::getLoadOrder() const {
             in_degree[mod.mod_id] = 0;
         }
         for (const auto& dep : mod.dependencies) {
-            if (all_ids.find(dep) != all_ids.end() || reg->findMod(dep)) {
+            if (reg->findMod(dep)) {
                 dependents[dep].push_back(mod.mod_id);
                 in_degree[mod.mod_id]++;
             }
