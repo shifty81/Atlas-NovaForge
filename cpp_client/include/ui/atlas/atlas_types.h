@@ -142,6 +142,20 @@ struct Theme {
     float padding            = 8.0f;
     float rowHeight          = 18.0f;    // data list row height
     float selectionBarWidth  = 2.0f;     // thin left selection indicator
+    /** Apply a DPI scale factor to all metric/spacing values.
+     *  Call once at startup — calling multiple times will compound scaling. */
+    void applyDpiScale(float scale) {
+        headerHeight      *= scale;
+        scrollbarWidth    *= scale;
+        itemSpacing       *= scale;
+        padding           *= scale;
+        rowHeight         *= scale;
+        selectionBarWidth *= scale;
+        borderWidth       *= scale;
+    }
+
+    // ── Font scale (applied to text rendering) ──────────────────────
+    float fontScale = 1.0f;
 };
 
 /** Global default theme. */

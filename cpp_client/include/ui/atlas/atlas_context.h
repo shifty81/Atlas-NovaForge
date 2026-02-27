@@ -78,6 +78,11 @@ public:
 
     void setTheme(const Theme& t) { m_theme = t; }
 
+    /** Load a theme from a JSON file (e.g. novaforge_dark_theme.json).
+     *  Applies spacing/metric values from the JSON to the current theme.
+     *  Returns true on success. */
+    bool loadThemeFromFile(const std::string& path);
+
     // ── Interaction helpers ─────────────────────────────────────────
 
     /** Test whether the mouse is inside a rectangle this frame. */

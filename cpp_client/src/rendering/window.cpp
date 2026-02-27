@@ -103,6 +103,14 @@ void Window::swapBuffers() {
     glfwSwapBuffers(m_window);
 }
 
+float Window::getContentScale() const {
+    float xscale = 1.0f, yscale = 1.0f;
+    if (m_window) {
+        glfwGetWindowContentScale(m_window, &xscale, &yscale);
+    }
+    return xscale > yscale ? xscale : yscale;
+}
+
 void Window::keyCallbackStatic(GLFWwindow* window, int key, int scancode, int action, int mods) {
     Window* instance = static_cast<Window*>(glfwGetWindowUserPointer(window));
     if (instance && instance->m_keyCallback) {

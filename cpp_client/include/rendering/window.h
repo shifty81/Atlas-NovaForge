@@ -56,6 +56,12 @@ public:
     float getAspectRatio() const { return static_cast<float>(m_width) / static_cast<float>(m_height); }
 
     /**
+     * Get the DPI content scale factor reported by the platform.
+     * Returns 1.0 on standard-DPI displays, >1.0 on high-DPI (Retina, etc.).
+     */
+    float getContentScale() const;
+
+    /**
      * Set callbacks
      */
     void setKeyCallback(KeyCallback callback) { m_keyCallback = callback; }
