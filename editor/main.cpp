@@ -23,8 +23,12 @@
 #include <GL/glew.h>
 #include <iostream>
 #include <memory>
+#include <filesystem>
 
 int main() {
+    // ── Log working directory for diagnostics ────────────────────
+    std::cout << "[Editor] Working directory: "
+              << std::filesystem::current_path().string() << std::endl;
     atlas::EngineConfig cfg;
     cfg.mode = atlas::EngineMode::Editor;
 
@@ -199,6 +203,28 @@ int main() {
 
     atlas::AtlasContext uiContext;
     uiContext.init();
+
+    // ── Load theme from JSON ─────────────────────────────────────
+    const std::string themePath = "data/ui/novaforge_dark_theme.json";
+    if (uiContext.loadThemeFromFile(themePath)) {
+        std::cout << "[Editor] Theme loaded from " << themePath << std::endl;
+    } else {
+        std::cout << "[Editor] WARNING: Could not load theme from "
+                  << themePath << " — using defaults" << std::endl;
+    }
+
+    // ── Apply DPI scaling ────────────────────────────────────────
+    float dpiScale = window.getContentScale();
+    if (dpiScale > 1.0f) {
+        atlas::Theme t = uiContext.theme();
+        t.applyDpiScale(dpiScale);
+        t.fontScale = dpiScale;
+        uiContext.setTheme(t);
+        std::cout << "[Editor] DPI scale: " << dpiScale << "x" << std::endl;
+    } else {
+        std::cout << "[Editor] DPI scale: 1.0x (standard)" << std::endl;
+    }
+
     layout.SetContext(&uiContext);
 
     std::cout << "[Editor] Atlas UI context initialized for "
@@ -231,7 +257,13 @@ int main() {
               << "then save overrides for the client" << std::endl;
 
     // ── Load saved dock layout (if any) ──────────────────────────
-    layout.LoadFromFile("data/editor_layout.json");
+    if (layout.LoadFromFile("data/editor_layout.json")) {
+        std::cout << "[Editor] Dock layout loaded from data/editor_layout.json"
+                  << std::endl;
+    } else {
+        std::cout << "[Editor] No saved layout found at data/editor_layout.json"
+                  << " — using built-in default layout" << std::endl;
+    }
 
     // ── Per-frame callback: UI drawing, hot-reload, keybinds ────
     engine.SetFrameCallback([&](float /*dt*/) {

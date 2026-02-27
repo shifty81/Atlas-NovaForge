@@ -40,7 +40,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential cmake
+        sudo apt-get install -y build-essential cmake libgl-dev libglfw3-dev libglew-dev libglm-dev
 
     - name: Configure CMake (engine + editor + tests)
       run: |

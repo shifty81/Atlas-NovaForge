@@ -11,6 +11,7 @@
 #include "../engine/core/Engine.h"
 #include "../editor/ui/EditorLayout.h"
 #include "../editor/ui/EditorPanel.h"
+#include "../cpp_client/include/ui/atlas/atlas_context.h"
 
 using namespace atlas;
 using namespace atlas::editor;
@@ -375,4 +376,49 @@ void test_layout_roundtrip_nested() {
     assert(layout.Root().a->b->tabs[1] == &ecs);
     assert(layout.Root().a->b->activeTab == 1);
     assert(layout.Root().b->panel == &net);
+}
+
+// ── Theme loading tests ──────────────────────────────────────────
+
+void test_theme_load_from_file() {
+    atlas::AtlasContext ctx;
+    // The novaforge_dark_theme.json lives in the project root's data/ui/
+    bool ok = ctx.loadThemeFromFile("data/ui/novaforge_dark_theme.json");
+    assert(ok);
+    // After loading, spacing values should match the JSON
+    assert(std::fabs(ctx.theme().rowHeight - 18.0f) < 0.1f);
+    assert(std::fabs(ctx.theme().headerHeight - 22.0f) < 0.1f);
+    assert(std::fabs(ctx.theme().borderWidth - 1.0f) < 0.1f);
+    assert(std::fabs(ctx.theme().panelCornerRadius - 0.0f) < 0.1f);
+}
+
+void test_theme_load_nonexistent_file() {
+    atlas::AtlasContext ctx;
+    bool ok = ctx.loadThemeFromFile("nonexistent_theme.json");
+    assert(!ok);
+    // Theme should remain at defaults
+    assert(std::fabs(ctx.theme().rowHeight - 18.0f) < 0.1f);
+}
+
+void test_theme_dpi_scale() {
+    atlas::Theme t;
+    float origRow = t.rowHeight;
+    float origHeader = t.headerHeight;
+    float origPadding = t.padding;
+    t.applyDpiScale(2.0f);
+    assert(std::fabs(t.rowHeight - origRow * 2.0f) < 0.1f);
+    assert(std::fabs(t.headerHeight - origHeader * 2.0f) < 0.1f);
+    assert(std::fabs(t.padding - origPadding * 2.0f) < 0.1f);
+}
+
+void test_theme_dpi_scale_identity() {
+    atlas::Theme t;
+    float origRow = t.rowHeight;
+    t.applyDpiScale(1.0f);
+    assert(std::fabs(t.rowHeight - origRow) < 0.001f);
+}
+
+void test_theme_font_scale_default() {
+    atlas::Theme t;
+    assert(std::fabs(t.fontScale - 1.0f) < 0.001f);
 }

@@ -890,6 +890,13 @@ void test_layout_file_roundtrip();
 void test_layout_load_nonexistent_file();
 void test_layout_roundtrip_nested();
 
+// Theme loading tests
+void test_theme_load_from_file();
+void test_theme_load_nonexistent_file();
+void test_theme_dpi_scale();
+void test_theme_dpi_scale_identity();
+void test_theme_font_scale_default();
+
 // EditorMenuBar tests
 void test_menubar_empty();
 void test_menubar_file_menu_items();
@@ -1867,6 +1874,14 @@ int main(int argc, char* argv[]) {
     RUN_TEST(test_layout_file_roundtrip);
     RUN_TEST(test_layout_load_nonexistent_file);
     RUN_TEST(test_layout_roundtrip_nested);
+
+    // Theme loading
+    log.BeginSection("Theme Loading");
+    RUN_TEST(test_theme_load_from_file);
+    RUN_TEST(test_theme_load_nonexistent_file);
+    RUN_TEST(test_theme_dpi_scale);
+    RUN_TEST(test_theme_dpi_scale_identity);
+    RUN_TEST(test_theme_font_scale_default);
 
     // EditorMenuBar
     log.BeginSection("EditorMenuBar");
