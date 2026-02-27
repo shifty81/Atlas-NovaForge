@@ -22,6 +22,7 @@
 #include "ui/input_handler.h"
 #include "rendering/window.h"
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
 #include <memory>
 #include <filesystem>
@@ -244,12 +245,11 @@ int main() {
     });
     window.setKeyCallback([&inputHandler, &keybinds](int key, int /*scancode*/, int action, int mods) {
         inputHandler.handleKey(key, action, mods);
-        // Dispatch editor keybinds on key press (GLFW action 1 = PRESS)
-        if (action == 1) {
+        if (action == GLFW_PRESS) {
             atlas::editor::KeyMod km = atlas::editor::KeyMod::None;
-            if (mods & 0x0002) km = km | atlas::editor::KeyMod::Ctrl;
-            if (mods & 0x0001) km = km | atlas::editor::KeyMod::Shift;
-            if (mods & 0x0004) km = km | atlas::editor::KeyMod::Alt;
+            if (mods & GLFW_MOD_CONTROL) km = km | atlas::editor::KeyMod::Ctrl;
+            if (mods & GLFW_MOD_SHIFT)   km = km | atlas::editor::KeyMod::Shift;
+            if (mods & GLFW_MOD_ALT)     km = km | atlas::editor::KeyMod::Alt;
             keybinds.HandleKeyPress(key, km);
         }
     });
