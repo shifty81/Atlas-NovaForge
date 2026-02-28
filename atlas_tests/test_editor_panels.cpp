@@ -587,8 +587,14 @@ void test_undo_viewport_transform() {
 
     undoStack.PushAction({
         "Translate object",
-        [&viewport, objId, dx, dy, dz]() { viewport.TranslateSelected(-dx, -dy, -dz); },
-        [&viewport, objId, dx, dy, dz]() { viewport.TranslateSelected(dx, dy, dz); }
+        [&viewport, objId, dx, dy, dz]() {
+            viewport.SelectObject(objId);
+            viewport.TranslateSelected(-dx, -dy, -dz);
+        },
+        [&viewport, objId, dx, dy, dz]() {
+            viewport.SelectObject(objId);
+            viewport.TranslateSelected(dx, dy, dz);
+        }
     });
 
     // Undo should revert
