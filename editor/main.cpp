@@ -132,6 +132,16 @@ int main() {
         // Delete selected ECS entity
         else if (ecsInspector.SelectedEntity() != 0) {
             atlas::ecs::EntityID eid = ecsInspector.SelectedEntity();
+            undoStack.PushAction({
+                "Delete entity " + std::to_string(eid),
+                [&ecsInspector, eid]() {
+                    // Undo: entity already destroyed, can only clear selection
+                    ecsInspector.ClearSelection();
+                },
+                [&ecsInspector]() {
+                    ecsInspector.DestroySelectedEntity();
+                }
+            });
             console.AddLine("[Delete] Entity " + std::to_string(eid));
             ecsInspector.DestroySelectedEntity();
         }
@@ -140,6 +150,19 @@ int main() {
             uint32_t nid = sceneGraph.SelectedNode();
             const auto* node = sceneGraph.GetNode(nid);
             std::string nodeName = node ? node->name : std::to_string(nid);
+            std::string nodeType = node ? node->type : "Entity";
+            uint32_t parentId = node ? node->parentId : 0;
+            undoStack.PushAction({
+                "Delete node '" + nodeName + "'",
+                [&sceneGraph, nodeName, nodeType, parentId]() {
+                    // Undo: re-add the node (new id, same name/type/parent)
+                    sceneGraph.AddNode(nodeName, nodeType, parentId);
+                },
+                [&sceneGraph]() {
+                    if (sceneGraph.SelectedNode() != 0)
+                        sceneGraph.RemoveNode(sceneGraph.SelectedNode());
+                }
+            });
             sceneGraph.RemoveNode(nid);
             console.AddLine("[Delete] Scene node '" + nodeName + "'");
         }
