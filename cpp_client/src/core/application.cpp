@@ -44,7 +44,7 @@ Application::Application(const std::string& title, int width, int height)
     m_renderer = std::make_unique<Renderer>();
     m_gameClient = std::make_unique<GameClient>();
     m_inputHandler = std::make_unique<InputHandler>();
-    m_camera = std::make_unique<Camera>(45.0f, static_cast<float>(width) / height, 0.1f, 10000.0f);
+    m_camera = std::make_unique<Camera>(DEFAULT_CAMERA_FOV, static_cast<float>(width) / height, DEFAULT_CAMERA_NEAR_PLANE, DEFAULT_CAMERA_FAR_PLANE);
     m_embeddedServer = std::make_unique<EmbeddedServer>();
     m_sessionManager = std::make_unique<SessionManager>();
     m_entityPicker = std::make_unique<UI::EntityPicker>();
@@ -299,8 +299,8 @@ void Application::initialize() {
     }
     
     // Set initial camera to orbit around player
-    m_camera->setDistance(200.0f);
-    m_camera->rotate(45.0f, 0.0f);
+    m_camera->setDistance(DEFAULT_CAMERA_DISTANCE);
+    m_camera->rotate(DEFAULT_CAMERA_PITCH, 0.0f);
     
     std::cout << "Application initialized successfully" << std::endl;
 }
@@ -430,10 +430,10 @@ void Application::setupUICallbacks() {
                 commandApproach(entityId);
                 break;
             case UI::RadialMenu::Action::ORBIT:
-                commandOrbit(entityId, 500.0f);  // Default orbit distance
+                commandOrbit(entityId, DEFAULT_ORBIT_DISTANCE);  // Default orbit distance
                 break;
             case UI::RadialMenu::Action::KEEP_AT_RANGE:
-                commandKeepAtRange(entityId, 2500.0f);  // Default range
+                commandKeepAtRange(entityId, DEFAULT_KEEP_AT_RANGE);  // Default range
                 break;
             case UI::RadialMenu::Action::WARP_TO:
                 commandWarpTo(entityId);
