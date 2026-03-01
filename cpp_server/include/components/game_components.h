@@ -4281,6 +4281,83 @@ public:
     COMPONENT_TYPE(EnvironmentalHazard)
 };
 
+// ==================== FPS Objective ====================
+
+/**
+ * @brief On-foot mission objective for FPS gameplay
+ *
+ * Tracks progress on boarding actions, rescue, sabotage, defense,
+ * and other objectives that occur while a player is on foot inside
+ * a ship or station.
+ */
+class FPSObjective : public ecs::Component {
+public:
+    enum class ObjectiveType {
+        EliminateHostiles = 0,   // Kill all enemies in the area
+        RescueVIP = 1,           // Escort/find a VIP NPC
+        Sabotage = 2,            // Destroy or disable a target object
+        DefendPoint = 3,         // Hold a position for a duration
+        RetrieveItem = 4,        // Find and pick up an item
+        RepairSystem = 5,        // Fix a broken system (ties to EnvironmentalHazard)
+        Escape = 6               // Reach an extraction point
+    };
+
+    enum class ObjectiveState {
+        Inactive = 0,
+        Active = 1,
+        Completed = 2,
+        Failed = 3
+    };
+
+    std::string objective_id;
+    std::string interior_id;       // Which ship/station interior
+    std::string room_id;           // Target room (if applicable)
+    std::string assigned_player;   // Player this objective belongs to
+
+    int objective_type = 0;        // ObjectiveType as int
+    int state = 0;                 // ObjectiveState as int
+
+    std::string description;       // Human-readable description
+
+    // Progress tracking
+    float progress = 0.0f;         // 0.0 to 1.0
+    float time_limit = 0.0f;       // Seconds (0 = no time limit)
+    float elapsed_time = 0.0f;
+
+    // Type-specific fields
+    int hostiles_required = 0;     // For EliminateHostiles
+    int hostiles_killed = 0;
+    float defend_duration = 0.0f;  // For DefendPoint
+    float defend_elapsed = 0.0f;
+    std::string target_item_id;    // For RetrieveItem / Sabotage
+    bool item_collected = false;
+
+    static std::string objectiveTypeName(int type) {
+        switch (static_cast<ObjectiveType>(type)) {
+            case ObjectiveType::EliminateHostiles: return "EliminateHostiles";
+            case ObjectiveType::RescueVIP:         return "RescueVIP";
+            case ObjectiveType::Sabotage:          return "Sabotage";
+            case ObjectiveType::DefendPoint:       return "DefendPoint";
+            case ObjectiveType::RetrieveItem:      return "RetrieveItem";
+            case ObjectiveType::RepairSystem:      return "RepairSystem";
+            case ObjectiveType::Escape:            return "Escape";
+            default: return "Unknown";
+        }
+    }
+
+    static std::string stateName(int s) {
+        switch (static_cast<ObjectiveState>(s)) {
+            case ObjectiveState::Inactive:  return "Inactive";
+            case ObjectiveState::Active:    return "Active";
+            case ObjectiveState::Completed: return "Completed";
+            case ObjectiveState::Failed:    return "Failed";
+            default: return "Unknown";
+        }
+    }
+
+    COMPONENT_TYPE(FPSObjective)
+};
+
 } // namespace components
 } // namespace atlas
 
