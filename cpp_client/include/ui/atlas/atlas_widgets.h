@@ -187,6 +187,41 @@ int speedIndicator(AtlasContext& ctx, Vec2 pos,
 void warpProgressIndicator(AtlasContext& ctx, Vec2 pos,
                            int phase, float progress, float speedAU);
 
+/**
+ * Vertical capacitor bar — an alternative to the capacitor ring.
+ *
+ * Draws a tall, narrow vertical bar filled from bottom-to-top with
+ * segmented capacitor levels.  Used alongside the ship HUD when
+ * a vertical layout is preferred over the circular ring.
+ *
+ * @param ctx       Context.
+ * @param r         Bounding rectangle (typically narrow: ~20×120 px).
+ * @param fraction  0.0–1.0 capacitor remaining.
+ * @param segments  Number of visual segments (default 16).
+ */
+void capacitorVerticalBar(AtlasContext& ctx, const Rect& r,
+                          float fraction, int segments = 16);
+
+/**
+ * Velocity arc with color-coded movement mode display.
+ *
+ * Draws a semicircular arc (bottom half) showing current speed as a
+ * fraction of max speed, coloured by the active movement mode:
+ *   0 = default (theme accentDim), 1 = approach (green),
+ *   2 = orbit (yellow/gold), 3 = keep-at-range (cyan),
+ *   4 = warp (blue).
+ *
+ * @param ctx          Context.
+ * @param centre       Centre of the arc.
+ * @param innerR       Inner radius.
+ * @param outerR       Outer radius.
+ * @param speedFrac    0.0–1.0 current speed / max speed.
+ * @param movementMode Movement mode index (0-4).
+ */
+void velocityArc(AtlasContext& ctx, Vec2 centre,
+                 float innerR, float outerR,
+                 float speedFrac, int movementMode = 0);
+
 // ── Overview Widgets ────────────────────────────────────────────────
 
 struct OverviewEntry {

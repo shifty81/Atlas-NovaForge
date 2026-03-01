@@ -2392,4 +2392,76 @@ int menuBar(AtlasContext& ctx, const Rect& r,
     return result;
 }
 
+// ── Capacitor Vertical Bar ─────────────────────────────────────────
+
+void capacitorVerticalBar(AtlasContext& ctx, const Rect& r,
+                          float fraction, int segments) {
+    const Theme& t = ctx.theme();
+    auto& rr = ctx.renderer();
+
+    fraction = std::max(0.0f, std::min(1.0f, fraction));
+    if (segments < 1) segments = 1;
+
+    // Background
+    rr.drawRect(r, t.bgSecondary.withAlpha(0.4f));
+    rr.drawRectOutline(r, t.borderSubtle);
+
+    float gapPx = 1.0f;
+    float totalGap = gapPx * (segments - 1);
+    float segH = (r.h - totalGap) / segments;
+    int filledCount = static_cast<int>(fraction * segments + 0.5f);
+
+    // Draw segments bottom-to-top
+    for (int i = 0; i < segments; ++i) {
+        float sy = r.y + r.h - (i + 1) * (segH + gapPx) + gapPx;
+        Rect seg = {r.x + 1.0f, sy, r.w - 2.0f, segH};
+        bool filled = (i < filledCount);
+        Color c = filled ? t.capacitor : t.bgSecondary.withAlpha(0.15f);
+        rr.drawRect(seg, c);
+    }
+
+    // Percentage label centered
+    char buf[16];
+    std::snprintf(buf, sizeof(buf), "%d%%", static_cast<int>(fraction * 100));
+    float tw = rr.measureText(buf);
+    rr.drawText(buf, {r.x + (r.w - tw) * 0.5f, r.y + r.h + 2.0f},
+                t.textSecondary);
+}
+
+// ── Velocity Arc ───────────────────────────────────────────────────
+
+void velocityArc(AtlasContext& ctx, Vec2 centre,
+                 float innerR, float outerR,
+                 float speedFrac, int movementMode) {
+    const Theme& t = ctx.theme();
+    auto& rr = ctx.renderer();
+
+    speedFrac = std::max(0.0f, std::min(1.0f, speedFrac));
+
+    // Movement mode colors
+    Color modeColor;
+    switch (movementMode) {
+        case 1:  modeColor = t.success;          break;  // approach = green
+        case 2:  modeColor = t.armor;            break;  // orbit = gold
+        case 3:  modeColor = t.accentSecondary;  break;  // keep-at-range = cyan
+        case 4:  modeColor = t.accentPrimary;    break;  // warp = blue
+        default: modeColor = t.accentDim;        break;  // stopped/default
+    }
+
+    // Arc sweeps the BOTTOM half: 0 to π (right-to-left through bottom)
+    float startAngle = 0.0f;
+    float fullEnd = static_cast<float>(M_PI);
+
+    // Background arc (empty)
+    rr.drawArc(centre, innerR, outerR, startAngle, fullEnd,
+               t.bgSecondary.withAlpha(0.25f), 32);
+
+    // Filled arc proportional to speed
+    if (speedFrac > 0.001f) {
+        float fillEnd = startAngle + (fullEnd - startAngle) * speedFrac;
+        rr.drawArc(centre, innerR, outerR, startAngle, fillEnd,
+                   modeColor, 32);
+    }
+}
+
 } // namespace atlas

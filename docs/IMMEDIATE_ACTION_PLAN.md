@@ -42,12 +42,12 @@ All 27 baseline server systems are complete with 832/832 tests passing. The proj
 **Why Second**: Core UI element for all gameplay  
 **Current State**: Basic panels for stats, needs custom HUD  
 **Work Required**:
-- [ ] Extend Atlas UI retained-mode framework for HUD elements
-- [ ] Implement circular shield/armor/hull arcs
-- [ ] Add capacitor vertical bar
-- [ ] Display velocity arc with color states
-- [ ] Alert stack for warnings
-- [ ] Damage feedback (shield ripple, armor flash, hull shake)
+- [x] Extend Atlas UI retained-mode framework for HUD elements
+- [x] Implement circular shield/armor/hull arcs
+- [x] Add capacitor vertical bar
+- [x] Display velocity arc with color states
+- [x] Alert stack for warnings
+- [x] Damage feedback (shield ripple, armor flash, hull shake)
 
 **Success Criteria**:
 - HUD renders at 60 FPS with 200 entities
