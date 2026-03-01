@@ -107,23 +107,25 @@ See [Priority Areas](#priority-areas) for where help is most needed.
 
 ```bash
 # Fork the repository on GitHub, then:
-git clone https://github.com/YOUR_USERNAME/Nova Forge.git
-cd Nova Forge
+git clone https://github.com/YOUR_USERNAME/NovaForge.git
+cd NovaForge
 ```
 
 ### 2. Set Up Development Environment
 
 ```bash
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Check build dependencies
+make check-deps
 
-# Install dependencies
-pip install -r requirements.txt
+# Build everything (Release)
+make build
 
 # Run tests to verify setup
-python run_tests.py
+make test
 ```
+
+See `docs/guides/` for platform-specific build instructions (Linux, macOS,
+Windows/VS2022).
 
 ### 3. Create a Branch
 
@@ -147,14 +149,14 @@ git checkout -b fix/bug-description
 ### 2. Test Your Changes
 
 ```bash
-# Run all tests
-python run_tests.py
+# Run all tests (server + engine)
+make test
 
-# Run specific test file
-python tests/test_engine.py
+# Run server tests only
+make test-server
 
-# Test your feature manually
-python demo.py  # or appropriate demo script
+# Run engine tests only
+make test-engine
 ```
 
 ### 3. Update Documentation
@@ -167,29 +169,20 @@ python demo.py  # or appropriate demo script
 
 ## Style Guidelines
 
-### Python Code
+All C++ code must follow the project's coding standards.  See
+**[docs/CODING_GUIDELINES.md](CODING_GUIDELINES.md)** for the full reference.
 
-Follow PEP 8 style guide:
+Key points:
 
-```python
-# Use 4 spaces for indentation
-# Use snake_case for functions and variables
-# Use PascalCase for classes
-# Maximum line length: 100 characters
-
-def calculate_damage(base_damage: float, multiplier: float) -> float:
-    """
-    Calculate final damage with multiplier.
-    
-    Args:
-        base_damage: Base damage value
-        multiplier: Damage multiplier
-        
-    Returns:
-        Final damage amount
-    """
-    return base_damage * multiplier
-```
+- **Naming**: Match the dominant style of the module you are editing
+  (see per-module table in the guidelines).
+- **File size**: Keep `.cpp` files under 600 lines; split into domain files
+  when they grow beyond 400.
+- **Includes**: Order as own header → project → third-party → standard library.
+- **No magic numbers**: Use named `constexpr` constants.
+- **Logging**: Use the module's Logger — never raw `std::cout`/`std::cerr` in
+  `cpp_server/`.
+- **Error handling**: No bare `catch (...)`; always log caught exceptions.
 
 ### JSON Data Files
 
@@ -259,8 +252,8 @@ Fixed stuff
 
 ### 1. Before Submitting
 
-- [ ] Tests pass: `python run_tests.py`
-- [ ] Code follows style guidelines
+- [ ] Tests pass: `make test`
+- [ ] Code follows [coding guidelines](CODING_GUIDELINES.md)
 - [ ] Documentation updated
 - [ ] Commit messages are clear
 - [ ] Branch is up to date with main
