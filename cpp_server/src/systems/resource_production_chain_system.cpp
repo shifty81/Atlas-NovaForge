@@ -66,9 +66,10 @@ bool ResourceProductionChainSystem::createChain(const std::string& entity_id, co
     auto* chain = entity->getComponent<components::ResourceProductionChain>();
     if (chain) return false; // already has a chain
 
-    auto* new_chain = entity->addComponent<components::ResourceProductionChain>();
-    new_chain->chain_id = chain_id;
-    new_chain->is_active = true;
+    auto chain_comp = std::make_unique<components::ResourceProductionChain>();
+    chain_comp->chain_id = chain_id;
+    chain_comp->is_active = true;
+    entity->addComponent(std::move(chain_comp));
     return true;
 }
 

@@ -92,7 +92,7 @@ bool PlayerProgressionSystem::initProgression(const std::string& player_id) {
     auto* existing = entity->getComponent<components::PlayerProgression>();
     if (existing) return false; // already initialized
 
-    entity->addComponent<components::PlayerProgression>();
+    entity->addComponent(std::make_unique<components::PlayerProgression>());
     return true;
 }
 

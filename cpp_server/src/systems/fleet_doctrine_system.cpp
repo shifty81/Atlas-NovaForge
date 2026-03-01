@@ -49,10 +49,11 @@ bool FleetDoctrineSystem::createDoctrine(const std::string& entity_id, const std
     auto* existing = entity->getComponent<components::FleetDoctrine>();
     if (existing) return false; // already has a doctrine
 
-    auto* doctrine = entity->addComponent<components::FleetDoctrine>();
-    doctrine->doctrine_id = doctrine_id;
-    doctrine->doctrine_name = name;
-    doctrine->is_locked = false;
+    auto doctrine_comp = std::make_unique<components::FleetDoctrine>();
+    doctrine_comp->doctrine_id = doctrine_id;
+    doctrine_comp->doctrine_name = name;
+    doctrine_comp->is_locked = false;
+    entity->addComponent(std::move(doctrine_comp));
     return true;
 }
 
