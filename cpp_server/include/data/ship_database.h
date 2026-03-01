@@ -125,12 +125,6 @@ private:
      * @return true on success
      */
     bool parseShipEntry(const std::string& id, const std::string& json_block);
-
-    // Lightweight JSON helpers
-    static std::string extractString(const std::string& json, const std::string& key);
-    static float extractFloat(const std::string& json, const std::string& key, float fallback = 0.0f);
-    static int extractInt(const std::string& json, const std::string& key, int fallback = 0);
-    static std::string extractBlock(const std::string& json, const std::string& key);
 };
 
 } // namespace data

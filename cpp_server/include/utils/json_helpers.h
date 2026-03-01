@@ -7,6 +7,8 @@
 // consider a full JSON library.
 
 #include <string>
+#include <vector>
+#include <stdexcept>
 
 namespace atlas {
 namespace json {
@@ -84,7 +86,7 @@ inline float extractFloat(const std::string& json,
             ++end;
         }
         return std::stof(json.substr(pos, end - pos));
-    } catch (...) {
+    } catch (const std::exception&) {
         return fallback;
     }
 }
@@ -112,7 +114,7 @@ inline int extractInt(const std::string& json,
             ++end;
         }
         return std::stoi(json.substr(pos, end - pos));
-    } catch (...) {
+    } catch (const std::exception&) {
         return fallback;
     }
 }
@@ -142,7 +144,7 @@ inline double extractDouble(const std::string& json,
             ++end;
         }
         return std::stod(json.substr(pos, end - pos));
-    } catch (...) {
+    } catch (const std::exception&) {
         return fallback;
     }
 }
@@ -178,9 +180,14 @@ inline std::string extractObject(const std::string& json,
     if (pos == std::string::npos) return "";
 
     int depth = 0;
+    bool in_str = false;
     for (size_t i = pos; i < json.size(); ++i) {
-        if (json[i] == '{') ++depth;
-        else if (json[i] == '}') {
+        char c = json[i];
+        if (c == '\\' && in_str) { ++i; continue; }
+        if (c == '\"') { in_str = !in_str; continue; }
+        if (in_str) continue;
+        if (c == '{') ++depth;
+        else if (c == '}') {
             --depth;
             if (depth == 0) {
                 return json.substr(pos, i - pos + 1);
@@ -189,6 +196,58 @@ inline std::string extractObject(const std::string& json,
     }
 
     return "";
+}
+
+/// Extract a JSON array for a given key: "key":[...]
+inline std::string extractArray(const std::string& json,
+                                const std::string& key) {
+    std::string search = "\"" + key + "\"";
+    size_t pos = json.find(search);
+    if (pos == std::string::npos) return "";
+
+    pos = json.find('[', pos + search.size());
+    if (pos == std::string::npos) return "";
+
+    int depth = 0;
+    bool in_str = false;
+    for (size_t i = pos; i < json.size(); ++i) {
+        char c = json[i];
+        if (c == '\\' && in_str) { ++i; continue; }
+        if (c == '\"') { in_str = !in_str; continue; }
+        if (in_str) continue;
+        if (c == '[') ++depth;
+        else if (c == ']') {
+            --depth;
+            if (depth == 0) {
+                return json.substr(pos, i - pos + 1);
+            }
+        }
+    }
+
+    return "";
+}
+
+/// Parse a JSON array of strings: ["a","b","c"]
+inline std::vector<std::string> parseStringArray(const std::string& arr) {
+    std::vector<std::string> result;
+    size_t pos = 0;
+    while (pos < arr.size()) {
+        size_t qs = arr.find('\"', pos);
+        if (qs == std::string::npos) break;
+
+        // Find closing quote, skipping escaped quotes
+        size_t qe = qs + 1;
+        while (qe < arr.size()) {
+            if (arr[qe] == '\\') { qe += 2; continue; }
+            if (arr[qe] == '\"') break;
+            ++qe;
+        }
+        if (qe >= arr.size()) break;
+
+        result.push_back(arr.substr(qs + 1, qe - qs - 1));
+        pos = qe + 1;
+    }
+    return result;
 }
 
 } // namespace json

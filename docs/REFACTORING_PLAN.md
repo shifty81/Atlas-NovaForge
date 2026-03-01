@@ -28,27 +28,29 @@ affected, a brief description of the problem, and the fix.
 
 ### 1.1 Duplicated JSON helpers (CRITICAL)
 
-Seven independent copies of lightweight JSON extraction functions exist:
+Seven independent copies of lightweight JSON extraction functions existed:
 
-| File | Functions |
-|------|-----------|
-| `cpp_server/src/game_session.cpp` | `extractJsonString`, `extractJsonFloat` |
-| `cpp_server/src/data/ship_database.cpp` | `extractString`, `extractFloat`, `extractInt` |
-| `cpp_server/src/data/npc_database.cpp` | `extractString`, `extractFloat`, `extractInt` |
-| `cpp_server/src/data/wormhole_database.cpp` | `extractString`, `extractFloat`, `extractInt` |
-| `cpp_server/src/data/world_persistence.cpp` | `extractString`, `extractFloat`, `extractInt`, `extractDouble`, `extractBool`, `extractObject` |
-| `editor/ui/EditorLayout.cpp` | `extractString`, `extractFloat`, `extractInt` |
-| `cpp_client/src/ui/atlas/atlas_context.cpp` | `extractJsonString`, `extractJsonFloat` |
+| File | Functions | Status |
+|------|-----------|--------|
+| `cpp_server/src/game_session.cpp` | `extractJsonString`, `extractJsonFloat` | ⚠️ Different API — needs separate migration |
+| `cpp_server/src/data/ship_database.cpp` | `extractString`, `extractFloat`, `extractInt` | ✅ Migrated to `json_helpers.h` |
+| `cpp_server/src/data/npc_database.cpp` | `extractString`, `extractFloat`, `extractInt` | ✅ Migrated to `json_helpers.h` |
+| `cpp_server/src/data/wormhole_database.cpp` | `extractString`, `extractFloat`, `extractInt` | ✅ Migrated to `json_helpers.h` |
+| `cpp_server/src/data/world_persistence.cpp` | `extractString`, `extractFloat`, `extractInt`, `extractDouble`, `extractBool`, `extractObject` | ✅ Previously migrated |
+| `editor/ui/EditorLayout.cpp` | `extractString`, `extractFloat`, `extractInt` | ⚠️ Separate module — needs include path work |
+| `cpp_client/src/ui/atlas/atlas_context.cpp` | `extractJsonString`, `extractJsonFloat` | ⚠️ Separate module — needs include path work |
 
-**Fix**: Create `cpp_server/include/utils/json_helpers.h` with a single
-implementation.  Replace all call-sites.
+**Fix**: Created `cpp_server/include/utils/json_helpers.h` with a single
+implementation.  Server-side call-sites migrated.  Cross-module migration
+(editor, client) deferred until `json_helpers.h` is moved to a shared
+location or include paths are updated.
 
 ### 1.2 Duplicated `escapeJson` / `escapeJsonString`
 
-Static escape functions appear in `game_session.cpp` and
+Static escape functions appeared in `game_session.cpp` and
 `world_persistence.cpp`.
 
-**Fix**: Move into `json_helpers.h`.
+**Fix**: ✅ Moved into `json_helpers.h` as `atlas::json::escapeString`.
 
 ### 1.3 Repeated entity-creation boilerplate
 
@@ -116,17 +118,26 @@ and document in `CODING_GUIDELINES.md`.
 | `cpp_server/` | `atlas::Logger` singleton (thread-safe, file + console) | Full-featured |
 | `cpp_client/` | `FileLogger` (stream-buffer redirect) | Indirect |
 
-23 files still use raw `std::cout` / `std::cerr`.
+23 files originally used raw `std::cout` / `std::cerr`.
 
 **Fix**: In `cpp_server/`, replace all raw `std::cout` / `std::cerr` with the
 server `Logger`.  Document the convention in guidelines.
 
+**Status**: ✅ `cpp_server/` reviewed — remaining `std::cout` usage is in
+`logger.cpp` (the logger implementation itself), `test_systems.cpp` (test
+output), and `server_console.cpp` (interactive terminal REPL requiring direct
+stdout).  These are all justified exceptions.  Convention documented in
+`CODING_GUIDELINES.md`.
+
 ### 4.2 Bare `catch (...)` blocks
 
-10+ instances silently swallow exceptions (notably `world_persistence.cpp`,
-`wormhole_database.cpp`, `ship_database.cpp`).
+10+ instances originally silently swallowed exceptions (notably
+`world_persistence.cpp`, `wormhole_database.cpp`, `ship_database.cpp`).
 
-**Fix**: Add a `LOG_ERROR` line to every bare `catch (...)`.
+**Fix**: Changed bare `catch (...)` to `catch (const std::exception&)` in
+`json_helpers.h` and `game_session_utils.cpp`.  The `main.cpp` catch-all
+already had logging.  Database wrapper methods removed entirely (now use
+`json_helpers.h` directly).
 
 ---
 
@@ -165,7 +176,7 @@ Hardcoded gameplay values scattered across:
 |------|--------|
 | `CONTRIBUTING.md` references Python/pip instead of C++/CMake | Needs update |
 | `cpp_client/include/` header doc coverage | ~28 % — needs `@brief` on public classes |
-| No C++ coding style guide | Create `docs/CODING_GUIDELINES.md` |
+| No C++ coding style guide | ✅ Created `docs/CODING_GUIDELINES.md` |
 | 60+ session-log files in `docs/sessions/` | Low priority — leave as-is |
 
 ---

@@ -8,6 +8,10 @@
 namespace atlas {
 namespace data {
 
+using json::extractString;
+using json::extractFloat;
+using json::extractInt;
+
 // ---------------------------------------------------------------------------
 // Public interface
 // ---------------------------------------------------------------------------
@@ -101,11 +105,11 @@ int WormholeDatabase::loadClasses(const std::string& filepath) {
         tmpl.blue_loot_isk           = static_cast<double>(extractFloat(block, "blue_loot_isk", 150000.0f));
 
         // Static connections
-        std::string sc_arr = extractArray(block, "static_connections");
-        if (!sc_arr.empty()) tmpl.static_connections = parseStringArray(sc_arr);
+        std::string sc_arr = json::extractArray(block, "static_connections");
+        if (!sc_arr.empty()) tmpl.static_connections = json::parseStringArray(sc_arr);
 
         // Dormant NPC spawns
-        std::string spawns_arr = extractArray(block, "dormant_spawns");
+        std::string spawns_arr = json::extractArray(block, "dormant_spawns");
         if (!spawns_arr.empty()) {
             // Each element is { ... }
             size_t sp = 0;
@@ -180,7 +184,7 @@ int WormholeDatabase::loadEffects(const std::string& filepath) {
         if (eff.name.empty()) { pos = block_end + 1; continue; }
 
         // Parse modifiers block
-        std::string mod_block = extractBlock(block, "modifiers");
+        std::string mod_block = json::extractObject(block, "modifiers");
         if (!mod_block.empty()) {
             // Walk through key-value pairs inside the modifiers object
             size_t mp = 1; // skip opening {
@@ -218,73 +222,6 @@ int WormholeDatabase::loadEffects(const std::string& filepath) {
         pos = block_end + 1;
     }
     return loaded;
-}
-
-// ---------------------------------------------------------------------------
-// JSON helpers (same pattern as ShipDatabase)
-// ---------------------------------------------------------------------------
-
-std::string WormholeDatabase::extractString(const std::string& json, const std::string& key) {
-    return atlas::json::extractString(json, key);
-}
-
-float WormholeDatabase::extractFloat(const std::string& json, const std::string& key, float fallback) {
-    return atlas::json::extractFloat(json, key, fallback);
-}
-
-int WormholeDatabase::extractInt(const std::string& json, const std::string& key, int fallback) {
-    return atlas::json::extractInt(json, key, fallback);
-}
-
-std::string WormholeDatabase::extractBlock(const std::string& json, const std::string& key) {
-    std::string search = "\"" + key + "\"";
-    size_t pos = json.find(search);
-    if (pos == std::string::npos) return "";
-    pos = json.find('{', pos + search.size());
-    if (pos == std::string::npos) return "";
-    int depth = 0; size_t end = pos; bool in_str = false;
-    for (size_t i = pos; i < json.size(); ++i) {
-        char c = json[i];
-        if (c == '\\' && in_str) { ++i; continue; }
-        if (c == '\"') { in_str = !in_str; continue; }
-        if (in_str) continue;
-        if (c == '{') ++depth;
-        if (c == '}') { --depth; if (depth == 0) { end = i; break; } }
-    }
-    return json.substr(pos, end - pos + 1);
-}
-
-std::string WormholeDatabase::extractArray(const std::string& json, const std::string& key) {
-    std::string search = "\"" + key + "\"";
-    size_t pos = json.find(search);
-    if (pos == std::string::npos) return "";
-    pos = json.find('[', pos + search.size());
-    if (pos == std::string::npos) return "";
-    int depth = 0; size_t end = pos;
-    bool in_str = false;
-    for (size_t i = pos; i < json.size(); ++i) {
-        char c = json[i];
-        if (c == '\\' && in_str) { ++i; continue; }
-        if (c == '\"') { in_str = !in_str; continue; }
-        if (in_str) continue;
-        if (c == '[') ++depth;
-        if (c == ']') { --depth; if (depth == 0) { end = i; break; } }
-    }
-    return json.substr(pos, end - pos + 1);
-}
-
-std::vector<std::string> WormholeDatabase::parseStringArray(const std::string& arr) {
-    std::vector<std::string> result;
-    size_t pos = 0;
-    while (pos < arr.size()) {
-        size_t qs = arr.find('\"', pos);
-        if (qs == std::string::npos) break;
-        size_t qe = arr.find('\"', qs + 1);
-        if (qe == std::string::npos) break;
-        result.push_back(arr.substr(qs + 1, qe - qs - 1));
-        pos = qe + 1;
-    }
-    return result;
 }
 
 } // namespace data
