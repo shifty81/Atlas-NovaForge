@@ -94,19 +94,15 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    auto makeModuleContext = [&]() -> atlas::module::GameModuleContext {
-        return {
-            engine.GetWorld(),
-            engine.GetNet(),
-            replication,
-            atlas::rules::ServerRules::Get(),
-            assetRegistry,
-            atlas::project::ProjectManager::Get().Descriptor(),
-            &engine.GetPhysics()
-        };
+    atlas::module::GameModuleContext moduleCtx{
+        engine.GetWorld(),
+        engine.GetNet(),
+        replication,
+        atlas::rules::ServerRules::Get(),
+        assetRegistry,
+        atlas::project::ProjectManager::Get().Descriptor(),
+        &engine.GetPhysics()
     };
-
-    atlas::module::GameModuleContext moduleCtx = makeModuleContext();
 
     if (moduleLoader.IsLoaded()) {
         auto* mod = moduleLoader.GetModule();

@@ -129,12 +129,14 @@ public:
 private:
     void ProcessWindowEvents();
     void PerformAutosaveIfNeeded(uint64_t tickCount);
+    void StepSimulationTick();
     void TickSimulation();
     void UpdateUI();
     void RenderFrame();
 
     EngineConfig m_config;
     bool m_running = false;
+    bool m_shutdown = false;
     ecs::World m_world;
     net::NetContext m_net;
     sim::TickScheduler m_scheduler;

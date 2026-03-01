@@ -1410,6 +1410,9 @@ void test_engine_physics_accessible();
 void test_engine_flow_graph_integration();
 void test_engine_server_full_integration();
 void test_module_context_physics_access();
+void test_engine_shutdown_after_run();
+void test_engine_editor_ticks_physics();
+void test_engine_client_ticks_module();
 
 // Launcher Screen tests
 void test_launcher_initial_state();
@@ -3524,6 +3527,9 @@ int main() {
     test_engine_flow_graph_integration();
     test_engine_server_full_integration();
     test_module_context_physics_access();
+    test_engine_shutdown_after_run();
+    test_engine_editor_ticks_physics();
+    test_engine_client_ticks_module();
 
     // Launcher Screen
     std::cout << "\n--- Launcher Screen ---" << std::endl;

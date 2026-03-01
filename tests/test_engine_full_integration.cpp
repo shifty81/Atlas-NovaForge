@@ -256,3 +256,101 @@ void test_module_context_physics_access() {
 
     std::cout << "[PASS] test_module_context_physics_access" << std::endl;
 }
+
+// --- Shutdown runs after normal game loop exit ---
+
+void test_engine_shutdown_after_run() {
+    EngineConfig cfg;
+    cfg.mode = EngineMode::Server;
+    cfg.tickRate = 60;
+    cfg.maxTicks = 3;
+
+    Engine engine(cfg);
+    engine.InitCore();
+    engine.InitECS();
+    engine.InitNetworking();
+    engine.GetScheduler().SetFramePacing(false);
+
+    engine.Run();
+
+    // After run, m_running is false, but Shutdown() should still work
+    assert(!engine.Running());
+    engine.Shutdown();
+
+    // Calling Shutdown() a second time should be a no-op (no crash)
+    engine.Shutdown();
+
+    std::cout << "[PASS] test_engine_shutdown_after_run" << std::endl;
+}
+
+// --- Editor mode ticks physics and module via shared StepSimulationTick ---
+
+void test_engine_editor_ticks_physics() {
+    EngineConfig cfg;
+    cfg.mode = EngineMode::Editor;
+    cfg.tickRate = 60;
+    cfg.maxTicks = 5;
+    cfg.headless = true;
+
+    Engine engine(cfg);
+    engine.InitCore();
+    engine.InitRender();
+    engine.InitUI();
+    engine.InitECS();
+    engine.InitNetworking();
+    engine.InitEditor();
+    engine.GetScheduler().SetFramePacing(false);
+
+    auto& physics = engine.GetPhysics();
+    auto bodyId = physics.CreateBody(1.0f, false);
+    physics.SetPosition(bodyId, 0.0f, 50.0f, 0.0f);
+
+    engine.Run();
+
+    // Physics should have stepped in editor mode too
+    float finalY = physics.GetBody(bodyId)->position.y;
+    assert(finalY < 50.0f);
+
+    std::cout << "[PASS] test_engine_editor_ticks_physics" << std::endl;
+}
+
+// --- Client mode ticks module via shared StepSimulationTick ---
+
+void test_engine_client_ticks_module() {
+    EngineConfig cfg;
+    cfg.mode = EngineMode::Client;
+    cfg.tickRate = 30;
+    cfg.maxTicks = 4;
+    cfg.headless = true;
+
+    Engine engine(cfg);
+    engine.InitCore();
+    engine.InitRender();
+    engine.InitUI();
+    engine.InitECS();
+    engine.InitNetworking();
+    engine.GetScheduler().SetFramePacing(false);
+
+    IntegrationTestModule mod;
+    atlas::net::ReplicationManager replication;
+    atlas::asset::AssetRegistry assets;
+
+    module::GameModuleContext ctx{
+        engine.GetWorld(),
+        engine.GetNet(),
+        replication,
+        atlas::rules::ServerRules::Get(),
+        assets,
+        atlas::project::ProjectManager::Get().Descriptor(),
+        &engine.GetPhysics()
+    };
+
+    mod.OnStart(ctx);
+    engine.SetGameModule(&mod, &ctx);
+
+    engine.Run();
+
+    assert(mod.tickCount == 4);
+
+    std::cout << "[PASS] test_engine_client_ticks_module" << std::endl;
+}
