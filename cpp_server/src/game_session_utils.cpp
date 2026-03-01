@@ -46,7 +46,7 @@ float GameSession::extractJsonFloat(const std::string& json,
             ++end;
         }
         return std::stof(json.substr(pos, end - pos));
-    } catch (...) {
+    } catch (const std::exception&) {
         return fallback;
     }
 }

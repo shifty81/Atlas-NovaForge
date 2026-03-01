@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+#include <stdexcept>
 
 namespace atlas {
 namespace json {
@@ -85,7 +86,7 @@ inline float extractFloat(const std::string& json,
             ++end;
         }
         return std::stof(json.substr(pos, end - pos));
-    } catch (...) {
+    } catch (const std::exception&) {
         return fallback;
     }
 }
@@ -113,7 +114,7 @@ inline int extractInt(const std::string& json,
             ++end;
         }
         return std::stoi(json.substr(pos, end - pos));
-    } catch (...) {
+    } catch (const std::exception&) {
         return fallback;
     }
 }
@@ -143,7 +144,7 @@ inline double extractDouble(const std::string& json,
             ++end;
         }
         return std::stod(json.substr(pos, end - pos));
-    } catch (...) {
+    } catch (const std::exception&) {
         return fallback;
     }
 }
