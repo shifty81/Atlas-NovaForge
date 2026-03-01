@@ -190,31 +190,35 @@ void Engine::PerformAutosaveIfNeeded(uint64_t tickCount) {
     }
 }
 
+void Engine::StepSimulationTick() {
+    m_timeModel.AdvanceTick();
+    const auto& timeCtx = m_timeModel.Context();
+    float fixedDt = timeCtx.sim.fixedDeltaTime;
+
+    m_world.Update(fixedDt);
+    m_physics.Step(fixedDt);
+
+    // Execute the game flow graph if it has been compiled.
+    if (m_flowGraph.IsCompiled()) {
+        flow::FlowContext flowCtx{};
+        flowCtx.elapsedTime = static_cast<float>(timeCtx.world.elapsed);
+        flowCtx.tick = static_cast<uint32_t>(timeCtx.sim.tick);
+        // inputReceived is false until input routing to the flow
+        // graph is implemented; individual flow nodes can query
+        // the input manager directly when needed.
+        flowCtx.inputReceived = false;
+        m_flowGraph.Execute(flowCtx);
+    }
+
+    // Tick the attached game module.
+    if (m_gameModule && m_moduleCtx) {
+        m_gameModule->OnTick(*m_moduleCtx, fixedDt);
+    }
+}
+
 void Engine::TickSimulation() {
     m_scheduler.Tick([this](float /*dt*/) {
-        m_timeModel.AdvanceTick();
-        const auto& timeCtx = m_timeModel.Context();
-        float fixedDt = timeCtx.sim.fixedDeltaTime;
-
-        m_world.Update(fixedDt);
-        m_physics.Step(fixedDt);
-
-        // Execute the game flow graph if it has been compiled.
-        if (m_flowGraph.IsCompiled()) {
-            flow::FlowContext flowCtx{};
-            flowCtx.elapsedTime = static_cast<float>(timeCtx.world.elapsed);
-            flowCtx.tick = static_cast<uint32_t>(timeCtx.sim.tick);
-            // inputReceived is false until input routing to the flow
-            // graph is implemented; individual flow nodes can query
-            // the input manager directly when needed.
-            flowCtx.inputReceived = false;
-            m_flowGraph.Execute(flowCtx);
-        }
-
-        // Tick the attached game module.
-        if (m_gameModule && m_moduleCtx) {
-            m_gameModule->OnTick(*m_moduleCtx, fixedDt);
-        }
+        StepSimulationTick();
     });
 }
 
@@ -440,32 +444,11 @@ void Engine::RunServer() {
     while (m_running) {
         m_net.Poll();
         m_scheduler.Tick([this](float dt) {
-            m_timeModel.AdvanceTick();
-            const auto& timeCtx = m_timeModel.Context();
-            float fixedDt = timeCtx.sim.fixedDeltaTime;
-
-            m_world.Update(fixedDt);
-            m_physics.Step(fixedDt);
-
-            // Execute the game flow graph if it has been compiled.
-            if (m_flowGraph.IsCompiled()) {
-                flow::FlowContext flowCtx{};
-                flowCtx.elapsedTime = static_cast<float>(timeCtx.world.elapsed);
-                flowCtx.tick = static_cast<uint32_t>(timeCtx.sim.tick);
-                // inputReceived is false until input routing to the flow
-                // graph is implemented; individual flow nodes can query
-                // the input manager directly when needed.
-                flowCtx.inputReceived = false;
-                m_flowGraph.Execute(flowCtx);
-            }
-
-            // Tick the attached game module.
-            if (m_gameModule && m_moduleCtx) {
-                m_gameModule->OnTick(*m_moduleCtx, fixedDt);
-            }
+            StepSimulationTick();
 
             // Periodically snapshot world state for rollback support.
             // Snapshot every tick so the server can roll back as needed.
+            const auto& timeCtx = m_timeModel.Context();
             auto ecsData = m_world.Serialize();
             auto snapshot = m_worldState.TakeSnapshot(timeCtx.sim.tick, ecsData);
             m_worldState.PushSnapshot(std::move(snapshot));
@@ -623,7 +606,8 @@ void Engine::SetGameModule(module::IGameModule* mod, module::GameModuleContext* 
 }
 
 void Engine::Shutdown() {
-    if (m_running) {
+    if (!m_shutdown) {
+        m_shutdown = true;
         Logger::Info("Engine shutting down");
         m_gameModule = nullptr;
         m_moduleCtx = nullptr;

@@ -668,6 +668,33 @@ align the project structure for long-term maintainability.
 - `engine/core/Engine.cpp` — Refactored RunEditor/RunClient, removed downcasts
 - Root cleanup — Moved 6 files + 1 directory to `legacy/`
 
+#### 24. RunServer Tick Deduplication & Shutdown Fix
+**Status**: Complete
+
+**Completed work**:
+- [x] Extract `StepSimulationTick()` private helper from `TickSimulation()`
+  - Contains the shared simulation step: time advance, ECS update, physics step,
+    flow graph execution, game module tick
+  - `TickSimulation()` now calls `StepSimulationTick()` inside the scheduler callback
+  - `RunServer()` calls `StepSimulationTick()` followed by server-specific snapshot logic
+  - Eliminates ~20 duplicated lines between `TickSimulation()` and `RunServer()`
+- [x] Fix `Engine::Shutdown()` guard
+  - Replaced `if (m_running)` guard with `if (!m_shutdown)` using a dedicated `m_shutdown` flag
+  - Ensures explicit cleanup (logging, net/physics shutdown) runs even after
+    a normal game loop exit where `m_running` is already false
+  - Prevents double-shutdown on repeated calls
+- [x] Clean up `runtime/main.cpp`
+  - Removed leftover `makeModuleContext` lambda pattern
+  - Constructs `GameModuleContext` directly, matching client/server entry points
+- [x] 3 new tests (shutdown after run, editor physics tick, client module tick)
+
+**Files modified**:
+- `engine/core/Engine.h` — Added `StepSimulationTick()` declaration, `m_shutdown` flag
+- `engine/core/Engine.cpp` — Extracted `StepSimulationTick()`, refactored `RunServer()`, fixed `Shutdown()`
+- `runtime/main.cpp` — Removed `makeModuleContext` lambda
+- `tests/test_engine_full_integration.cpp` — 3 new tests
+- `tests/main.cpp` — Registered new tests
+
 ## References
 
 - Original gaps analysis: `legacy/gaps.txt`
