@@ -204,6 +204,9 @@ void Engine::TickSimulation() {
             flow::FlowContext flowCtx{};
             flowCtx.elapsedTime = static_cast<float>(timeCtx.world.elapsed);
             flowCtx.tick = static_cast<uint32_t>(timeCtx.sim.tick);
+            // inputReceived is false until input routing to the flow
+            // graph is implemented; individual flow nodes can query
+            // the input manager directly when needed.
             flowCtx.inputReceived = false;
             m_flowGraph.Execute(flowCtx);
         }
@@ -449,6 +452,9 @@ void Engine::RunServer() {
                 flow::FlowContext flowCtx{};
                 flowCtx.elapsedTime = static_cast<float>(timeCtx.world.elapsed);
                 flowCtx.tick = static_cast<uint32_t>(timeCtx.sim.tick);
+                // inputReceived is false until input routing to the flow
+                // graph is implemented; individual flow nodes can query
+                // the input manager directly when needed.
                 flowCtx.inputReceived = false;
                 m_flowGraph.Execute(flowCtx);
             }
