@@ -317,11 +317,15 @@ docs/
 
 ## Future Enhancements
 
-### Phase 4: Procedural Texturing (Planned)
-- Albedo generation based on faction colors
-- Normal maps for hull panels and details
-- Lightmaps for engine glow and window lighting
-- Automatic UV unwrapping for generated meshes
+### Phase 4: Procedural Texturing (✅ Complete)
+- ✅ Faction color palettes (Solari gold, Veyren blue-grey, Aurelian green, Keldari rust)
+- ✅ Per-ship palette variation (subtle hue/brightness jitter)
+- ✅ PBR material parameters (metalness, roughness, wear, panel depth)
+- ✅ Hull markings (stripes, registration codes, faction insignia, hazard paint)
+- ✅ Engine glow parameters (faction-colored, intensity, core/halo radius, pulse rate)
+- ✅ Window / running-light distribution (zone-aware, class-scaled)
+- ✅ UV panel tiling by class
+- ✅ Shield effect parameters (faction patterns, colors, impact ripples, shimmer)
 
 ### Phase 5: Advanced Features (Planned)
 - Tech II visual differentiation (additional armor plates)
@@ -356,7 +360,8 @@ docs/
 | **Hub-and-Spoke Corridors** | ✅ Complete | Non-linear connections when ≥ 4 rooms per deck |
 | **ShipDesigner Save Fix** | ✅ Complete | saveShipLayout now captures room overrides from deck data |
 | **Titan Assembly System** | ✅ Complete | Background pressure simulation with 4 phases |
-| **Procedural Texturing** | ⏳ Pending | Phase 4 |
+| **Procedural Texturing** | ✅ Complete | Faction palettes, PBR materials, hull markings, engine glow, window lights |
+| **Shield Effect Generator** | ✅ Complete | Faction patterns, shield colors, impact ripples, shimmer parameters |
 | **Client-Side Testing** | ⏳ Pending | Requires OpenGL environment |
 
 ## Usage Example

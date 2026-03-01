@@ -150,6 +150,9 @@ set(SERVER_SOURCES
     src/systems/ancient_ai_remnant_system.cpp
     src/systems/character_creation_screen_system.cpp
     src/systems/view_mode_transition_system.cpp
+    src/systems/station_hangar_system.cpp
+    src/systems/tether_docking_system.cpp
+    src/systems/fps_spawn_system.cpp
     src/data/ship_database.cpp
     src/data/npc_database.cpp
     src/data/wormhole_database.cpp
@@ -187,6 +190,8 @@ set(SERVER_SOURCES
     src/pcg/terrain_generator.cpp
     src/pcg/turret_placement_system.cpp
     src/pcg/damage_state_generator.cpp
+    src/pcg/procedural_texture_generator.cpp
+    src/pcg/shield_effect_generator.cpp
     src/pcg/economy_driven_generator.cpp
     src/pcg/star_system_generator.cpp
     src/pcg/galaxy_generator.cpp
@@ -314,6 +319,9 @@ set(SERVER_HEADERS
     include/systems/ancient_ai_remnant_system.h
     include/systems/character_creation_screen_system.h
     include/systems/view_mode_transition_system.h
+    include/systems/station_hangar_system.h
+    include/systems/tether_docking_system.h
+    include/systems/fps_spawn_system.h
     include/data/ship_database.h
     include/data/npc_database.h
     include/data/wormhole_database.h
@@ -355,6 +363,8 @@ set(SERVER_HEADERS
     include/pcg/terrain_generator.h
     include/pcg/turret_placement_system.h
     include/pcg/damage_state_generator.h
+    include/pcg/procedural_texture_generator.h
+    include/pcg/shield_effect_generator.h
     include/pcg/economy_driven_generator.h
     include/pcg/star_system_generator.h
     include/pcg/galaxy_generator.h
@@ -547,6 +557,9 @@ if(BUILD_TESTS)
         src/systems/ancient_ai_remnant_system.cpp
         src/systems/character_creation_screen_system.cpp
         src/systems/view_mode_transition_system.cpp
+        src/systems/station_hangar_system.cpp
+        src/systems/tether_docking_system.cpp
+        src/systems/fps_spawn_system.cpp
         src/data/world_persistence.cpp
         src/utils/logger.cpp
         src/utils/server_metrics.cpp
@@ -593,6 +606,8 @@ if(BUILD_TESTS)
         src/pcg/terrain_generator.cpp
         src/pcg/turret_placement_system.cpp
         src/pcg/damage_state_generator.cpp
+        src/pcg/procedural_texture_generator.cpp
+        src/pcg/shield_effect_generator.cpp
         src/pcg/economy_driven_generator.cpp
         src/pcg/star_system_generator.cpp
         src/pcg/galaxy_generator.cpp

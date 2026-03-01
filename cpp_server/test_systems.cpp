@@ -127,6 +127,8 @@
 #include "pcg/terrain_generator.h"
 #include "pcg/turret_placement_system.h"
 #include "pcg/damage_state_generator.h"
+#include "pcg/procedural_texture_generator.h"
+#include "pcg/shield_effect_generator.h"
 #include "pcg/economy_driven_generator.h"
 #include "pcg/collision_manager.h"
 #include "pcg/asteroid_field_generator.h"
@@ -154,6 +156,9 @@
 #include "systems/ancient_ai_remnant_system.h"
 #include "systems/character_creation_screen_system.h"
 #include "systems/view_mode_transition_system.h"
+#include "systems/station_hangar_system.h"
+#include "systems/tether_docking_system.h"
+#include "systems/fps_spawn_system.h"
 #include <iostream>
 #include <cassert>
 #include <string>
@@ -17935,6 +17940,224 @@ void testDamageStateLevelNames() {
     assertTrue(pcg::DamageStateGenerator::decalTypeName(pcg::DecalType::ScorchMark) == "ScorchMark", "ScorchMark name");
 }
 
+// ==================== Procedural Texture Generator Tests ====================
+
+void testTextureGeneration() {
+    std::cout << "\n=== Procedural Texture Generation ===" << std::endl;
+    pcg::PCGContext ctx{ 42, 1 };
+    auto tex = pcg::ProceduralTextureGenerator::generate(ctx, pcg::HullClass::Cruiser, "Veyren");
+    assertTrue(tex.valid, "Texture params valid");
+    assertTrue(tex.faction == "Veyren", "Faction stored");
+    assertTrue(tex.hull_class == pcg::HullClass::Cruiser, "Hull class stored");
+    assertTrue(!tex.markings.empty(), "Has hull markings");
+    assertTrue(!tex.window_lights.empty(), "Has window lights");
+    assertTrue(tex.panel_tile_count > 0, "Has panel tiling");
+}
+
+void testTextureDeterminism() {
+    std::cout << "\n=== Procedural Texture Determinism ===" << std::endl;
+    pcg::PCGContext ctx{ 777, 1 };
+    auto t1 = pcg::ProceduralTextureGenerator::generate(ctx, pcg::HullClass::Battleship, "Solari");
+    auto t2 = pcg::ProceduralTextureGenerator::generate(ctx, pcg::HullClass::Battleship, "Solari");
+    assertTrue(approxEqual(t1.palette.primary_r, t2.palette.primary_r), "Same seed same palette R");
+    assertTrue(approxEqual(t1.palette.primary_g, t2.palette.primary_g), "Same seed same palette G");
+    assertTrue(approxEqual(t1.material.metalness, t2.material.metalness), "Same seed same metalness");
+    assertTrue(static_cast<int>(t1.markings.size()) == static_cast<int>(t2.markings.size()),
+               "Same seed same marking count");
+    assertTrue(static_cast<int>(t1.window_lights.size()) == static_cast<int>(t2.window_lights.size()),
+               "Same seed same window count");
+}
+
+void testTextureFactionPalettes() {
+    std::cout << "\n=== Texture Faction Palettes ===" << std::endl;
+    auto solari  = pcg::ProceduralTextureGenerator::basePalette("Solari");
+    auto veyren  = pcg::ProceduralTextureGenerator::basePalette("Veyren");
+    auto aurelian = pcg::ProceduralTextureGenerator::basePalette("Aurelian");
+    auto keldari = pcg::ProceduralTextureGenerator::basePalette("Keldari");
+    // Solari is golden (R > G > B).
+    assertTrue(solari.primary_r > solari.primary_b, "Solari primary is warm (R > B)");
+    // Veyren is blue-grey (B > R).
+    assertTrue(veyren.primary_b > veyren.primary_r, "Veyren primary is cool (B > R)");
+    // Aurelian is green-tinted (G > R, G > B).
+    assertTrue(aurelian.primary_g > aurelian.primary_r, "Aurelian primary green (G > R)");
+    // Keldari is brown (R > G > B).
+    assertTrue(keldari.primary_r > keldari.primary_g, "Keldari primary warm (R > G)");
+    assertTrue(keldari.primary_g > keldari.primary_b, "Keldari primary brown (G > B)");
+}
+
+void testTextureMaterialByFaction() {
+    std::cout << "\n=== Texture Material By Faction ===" << std::endl;
+    pcg::PCGContext ctx{ 500, 1 };
+    auto solari  = pcg::ProceduralTextureGenerator::generate(ctx, pcg::HullClass::Cruiser, "Solari");
+    auto keldari = pcg::ProceduralTextureGenerator::generate(ctx, pcg::HullClass::Cruiser, "Keldari");
+    // Solari ships are more polished (lower roughness).
+    assertTrue(solari.material.roughness < keldari.material.roughness,
+               "Solari smoother than Keldari");
+}
+
+void testTextureScalesWithClass() {
+    std::cout << "\n=== Texture Scales With Class ===" << std::endl;
+    pcg::PCGContext ctx{ 600, 1 };
+    auto frigate = pcg::ProceduralTextureGenerator::generate(ctx, pcg::HullClass::Frigate, "Veyren");
+    auto capital = pcg::ProceduralTextureGenerator::generate(ctx, pcg::HullClass::Capital, "Veyren");
+    assertTrue(static_cast<int>(capital.window_lights.size()) > static_cast<int>(frigate.window_lights.size()),
+               "Capital has more windows than frigate");
+    assertTrue(capital.panel_tile_count > frigate.panel_tile_count,
+               "Capital has more panel tiling than frigate");
+    assertTrue(static_cast<int>(capital.markings.size()) > static_cast<int>(frigate.markings.size()),
+               "Capital has more markings than frigate");
+}
+
+void testTextureEngineGlowFaction() {
+    std::cout << "\n=== Texture Engine Glow By Faction ===" << std::endl;
+    pcg::PCGContext ctx{ 700, 1 };
+    auto veyren = pcg::ProceduralTextureGenerator::generate(ctx, pcg::HullClass::Frigate, "Veyren");
+    auto keldari = pcg::ProceduralTextureGenerator::generate(ctx, pcg::HullClass::Frigate, "Keldari");
+    // Veyren engine glow is blue (B channel dominant).
+    assertTrue(veyren.engine_glow.color_b > veyren.engine_glow.color_r,
+               "Veyren engine glow is blue");
+    // Keldari engine glow is orange/red (R channel dominant).
+    assertTrue(keldari.engine_glow.color_r > keldari.engine_glow.color_b,
+               "Keldari engine glow is warm");
+    assertTrue(veyren.engine_glow.intensity > 0.0f, "Engine glow intensity positive");
+}
+
+void testTextureMarkingTypeNames() {
+    std::cout << "\n=== Texture Marking Type Names ===" << std::endl;
+    assertTrue(pcg::ProceduralTextureGenerator::markingTypeName(pcg::MarkingType::StripeHorizontal) == "StripeHorizontal",
+               "StripeHorizontal name");
+    assertTrue(pcg::ProceduralTextureGenerator::markingTypeName(pcg::MarkingType::FactionInsignia) == "FactionInsignia",
+               "FactionInsignia name");
+    assertTrue(pcg::ProceduralTextureGenerator::markingTypeName(pcg::MarkingType::WarningHazard) == "WarningHazard",
+               "WarningHazard name");
+}
+
+void testTextureAllClassesValid() {
+    std::cout << "\n=== Texture All Classes Valid ===" << std::endl;
+    std::vector<pcg::HullClass> classes = {
+        pcg::HullClass::Frigate, pcg::HullClass::Destroyer,
+        pcg::HullClass::Cruiser, pcg::HullClass::Battlecruiser,
+        pcg::HullClass::Battleship, pcg::HullClass::Capital
+    };
+    bool allValid = true;
+    for (auto hc : classes) {
+        pcg::PCGContext ctx{ static_cast<uint64_t>(hc) + 1000, 1 };
+        auto tex = pcg::ProceduralTextureGenerator::generate(ctx, hc, "Veyren");
+        if (!tex.valid) { allValid = false; break; }
+    }
+    assertTrue(allValid, "All hull classes produce valid texture params");
+}
+
+// ==================== Shield Effect Generator Tests ====================
+
+void testShieldEffectGeneration() {
+    std::cout << "\n=== Shield Effect Generation ===" << std::endl;
+    pcg::PCGContext ctx{ 42, 1 };
+    auto shield = pcg::ShieldEffectGenerator::generate(ctx, pcg::HullClass::Cruiser, "Veyren");
+    assertTrue(shield.valid, "Shield effect is valid");
+    assertTrue(shield.base_opacity > 0.0f, "Base opacity positive");
+    assertTrue(shield.pattern_scale > 0.0f, "Pattern scale positive");
+    assertTrue(shield.shield_radius >= 1.0f, "Shield radius >= 1.0");
+    assertTrue(shield.fresnel_power >= 1.0f, "Fresnel power >= 1.0");
+    assertTrue(static_cast<int>(shield.sample_impacts.size()) == 3, "Has 3 sample impacts");
+}
+
+void testShieldEffectDeterminism() {
+    std::cout << "\n=== Shield Effect Determinism ===" << std::endl;
+    pcg::PCGContext ctx{ 777, 1 };
+    auto s1 = pcg::ShieldEffectGenerator::generate(ctx, pcg::HullClass::Battleship, "Solari");
+    auto s2 = pcg::ShieldEffectGenerator::generate(ctx, pcg::HullClass::Battleship, "Solari");
+    assertTrue(s1.pattern == s2.pattern, "Same seed same pattern");
+    assertTrue(approxEqual(s1.base_color_r, s2.base_color_r), "Same seed same base color R");
+    assertTrue(approxEqual(s1.base_opacity, s2.base_opacity), "Same seed same opacity");
+    assertTrue(approxEqual(s1.shimmer_speed, s2.shimmer_speed), "Same seed same shimmer speed");
+    assertTrue(static_cast<int>(s1.sample_impacts.size()) == static_cast<int>(s2.sample_impacts.size()),
+               "Same seed same impact count");
+}
+
+void testShieldPatternByFaction() {
+    std::cout << "\n=== Shield Pattern By Faction ===" << std::endl;
+    // Test pattern tendencies (statistical — use fixed seeds that produce expected results).
+    pcg::PCGContext ctx{ 42, 1 };
+    auto veyren  = pcg::ShieldEffectGenerator::generate(ctx, pcg::HullClass::Cruiser, "Veyren");
+    auto solari  = pcg::ShieldEffectGenerator::generate(ctx, pcg::HullClass::Cruiser, "Solari");
+    // Veyren should be Hexagonal or Lattice.
+    assertTrue(veyren.pattern == pcg::ShieldPattern::Hexagonal
+            || veyren.pattern == pcg::ShieldPattern::Lattice,
+               "Veyren pattern is tech-style");
+    // Solari should be Ornate or Smooth.
+    assertTrue(solari.pattern == pcg::ShieldPattern::Ornate
+            || solari.pattern == pcg::ShieldPattern::Smooth,
+               "Solari pattern is ornate/smooth");
+}
+
+void testShieldScalesWithClass() {
+    std::cout << "\n=== Shield Scales With Class ===" << std::endl;
+    pcg::PCGContext ctx{ 123, 1 };
+    auto frigate = pcg::ShieldEffectGenerator::generate(ctx, pcg::HullClass::Frigate, "Veyren");
+    auto capital = pcg::ShieldEffectGenerator::generate(ctx, pcg::HullClass::Capital, "Veyren");
+    assertTrue(capital.pattern_scale > frigate.pattern_scale,
+               "Capital pattern scale larger than frigate");
+    assertTrue(capital.shield_radius > frigate.shield_radius,
+               "Capital shield radius larger than frigate");
+}
+
+void testShieldColorByFaction() {
+    std::cout << "\n=== Shield Color By Faction ===" << std::endl;
+    pcg::PCGContext ctx{ 300, 1 };
+    auto veyren  = pcg::ShieldEffectGenerator::generate(ctx, pcg::HullClass::Cruiser, "Veyren");
+    auto keldari = pcg::ShieldEffectGenerator::generate(ctx, pcg::HullClass::Cruiser, "Keldari");
+    // Veyren shields are blue-dominant.
+    assertTrue(veyren.base_color_b > veyren.base_color_r,
+               "Veyren shield is blue (B > R)");
+    // Keldari shields are warm.
+    assertTrue(keldari.base_color_r > keldari.base_color_b,
+               "Keldari shield is warm (R > B)");
+}
+
+void testShieldImpactRipples() {
+    std::cout << "\n=== Shield Impact Ripples ===" << std::endl;
+    pcg::PCGContext ctx{ 400, 1 };
+    auto shield = pcg::ShieldEffectGenerator::generate(ctx, pcg::HullClass::Cruiser, "Aurelian");
+    for (const auto& imp : shield.sample_impacts) {
+        assertTrue(imp.intensity >= 0.0f && imp.intensity <= 1.0f,
+                   "Impact intensity in [0,1]");
+        assertTrue(imp.radius > 0.0f, "Impact radius positive");
+        assertTrue(imp.decay_rate > 0.0f, "Impact decay rate positive");
+        assertTrue(imp.speed > 0.0f, "Impact speed positive");
+    }
+}
+
+void testShieldPatternNames() {
+    std::cout << "\n=== Shield Pattern Names ===" << std::endl;
+    assertTrue(pcg::ShieldEffectGenerator::patternName(pcg::ShieldPattern::Hexagonal) == "Hexagonal",
+               "Hexagonal name");
+    assertTrue(pcg::ShieldEffectGenerator::patternName(pcg::ShieldPattern::Smooth) == "Smooth",
+               "Smooth name");
+    assertTrue(pcg::ShieldEffectGenerator::patternName(pcg::ShieldPattern::Lattice) == "Lattice",
+               "Lattice name");
+    assertTrue(pcg::ShieldEffectGenerator::patternName(pcg::ShieldPattern::Ornate) == "Ornate",
+               "Ornate name");
+    assertTrue(pcg::ShieldEffectGenerator::patternName(pcg::ShieldPattern::Ripple) == "Ripple",
+               "Ripple name");
+}
+
+void testShieldAllClassesValid() {
+    std::cout << "\n=== Shield All Classes Valid ===" << std::endl;
+    std::vector<pcg::HullClass> classes = {
+        pcg::HullClass::Frigate, pcg::HullClass::Destroyer,
+        pcg::HullClass::Cruiser, pcg::HullClass::Battlecruiser,
+        pcg::HullClass::Battleship, pcg::HullClass::Capital
+    };
+    bool allValid = true;
+    for (auto hc : classes) {
+        pcg::PCGContext ctx{ static_cast<uint64_t>(hc) + 2000, 1 };
+        auto shield = pcg::ShieldEffectGenerator::generate(ctx, hc, "Aurelian");
+        if (!shield.valid) { allValid = false; break; }
+    }
+    assertTrue(allValid, "All hull classes produce valid shield effects");
+}
+
 // ==================== Economy-Driven Generator Tests ====================
 
 void testEconomyFleetGeneration() {
@@ -20512,6 +20735,406 @@ void testViewModeNames() {
     assertTrue(systems::ViewModeTransitionSystem::getModeName(99) == "Unknown", "Invalid mode is Unknown");
 }
 
+// ==================== Station Hangar System Tests ====================
+
+void testHangarCreate() {
+    std::cout << "\n=== Hangar Create ===" << std::endl;
+    ecs::World world;
+    systems::StationHangarSystem sys(&world);
+
+    // Create a station first.
+    auto* station = world.createEntity("station1");
+    auto stationComp = std::make_unique<components::Station>();
+    stationComp->station_name = "Test Station";
+    station->addComponent(std::move(stationComp));
+
+    assertTrue(sys.createHangar("hangar1", "station1", "player1",
+                                components::StationHangar::HangarType::Personal),
+               "Hangar created");
+    assertTrue(!sys.createHangar("hangar1", "station1", "player1"),
+               "Duplicate hangar fails");
+}
+
+void testHangarStoreShip() {
+    std::cout << "\n=== Hangar Store Ship ===" << std::endl;
+    ecs::World world;
+    systems::StationHangarSystem sys(&world);
+    sys.createHangar("hangar1", "station1", "player1");
+
+    assertTrue(sys.storeShip("hangar1", "frigate_1"), "Store ship succeeds");
+    assertTrue(sys.getStoredShipCount("hangar1") == 1, "One ship stored");
+    assertTrue(!sys.storeShip("hangar1", "frigate_2"), "Hangar full at basic level");
+}
+
+void testHangarRetrieveShip() {
+    std::cout << "\n=== Hangar Retrieve Ship ===" << std::endl;
+    ecs::World world;
+    systems::StationHangarSystem sys(&world);
+    sys.createHangar("hangar1", "station1", "player1");
+    sys.storeShip("hangar1", "frigate_1");
+
+    assertTrue(sys.retrieveShip("hangar1", "frigate_1"), "Retrieve succeeds");
+    assertTrue(sys.getStoredShipCount("hangar1") == 0, "Hangar empty after retrieve");
+    assertTrue(!sys.retrieveShip("hangar1", "frigate_1"), "Double retrieve fails");
+}
+
+void testHangarUpgrade() {
+    std::cout << "\n=== Hangar Upgrade ===" << std::endl;
+    ecs::World world;
+    systems::StationHangarSystem sys(&world);
+    sys.createHangar("hangar1", "station1", "player1",
+                     components::StationHangar::HangarType::Corporation);
+
+    double cost = sys.upgradeHangar("hangar1");
+    assertTrue(approxEqual(static_cast<float>(cost), 10000.0f), "Upgrade to Standard costs 10000");
+
+    // After upgrade we should have 2 slots.
+    assertTrue(sys.storeShip("hangar1", "ship_a"), "Slot 1");
+    assertTrue(sys.storeShip("hangar1", "ship_b"), "Slot 2");
+    assertTrue(!sys.storeShip("hangar1", "ship_c"), "Full at standard (2 slots)");
+}
+
+void testHangarMaxUpgrade() {
+    std::cout << "\n=== Hangar Max Upgrade ===" << std::endl;
+    ecs::World world;
+    systems::StationHangarSystem sys(&world);
+    sys.createHangar("hangar1", "station1", "player1",
+                     components::StationHangar::HangarType::Corporation);
+
+    sys.upgradeHangar("hangar1"); // Basic -> Standard
+    sys.upgradeHangar("hangar1"); // Standard -> Advanced
+    sys.upgradeHangar("hangar1"); // Advanced -> Premium
+    double cost = sys.upgradeHangar("hangar1"); // Already max
+    assertTrue(approxEqual(static_cast<float>(cost), 0.0f), "No upgrade past Premium");
+}
+
+void testHangarRentalAccrual() {
+    std::cout << "\n=== Hangar Rental Accrual ===" << std::endl;
+    ecs::World world;
+    systems::StationHangarSystem sys(&world);
+    sys.createHangar("hangar1", "station1", "player1",
+                     components::StationHangar::HangarType::Leased);
+
+    // Simulate 1 day (86400 seconds).
+    sys.update(86400.0f);
+
+    double balance = sys.getRentalBalance("hangar1");
+    assertTrue(balance > 4999.0 && balance < 5001.0, "One day rental accrued ~5000 credits");
+}
+
+void testHangarShouldUseHangarFrigate() {
+    std::cout << "\n=== Should Use Hangar (Frigate) ===" << std::endl;
+    ecs::World world;
+    systems::StationHangarSystem sys(&world);
+
+    auto* ship = world.createEntity("frig1");
+    auto shipComp = std::make_unique<components::Ship>();
+    shipComp->ship_class = "Frigate";
+    ship->addComponent(std::move(shipComp));
+
+    assertTrue(sys.shouldUseHangar("frig1"), "Frigate uses hangar");
+}
+
+void testHangarShouldUseTetherCapital() {
+    std::cout << "\n=== Should Use Tether (Capital) ===" << std::endl;
+    ecs::World world;
+    systems::StationHangarSystem sys(&world);
+
+    auto* ship = world.createEntity("cap1");
+    auto shipComp = std::make_unique<components::Ship>();
+    shipComp->ship_class = "Capital";
+    ship->addComponent(std::move(shipComp));
+
+    assertTrue(!sys.shouldUseHangar("cap1"), "Capital uses tether (not hangar)");
+}
+
+void testHangarShouldUseTetherTitan() {
+    std::cout << "\n=== Should Use Tether (Titan) ===" << std::endl;
+    ecs::World world;
+    systems::StationHangarSystem sys(&world);
+
+    auto* ship = world.createEntity("titan1");
+    auto shipComp = std::make_unique<components::Ship>();
+    shipComp->ship_class = "Titan";
+    ship->addComponent(std::move(shipComp));
+
+    assertTrue(!sys.shouldUseHangar("titan1"), "Titan uses tether (not hangar)");
+}
+
+void testHangarSpawnPosition() {
+    std::cout << "\n=== Hangar Spawn Position ===" << std::endl;
+    ecs::World world;
+    systems::StationHangarSystem sys(&world);
+    sys.createHangar("hangar1", "station1", "player1");
+
+    auto [x, y, z] = sys.getSpawnPosition("hangar1");
+    assertTrue(approxEqual(x, 5.0f), "Spawn X is 5");
+    assertTrue(approxEqual(y, 0.0f), "Spawn Y is 0");
+    assertTrue(approxEqual(z, 2.0f), "Spawn Z is 2");
+}
+
+void testHangarDuplicateShip() {
+    std::cout << "\n=== Hangar Duplicate Ship ===" << std::endl;
+    ecs::World world;
+    systems::StationHangarSystem sys(&world);
+    // Upgrade to 2 slots.
+    sys.createHangar("hangar1", "station1", "player1");
+    sys.upgradeHangar("hangar1");
+
+    assertTrue(sys.storeShip("hangar1", "ship1"), "First store succeeds");
+    assertTrue(!sys.storeShip("hangar1", "ship1"), "Duplicate ship blocked");
+}
+
+void testHangarComponentDefaults() {
+    std::cout << "\n=== Hangar Component Defaults ===" << std::endl;
+    components::StationHangar h;
+    assertTrue(h.type == components::StationHangar::HangarType::Leased, "Default type Leased");
+    assertTrue(h.upgrade_level == components::StationHangar::UpgradeLevel::Basic, "Default Basic level");
+    assertTrue(h.max_ship_slots == 1, "Default 1 slot");
+    assertTrue(h.hasRoom(), "Has room at 0/1");
+    assertTrue(h.isLeased(), "Is leased");
+}
+
+// ==================== Tether Docking System Tests ====================
+
+void testTetherArmCreate() {
+    std::cout << "\n=== Tether Arm Create ===" << std::endl;
+    ecs::World world;
+    systems::TetherDockingSystem sys(&world);
+
+    assertTrue(sys.createArm("arm1", "station1"), "Arm created");
+    assertTrue(!sys.createArm("arm1", "station1"), "Duplicate arm fails");
+    assertTrue(!sys.isOccupied("arm1"), "Arm empty");
+}
+
+void testTetherBeginTether() {
+    std::cout << "\n=== Tether Begin ===" << std::endl;
+    ecs::World world;
+    systems::TetherDockingSystem sys(&world);
+    sys.createArm("arm1", "station1");
+
+    assertTrue(sys.beginTether("arm1", "capital_ship"), "Tether started");
+    assertTrue(sys.isOccupied("arm1"), "Arm occupied");
+    assertTrue(sys.getTetheredShip("arm1") == "capital_ship", "Correct ship tethered");
+    assertTrue(sys.getArmState("arm1") ==
+               components::TetherDockingArm::ArmState::Extending, "Arm extending");
+}
+
+void testTetherExtendToLock() {
+    std::cout << "\n=== Tether Extend to Lock ===" << std::endl;
+    ecs::World world;
+    systems::TetherDockingSystem sys(&world);
+    sys.createArm("arm1", "station1");
+    sys.beginTether("arm1", "capital_ship");
+
+    // Run enough time for the arm to fully extend (default 0.5/s → 2 seconds).
+    sys.update(3.0f);
+
+    assertTrue(sys.getArmState("arm1") ==
+               components::TetherDockingArm::ArmState::Locked, "Arm locked after extending");
+    assertTrue(sys.isCrewTransferEnabled("arm1"), "Crew transfer enabled when locked");
+    assertTrue(approxEqual(sys.getExtendProgress("arm1"), 1.0f), "Fully extended");
+}
+
+void testTetherUndockRetract() {
+    std::cout << "\n=== Tether Undock Retract ===" << std::endl;
+    ecs::World world;
+    systems::TetherDockingSystem sys(&world);
+    sys.createArm("arm1", "station1");
+    sys.beginTether("arm1", "capital_ship");
+    sys.update(3.0f); // Lock
+
+    assertTrue(sys.beginUndock("arm1"), "Undock started");
+    assertTrue(!sys.isCrewTransferEnabled("arm1"), "Crew transfer disabled during retract");
+    assertTrue(sys.getArmState("arm1") ==
+               components::TetherDockingArm::ArmState::Retracting, "Arm retracting");
+
+    sys.update(3.0f); // Retract
+
+    assertTrue(sys.getArmState("arm1") ==
+               components::TetherDockingArm::ArmState::Retracted, "Arm retracted");
+    assertTrue(!sys.isOccupied("arm1"), "Arm empty after retraction");
+    assertTrue(sys.getTetheredShip("arm1").empty(), "No ship tethered");
+}
+
+void testTetherDoubleOccupy() {
+    std::cout << "\n=== Tether Double Occupy ===" << std::endl;
+    ecs::World world;
+    systems::TetherDockingSystem sys(&world);
+    sys.createArm("arm1", "station1");
+    sys.beginTether("arm1", "ship_a");
+
+    assertTrue(!sys.beginTether("arm1", "ship_b"), "Can't tether second ship");
+}
+
+void testTetherUndockOnlyWhenLocked() {
+    std::cout << "\n=== Tether Undock Only When Locked ===" << std::endl;
+    ecs::World world;
+    systems::TetherDockingSystem sys(&world);
+    sys.createArm("arm1", "station1");
+    sys.beginTether("arm1", "capital_ship");
+
+    // Still extending, not locked yet.
+    sys.update(0.5f);
+    assertTrue(!sys.beginUndock("arm1"), "Can't undock while extending");
+}
+
+void testTetherPartialExtend() {
+    std::cout << "\n=== Tether Partial Extend ===" << std::endl;
+    ecs::World world;
+    systems::TetherDockingSystem sys(&world);
+    sys.createArm("arm1", "station1");
+    sys.beginTether("arm1", "capital_ship");
+
+    sys.update(1.0f); // 0.5 progress/s * 1.0s = 0.5 progress
+    float progress = sys.getExtendProgress("arm1");
+    assertTrue(progress > 0.4f && progress < 0.6f, "Partially extended at ~0.5");
+    assertTrue(!sys.isCrewTransferEnabled("arm1"), "No crew transfer while extending");
+}
+
+void testTetherComponentDefaults() {
+    std::cout << "\n=== Tether Component Defaults ===" << std::endl;
+    components::TetherDockingArm arm;
+    assertTrue(arm.state == components::TetherDockingArm::ArmState::Retracted, "Default retracted");
+    assertTrue(!arm.isOccupied(), "Default not occupied");
+    assertTrue(arm.isFullyRetracted(), "Default fully retracted");
+    assertTrue(!arm.isFullyExtended(), "Default not extended");
+    assertTrue(arm.station_shield_active, "Shield active by default");
+    assertTrue(!arm.crew_transfer_enabled, "Crew transfer disabled by default");
+}
+
+// ==================== FPS Spawn System Tests ====================
+
+void testFPSSpawnCreate() {
+    std::cout << "\n=== FPS Spawn Create ===" << std::endl;
+    ecs::World world;
+    systems::FPSSpawnSystem sys(&world);
+
+    assertTrue(sys.createSpawnPoint("spawn1", "station1",
+                                     components::FPSSpawnPoint::SpawnContext::Hangar,
+                                     10.0f, 0.0f, 2.0f, 90.0f),
+               "Spawn point created");
+    assertTrue(!sys.createSpawnPoint("spawn1", "station1",
+                                      components::FPSSpawnPoint::SpawnContext::Hangar,
+                                      0, 0, 0),
+               "Duplicate spawn fails");
+}
+
+void testFPSSpawnTransform() {
+    std::cout << "\n=== FPS Spawn Transform ===" << std::endl;
+    ecs::World world;
+    systems::FPSSpawnSystem sys(&world);
+    sys.createSpawnPoint("spawn1", "station1",
+                         components::FPSSpawnPoint::SpawnContext::Hangar,
+                         10.0f, 5.0f, 2.0f, 90.0f);
+
+    auto [x, y, z, yaw] = sys.getSpawnTransform("spawn1");
+    assertTrue(approxEqual(x, 10.0f), "Spawn X");
+    assertTrue(approxEqual(y, 5.0f), "Spawn Y");
+    assertTrue(approxEqual(z, 2.0f), "Spawn Z");
+    assertTrue(approxEqual(yaw, 90.0f), "Spawn Yaw");
+}
+
+void testFPSSpawnContext() {
+    std::cout << "\n=== FPS Spawn Context ===" << std::endl;
+    ecs::World world;
+    systems::FPSSpawnSystem sys(&world);
+    sys.createSpawnPoint("spawn1", "station1",
+                         components::FPSSpawnPoint::SpawnContext::TetherAirlock,
+                         0, 0, 0);
+
+    assertTrue(sys.getSpawnContext("spawn1") ==
+               components::FPSSpawnPoint::SpawnContext::TetherAirlock,
+               "Context is TetherAirlock");
+}
+
+void testFPSSpawnActivation() {
+    std::cout << "\n=== FPS Spawn Activation ===" << std::endl;
+    ecs::World world;
+    systems::FPSSpawnSystem sys(&world);
+    sys.createSpawnPoint("spawn1", "station1",
+                         components::FPSSpawnPoint::SpawnContext::Hangar,
+                         0, 0, 0);
+
+    assertTrue(sys.setSpawnActive("spawn1", false), "Deactivate succeeds");
+    assertTrue(sys.setSpawnActive("spawn1", true), "Reactivate succeeds");
+    assertTrue(!sys.setSpawnActive("nonexistent", false), "Nonexistent fails");
+}
+
+void testFPSSpawnFindForDockedPlayer() {
+    std::cout << "\n=== FPS Spawn Find For Docked Player ===" << std::endl;
+    ecs::World world;
+    systems::FPSSpawnSystem sys(&world);
+
+    // Create station and player.
+    world.createEntity("station1");
+    auto* player = world.createEntity("player1");
+    auto docked = std::make_unique<components::Docked>();
+    docked->station_id = "station1";
+    player->addComponent(std::move(docked));
+
+    // Create a hangar owned by this player at the station.
+    auto* hangarEnt = world.createEntity("hangar1");
+    auto hangarComp = std::make_unique<components::StationHangar>();
+    hangarComp->station_id = "station1";
+    hangarComp->owner_id = "player1";
+    hangarEnt->addComponent(std::move(hangarComp));
+
+    // Create hangar and lobby spawn points.
+    sys.createSpawnPoint("sp_hangar", "station1",
+                         components::FPSSpawnPoint::SpawnContext::Hangar,
+                         10.0f, 0.0f, 2.0f);
+    sys.createSpawnPoint("sp_lobby", "station1",
+                         components::FPSSpawnPoint::SpawnContext::StationLobby,
+                         0.0f, 0.0f, 0.0f);
+
+    std::string spawn = sys.findSpawnForPlayer("player1");
+    assertTrue(spawn == "sp_hangar", "Docked player with hangar spawns in hangar");
+}
+
+void testFPSSpawnFindForDockedPlayerNoHangar() {
+    std::cout << "\n=== FPS Spawn Find For Docked Player (No Hangar) ===" << std::endl;
+    ecs::World world;
+    systems::FPSSpawnSystem sys(&world);
+
+    world.createEntity("station1");
+    auto* player = world.createEntity("player1");
+    auto docked = std::make_unique<components::Docked>();
+    docked->station_id = "station1";
+    player->addComponent(std::move(docked));
+
+    // Only a lobby spawn, no hangar.
+    sys.createSpawnPoint("sp_lobby", "station1",
+                         components::FPSSpawnPoint::SpawnContext::StationLobby,
+                         0.0f, 0.0f, 0.0f);
+
+    std::string spawn = sys.findSpawnForPlayer("player1");
+    assertTrue(spawn == "sp_lobby", "Docked player without hangar spawns in lobby");
+}
+
+void testFPSSpawnContextNames() {
+    std::cout << "\n=== FPS Spawn Context Names ===" << std::endl;
+    assertTrue(systems::FPSSpawnSystem::contextName(
+        components::FPSSpawnPoint::SpawnContext::Hangar) == "Hangar", "Hangar name");
+    assertTrue(systems::FPSSpawnSystem::contextName(
+        components::FPSSpawnPoint::SpawnContext::StationLobby) == "StationLobby", "StationLobby name");
+    assertTrue(systems::FPSSpawnSystem::contextName(
+        components::FPSSpawnPoint::SpawnContext::ShipBridge) == "ShipBridge", "ShipBridge name");
+    assertTrue(systems::FPSSpawnSystem::contextName(
+        components::FPSSpawnPoint::SpawnContext::TetherAirlock) == "TetherAirlock", "TetherAirlock name");
+    assertTrue(systems::FPSSpawnSystem::contextName(
+        components::FPSSpawnPoint::SpawnContext::EVAHatch) == "EVAHatch", "EVAHatch name");
+}
+
+void testFPSSpawnComponentDefaults() {
+    std::cout << "\n=== FPS Spawn Component Defaults ===" << std::endl;
+    components::FPSSpawnPoint sp;
+    assertTrue(sp.context == components::FPSSpawnPoint::SpawnContext::Hangar, "Default context Hangar");
+    assertTrue(sp.is_active, "Default active");
+    assertTrue(approxEqual(sp.pos_x, 0.0f), "Default pos_x 0");
+    assertTrue(approxEqual(sp.yaw, 0.0f), "Default yaw 0");
+}
+
 int main() {
     std::cout << "========================================" << std::endl;
     std::cout << "Nova Forge C++ Server System Tests" << std::endl;
@@ -21712,6 +22335,26 @@ int main() {
     testDamageStateScalesWithClass();
     testDamageStateLevelNames();
 
+    // Procedural Texture Generator tests
+    testTextureGeneration();
+    testTextureDeterminism();
+    testTextureFactionPalettes();
+    testTextureMaterialByFaction();
+    testTextureScalesWithClass();
+    testTextureEngineGlowFaction();
+    testTextureMarkingTypeNames();
+    testTextureAllClassesValid();
+
+    // Shield Effect Generator tests
+    testShieldEffectGeneration();
+    testShieldEffectDeterminism();
+    testShieldPatternByFaction();
+    testShieldScalesWithClass();
+    testShieldColorByFaction();
+    testShieldImpactRipples();
+    testShieldPatternNames();
+    testShieldAllClassesValid();
+
     // Economy-Driven Generator tests
     testEconomyFleetGeneration();
     testEconomyFleetDeterminism();
@@ -21960,6 +22603,40 @@ int main() {
     testViewModeCancel();
     testViewModeProgress();
     testViewModeNames();
+
+    // Station Hangar System tests
+    testHangarCreate();
+    testHangarStoreShip();
+    testHangarRetrieveShip();
+    testHangarUpgrade();
+    testHangarMaxUpgrade();
+    testHangarRentalAccrual();
+    testHangarShouldUseHangarFrigate();
+    testHangarShouldUseTetherCapital();
+    testHangarShouldUseTetherTitan();
+    testHangarSpawnPosition();
+    testHangarDuplicateShip();
+    testHangarComponentDefaults();
+
+    // Tether Docking System tests
+    testTetherArmCreate();
+    testTetherBeginTether();
+    testTetherExtendToLock();
+    testTetherUndockRetract();
+    testTetherDoubleOccupy();
+    testTetherUndockOnlyWhenLocked();
+    testTetherPartialExtend();
+    testTetherComponentDefaults();
+
+    // FPS Spawn System tests
+    testFPSSpawnCreate();
+    testFPSSpawnTransform();
+    testFPSSpawnContext();
+    testFPSSpawnActivation();
+    testFPSSpawnFindForDockedPlayer();
+    testFPSSpawnFindForDockedPlayerNoHangar();
+    testFPSSpawnContextNames();
+    testFPSSpawnComponentDefaults();
 
     std::cout << "\n========================================" << std::endl;
     std::cout << "Results: " << testsPassed << "/" << testsRun << " tests passed" << std::endl;
