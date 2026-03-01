@@ -4,6 +4,8 @@
 
 namespace atlas::animation {
 
+static constexpr float kPi = 3.14159265358979323846f;
+
 // --- ClipNode ---
 
 std::vector<AnimPort> ClipNode::Inputs() const {
@@ -21,18 +23,19 @@ void ClipNode::Evaluate(const AnimContext& /*ctx*/, const std::vector<AnimValue>
     }
 
     // Normalize time to [0, 1] range within clip
-    float normalizedTime = std::fmod(time, clipLength) / clipLength;
+    float safeLength = (clipLength > 0.0f) ? clipLength : 1.0f;
+    float normalizedTime = std::fmod(time, safeLength) / safeLength;
 
     // Generate a simple procedural pose: 4 bone transforms as (x, y, z, rotation)
     outputs.resize(1);
     outputs[0].type = AnimPinType::Pose;
     outputs[0].data = {
         normalizedTime,                                  // bone 0 x
-        std::sin(normalizedTime * 3.14159f),             // bone 0 y
+        std::sin(normalizedTime * kPi),             // bone 0 y
         0.0f,                                            // bone 0 z
         normalizedTime * 360.0f,                         // bone 0 rotation
         -normalizedTime,                                 // bone 1 x
-        std::cos(normalizedTime * 3.14159f),             // bone 1 y
+        std::cos(normalizedTime * kPi),             // bone 1 y
         0.0f,                                            // bone 1 z
         normalizedTime * 180.0f                          // bone 1 rotation
     };
@@ -159,7 +162,7 @@ void StateMachineNode::Evaluate(const AnimContext& ctx, const std::vector<AnimVa
     outputs[0].type = AnimPinType::Pose;
     outputs[0].data = {
         phase,
-        std::sin(phase * 3.14159f) * (1.0f - blendTime),
+        std::sin(phase * kPi) * (1.0f - blendTime),
         0.0f,
         phase * 90.0f * (stateIndex + 1)
     };

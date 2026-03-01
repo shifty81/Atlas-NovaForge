@@ -2,6 +2,8 @@
 
 namespace atlas::camera {
 
+static constexpr float kPi = 3.14159265358979323846f;
+
 void Camera::SetMode(CameraMode mode) {
     m_mode = mode;
 }
@@ -69,8 +71,8 @@ float Camera::GetPitch() const {
 }
 
 Vec3 Camera::GetForward() const {
-    float yawRad = m_yaw * 3.14159265f / 180.0f;
-    float pitchRad = m_pitch * 3.14159265f / 180.0f;
+    float yawRad = m_yaw * kPi / 180.0f;
+    float pitchRad = m_pitch * kPi / 180.0f;
     return Vec3{
         std::cos(pitchRad) * std::sin(yawRad),
         std::sin(pitchRad),
@@ -79,7 +81,7 @@ Vec3 Camera::GetForward() const {
 }
 
 Vec3 Camera::GetRight() const {
-    float yawRad = m_yaw * 3.14159265f / 180.0f;
+    float yawRad = m_yaw * kPi / 180.0f;
     return Vec3{
         std::cos(yawRad),
         0.0f,
@@ -106,8 +108,8 @@ void Camera::Orbit(float deltaYaw, float deltaPitch) {
     m_pitch = std::clamp(m_pitch + deltaPitch, -89.0f, 89.0f);
 
     if (m_mode == CameraMode::Orbital) {
-        float yawRad = m_yaw * 3.14159265f / 180.0f;
-        float pitchRad = m_pitch * 3.14159265f / 180.0f;
+        float yawRad = m_yaw * kPi / 180.0f;
+        float pitchRad = m_pitch * kPi / 180.0f;
         m_position.x = m_target.x + m_orbitalRadius * std::cos(pitchRad) * std::sin(yawRad);
         m_position.y = m_target.y + m_orbitalRadius * std::sin(pitchRad);
         m_position.z = m_target.z + m_orbitalRadius * std::cos(pitchRad) * std::cos(yawRad);
