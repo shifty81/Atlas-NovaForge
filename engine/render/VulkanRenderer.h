@@ -189,7 +189,7 @@ public:
     void DrawBorder(const ui::UIRect& rect, int32_t thickness, const ui::UIColor& color) override;
     void DrawImage(const ui::UIRect& rect, uint32_t textureId, const ui::UIColor& tint) override;
 
-    void SetViewport(int32_t width, int32_t height);
+    void SetViewport(int32_t width, int32_t height) override;
 
     const std::vector<VkDrawCommand>& DrawCommands() const;
     size_t DrawCommandCount() const;

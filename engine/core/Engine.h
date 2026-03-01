@@ -119,6 +119,9 @@ public:
 private:
     void ProcessWindowEvents();
     void PerformAutosaveIfNeeded(uint64_t tickCount);
+    void TickSimulation();
+    void UpdateUI();
+    void RenderFrame();
 
     EngineConfig m_config;
     bool m_running = false;

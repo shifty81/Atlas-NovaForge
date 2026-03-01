@@ -188,6 +188,7 @@ add_executable(AtlasTests
     test_next_tasks_phase18.cpp
     test_next_tasks_phase19.cpp
     test_next_tasks_phase20.cpp
+    test_next_tasks_phase21.cpp
     test_editor_ui_fix.cpp
     test_gui_interaction_fix.cpp
     test_gui_new_widgets.cpp

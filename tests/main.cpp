@@ -1013,6 +1013,9 @@ void register_next_tasks_phase18();
 // Phase 20: DesyncReproducer, QoSScheduler, ServerAssetValidator
 void register_next_tasks_phase20();
 
+// Phase 21: Cleanup & Alignment
+void register_next_tasks_phase21();
+
 // Panel Draw() implementations
 void register_panel_draw_impl_tests();
 
@@ -2124,6 +2127,9 @@ int main() {
 
     // Phase 20: DesyncReproducer, QoSScheduler, ServerAssetValidator
     register_next_tasks_phase20();
+
+    // Phase 21: Cleanup & Alignment
+    register_next_tasks_phase21();
 
     // Engine Input Routing (moved before panel draw tests to avoid pre-existing crash)
     std::cout << "\n--- Engine Input Routing ---" << std::endl;
