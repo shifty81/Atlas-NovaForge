@@ -3943,6 +3943,56 @@ public:
     COMPONENT_TYPE(InteriorDoor)
 };
 
+// ==================== EVA Airlock ====================
+
+/**
+ * @brief EVA airlock state for transitioning between interior and space
+ *
+ * Manages the multi-step EVA exit/entry sequence:
+ *   1. Enter airlock chamber
+ *   2. Inner door seals
+ *   3. Chamber depressurizes
+ *   4. Outer door opens
+ *   5. Player exits into space (EVA mode)
+ *
+ * Re-entry reverses the sequence. The player must have a suit with
+ * sufficient oxygen to perform EVA.
+ */
+class EVAAirlockState : public ecs::Component {
+public:
+    enum class Phase {
+        Idle = 0,              // No EVA in progress
+        EnterChamber = 1,      // Player entering airlock chamber
+        InnerSeal = 2,         // Inner door sealing
+        Depressurize = 3,      // Chamber depressurizing
+        OuterOpen = 4,         // Outer door opening
+        EVAActive = 5,         // Player is in space (EVA)
+        OuterSeal = 6,         // Outer door sealing (re-entry)
+        Repressurize = 7,      // Chamber repressurizing
+        InnerOpen = 8,         // Inner door opening (re-entry)
+        Complete = 9           // Sequence complete
+    };
+
+    std::string airlock_id;
+    std::string ship_id;           // Parent ship/station
+    std::string player_id;         // Player currently using the airlock
+
+    int phase = 0;                 // Phase enum as int
+    float phase_progress = 0.0f;   // 0..1 progress through current phase
+    float phase_duration = 2.0f;   // Seconds per phase step
+
+    float chamber_pressure = 1.0f; // 0=vacuum, 1=normal atmosphere
+    bool inner_door_open = false;
+    bool outer_door_open = false;
+
+    float min_suit_oxygen = 10.0f;  // Minimum oxygen to allow EVA
+    bool suit_check_passed = false;
+
+    bool abort_requested = false;
+
+    COMPONENT_TYPE(EVAAirlockState)
+};
+
 } // namespace components
 } // namespace atlas
 
