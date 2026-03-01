@@ -26,8 +26,12 @@ void FleetSquadSystem::update(float /*delta_time*/) {
 
         // Recalculate effectiveness: 1.0 + 0.05 * (member_count - 1), clamped to [0.0, 2.0]
         int count = static_cast<int>(sq->member_ids.size());
-        float eff = 1.0f + 0.05f * static_cast<float>(count - 1);
-        sq->effectiveness = std::clamp(eff, 0.0f, 2.0f);
+        if (count == 0) {
+            sq->effectiveness = 0.0f;
+        } else {
+            float eff = 1.0f + 0.05f * static_cast<float>(count - 1);
+            sq->effectiveness = std::clamp(eff, 0.0f, 2.0f);
+        }
     }
 }
 

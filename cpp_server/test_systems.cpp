@@ -23785,7 +23785,7 @@ void testTerraformingComplete() {
 
     systems::TerraformingSystem sys(&world);
     sys.startTerraforming("planet1", "kepler-442b");
-    // Advance through all 5 stages
+    // Advance through all stages to completion
     sys.advanceStage("planet1"); // -> infrastructure
     sys.advanceStage("planet1"); // -> atmosphere_processing
     sys.advanceStage("planet1"); // -> temperature_regulation
