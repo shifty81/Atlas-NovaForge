@@ -242,6 +242,11 @@ endif()
 set(CLIENT_SOURCES
     src/main.cpp
     src/core/application.cpp
+    src/core/application_rendering.cpp
+    src/core/application_input.cpp
+    src/core/application_entities.cpp
+    src/core/application_movement.cpp
+    src/core/application_state.cpp
     src/core/game_client.cpp
     src/core/embedded_server.cpp
     src/core/session_manager.cpp
