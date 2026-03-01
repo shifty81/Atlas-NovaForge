@@ -61,6 +61,9 @@ public:
     bool IsHeld(InputAction action) const;
     float GetAxis(InputAction action) const;
 
+    /// Returns true if any bound action is currently pressed or held.
+    bool HasActiveInput() const;
+
     void Update();
 
     void SetCallback(InputAction action, std::function<void(const InputState&)> callback);
