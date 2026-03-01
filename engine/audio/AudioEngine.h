@@ -53,12 +53,23 @@ public:
     void SetMasterVolume(float volume);
     float GetMasterVolume() const;
 
+    void SetListenerPosition(float x, float y, float z);
+
+    /// Compute the effective volume for a sound source, accounting for
+    /// master volume and distance-based attenuation from the listener.
+    float EffectiveVolume(SoundID id) const;
+
+    void SetMaxDistance(float dist);
+    float GetMaxDistance() const;
+
     void Update(float dt);
 
 private:
     std::unordered_map<SoundID, SoundSource> m_sounds;
     SoundID m_nextId = 1;
     float m_masterVolume = 1.0f;
+    float m_listenerX = 0.0f, m_listenerY = 0.0f, m_listenerZ = 0.0f;
+    float m_maxDistance = 100.0f;
     bool m_initialized = false;
 };
 

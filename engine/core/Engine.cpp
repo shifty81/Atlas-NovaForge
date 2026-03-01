@@ -33,8 +33,11 @@ void Engine::InitCore() {
     Logger::Info("Engine core initialized");
     m_running = true;
     m_inputManager.Init();
+    m_audioEngine.Init();
     RegisterSystem("Core");
     RegisterSystem("Input");
+    RegisterSystem("Audio");
+    RegisterSystem("Script");
 }
 
 void Engine::InitRender() {
@@ -211,6 +214,12 @@ void Engine::StepSimulationTick() {
 
     // Advance input state after flow graph has consumed it.
     m_inputManager.Update();
+
+    // Execute registered scripts for this tick.
+    m_scriptSystem.ExecuteTick(timeCtx.sim.tick, timeCtx.sim.tick);
+
+    // Update audio (distance attenuation, source management).
+    m_audioEngine.Update(fixedDt);
 
     // Tick the attached game module.
     if (m_gameModule && m_moduleCtx) {
@@ -628,6 +637,7 @@ void Engine::Shutdown() {
         m_gameModule = nullptr;
         m_moduleCtx = nullptr;
         m_inputManager.Shutdown();
+        m_audioEngine.Shutdown();
         m_uiManager.Shutdown();
         m_net.Shutdown();
         m_physics.Shutdown();
