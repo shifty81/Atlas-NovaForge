@@ -9,8 +9,12 @@
 #include "../engine/flow/GameFlowGraph.h"
 #include "../engine/flow/GameFlowNodes.h"
 #include "../engine/input/InputManager.h"
+#include "../engine/audio/AudioEngine.h"
+#include "../engine/script/ScriptSystem.h"
+#include "../engine/script/ScriptVM.h"
 #include <iostream>
 #include <cassert>
+#include <cmath>
 
 using namespace atlas;
 
@@ -489,4 +493,189 @@ void test_engine_frame_pacing_restored() {
     assert(engine.GetScheduler().FramePacingEnabled());
 
     std::cout << "[PASS] test_engine_frame_pacing_restored" << std::endl;
+}
+
+// --- AudioEngine is accessible and initialized ---
+
+void test_engine_audio_accessible() {
+    EngineConfig cfg;
+    cfg.mode = EngineMode::Server;
+    cfg.tickRate = 60;
+    cfg.maxTicks = 1;
+
+    Engine engine(cfg);
+    engine.InitCore();
+    engine.InitECS();
+    engine.InitNetworking();
+    engine.GetScheduler().SetFramePacing(false);
+
+    auto& audio = engine.GetAudioEngine();
+
+    // Engine should have initialized the audio engine
+    auto id = audio.LoadSound("test_sfx");
+    assert(audio.HasSound(id));
+    assert(audio.SoundCount() == 1);
+
+    // Master volume defaults to 1.0
+    assert(audio.GetMasterVolume() == 1.0f);
+
+    std::cout << "[PASS] test_engine_audio_accessible" << std::endl;
+}
+
+// --- AudioEngine is updated during simulation tick ---
+
+void test_engine_audio_ticked() {
+    EngineConfig cfg;
+    cfg.mode = EngineMode::Server;
+    cfg.tickRate = 60;
+    cfg.maxTicks = 3;
+
+    Engine engine(cfg);
+    engine.InitCore();
+    engine.InitECS();
+    engine.InitNetworking();
+    engine.GetScheduler().SetFramePacing(false);
+
+    auto& audio = engine.GetAudioEngine();
+    auto id = audio.LoadSound("ambient");
+    audio.Play(id);
+    audio.SetPosition(id, 0.0f, 0.0f, 0.0f);
+    audio.SetListenerPosition(0.0f, 0.0f, 0.0f);
+
+    engine.Run();
+
+    // Sound should still be playing after ticks (Update() doesn't stop it)
+    assert(audio.GetState(id) == audio::SoundState::Playing);
+    // Effective volume at zero distance should be full
+    float vol = audio.EffectiveVolume(id);
+    assert(vol > 0.99f);
+
+    std::cout << "[PASS] test_engine_audio_ticked" << std::endl;
+}
+
+// --- AudioEngine distance attenuation ---
+
+void test_engine_audio_distance_attenuation() {
+    EngineConfig cfg;
+    cfg.mode = EngineMode::Server;
+
+    Engine engine(cfg);
+    engine.InitCore();
+
+    auto& audio = engine.GetAudioEngine();
+    auto id = audio.LoadSound("distant");
+    audio.Play(id);
+    audio.SetPosition(id, 50.0f, 0.0f, 0.0f);
+    audio.SetListenerPosition(0.0f, 0.0f, 0.0f);
+    audio.SetMaxDistance(100.0f);
+
+    // At 50 units with max distance 100, attenuation = 0.5
+    float vol = audio.EffectiveVolume(id);
+    assert(std::abs(vol - 0.5f) < 0.01f);
+
+    // Beyond max distance, effective volume should be 0
+    audio.SetPosition(id, 200.0f, 0.0f, 0.0f);
+    vol = audio.EffectiveVolume(id);
+    assert(vol == 0.0f);
+
+    std::cout << "[PASS] test_engine_audio_distance_attenuation" << std::endl;
+}
+
+// --- ScriptSystem is accessible ---
+
+void test_engine_script_accessible() {
+    EngineConfig cfg;
+    cfg.mode = EngineMode::Server;
+    cfg.tickRate = 60;
+    cfg.maxTicks = 1;
+
+    Engine engine(cfg);
+    engine.InitCore();
+    engine.InitECS();
+    engine.InitNetworking();
+    engine.GetScheduler().SetFramePacing(false);
+
+    auto& scriptSys = engine.GetScriptSystem();
+    assert(scriptSys.ScriptCount() == 0);
+
+    // Register a simple script: PUSH_INT 42, HALT
+    script::CompiledScript cs;
+    cs.name = "test_script";
+    cs.deterministicDeclared = true;
+    cs.replaySafe = true;
+    cs.constants.push_back(script::ScriptValue(int64_t(42)));
+    cs.code.push_back({script::Opcode::PUSH_INT, 0});
+    cs.code.push_back({script::Opcode::HALT, 0});
+    cs.sourceHash = 0xABCD;
+
+    scriptSys.RegisterScript(cs);
+    assert(scriptSys.ScriptCount() == 1);
+
+    std::cout << "[PASS] test_engine_script_accessible" << std::endl;
+}
+
+// --- ScriptSystem is executed during simulation tick ---
+
+void test_engine_script_ticked() {
+    EngineConfig cfg;
+    cfg.mode = EngineMode::Server;
+    cfg.tickRate = 60;
+    cfg.maxTicks = 3;
+
+    Engine engine(cfg);
+    engine.InitCore();
+    engine.InitECS();
+    engine.InitNetworking();
+    engine.GetScheduler().SetFramePacing(false);
+
+    auto& scriptSys = engine.GetScriptSystem();
+
+    // Build a simple script: load atlas_tick, store into last_tick, halt
+    script::CompiledScript cs;
+    cs.name = "tick_tracker";
+    cs.deterministicDeclared = true;
+    cs.replaySafe = true;
+    cs.constants.push_back(script::ScriptValue(std::string("atlas_tick")));  // index 0
+    cs.constants.push_back(script::ScriptValue(std::string("last_tick")));   // index 1
+    cs.code.push_back({script::Opcode::LOAD_VAR, 0});   // load atlas_tick
+    cs.code.push_back({script::Opcode::STORE_VAR, 1});   // store last_tick
+    cs.code.push_back({script::Opcode::HALT, 0});
+    cs.sourceHash = 0x1234;
+
+    scriptSys.RegisterScript(cs);
+
+    engine.Run();
+
+    // After 3 ticks, the script should have executed and stored the last tick
+    auto& vm = scriptSys.GetVM();
+    auto lastTick = vm.GetVariable("last_tick");
+    // The tick should be > 0 (it was set by the script reading atlas_tick)
+    assert(lastTick.intVal > 0);
+    assert(scriptSys.TotalStepsThisTick() > 0);
+
+    std::cout << "[PASS] test_engine_script_ticked" << std::endl;
+}
+
+// --- Audio and Script systems appear in execution order ---
+
+void test_engine_system_order_audio_script() {
+    EngineConfig cfg;
+    cfg.mode = EngineMode::Server;
+
+    Engine engine(cfg);
+    engine.InitCore();
+    engine.InitECS();
+    engine.InitNetworking();
+
+    const auto& order = engine.SystemExecutionOrder();
+    bool foundAudio = false;
+    bool foundScript = false;
+    for (const auto& name : order) {
+        if (name == "Audio") foundAudio = true;
+        if (name == "Script") foundScript = true;
+    }
+    assert(foundAudio);
+    assert(foundScript);
+
+    std::cout << "[PASS] test_engine_system_order_audio_script" << std::endl;
 }

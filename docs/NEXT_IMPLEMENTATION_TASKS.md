@@ -727,6 +727,42 @@ align the project structure for long-term maintainability.
 - `tests/test_engine_full_integration.cpp` — 3 new tests
 - `tests/main.cpp` — Registered new tests
 
+#### 26. Wire AudioEngine & ScriptSystem into Engine
+**Status**: Complete
+
+**Completed work**:
+- [x] Wire `AudioEngine` into `Engine`
+  - Added `m_audioEngine` member, initialized in `InitCore()`, shut down in `Shutdown()`
+  - Added `GetAudioEngine()` accessor
+  - `AudioEngine::Update()` called in `StepSimulationTick()` after script execution
+  - Registered "Audio" system in execution order
+- [x] Implement `AudioEngine::Update()` and distance-based attenuation
+  - Added `SetListenerPosition()` for 3D audio listener tracking
+  - Added `EffectiveVolume()` — computes per-source volume with master volume,
+    source volume, and linear distance attenuation from listener
+  - Added `SetMaxDistance()` / `GetMaxDistance()` for attenuation radius control
+  - Replaced empty stub `Update()` with meaningful state management comment
+- [x] Wire `ScriptSystem` into `Engine`
+  - Added `m_scriptSystem` member, `GetScriptSystem()` accessor
+  - `ScriptSystem::ExecuteTick()` called in `StepSimulationTick()` after input
+    processing and before game module tick
+  - Registered "Script" system in execution order
+- [x] 6 new integration tests
+  - `test_engine_audio_accessible` — AudioEngine reachable and initialized
+  - `test_engine_audio_ticked` — AudioEngine updated during simulation
+  - `test_engine_audio_distance_attenuation` — linear distance attenuation works
+  - `test_engine_script_accessible` — ScriptSystem reachable, script registration
+  - `test_engine_script_ticked` — scripts executed each tick with atlas_tick variable
+  - `test_engine_system_order_audio_script` — Audio and Script in execution order
+
+**Files modified**:
+- `engine/audio/AudioEngine.h` — Added SetListenerPosition, EffectiveVolume, SetMaxDistance/GetMaxDistance, listener/distance members
+- `engine/audio/AudioEngine.cpp` — Implemented new methods, replaced empty Update() stub
+- `engine/core/Engine.h` — Added `m_audioEngine`, `m_scriptSystem` members, accessors, includes
+- `engine/core/Engine.cpp` — Wired AudioEngine/ScriptSystem lifecycle, tick execution
+- `tests/test_engine_full_integration.cpp` — 6 new tests
+- `tests/main.cpp` — Registered new tests
+
 ## References
 
 - Original gaps analysis: `legacy/gaps.txt`

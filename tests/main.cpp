@@ -1416,6 +1416,12 @@ void test_engine_client_ticks_module();
 void test_engine_input_manager_accessible();
 void test_engine_flow_input_routing();
 void test_engine_frame_pacing_restored();
+void test_engine_audio_accessible();
+void test_engine_audio_ticked();
+void test_engine_audio_distance_attenuation();
+void test_engine_script_accessible();
+void test_engine_script_ticked();
+void test_engine_system_order_audio_script();
 
 // Launcher Screen tests
 void test_launcher_initial_state();
@@ -3536,6 +3542,12 @@ int main() {
     test_engine_input_manager_accessible();
     test_engine_flow_input_routing();
     test_engine_frame_pacing_restored();
+    test_engine_audio_accessible();
+    test_engine_audio_ticked();
+    test_engine_audio_distance_attenuation();
+    test_engine_script_accessible();
+    test_engine_script_ticked();
+    test_engine_system_order_audio_script();
 
     // Launcher Screen
     std::cout << "\n--- Launcher Screen ---" << std::endl;

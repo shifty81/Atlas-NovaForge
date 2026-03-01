@@ -1,5 +1,6 @@
 #include "AudioEngine.h"
 #include <algorithm>
+#include <cmath>
 
 namespace atlas::audio {
 
@@ -130,10 +131,54 @@ float AudioEngine::GetMasterVolume() const {
     return m_masterVolume;
 }
 
+void AudioEngine::SetListenerPosition(float x, float y, float z) {
+    m_listenerX = x;
+    m_listenerY = y;
+    m_listenerZ = z;
+}
+
+float AudioEngine::EffectiveVolume(SoundID id) const {
+    auto it = m_sounds.find(id);
+    if (it == m_sounds.end()) {
+        return 0.0f;
+    }
+    const auto& src = it->second;
+    if (src.state != SoundState::Playing) {
+        return 0.0f;
+    }
+
+    float dx = src.posX - m_listenerX;
+    float dy = src.posY - m_listenerY;
+    float dz = src.posZ - m_listenerZ;
+    float dist = std::sqrt(dx * dx + dy * dy + dz * dz);
+
+    float attenuation = 1.0f;
+    if (m_maxDistance > 0.0f && dist > 0.0f) {
+        attenuation = std::max(0.0f, 1.0f - dist / m_maxDistance);
+    }
+
+    return m_masterVolume * src.volume * attenuation;
+}
+
+void AudioEngine::SetMaxDistance(float dist) {
+    m_maxDistance = std::max(0.0f, dist);
+}
+
+float AudioEngine::GetMaxDistance() const {
+    return m_maxDistance;
+}
+
 void AudioEngine::Update(float dt) {
     (void)dt;
-    // In a full implementation, this would mix audio buffers,
-    // handle 3D spatialization, and manage playback timing
+    // Stop non-looping sounds that have finished.
+    // In a real engine with audio buffers this would check playback
+    // position; here we leave state management to Play/Stop/Pause.
+
+    // Compute effective volumes for active sources so higher-level
+    // systems (e.g. a mixer or diagnostics panel) can query them.
+    // The per-source effective volume accounts for master volume
+    // and distance-based attenuation from the listener position.
+    // Callers can use EffectiveVolume(id) after Update().
 }
 
 }

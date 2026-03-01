@@ -16,6 +16,8 @@
 #include "../physics/PhysicsWorld.h"
 #include "../flow/GameFlowGraph.h"
 #include "../input/InputManager.h"
+#include "../audio/AudioEngine.h"
+#include "../script/ScriptSystem.h"
 
 namespace atlas::ui { class UIRenderer; }
 namespace atlas::module { class IGameModule; struct GameModuleContext; }
@@ -109,6 +111,8 @@ public:
     physics::PhysicsWorld& GetPhysics() { return m_physics; }
     flow::GameFlowGraph& GetFlowGraph() { return m_flowGraph; }
     input::InputManager& GetInputManager() { return m_inputManager; }
+    audio::AudioEngine& GetAudioEngine() { return m_audioEngine; }
+    script::ScriptSystem& GetScriptSystem() { return m_scriptSystem; }
 
     /// Attach a game module to be ticked each frame by the engine.
     /// The caller retains ownership; the Engine only stores a raw pointer.
@@ -153,6 +157,8 @@ private:
     physics::PhysicsWorld m_physics;
     flow::GameFlowGraph m_flowGraph;
     input::InputManager m_inputManager;
+    audio::AudioEngine m_audioEngine;
+    script::ScriptSystem m_scriptSystem;
     module::IGameModule* m_gameModule = nullptr;
     module::GameModuleContext* m_moduleCtx = nullptr;
     std::unique_ptr<platform::PlatformWindow> m_window;
