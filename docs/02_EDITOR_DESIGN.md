@@ -16,42 +16,65 @@ application — not a mode of the client — built as a superset of the runtime.
 
 ### Implemented ✅
 
-- **UI Framework** — EditorPanel base class, DockNode, EditorLayout manager
+- **UI Framework** — EditorPanel base class, DockNode, EditorLayout manager, LayoutPersistence
 - **Console Panel** — Command parsing (`spawn_entity`, `ecs.dump`, `set tickrate`, `net.mode`, `help`)
 - **World Graph Panel** — Node palette, canvas, inspector, and profiler sections
 - **Project Picker Panel** — Project selection with recent projects list
 - **Voice Command Panel** — Voice command processing and intent dispatch
 - **Interaction Debugger Panel** — Logs interactions (speaker, text, intent, confidence)
 - **Net Inspector Panel** — Network state debugging (mode, peers, RTT, bandwidth)
-- **Game Packager Panel** — Build target/mode UI (scaffolded, no build logic yet)
-- **Editor Assistant** — Routes intents for explanations (interface only)
+- **Game Packager Panel** — Build wired to `GamePackager::Package()` with `AssetCooker` + `BuildProfile`
+- **Editor Assistant** — Router with LLM backend integration, falls back to hardcoded responses
+- **ECS Inspector Panel** — Entity list with component types, summary view, mutation tracking
+- **Asset Browser Panel** — Registry scanning, filtering, sorting, selection with UIDrawList rendering
+- **Profiler Panel** — Frame timing history, system metrics, average/peak
+- **Replay Timeline Panel** — Markers, divergence detection, frame branching, input viewer
+- **State Hash Diff Panel** — Hash comparison, component breakdown, divergence detail
+- **Job Trace Panel** — Execution order, determinism checking, mismatch highlighting
+- **Save File Browser Panel** — Directory scanning, file metadata, selection
+- **Proof Viewer Panel** — TLA+ syntax highlighting, tokenizer
+- **CI Dashboard Panel** — Pipeline runs, check results, pass/fail tracking
+- **Mesh Viewer Panel** — Mesh loading, view modes, vertex selection, bounds
+- **Material Editor Panel** — Material parameters, preview mode, dirty tracking
+- **Prefab Editor Panel** — Entity hierarchy, components, drag-and-drop composition
+- **Quest Editor Panel** — Node graph, connections, preview mode, export/import
+- **Inventory Editor Panel** — Items, filtering, sorting, export/import
+- **AI Debugger Panel** — AI diagnostics, severity filtering, fix application, LLM integration
+- **AI Diff Viewer Panel** — Hunk accept/reject workflow
+- **Atlas Assistant Panel** — Prompt/suggestion UI framework
+- **Desync Visualizer Panel** — Live desync event display with field-level detail
+- **Game Mechanics UI Panel** — Elements, preview, export/import
+- **Interaction Debug Panel** — UI interaction debugging
+- **Tile Palette Panel** — Tile selection and painting
+- **Rule Graph Editor Panel** — Rule graph editing with UIDrawList rendering
+- **Truth UI Panel** — Aggregated simulation control, hash inspection, replay timeline, job trace
+- **Play-In-Editor** — Simulate, Pause, Step, Possess Entity, Client-Server Loopback, State Restore
+- **Tile Editor Module** — Paint, Erase, Select, LayerEdit, RuleEdit modes with brush/rect/flood fill
+- **AI Aggregator** — Multi-backend routing, best-response selection
+- **Template AI Backend** — Offline template-based responses
+- **Asset Graph Assistant** — LLM-powered suggestions, explanations, mutations
+- **Layout Persistence** — Save/restore panel arrangement to/from JSON
+- **Launcher Screen** — Project scanning, selection, and confirmation
 
-- **ECS Inspector Panel** — Entity list with component types and summary view
+## Editor Capabilities
 
-### Not Yet Implemented ⬜
-
-- **Graph Editor Panel** — Stub exists (no visual graph editing logic)
-- **Asset Browser** — Not implemented
-- **AI Asset Generation** — AIAggregator interface exists, no LLM integration
-
-## Editor Capabilities (Current)
-
-- Panel docking and layout management
+- Panel docking and layout management with persistence
 - Console command execution
-- World graph visualization
-- Project loading and switching
+- World graph visualization and editing
+- Project loading, switching, and launcher screen
 - Voice command testing
 - Interaction debugging
 - Network state monitoring
-
-## Editor Capabilities (Planned)
-
-- Scene editing
-- Live simulation preview
+- Live simulation preview (Play-In-Editor)
 - Graph-based mechanics authoring
-- Network testing (P2P, dedicated server loopback)
-- AI-assisted content generation
+- AI-assisted content generation (with LLM backend support)
 - Hot reload visualization
+- Determinism debugging (state hash diff, job trace, desync visualization)
+- Replay inspection and timeline scrubbing
+- Asset browsing and mesh/material/prefab editing
+- Quest and inventory editing
+- Tile painting with brush, rectangle, and flood fill modes
+- Game packaging with asset cooking and build profiles
 
 ## Default Layout
 
@@ -81,19 +104,37 @@ Everything can be rearranged and saved.
 | Project Picker | ✅ Implemented | Project selection and recent list |
 | Voice Commands | ✅ Implemented | Voice testing and intent dispatch |
 | Interaction Debugger | ✅ Implemented | Interaction logging and analysis |
-| Net Inspector | ✅ Implemented | Network topology and stats |
-| Game Packager | 🔧 Scaffolded | Build UI exists, no functional logic |
-| ECS Inspector | ✅ Implemented | Entity list, component types, summary |
-| Graph Editor | ⬜ Stub | Not yet implemented |
-| Asset Browser | ⬜ Missing | Not yet created |
-| Profiler | ⬜ Planned | Not yet created |
+| Net Inspector | ✅ Implemented | Network topology, peers, RTT |
+| Game Packager | ✅ Implemented | Build wired to AssetCooker + BuildProfile |
+| ECS Inspector | ✅ Implemented | Entity list, components, mutation tracking |
+| Asset Browser | ✅ Implemented | Registry scanning, filtering, sorting |
+| Profiler | ✅ Implemented | Frame timing, system metrics, average/peak |
+| Replay Timeline | ✅ Implemented | Markers, divergence, frame branching |
+| State Hash Diff | ✅ Implemented | Hash comparison, divergence detail |
+| Job Trace | ✅ Implemented | Execution order, determinism checking |
+| Save File Browser | ✅ Implemented | Directory scanning, file metadata |
+| Proof Viewer | ✅ Implemented | TLA+ syntax highlighting, tokenizer |
+| CI Dashboard | ✅ Implemented | Pipeline runs, check results |
+| Mesh Viewer | ✅ Implemented | 3D preview, wireframe, vertex selection |
+| Material Editor | ✅ Implemented | Shader parameters, preview, dirty tracking |
+| Prefab Editor | ✅ Implemented | Entity hierarchy, components, composition |
+| Quest Editor | ✅ Implemented | Node graph, connections, preview |
+| Inventory Editor | ✅ Implemented | Items, filtering, sorting |
+| AI Debugger | ✅ Implemented | AI diagnostics, severity filtering, LLM |
+| AI Diff Viewer | ✅ Implemented | Hunk accept/reject workflow |
+| Atlas Assistant | ✅ Implemented | Prompt/suggestion UI framework |
+| Desync Visualizer | ✅ Implemented | Live desync events with field detail |
+| Game Mechanics UI | ✅ Implemented | Elements, preview, export/import |
+| Tile Palette | ✅ Implemented | Tile selection and painting |
+| Rule Graph Editor | ✅ Implemented | Rule graph editing |
+| Truth UI | ✅ Implemented | Aggregated sim control and debugging |
 
-## Play-In-Editor Modes (Planned)
+## Play-In-Editor Modes
 
-- Simulate (no player)
-- Possess Entity
-- Client-Server Loopback
-- P2P Test Session
+- ✅ Simulate (no player)
+- ✅ Possess Entity
+- ✅ Client-Server Loopback
+- ✅ Pause / Step / State Restore
 
 ## Extended Design
 
