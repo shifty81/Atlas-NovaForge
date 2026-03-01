@@ -7,6 +7,7 @@
 // consider a full JSON library.
 
 #include <string>
+#include <vector>
 
 namespace atlas {
 namespace json {
@@ -178,9 +179,14 @@ inline std::string extractObject(const std::string& json,
     if (pos == std::string::npos) return "";
 
     int depth = 0;
+    bool in_str = false;
     for (size_t i = pos; i < json.size(); ++i) {
-        if (json[i] == '{') ++depth;
-        else if (json[i] == '}') {
+        char c = json[i];
+        if (c == '\\' && in_str) { ++i; continue; }
+        if (c == '\"') { in_str = !in_str; continue; }
+        if (in_str) continue;
+        if (c == '{') ++depth;
+        else if (c == '}') {
             --depth;
             if (depth == 0) {
                 return json.substr(pos, i - pos + 1);
@@ -189,6 +195,50 @@ inline std::string extractObject(const std::string& json,
     }
 
     return "";
+}
+
+/// Extract a JSON array for a given key: "key":[...]
+inline std::string extractArray(const std::string& json,
+                                const std::string& key) {
+    std::string search = "\"" + key + "\"";
+    size_t pos = json.find(search);
+    if (pos == std::string::npos) return "";
+
+    pos = json.find('[', pos + search.size());
+    if (pos == std::string::npos) return "";
+
+    int depth = 0;
+    bool in_str = false;
+    for (size_t i = pos; i < json.size(); ++i) {
+        char c = json[i];
+        if (c == '\\' && in_str) { ++i; continue; }
+        if (c == '\"') { in_str = !in_str; continue; }
+        if (in_str) continue;
+        if (c == '[') ++depth;
+        else if (c == ']') {
+            --depth;
+            if (depth == 0) {
+                return json.substr(pos, i - pos + 1);
+            }
+        }
+    }
+
+    return "";
+}
+
+/// Parse a JSON array of strings: ["a","b","c"]
+inline std::vector<std::string> parseStringArray(const std::string& arr) {
+    std::vector<std::string> result;
+    size_t pos = 0;
+    while (pos < arr.size()) {
+        size_t qs = arr.find('\"', pos);
+        if (qs == std::string::npos) break;
+        size_t qe = arr.find('\"', qs + 1);
+        if (qe == std::string::npos) break;
+        result.push_back(arr.substr(qs + 1, qe - qs - 1));
+        pos = qe + 1;
+    }
+    return result;
 }
 
 } // namespace json

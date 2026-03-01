@@ -104,14 +104,6 @@ private:
 
     int loadClasses(const std::string& filepath);
     int loadEffects(const std::string& filepath);
-
-    // Lightweight JSON helpers (reused from ShipDatabase pattern)
-    static std::string extractString(const std::string& json, const std::string& key);
-    static float extractFloat(const std::string& json, const std::string& key, float fallback = 0.0f);
-    static int extractInt(const std::string& json, const std::string& key, int fallback = 0);
-    static std::string extractBlock(const std::string& json, const std::string& key);
-    static std::string extractArray(const std::string& json, const std::string& key);
-    static std::vector<std::string> parseStringArray(const std::string& arr);
 };
 
 } // namespace data

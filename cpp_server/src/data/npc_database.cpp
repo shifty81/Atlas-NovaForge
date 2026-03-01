@@ -9,6 +9,10 @@
 namespace atlas {
 namespace data {
 
+using json::extractString;
+using json::extractFloat;
+using json::extractInt;
+
 // ---------------------------------------------------------------------------
 // Public interface
 // ---------------------------------------------------------------------------
@@ -203,23 +207,23 @@ bool NpcDatabase::parseNpcEntry(const std::string& id, const std::string& json) 
     }
 
     // Resistances – stored as percentage (0-100) in JSON, convert to 0.0-1.0
-    std::string resist_block = extractBlock(json, "resistances");
+    std::string resist_block = json::extractObject(json, "resistances");
     if (!resist_block.empty()) {
-        std::string shield_block = extractBlock(resist_block, "shield");
+        std::string shield_block = json::extractObject(resist_block, "shield");
         if (!shield_block.empty()) {
             npc.shield_resists.em        = extractFloat(shield_block, "em", 0.0f) / 100.0f;
             npc.shield_resists.thermal   = extractFloat(shield_block, "thermal", 0.0f) / 100.0f;
             npc.shield_resists.kinetic   = extractFloat(shield_block, "kinetic", 0.0f) / 100.0f;
             npc.shield_resists.explosive = extractFloat(shield_block, "explosive", 0.0f) / 100.0f;
         }
-        std::string armor_block = extractBlock(resist_block, "armor");
+        std::string armor_block = json::extractObject(resist_block, "armor");
         if (!armor_block.empty()) {
             npc.armor_resists.em        = extractFloat(armor_block, "em", 0.0f) / 100.0f;
             npc.armor_resists.thermal   = extractFloat(armor_block, "thermal", 0.0f) / 100.0f;
             npc.armor_resists.kinetic   = extractFloat(armor_block, "kinetic", 0.0f) / 100.0f;
             npc.armor_resists.explosive = extractFloat(armor_block, "explosive", 0.0f) / 100.0f;
         }
-        std::string hull_block = extractBlock(resist_block, "hull");
+        std::string hull_block = json::extractObject(resist_block, "hull");
         if (!hull_block.empty()) {
             npc.hull_resists.em        = extractFloat(hull_block, "em", 0.0f) / 100.0f;
             npc.hull_resists.thermal   = extractFloat(hull_block, "thermal", 0.0f) / 100.0f;
@@ -254,48 +258,6 @@ bool NpcDatabase::parseNpcEntry(const std::string& id, const std::string& json) 
 
     npcs_[id] = std::move(npc);
     return true;
-}
-
-// ---------------------------------------------------------------------------
-// Lightweight JSON helpers
-// ---------------------------------------------------------------------------
-
-std::string NpcDatabase::extractString(const std::string& json, const std::string& key) {
-    return atlas::json::extractString(json, key);
-}
-
-float NpcDatabase::extractFloat(const std::string& json, const std::string& key, float fallback) {
-    return atlas::json::extractFloat(json, key, fallback);
-}
-
-int NpcDatabase::extractInt(const std::string& json, const std::string& key, int fallback) {
-    return atlas::json::extractInt(json, key, fallback);
-}
-
-std::string NpcDatabase::extractBlock(const std::string& json, const std::string& key) {
-    std::string search = "\"" + key + "\"";
-    size_t pos = json.find(search);
-    if (pos == std::string::npos) return "";
-
-    pos = json.find('{', pos + search.size());
-    if (pos == std::string::npos) return "";
-
-    int depth = 0;
-    size_t end = pos;
-    bool in_str = false;
-    for (size_t i = pos; i < json.size(); ++i) {
-        char c = json[i];
-        if (c == '\\' && in_str) { ++i; continue; }
-        if (c == '\"') { in_str = !in_str; continue; }
-        if (in_str) continue;
-        if (c == '{') ++depth;
-        if (c == '}') {
-            --depth;
-            if (depth == 0) { end = i; break; }
-        }
-    }
-
-    return json.substr(pos, end - pos + 1);
 }
 
 } // namespace data
