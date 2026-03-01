@@ -134,7 +134,7 @@ void Engine::InitEditor() {
     // Create the editor viewport framebuffer for offscreen scene rendering.
     // This fixes the GUI issue where the scene would render directly to the
     // swapchain backbuffer (appearing behind the editor UI) instead of into
-    // the viewport panel.  See gui_issues.txt for the full diagnosis.
+    // the viewport panel.  See legacy/gui_issues.txt for the full diagnosis.
     //
     // When an OpenGL context is available, use a real FBO so the scene can
     // be rendered into a texture and displayed inside the viewport panel.
@@ -187,6 +187,44 @@ void Engine::PerformAutosaveIfNeeded(uint64_t tickCount) {
     }
 }
 
+void Engine::TickSimulation() {
+    m_scheduler.Tick([this](float /*dt*/) {
+        m_timeModel.AdvanceTick();
+        const auto& timeCtx = m_timeModel.Context();
+        m_world.Update(timeCtx.sim.fixedDeltaTime);
+    });
+}
+
+void Engine::UpdateUI() {
+    ui::UIContext uiCtx{};
+    if (m_window) {
+        uiCtx.screenWidth = static_cast<float>(m_window->Width());
+        uiCtx.screenHeight = static_cast<float>(m_window->Height());
+    }
+    const auto& timeCtx = m_timeModel.Context();
+    uiCtx.deltaTime = timeCtx.sim.fixedDeltaTime;
+    uiCtx.tick = static_cast<uint32_t>(timeCtx.sim.tick);
+    m_uiManager.Update(uiCtx);
+    m_uiManager.GetTooltipManager().Update(m_mouseX, m_mouseY,
+                                            timeCtx.sim.fixedDeltaTime);
+}
+
+void Engine::RenderFrame() {
+    if (!m_renderer || !m_window || !m_window->IsOpen()) return;
+
+    m_renderer->BeginFrame();
+    m_uiManager.Render(m_renderer.get());
+    ui::UIContext overlayCtx{};
+    overlayCtx.screenWidth = static_cast<float>(m_window->Width());
+    overlayCtx.screenHeight = static_cast<float>(m_window->Height());
+    overlayCtx.deltaTime = m_timeModel.Context().sim.fixedDeltaTime;
+    overlayCtx.tick = static_cast<uint32_t>(m_timeModel.Context().sim.tick);
+    ui::DiagnosticsOverlay::Render(m_renderer.get(), overlayCtx, 1.0f,
+                                   m_mouseX, m_mouseY);
+    m_renderer->EndFrame();
+    m_window->SwapBuffers();
+}
+
 void Engine::ProcessWindowEvents() {
     if (!m_window) return;
 
@@ -198,18 +236,7 @@ void Engine::ProcessWindowEvents() {
                 break;
             case platform::WindowEvent::Type::Resize:
                 if (m_renderer) {
-#if !defined(__linux__) || defined(ATLAS_HAS_X11)
-                    if (m_config.renderAPI == render::RenderAPI::OpenGL) {
-                        static_cast<render::GLRenderer*>(m_renderer.get())
-                            ->SetViewport(event.width, event.height);
-                    } else {
-                        static_cast<render::VulkanRenderer*>(m_renderer.get())
-                            ->SetViewport(event.width, event.height);
-                    }
-#else
-                    static_cast<render::VulkanRenderer*>(m_renderer.get())
-                        ->SetViewport(event.width, event.height);
-#endif
+                    m_renderer->SetViewport(event.width, event.height);
                 }
                 // Resize the editor viewport framebuffer to match
                 if (m_viewportFB && event.width > 0 && event.height > 0) {
@@ -336,54 +363,27 @@ void Engine::RunEditor() {
     while (m_running) {
         ProcessWindowEvents();
         m_net.Poll();
-        m_scheduler.Tick([this](float dt) {
-            m_timeModel.AdvanceTick();
-            const auto& timeCtx = m_timeModel.Context();
-            m_world.Update(timeCtx.sim.fixedDeltaTime);
-            ui::UIContext uiCtx{};
-            if (m_window) {
-                uiCtx.screenWidth = static_cast<float>(m_window->Width());
-                uiCtx.screenHeight = static_cast<float>(m_window->Height());
-            }
-            uiCtx.deltaTime = timeCtx.sim.fixedDeltaTime;
-            uiCtx.tick = static_cast<uint32_t>(timeCtx.sim.tick);
-            m_uiManager.Update(uiCtx);
-            m_uiManager.GetTooltipManager().Update(m_mouseX, m_mouseY,
-                                                    timeCtx.sim.fixedDeltaTime);
-        });
+        TickSimulation();
+        UpdateUI();
 
-        if (m_renderer && m_window && m_window->IsOpen()) {
-            // -------------------------------------------------------
-            // PASS 1: Render scene into the viewport framebuffer
-            // -------------------------------------------------------
-            // This fixes the root cause identified in gui_issues.txt:
-            // the scene was previously rendered directly to the swapchain
-            // backbuffer, appearing behind the editor UI.  By rendering
-            // into an offscreen framebuffer first, the viewport panel can
-            // display the scene as a textured quad.
-            if (m_viewportFB && m_viewportFB->IsValid()) {
-                m_viewportFB->Bind();
-                // Scene rendering would go here (world, editor camera, etc.)
-                m_viewportFB->Unbind();
-            }
-
-            // -------------------------------------------------------
-            // PASS 2: Render editor UI to the swapchain backbuffer
-            // -------------------------------------------------------
-            m_renderer->BeginFrame();
-            m_uiManager.Render(m_renderer.get());
-            ui::UIContext overlayCtx{};
-            if (m_window) {
-                overlayCtx.screenWidth = static_cast<float>(m_window->Width());
-                overlayCtx.screenHeight = static_cast<float>(m_window->Height());
-            }
-            overlayCtx.deltaTime = m_timeModel.Context().sim.fixedDeltaTime;
-            overlayCtx.tick = static_cast<uint32_t>(m_timeModel.Context().sim.tick);
-            ui::DiagnosticsOverlay::Render(m_renderer.get(), overlayCtx, 1.0f,
-                                           m_mouseX, m_mouseY);
-            m_renderer->EndFrame();
-            m_window->SwapBuffers();
+        // -------------------------------------------------------
+        // PASS 1: Render scene into the viewport framebuffer
+        // -------------------------------------------------------
+        // This fixes the root cause identified in legacy/gui_issues.txt:
+        // the scene was previously rendered directly to the swapchain
+        // backbuffer, appearing behind the editor UI.  By rendering
+        // into an offscreen framebuffer first, the viewport panel can
+        // display the scene as a textured quad.
+        if (m_viewportFB && m_viewportFB->IsValid()) {
+            m_viewportFB->Bind();
+            // Scene rendering would go here (world, editor camera, etc.)
+            m_viewportFB->Unbind();
         }
+
+        // -------------------------------------------------------
+        // PASS 2: Render editor UI to the swapchain backbuffer
+        // -------------------------------------------------------
+        RenderFrame();
 
         tickCount++;
         if (m_config.maxTicks > 0 && tickCount >= m_config.maxTicks) {
@@ -398,40 +398,11 @@ void Engine::RunClient() {
     while (m_running) {
         ProcessWindowEvents();
         m_net.Poll();
-        m_scheduler.Tick([this](float dt) {
-            m_timeModel.AdvanceTick();
-            const auto& timeCtx = m_timeModel.Context();
-            m_world.Update(timeCtx.sim.fixedDeltaTime);
-            ui::UIContext uiCtx{};
-            if (m_window) {
-                uiCtx.screenWidth = static_cast<float>(m_window->Width());
-                uiCtx.screenHeight = static_cast<float>(m_window->Height());
-            }
-            uiCtx.deltaTime = timeCtx.sim.fixedDeltaTime;
-            uiCtx.tick = static_cast<uint32_t>(timeCtx.sim.tick);
-            m_uiManager.Update(uiCtx);
-            m_uiManager.GetTooltipManager().Update(m_mouseX, m_mouseY,
-                                                    timeCtx.sim.fixedDeltaTime);
-        });
-
-        if (m_renderer && m_window && m_window->IsOpen()) {
-            m_renderer->BeginFrame();
-            m_uiManager.Render(m_renderer.get());
-            ui::UIContext overlayCtx{};
-            if (m_window) {
-                overlayCtx.screenWidth = static_cast<float>(m_window->Width());
-                overlayCtx.screenHeight = static_cast<float>(m_window->Height());
-            }
-            overlayCtx.deltaTime = m_timeModel.Context().sim.fixedDeltaTime;
-            overlayCtx.tick = static_cast<uint32_t>(m_timeModel.Context().sim.tick);
-            ui::DiagnosticsOverlay::Render(m_renderer.get(), overlayCtx, 1.0f,
-                                           m_mouseX, m_mouseY);
-            m_renderer->EndFrame();
-            m_window->SwapBuffers();
-        }
+        TickSimulation();
+        UpdateUI();
+        RenderFrame();
 
         tickCount++;
-
         PerformAutosaveIfNeeded(tickCount);
 
         if (m_config.maxTicks > 0 && tickCount >= m_config.maxTicks) {

@@ -640,10 +640,38 @@ This document tracks the remaining implementation tasks to complete the vision o
 - `engine/abi/ABIRegistry.cpp` — Discovery and binding
 - `docs/21_BINARY_COMPATIBILITY.md` — Documentation
 
+### Phase 21: Cleanup & Alignment (Code Quality)
+
+**Goal:** Remove accumulated tech-debt, eliminate spaghetti code patterns, and
+align the project structure for long-term maintainability.
+
+- [x] Move root-level clutter files to `legacy/` directory
+  - `gaps.txt`, `gui21.txt`, `gui_issues.txt`, `implement please`, `projectupdate`, `aiimp`
+  - `From old repo/` directory
+- [x] Eliminate unsafe `static_cast` downcasts in `Engine::ProcessWindowEvents`
+  - Added virtual `SetViewport()` to `UIRenderer` base class
+  - `GLRenderer` and `VulkanRenderer` now `override` the virtual method
+- [x] Extract duplicated code in `Engine::RunEditor` / `Engine::RunClient`
+  - New `Engine::TickSimulation()` — pure simulation tick (no UI)
+  - New `Engine::UpdateUI()` — UI context update (separate from sim tick)
+  - New `Engine::RenderFrame()` — shared render + swap logic
+- [x] Separate UI update from simulation tick callback
+  - Previously UI was updated inside `m_scheduler.Tick()` lambda
+  - Now simulation and presentation are clearly separated
+- [x] Add Phase 21 test file (`test_next_tasks_phase21.cpp`)
+
+**Files changed:**
+- `engine/ui/UIRenderer.h` — Added virtual `SetViewport` to base class
+- `engine/render/GLRenderer.h` — `SetViewport` marked `override`
+- `engine/render/VulkanRenderer.h` — `SetViewport` marked `override`
+- `engine/core/Engine.h` — Added `TickSimulation`, `UpdateUI`, `RenderFrame` helpers
+- `engine/core/Engine.cpp` — Refactored RunEditor/RunClient, removed downcasts
+- Root cleanup — Moved 6 files + 1 directory to `legacy/`
+
 ## References
 
-- Original gaps analysis: `gaps.txt`
-- Asset importing plan: `implement please`
-- Project structure plan: `projectupdate`
+- Original gaps analysis: `legacy/gaps.txt`
+- Asset importing plan: `legacy/implement please`
+- Project structure plan: `legacy/projectupdate`
 - Core contract: `docs/ATLAS_CORE_CONTRACT.md`
 - Determinism enforcement: `docs/ATLAS_DETERMINISM_ENFORCEMENT.md`

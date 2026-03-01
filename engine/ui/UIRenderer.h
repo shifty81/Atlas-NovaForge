@@ -30,6 +30,8 @@ public:
     virtual void DrawIcon(const UIRect& rect, uint32_t iconId, const UIColor& tint) = 0;
     virtual void DrawBorder(const UIRect& rect, int32_t thickness, const UIColor& color) = 0;
     virtual void DrawImage(const UIRect& rect, uint32_t textureId, const UIColor& tint) = 0;
+
+    virtual void SetViewport(int32_t width, int32_t height) { (void)width; (void)height; }
 };
 
 class NullUIRenderer : public UIRenderer {
