@@ -406,6 +406,10 @@ private:
     static constexpr float DEFAULT_ORBIT_DISTANCE      = 500.0f;   // Meters
     static constexpr float DEFAULT_KEEP_AT_RANGE       = 2500.0f;  // Meters
     static constexpr float DEFAULT_PLAYER_MAX_SPEED    = 250.0f;   // m/s
+
+    // ── Input thresholds ───────────────────────────────────────────
+    static constexpr double MAX_DRAG_THRESHOLD_PX      = 10.0;     // Pixels — max mouse drift to still open radial menu
+    static constexpr float  MAX_FPS_INTERACTION_RANGE   = 4.0f;    // Meters — max distance to interact on foot
 };
 
 } // namespace atlas

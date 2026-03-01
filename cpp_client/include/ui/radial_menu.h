@@ -221,6 +221,7 @@ private:
     static constexpr float OUTER_RADIUS = 100.0f;  // Menu outer radius
     static constexpr float ICON_RADIUS = 65.0f;    // Where icons/labels are drawn
     static constexpr float MAX_RANGE_RADIUS = 180.0f; // Max drag radius for range selection
+    static constexpr float TEXT_CENTER_OFFSET_Y = 6.0f; // Half-height offset to vertically center text
 };
 
 } // namespace UI

@@ -330,7 +330,7 @@ void RadialMenu::RenderAtlas(atlas::AtlasContext& ctx) {
     if (m_fpsMode && !m_displayName.empty()) {
         float nameW = r.measureText(m_displayName.c_str());
         r.drawText(m_displayName.c_str(),
-                   {center.x - nameW * 0.5f, center.y - 5.0f},
+                   {center.x - nameW * 0.5f, center.y - TEXT_CENTER_OFFSET_Y},
                    accentTeal);
     }
 
@@ -375,7 +375,7 @@ void RadialMenu::RenderAtlas(atlas::AtlasContext& ctx) {
                                  : highlighted ? accentTeal
                                  : t.textPrimary;
         r.drawText(seg.label,
-                   {labelX - textW * 0.5f, labelY - 6.0f},
+                   {labelX - textW * 0.5f, labelY - TEXT_CENTER_OFFSET_Y},
                    labelColor);
     }
 

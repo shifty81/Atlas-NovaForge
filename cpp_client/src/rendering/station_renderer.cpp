@@ -402,9 +402,10 @@ std::shared_ptr<Mesh> StationRenderer::createAurelianStation() {
         }
         
         for (int ring = 0; ring < podRings; ring++) {
+            const int podStride = podSegments + 1;
             for (int seg = 0; seg < podSegments; seg++) {
-                int current = baseIdx + ring * (podSegments + 1) + seg;
-                int next = current + (podSegments + 1);
+                int current = baseIdx + ring * podStride + seg;
+                int next = current + podStride;
                 
                 indices.push_back(current);
                 indices.push_back(next);

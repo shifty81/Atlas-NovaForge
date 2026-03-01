@@ -281,7 +281,7 @@ void Application::handleMouseMove(double x, double y, double deltaX, double delt
             double dist = std::sqrt(dx * dx + dy * dy);
             
             // Only open if not dragging significantly
-            if (dist < 10.0) {
+            if (dist < MAX_DRAG_THRESHOLD_PX) {
                 // ── FPS mode: open context-aware FPS radial menu ───────
                 if (m_gameState == GameState::StationInterior ||
                     m_gameState == GameState::ShipInterior) {
@@ -293,7 +293,7 @@ void Application::handleMouseMove(double x, double y, double deltaX, double delt
                     // Pick the nearest interactable entity from the crosshair
                     auto entities = m_gameClient->getEntityManager().getAllEntities();
                     std::string nearestId;
-                    float nearestDist = 4.0f; // 4m max FPS interaction range
+                    float nearestDist = MAX_FPS_INTERACTION_RANGE;
                     UI::RadialMenu::InteractionContext fpsCtx =
                         UI::RadialMenu::InteractionContext::None;
                     std::string fpsDisplayName;
