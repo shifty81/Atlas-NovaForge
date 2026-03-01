@@ -37,6 +37,14 @@ set(SERVER_SOURCES
     src/main.cpp
     src/server.cpp
     src/game_session.cpp
+    src/game_session_network.cpp
+    src/game_session_entities.cpp
+    src/game_session_combat.cpp
+    src/game_session_utils.cpp
+    src/game_session_stations.cpp
+    src/game_session_movement.cpp
+    src/game_session_scanning.cpp
+    src/game_session_missions.cpp
     src/network/tcp_server.cpp
     src/network/protocol_handler.cpp
     src/config/server_config.cpp
@@ -166,6 +174,10 @@ set(SERVER_SOURCES
     src/data/npc_database.cpp
     src/data/wormhole_database.cpp
     src/data/world_persistence.cpp
+    src/data/world_serializer.cpp
+    src/data/world_deserializer.cpp
+    src/data/persistence_json_utils.cpp
+    src/data/world_persistence_compressed.cpp
     src/pcg/pcg_manager.cpp
     src/pcg/ship_generator.cpp
     src/pcg/fleet_doctrine.cpp
@@ -588,11 +600,23 @@ if(BUILD_TESTS)
         src/systems/environmental_hazard_system.cpp
         src/systems/fps_objective_system.cpp
         src/data/world_persistence.cpp
+        src/data/world_serializer.cpp
+        src/data/world_deserializer.cpp
+        src/data/persistence_json_utils.cpp
+        src/data/world_persistence_compressed.cpp
         src/utils/logger.cpp
         src/utils/server_metrics.cpp
         src/ui/server_console.cpp
         src/server.cpp
         src/game_session.cpp
+        src/game_session_network.cpp
+        src/game_session_entities.cpp
+        src/game_session_combat.cpp
+        src/game_session_utils.cpp
+        src/game_session_stations.cpp
+        src/game_session_movement.cpp
+        src/game_session_scanning.cpp
+        src/game_session_missions.cpp
         src/network/tcp_server.cpp
         src/network/protocol_handler.cpp
         src/config/server_config.cpp
