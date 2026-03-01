@@ -174,6 +174,10 @@ set(SERVER_SOURCES
     src/data/npc_database.cpp
     src/data/wormhole_database.cpp
     src/data/world_persistence.cpp
+    src/data/world_serializer.cpp
+    src/data/world_deserializer.cpp
+    src/data/persistence_json_utils.cpp
+    src/data/world_persistence_compressed.cpp
     src/pcg/pcg_manager.cpp
     src/pcg/ship_generator.cpp
     src/pcg/fleet_doctrine.cpp
@@ -596,6 +600,10 @@ if(BUILD_TESTS)
         src/systems/environmental_hazard_system.cpp
         src/systems/fps_objective_system.cpp
         src/data/world_persistence.cpp
+        src/data/world_serializer.cpp
+        src/data/world_deserializer.cpp
+        src/data/persistence_json_utils.cpp
+        src/data/world_persistence_compressed.cpp
         src/utils/logger.cpp
         src/utils/server_metrics.cpp
         src/ui/server_console.cpp
