@@ -41,9 +41,30 @@
 - Visual testing and validation
 
 🔜 **PLANNED**:
-- Procedural texturing
 - Complete testing suite
 - Performance optimization
+
+✅ **NEWLY COMPLETE** (March 1, 2026):
+- **ProceduralTextureGenerator** (Phase 4 — server-side texture parameter generation)
+  - Deterministic faction color palettes with per-ship variation
+  - PBR material derivation (metalness, roughness, wear, panel depth) by faction + class
+  - Hull marking placement (stripes, registration codes, insignia, hazard paint)
+  - Engine glow parameters (faction-colored, core/halo radius, pulse rate)
+  - Window/running-light distribution (zone-aware, class-scaled count)
+  - UV panel tiling by hull class
+  - 8 test functions, 30 new test assertions
+- **ShieldEffectGenerator** (shield visual parameter generation)
+  - Faction-specific shield patterns (Hexagonal/Smooth/Lattice/Ornate/Ripple)
+  - Faction-colored shield base and hit-flash colors
+  - Shimmer animation parameters (speed, amplitude)
+  - Fresnel edge glow and pattern scale by class
+  - Impact ripple sample generation (origin, intensity, radius, decay, speed)
+  - Shield radius multiplier by hull class
+  - 8 test functions, 32 new test assertions
+- **PCG Infrastructure updates**
+  - New domains: `PCGDomain::Texture`, `PCGDomain::ShieldEffect`
+  - New version entries: `texture_rules_version`, `shield_effect_rules_version`
+  - 62 new test assertions total (3394/3394 server tests passing)
 
 ## Recommended Integration Steps
 
@@ -395,6 +416,6 @@ For questions or issues:
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: February 9, 2026  
-**Status**: Core implementation complete, integration in progress
+**Document Version**: 1.1  
+**Last Updated**: March 1, 2026  
+**Status**: Phase 4 (Procedural Texturing) complete, visual testing in progress

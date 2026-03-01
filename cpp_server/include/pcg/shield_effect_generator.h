@@ -56,12 +56,12 @@ struct GeneratedShieldEffect {
  * @brief Deterministic shield effect generator.
  *
  * Produces all parameters a renderer needs to display a procedural
- * shield bubble.  Faction controls colour and pattern; class controls
+ * shield bubble.  Faction controls color and pattern; class controls
  * scale and density.
  *
  * Generation order:
  *   1. Select pattern from faction design language.
- *   2. Derive base colour (faction palette).
+ *   2. Derive base color (faction palette).
  *   3. Compute shimmer / animation parameters.
  *   4. Compute Fresnel and pattern scale from class.
  *   5. Generate sample impact ripples for testing.

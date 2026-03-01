@@ -12,11 +12,11 @@ namespace atlas {
 namespace pcg {
 
 /**
- * @brief Faction-specific colour palette for ship textures.
+ * @brief Faction-specific color palette for ship textures.
  */
 struct FactionColorPalette {
-    float primary_r,   primary_g,   primary_b;    ///< Main hull colour.
-    float secondary_r, secondary_g, secondary_b;  ///< Accent / trim colour.
+    float primary_r,   primary_g,   primary_b;    ///< Main hull color.
+    float secondary_r, secondary_g, secondary_b;  ///< Accent / trim color.
     float accent_r,    accent_g,    accent_b;      ///< Detail highlights.
     float emissive_r,  emissive_g,  emissive_b;    ///< Engine glow / windows.
 };
@@ -100,7 +100,7 @@ struct GeneratedTextureParams {
  * always yields the same output.
  *
  * Generation order:
- *   1. Select faction colour palette (with per-ship variation).
+ *   1. Select faction color palette (with per-ship variation).
  *   2. Derive PBR material properties from faction + class.
  *   3. Place hull markings (stripes, insignia, registration).
  *   4. Generate engine glow parameters.
@@ -114,14 +114,14 @@ public:
                                            HullClass hull,
                                            const std::string& faction);
 
-    /** Get the base colour palette for a faction (no per-ship variation). */
+    /** Get the base color palette for a faction (no per-ship variation). */
     static FactionColorPalette basePalette(const std::string& faction);
 
     /** Human-readable marking type name. */
     static std::string markingTypeName(MarkingType type);
 
 private:
-    static FactionColorPalette derivepalette(DeterministicRNG& rng,
+    static FactionColorPalette derivePalette(DeterministicRNG& rng,
                                              const std::string& faction);
     static HullMaterialParams  deriveMaterial(DeterministicRNG& rng,
                                               HullClass hull,

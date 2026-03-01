@@ -44,7 +44,7 @@ FactionColorPalette ProceduralTextureGenerator::basePalette(
 
 // ── Per-ship palette variation ──────────────────────────────────────
 
-FactionColorPalette ProceduralTextureGenerator::derivepalette(
+FactionColorPalette ProceduralTextureGenerator::derivePalette(
         DeterministicRNG& rng, const std::string& faction) {
 
     FactionColorPalette pal = basePalette(faction);
@@ -148,7 +148,7 @@ std::vector<HullMarking> ProceduralTextureGenerator::generateMarkings(
         m.width      = rng.rangeFloat(0.05f, 0.25f);
         m.height     = rng.rangeFloat(0.02f, 0.15f);
 
-        // Use the accent colour with slight variation.
+        // Use the accent color with slight variation.
         m.color_r = std::max(0.0f, std::min(1.0f,
                     pal.accent_r + rng.rangeFloat(-0.1f, 0.1f)));
         m.color_g = std::max(0.0f, std::min(1.0f,
@@ -169,7 +169,7 @@ EngineGlowParams ProceduralTextureGenerator::generateEngineGlow(
 
     EngineGlowParams glow{};
 
-    // Faction-specific glow colour.
+    // Faction-specific glow color.
     if (faction == "Solari" || faction == "Amarr") {
         glow.color_r = 1.0f;
         glow.color_g = rng.rangeFloat(0.75f, 0.90f);
@@ -280,7 +280,7 @@ GeneratedTextureParams ProceduralTextureGenerator::generate(
     result.hull_class = hull;
 
     // 1. Palette.
-    result.palette = derivepalette(rng, faction);
+    result.palette = derivePalette(rng, faction);
 
     // 2. Material.
     result.material = deriveMaterial(rng, hull, faction);

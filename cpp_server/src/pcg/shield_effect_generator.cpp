@@ -42,7 +42,7 @@ ShieldPattern ShieldEffectGenerator::selectPattern(
     else                   return ShieldPattern::Ripple;
 }
 
-// ── Base shield colour ──────────────────────────────────────────────
+// ── Base shield color ──────────────────────────────────────────────
 
 void ShieldEffectGenerator::deriveBaseColor(
         DeterministicRNG& rng, const std::string& faction,
@@ -71,12 +71,12 @@ void ShieldEffectGenerator::deriveBaseColor(
     }
 }
 
-// ── Hit flash colour ────────────────────────────────────────────────
+// ── Hit flash color ────────────────────────────────────────────────
 
 void ShieldEffectGenerator::deriveHitFlashColor(
         DeterministicRNG& rng, const std::string& faction,
         float& r, float& g, float& b) {
-    // Hit flash is brighter / whiter version of faction colour.
+    // Hit flash is brighter / whiter version of faction color.
     deriveBaseColor(rng, faction, r, g, b);
     r = std::min(1.0f, r + 0.3f);
     g = std::min(1.0f, g + 0.3f);
@@ -160,13 +160,13 @@ GeneratedShieldEffect ShieldEffectGenerator::generate(
     // 1. Pattern.
     effect.pattern = selectPattern(rng, faction);
 
-    // 2. Base colour.
+    // 2. Base color.
     deriveBaseColor(rng, faction,
                     effect.base_color_r,
                     effect.base_color_g,
                     effect.base_color_b);
 
-    // 3. Hit flash colour.
+    // 3. Hit flash color.
     deriveHitFlashColor(rng, faction,
                         effect.hit_flash_color_r,
                         effect.hit_flash_color_g,
