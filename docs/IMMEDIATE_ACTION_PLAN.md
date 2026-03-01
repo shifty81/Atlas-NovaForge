@@ -95,11 +95,11 @@ All 27 baseline server systems are complete with 832/832 tests passing. The proj
 **Why Fourth**: Creates risk/reward for economy  
 **Prerequisites**: AI Miners complete  
 **Work Required**:
-- [ ] Design pirate AI (patrol trade routes, attack haulers)
-- [ ] Implement security response AI (warp to attack, engage pirates)
-- [ ] Add faction standings integration (pirates = -10, security = +10)
-- [ ] Create dynamic spawn system (more pirates → more security)
-- [ ] Add loot drops from destroyed haulers
+- [x] Design pirate AI (patrol trade routes, attack haulers)
+- [x] Implement security response AI (warp to attack, engage pirates)
+- [x] Add faction standings integration (pirates = -10, security = +10)
+- [x] Create dynamic spawn system (more pirates → more security)
+- [x] Add loot drops from destroyed haulers
 
 **Success Criteria**:
 - Pirates attack AI haulers 10% of the time

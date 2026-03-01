@@ -974,6 +974,37 @@ void test_economy_rules_load_multiple();
 void test_economy_rules_load_overwrites_defaults();
 void test_economy_rules_all_bands();
 
+// Pirate Security Coordinator tests
+void test_coordinator_defaults();
+void test_coordinator_wire_state_machines();
+void test_coordinator_add_trade_route();
+void test_coordinator_add_trade_route_duplicate();
+void test_coordinator_remove_trade_route();
+void test_coordinator_remove_trade_route_nonexistent();
+void test_coordinator_track_pirate();
+void test_coordinator_track_guard();
+void test_coordinator_untrack_pirate();
+void test_coordinator_untrack_guard();
+void test_coordinator_pirate_standing();
+void test_coordinator_security_standing();
+void test_coordinator_security_scaling_no_pirates();
+void test_coordinator_security_scaling_with_pirates();
+void test_coordinator_security_scaling_capped();
+void test_coordinator_generate_loot_drop();
+void test_coordinator_clear_loot_drops();
+void test_coordinator_price_impact_increases();
+void test_coordinator_price_impact_decays();
+void test_coordinator_activity_level_no_pirates();
+void test_coordinator_activity_level_with_pirates();
+void test_coordinator_activity_level_manual_set();
+void test_coordinator_sim_time();
+void test_coordinator_pirates_target_low_sec_routes();
+void test_coordinator_security_responds_to_pirates();
+void test_coordinator_hauler_loot_on_pirate_kill();
+void test_coordinator_attack_chance_config();
+void test_coordinator_security_ratio_config();
+void test_coordinator_end_to_end_cycle();
+
 // Engine frame callback tests
 void test_engine_frame_callback_invoked();
 void test_engine_frame_callback_receives_dt();
@@ -2112,6 +2143,38 @@ int main(int argc, char* argv[]) {
     RUN_TEST(test_economy_rules_load_multiple);
     RUN_TEST(test_economy_rules_load_overwrites_defaults);
     RUN_TEST(test_economy_rules_all_bands);
+
+    // Pirate Security Coordinator
+    log.BeginSection("Pirate Security Coordinator");
+    RUN_TEST(test_coordinator_defaults);
+    RUN_TEST(test_coordinator_wire_state_machines);
+    RUN_TEST(test_coordinator_add_trade_route);
+    RUN_TEST(test_coordinator_add_trade_route_duplicate);
+    RUN_TEST(test_coordinator_remove_trade_route);
+    RUN_TEST(test_coordinator_remove_trade_route_nonexistent);
+    RUN_TEST(test_coordinator_track_pirate);
+    RUN_TEST(test_coordinator_track_guard);
+    RUN_TEST(test_coordinator_untrack_pirate);
+    RUN_TEST(test_coordinator_untrack_guard);
+    RUN_TEST(test_coordinator_pirate_standing);
+    RUN_TEST(test_coordinator_security_standing);
+    RUN_TEST(test_coordinator_security_scaling_no_pirates);
+    RUN_TEST(test_coordinator_security_scaling_with_pirates);
+    RUN_TEST(test_coordinator_security_scaling_capped);
+    RUN_TEST(test_coordinator_generate_loot_drop);
+    RUN_TEST(test_coordinator_clear_loot_drops);
+    RUN_TEST(test_coordinator_price_impact_increases);
+    RUN_TEST(test_coordinator_price_impact_decays);
+    RUN_TEST(test_coordinator_activity_level_no_pirates);
+    RUN_TEST(test_coordinator_activity_level_with_pirates);
+    RUN_TEST(test_coordinator_activity_level_manual_set);
+    RUN_TEST(test_coordinator_sim_time);
+    RUN_TEST(test_coordinator_pirates_target_low_sec_routes);
+    RUN_TEST(test_coordinator_security_responds_to_pirates);
+    RUN_TEST(test_coordinator_hauler_loot_on_pirate_kill);
+    RUN_TEST(test_coordinator_attack_chance_config);
+    RUN_TEST(test_coordinator_security_ratio_config);
+    RUN_TEST(test_coordinator_end_to_end_cycle);
 
     // Engine Frame Callback
     log.BeginSection("Engine Frame Callback");
