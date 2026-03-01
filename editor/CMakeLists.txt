@@ -27,7 +27,19 @@ add_executable(AtlasEditor
     panels/QuestEditorPanel.cpp
     panels/InventoryEditorPanel.cpp
     panels/AIDebuggerPanel.cpp
+    panels/AIDiffViewerPanel.cpp
+    panels/AtlasAssistantPanel.cpp
+    panels/DesyncVisualizerPanel.cpp
+    panels/GameMechanicsUIPanel.cpp
+    panels/JobTracePanel.cpp
+    panels/MaterialEditorPanel.cpp
+    panels/MeshViewerPanel.cpp
+    panels/PrefabEditorPanel.cpp
+    panels/ReplayTimelinePanel.cpp
+    panels/SaveFileBrowserPanel.cpp
+    panels/StateHashDiffPanel.cpp
     ai/AIAggregator.cpp
+    ai/TemplateAIBackend.cpp
 )
 
 target_link_libraries(AtlasEditor AtlasEngine)

@@ -1019,6 +1019,9 @@ void register_next_tasks_phase21();
 // Panel Draw() implementations
 void register_panel_draw_impl_tests();
 
+// Editor Panel Registry (all panels instantiate + draw)
+void register_editor_panel_registry_tests();
+
 // Component Category
 void test_component_category_defaults();
 void test_component_category_simulated();
@@ -4120,6 +4123,9 @@ int main() {
 
     // Script VM and ABI capsule tests
     run_script_and_abi_tests();
+
+    // Editor Panel Registry tests
+    register_editor_panel_registry_tests();
 
     std::cout << "\n=== All tests passed! ===" << std::endl;
     return 0;
