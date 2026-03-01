@@ -12,10 +12,10 @@ namespace atlas::net {
  * Result of a lag-compensated hit test.
  */
 struct HitTestResult {
-    bool     hit       = false;    ///< Whether the target was within range.
-    uint32_t entityId  = 0;       ///< Target entity tested.
-    uint32_t rewindTick = 0;      ///< Tick the state was rewound to.
-    float    distance  = 0.0f;    ///< Distance from origin to rewound position.
+    bool     hit       = false; ///< Whether the target was within range.
+    uint32_t entityId  = 0;    ///< Target entity tested.
+    uint32_t rewindTick = 0;   ///< Tick the state was rewound to.
+    float    distance  = 0.0f; ///< Distance from origin to rewound position.
 };
 
 /**

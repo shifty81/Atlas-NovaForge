@@ -45,20 +45,22 @@ InterpolatedState LagCompensation::GetStateAtTick(uint32_t entityId,
     if (!eh || eh->snapshots.empty()) return result;
 
     const auto& snaps = eh->snapshots;
+    float firstTick = static_cast<float>(snaps.front().tick);
+    float lastTick  = static_cast<float>(snaps.back().tick);
 
     // Before earliest snapshot
-    if (tick <= static_cast<float>(snaps.front().tick)) {
+    if (tick <= firstTick) {
         const auto& s = snaps.front();
         result.posX   = s.posX;
         result.posY   = s.posY;
         result.posZ   = s.posZ;
         result.rotYaw = s.rotYaw;
-        result.valid  = (tick == static_cast<float>(snaps.front().tick));
+        result.valid  = (tick == firstTick);
         return result;
     }
 
     // After latest snapshot
-    if (tick >= static_cast<float>(snaps.back().tick)) {
+    if (tick >= lastTick) {
         const auto& s = snaps.back();
         result.posX   = s.posX;
         result.posY   = s.posY;
