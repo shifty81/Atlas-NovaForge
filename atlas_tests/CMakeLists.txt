@@ -22,6 +22,7 @@ set(ATLAS_TEST_SOURCES
     test_engine.cpp
     test_console.cpp
     test_hud_panels.cpp
+    test_hud_control_ring.cpp
     test_pcg_preview.cpp
     test_lowpoly_character.cpp
     test_character_select.cpp

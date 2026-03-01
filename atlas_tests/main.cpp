@@ -114,6 +114,28 @@ void test_fleet_panel_set_data();
 void test_existing_panel_toggles();
 void test_overview_tab_filter();
 
+// HUD Control Ring tests
+void test_cap_vbar_zero_fraction();
+void test_cap_vbar_full_fraction();
+void test_cap_vbar_half_fraction();
+void test_cap_vbar_clamp_over();
+void test_cap_vbar_clamp_under();
+void test_cap_vbar_single_segment();
+void test_cap_vbar_many_segments();
+void test_cap_vbar_zero_segments();
+void test_vel_arc_stopped();
+void test_vel_arc_full_speed();
+void test_vel_arc_approach_mode();
+void test_vel_arc_orbit_mode();
+void test_vel_arc_keep_range_mode();
+void test_vel_arc_warp_mode();
+void test_vel_arc_clamp_over();
+void test_vel_arc_clamp_under();
+void test_vel_arc_unknown_mode();
+void test_vel_arc_default_mode_param();
+void test_hud_ship_data_with_cap();
+void test_hud_ship_data_warp_state();
+
 // Game State & ViewMode tests
 #ifndef ATLAS_NO_GLM
 void test_camera_default_view_mode();
@@ -1129,6 +1151,29 @@ int main(int argc, char* argv[]) {
     RUN_TEST(test_fleet_panel_set_data);
     RUN_TEST(test_existing_panel_toggles);
     RUN_TEST(test_overview_tab_filter);
+
+    // ── HUD Control Ring tests
+    log.BeginSection("HUD Control Ring");
+    RUN_TEST(test_cap_vbar_zero_fraction);
+    RUN_TEST(test_cap_vbar_full_fraction);
+    RUN_TEST(test_cap_vbar_half_fraction);
+    RUN_TEST(test_cap_vbar_clamp_over);
+    RUN_TEST(test_cap_vbar_clamp_under);
+    RUN_TEST(test_cap_vbar_single_segment);
+    RUN_TEST(test_cap_vbar_many_segments);
+    RUN_TEST(test_cap_vbar_zero_segments);
+    RUN_TEST(test_vel_arc_stopped);
+    RUN_TEST(test_vel_arc_full_speed);
+    RUN_TEST(test_vel_arc_approach_mode);
+    RUN_TEST(test_vel_arc_orbit_mode);
+    RUN_TEST(test_vel_arc_keep_range_mode);
+    RUN_TEST(test_vel_arc_warp_mode);
+    RUN_TEST(test_vel_arc_clamp_over);
+    RUN_TEST(test_vel_arc_clamp_under);
+    RUN_TEST(test_vel_arc_unknown_mode);
+    RUN_TEST(test_vel_arc_default_mode_param);
+    RUN_TEST(test_hud_ship_data_with_cap);
+    RUN_TEST(test_hud_ship_data_warp_state);
 
     // Game State & ViewMode
 #ifndef ATLAS_NO_GLM
