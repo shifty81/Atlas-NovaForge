@@ -53,6 +53,7 @@ set(ATLAS_TEST_SOURCES
     test_universe_map.cpp
     test_ai_profile.cpp
     test_economy_rules.cpp
+    test_pirate_security_coordinator.cpp
     test_engine_frame_callback.cpp
     test_editor_menubar.cpp
     test_data_editors.cpp

@@ -26,6 +26,7 @@ add_library(AtlasEngine STATIC
     sim/UniverseMapSystem.cpp
     sim/AIProfileLoader.cpp
     sim/EconomyRulesLoader.cpp
+    sim/PirateSecurityCoordinator.cpp
     world/CubeSphereLayout.cpp
     world/VoxelGridLayout.cpp
 )
