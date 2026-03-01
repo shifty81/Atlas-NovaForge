@@ -15,6 +15,7 @@
 #include "../render/EditorViewportFramebuffer.h"
 #include "../physics/PhysicsWorld.h"
 #include "../flow/GameFlowGraph.h"
+#include "../input/InputManager.h"
 
 namespace atlas::ui { class UIRenderer; }
 namespace atlas::module { class IGameModule; struct GameModuleContext; }
@@ -107,6 +108,7 @@ public:
     ui::UIEventRouter& GetEventRouter() { return m_eventRouter; }
     physics::PhysicsWorld& GetPhysics() { return m_physics; }
     flow::GameFlowGraph& GetFlowGraph() { return m_flowGraph; }
+    input::InputManager& GetInputManager() { return m_inputManager; }
 
     /// Attach a game module to be ticked each frame by the engine.
     /// The caller retains ownership; the Engine only stores a raw pointer.
@@ -134,6 +136,9 @@ private:
     void UpdateUI();
     void RenderFrame();
 
+    /// Load a save file and restore world state + tick.
+    bool LoadSaveState(const std::string& savePath);
+
     EngineConfig m_config;
     bool m_running = false;
     bool m_shutdown = false;
@@ -147,6 +152,7 @@ private:
     ui::UIEventRouter m_eventRouter;
     physics::PhysicsWorld m_physics;
     flow::GameFlowGraph m_flowGraph;
+    input::InputManager m_inputManager;
     module::IGameModule* m_gameModule = nullptr;
     module::GameModuleContext* m_moduleCtx = nullptr;
     std::unique_ptr<platform::PlatformWindow> m_window;

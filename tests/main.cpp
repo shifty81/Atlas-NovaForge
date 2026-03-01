@@ -1413,6 +1413,9 @@ void test_module_context_physics_access();
 void test_engine_shutdown_after_run();
 void test_engine_editor_ticks_physics();
 void test_engine_client_ticks_module();
+void test_engine_input_manager_accessible();
+void test_engine_flow_input_routing();
+void test_engine_frame_pacing_restored();
 
 // Launcher Screen tests
 void test_launcher_initial_state();
@@ -3530,6 +3533,9 @@ int main() {
     test_engine_shutdown_after_run();
     test_engine_editor_ticks_physics();
     test_engine_client_ticks_module();
+    test_engine_input_manager_accessible();
+    test_engine_flow_input_routing();
+    test_engine_frame_pacing_restored();
 
     // Launcher Screen
     std::cout << "\n--- Launcher Screen ---" << std::endl;

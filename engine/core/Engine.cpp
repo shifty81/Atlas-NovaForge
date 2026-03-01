@@ -32,7 +32,9 @@ void Engine::InitCore() {
     Logger::Init();
     Logger::Info("Engine core initialized");
     m_running = true;
+    m_inputManager.Init();
     RegisterSystem("Core");
+    RegisterSystem("Input");
 }
 
 void Engine::InitRender() {
@@ -203,12 +205,12 @@ void Engine::StepSimulationTick() {
         flow::FlowContext flowCtx{};
         flowCtx.elapsedTime = static_cast<float>(timeCtx.world.elapsed);
         flowCtx.tick = static_cast<uint32_t>(timeCtx.sim.tick);
-        // inputReceived is false until input routing to the flow
-        // graph is implemented; individual flow nodes can query
-        // the input manager directly when needed.
-        flowCtx.inputReceived = false;
+        flowCtx.inputReceived = m_inputManager.HasActiveInput();
         m_flowGraph.Execute(flowCtx);
     }
+
+    // Advance input state after flow graph has consumed it.
+    m_inputManager.Update();
 
     // Tick the attached game module.
     if (m_gameModule && m_moduleCtx) {
@@ -487,11 +489,13 @@ bool Engine::RollbackAndVerify(uint64_t snapshotTick, uint64_t targetTick) {
     if (!RollbackToTick(snapshotTick)) return false;
 
     // Resimulate forward from snapshotTick to targetTick.
+    bool previousPacing = m_scheduler.FramePacingEnabled();
     m_scheduler.SetFramePacing(false);
     while (m_timeModel.Context().sim.tick < targetTick) {
         m_timeModel.AdvanceTick();
         m_world.Update(m_timeModel.Context().sim.fixedDeltaTime);
     }
+    m_scheduler.SetFramePacing(previousPacing);
 
     // Take a fresh snapshot and compare hashes.
     auto ecsData = m_world.Serialize();
@@ -500,7 +504,7 @@ bool Engine::RollbackAndVerify(uint64_t snapshotTick, uint64_t targetTick) {
     return replaySnap.stateHash == expectedHash;
 }
 
-bool Engine::LoadAndReplay(const std::string& savePath) {
+bool Engine::LoadSaveState(const std::string& savePath) {
     auto result = m_saveSystem.Load(savePath);
     if (result != sim::SaveResult::Success) {
         return false;
@@ -514,19 +518,17 @@ bool Engine::LoadAndReplay(const std::string& savePath) {
     return true;
 }
 
+bool Engine::LoadAndReplay(const std::string& savePath) {
+    return LoadSaveState(savePath);
+}
+
 bool Engine::ReplayFromSave(const std::string& savePath, const std::string& replayPath) {
     // Step 1: Load save file to restore world state
-    auto result = m_saveSystem.Load(savePath);
-    if (result != sim::SaveResult::Success) {
+    if (!LoadSaveState(savePath)) {
         return false;
     }
 
-    if (!m_world.Deserialize(m_saveSystem.ECSData())) {
-        return false;
-    }
-
-    uint64_t saveTick = m_saveSystem.Header().saveTick;
-    m_timeModel.SetTick(saveTick);
+    uint64_t saveTick = m_timeModel.Context().sim.tick;
 
     // Step 2: Load replay file
     sim::ReplayRecorder replay;
@@ -535,6 +537,7 @@ bool Engine::ReplayFromSave(const std::string& savePath, const std::string& repl
     }
 
     // Step 3: Apply replay inputs from save tick forward
+    bool previousPacing = m_scheduler.FramePacingEnabled();
     m_scheduler.SetTickRate(m_config.tickRate);
     m_scheduler.SetFramePacing(false);
 
@@ -547,6 +550,7 @@ bool Engine::ReplayFromSave(const std::string& savePath, const std::string& repl
         ++appliedFrames;
     }
 
+    m_scheduler.SetFramePacing(previousPacing);
     return appliedFrames > 0;
 }
 
@@ -557,6 +561,7 @@ bool Engine::VerifySaveLoadDeterminism(const std::string& tmpPath, uint32_t extr
     auto snapBefore = m_worldState.TakeSnapshot(currentTick, ecsDataBefore);
 
     // Step 2: Simulate extra ticks and record the resulting hash.
+    bool previousPacing = m_scheduler.FramePacingEnabled();
     m_scheduler.SetFramePacing(false);
     for (uint32_t i = 0; i < extraTicks; ++i) {
         m_timeModel.AdvanceTick();
@@ -570,13 +575,22 @@ bool Engine::VerifySaveLoadDeterminism(const std::string& tmpPath, uint32_t extr
     // Step 3: Save the state we captured at currentTick.
     auto saveResult = m_saveSystem.Save(tmpPath, currentTick,
                                          m_config.tickRate, 0, ecsDataBefore);
-    if (saveResult != sim::SaveResult::Success) return false;
+    if (saveResult != sim::SaveResult::Success) {
+        m_scheduler.SetFramePacing(previousPacing);
+        return false;
+    }
 
     // Step 4: Load the save back and restore world state.
     auto loadResult = m_saveSystem.Load(tmpPath);
-    if (loadResult != sim::SaveResult::Success) return false;
+    if (loadResult != sim::SaveResult::Success) {
+        m_scheduler.SetFramePacing(previousPacing);
+        return false;
+    }
 
-    if (!m_world.Deserialize(m_saveSystem.ECSData())) return false;
+    if (!m_world.Deserialize(m_saveSystem.ECSData())) {
+        m_scheduler.SetFramePacing(previousPacing);
+        return false;
+    }
     m_timeModel.SetTick(currentTick);
 
     // Step 5: Resimulate the same extra ticks.
@@ -584,6 +598,8 @@ bool Engine::VerifySaveLoadDeterminism(const std::string& tmpPath, uint32_t extr
         m_timeModel.AdvanceTick();
         m_world.Update(m_timeModel.Context().sim.fixedDeltaTime);
     }
+
+    m_scheduler.SetFramePacing(previousPacing);
 
     // Step 6: Compare hashes.
     auto ecsDataReplay = m_world.Serialize();
@@ -611,6 +627,7 @@ void Engine::Shutdown() {
         Logger::Info("Engine shutting down");
         m_gameModule = nullptr;
         m_moduleCtx = nullptr;
+        m_inputManager.Shutdown();
         m_uiManager.Shutdown();
         m_net.Shutdown();
         m_physics.Shutdown();

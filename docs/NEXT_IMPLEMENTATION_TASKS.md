@@ -695,6 +695,38 @@ align the project structure for long-term maintainability.
 - `tests/test_engine_full_integration.cpp` — 3 new tests
 - `tests/main.cpp` — Registered new tests
 
+#### 25. InputManager Integration, Flow Graph Input Routing & Frame Pacing Fix
+**Status**: Complete
+
+**Completed work**:
+- [x] Wire `InputManager` into `Engine`
+  - Added `m_inputManager` member, initialized in `InitCore()`, shut down in `Shutdown()`
+  - Added `GetInputManager()` accessor
+  - Registered "Input" system in execution order
+- [x] Add `InputManager::HasActiveInput()` convenience method
+  - Returns true if any bound action is currently pressed or held
+- [x] Route input state to `FlowContext.inputReceived`
+  - `StepSimulationTick()` now sets `flowCtx.inputReceived = m_inputManager.HasActiveInput()`
+  - Calls `m_inputManager.Update()` after flow graph execution to advance input state
+  - Replaces hardcoded `inputReceived = false` placeholder
+- [x] Extract shared `LoadSaveState()` private helper
+  - Contains save file loading, world deserialization, and tick restoration
+  - `LoadAndReplay()` now delegates to `LoadSaveState()`
+  - `ReplayFromSave()` uses `LoadSaveState()` instead of duplicating the same logic
+- [x] Save/restore frame pacing in verification methods
+  - `RollbackAndVerify()` saves and restores `FramePacingEnabled()` state
+  - `ReplayFromSave()` saves and restores frame pacing state
+  - `VerifySaveLoadDeterminism()` saves and restores frame pacing state (including early returns)
+- [x] 3 new tests (InputManager accessible, flow graph input routing, frame pacing restored)
+
+**Files modified**:
+- `engine/input/InputManager.h` — Added `HasActiveInput()` declaration
+- `engine/input/InputManager.cpp` — Implemented `HasActiveInput()`
+- `engine/core/Engine.h` — Added `m_inputManager` member, `GetInputManager()` accessor, `LoadSaveState()` declaration, `InputManager.h` include
+- `engine/core/Engine.cpp` — Wired InputManager lifecycle, flow graph input routing, extracted `LoadSaveState()`, frame pacing save/restore
+- `tests/test_engine_full_integration.cpp` — 3 new tests
+- `tests/main.cpp` — Registered new tests
+
 ## References
 
 - Original gaps analysis: `legacy/gaps.txt`

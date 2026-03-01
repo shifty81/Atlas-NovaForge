@@ -102,6 +102,15 @@ float InputManager::GetAxis(InputAction action) const {
     return GetState(action).value;
 }
 
+bool InputManager::HasActiveInput() const {
+    for (const auto& [key, state] : m_states) {
+        if (state.pressed || state.held) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void InputManager::Update() {
     for (auto& [key, state] : m_states) {
         // Fire callbacks
