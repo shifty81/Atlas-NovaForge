@@ -7,6 +7,7 @@ namespace atlas::net { class NetContext; class ReplicationManager; }
 namespace atlas::rules { class ServerRules; }
 namespace atlas::asset { class AssetRegistry; }
 namespace atlas::project { struct ProjectDescriptor; }
+namespace atlas::physics { class PhysicsWorld; }
 
 namespace atlas::module {
 
@@ -22,6 +23,7 @@ struct GameModuleContext {
     rules::ServerRules& rules;
     asset::AssetRegistry& assets;
     const project::ProjectDescriptor& project;
+    physics::PhysicsWorld* physics = nullptr;
 };
 
 class IGameModule {

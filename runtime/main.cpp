@@ -101,28 +101,32 @@ int main(int argc, char* argv[]) {
             replication,
             atlas::rules::ServerRules::Get(),
             assetRegistry,
-            atlas::project::ProjectManager::Get().Descriptor()
+            atlas::project::ProjectManager::Get().Descriptor(),
+            &engine.GetPhysics()
         };
     };
 
+    atlas::module::GameModuleContext moduleCtx = makeModuleContext();
+
     if (moduleLoader.IsLoaded()) {
-        auto ctx = makeModuleContext();
         auto* mod = moduleLoader.GetModule();
-        mod->RegisterTypes(ctx);
-        mod->ConfigureReplication(ctx);
-        mod->ConfigureServerRules(ctx);
-        mod->OnStart(ctx);
+        mod->RegisterTypes(moduleCtx);
+        mod->ConfigureReplication(moduleCtx);
+        mod->ConfigureServerRules(moduleCtx);
+        mod->OnStart(moduleCtx);
 
         auto desc = mod->Describe();
         atlas::Logger::Info(std::string("Game module loaded: ") + desc.name);
+
+        // Attach module to engine so OnTick is called each frame
+        engine.SetGameModule(mod, &moduleCtx);
     }
 
     atlas::Logger::Info("Atlas Runtime starting...");
     engine.Run();
 
     if (moduleLoader.IsLoaded()) {
-        auto ctx = makeModuleContext();
-        moduleLoader.GetModule()->OnShutdown(ctx);
+        moduleLoader.GetModule()->OnShutdown(moduleCtx);
     }
 
     return 0;
