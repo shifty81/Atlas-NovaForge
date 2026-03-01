@@ -1403,6 +1403,14 @@ void test_draw_list_flush_null_renderer();
 void test_engine_phase_to_string();
 void test_engine_phase_values();
 
+// Engine Full Integration tests (physics, module tick, flow graph)
+void test_engine_module_tick_integration();
+void test_engine_physics_integration();
+void test_engine_physics_accessible();
+void test_engine_flow_graph_integration();
+void test_engine_server_full_integration();
+void test_module_context_physics_access();
+
 // Launcher Screen tests
 void test_launcher_initial_state();
 void test_launcher_scan_nonexistent();
@@ -3507,6 +3515,15 @@ int main() {
     std::cout << "\n--- Engine Phase ---" << std::endl;
     test_engine_phase_to_string();
     test_engine_phase_values();
+
+    // Engine Full Integration (physics, module tick, flow graph)
+    std::cout << "\n--- Engine Full Integration ---" << std::endl;
+    test_engine_module_tick_integration();
+    test_engine_physics_integration();
+    test_engine_physics_accessible();
+    test_engine_flow_graph_integration();
+    test_engine_server_full_integration();
+    test_module_context_physics_access();
 
     // Launcher Screen
     std::cout << "\n--- Launcher Screen ---" << std::endl;

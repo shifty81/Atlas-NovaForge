@@ -4,6 +4,7 @@
 #include "../sim/StateHasher.h"
 #include "../sim/ReplayRecorder.h"
 #include "../ui/DiagnosticsOverlay.h"
+#include "../module/IGameModule.h"
 
 #ifdef ATLAS_HAS_X11
 #include "../platform/X11Window.h"
@@ -110,8 +111,10 @@ void Engine::InitUI() {
 }
 
 void Engine::InitECS() {
+    m_physics.Init();
     Logger::Info("ECS initialized (empty world)");
     RegisterSystem("ECS");
+    RegisterSystem("Physics");
 }
 
 void Engine::InitNetworking() {
@@ -191,7 +194,27 @@ void Engine::TickSimulation() {
     m_scheduler.Tick([this](float /*dt*/) {
         m_timeModel.AdvanceTick();
         const auto& timeCtx = m_timeModel.Context();
-        m_world.Update(timeCtx.sim.fixedDeltaTime);
+        float fixedDt = timeCtx.sim.fixedDeltaTime;
+
+        m_world.Update(fixedDt);
+        m_physics.Step(fixedDt);
+
+        // Execute the game flow graph if it has been compiled.
+        if (m_flowGraph.IsCompiled()) {
+            flow::FlowContext flowCtx{};
+            flowCtx.elapsedTime = static_cast<float>(timeCtx.world.elapsed);
+            flowCtx.tick = static_cast<uint32_t>(timeCtx.sim.tick);
+            // inputReceived is false until input routing to the flow
+            // graph is implemented; individual flow nodes can query
+            // the input manager directly when needed.
+            flowCtx.inputReceived = false;
+            m_flowGraph.Execute(flowCtx);
+        }
+
+        // Tick the attached game module.
+        if (m_gameModule && m_moduleCtx) {
+            m_gameModule->OnTick(*m_moduleCtx, fixedDt);
+        }
     });
 }
 
@@ -419,7 +442,27 @@ void Engine::RunServer() {
         m_scheduler.Tick([this](float dt) {
             m_timeModel.AdvanceTick();
             const auto& timeCtx = m_timeModel.Context();
-            m_world.Update(timeCtx.sim.fixedDeltaTime);
+            float fixedDt = timeCtx.sim.fixedDeltaTime;
+
+            m_world.Update(fixedDt);
+            m_physics.Step(fixedDt);
+
+            // Execute the game flow graph if it has been compiled.
+            if (m_flowGraph.IsCompiled()) {
+                flow::FlowContext flowCtx{};
+                flowCtx.elapsedTime = static_cast<float>(timeCtx.world.elapsed);
+                flowCtx.tick = static_cast<uint32_t>(timeCtx.sim.tick);
+                // inputReceived is false until input routing to the flow
+                // graph is implemented; individual flow nodes can query
+                // the input manager directly when needed.
+                flowCtx.inputReceived = false;
+                m_flowGraph.Execute(flowCtx);
+            }
+
+            // Tick the attached game module.
+            if (m_gameModule && m_moduleCtx) {
+                m_gameModule->OnTick(*m_moduleCtx, fixedDt);
+            }
 
             // Periodically snapshot world state for rollback support.
             // Snapshot every tick so the server can roll back as needed.
@@ -574,11 +617,19 @@ void Engine::RequestExit() {
     m_running = false;
 }
 
+void Engine::SetGameModule(module::IGameModule* mod, module::GameModuleContext* ctx) {
+    m_gameModule = mod;
+    m_moduleCtx = ctx;
+}
+
 void Engine::Shutdown() {
     if (m_running) {
         Logger::Info("Engine shutting down");
+        m_gameModule = nullptr;
+        m_moduleCtx = nullptr;
         m_uiManager.Shutdown();
         m_net.Shutdown();
+        m_physics.Shutdown();
         m_renderer.reset();
         if (m_window) {
             m_window->Shutdown();

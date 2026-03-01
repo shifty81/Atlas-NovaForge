@@ -67,35 +67,31 @@ int main(int argc, char* argv[]) {
             return 1;
         }
 
-        auto makeCtx = [&]() -> atlas::module::GameModuleContext {
-            return {
-                engine.GetWorld(),
-                engine.GetNet(),
-                replication,
-                atlas::rules::ServerRules::Get(),
-                assetRegistry,
-                atlas::project::ProjectManager::Get().Descriptor()
-            };
+        atlas::module::GameModuleContext ctx{
+            engine.GetWorld(),
+            engine.GetNet(),
+            replication,
+            atlas::rules::ServerRules::Get(),
+            assetRegistry,
+            atlas::project::ProjectManager::Get().Descriptor(),
+            &engine.GetPhysics()
         };
 
         auto* mod = moduleLoader.GetModule();
-        {
-            auto ctx = makeCtx();
-            mod->RegisterTypes(ctx);
-            mod->ConfigureReplication(ctx);
-            mod->ConfigureServerRules(ctx);
-            mod->OnStart(ctx);
-        }
+        mod->RegisterTypes(ctx);
+        mod->ConfigureReplication(ctx);
+        mod->ConfigureServerRules(ctx);
+        mod->OnStart(ctx);
 
         auto desc = mod->Describe();
         atlas::Logger::Info(std::string("Game module loaded: ") + desc.name);
 
+        // Attach module to engine so OnTick is called each frame
+        engine.SetGameModule(mod, &ctx);
+
         engine.Run();
 
-        {
-            auto ctx = makeCtx();
-            mod->OnShutdown(ctx);
-        }
+        mod->OnShutdown(ctx);
     } else {
         engine.Run();
     }

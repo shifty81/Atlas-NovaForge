@@ -13,8 +13,11 @@
 #include "../platform/PlatformWindow.h"
 #include "../render/RenderAPI.h"
 #include "../render/EditorViewportFramebuffer.h"
+#include "../physics/PhysicsWorld.h"
+#include "../flow/GameFlowGraph.h"
 
 namespace atlas::ui { class UIRenderer; }
+namespace atlas::module { class IGameModule; struct GameModuleContext; }
 
 namespace atlas {
 
@@ -102,6 +105,13 @@ public:
     sim::SaveSystem& GetSaveSystem() { return m_saveSystem; }
     ui::UIManager& GetUIManager() { return m_uiManager; }
     ui::UIEventRouter& GetEventRouter() { return m_eventRouter; }
+    physics::PhysicsWorld& GetPhysics() { return m_physics; }
+    flow::GameFlowGraph& GetFlowGraph() { return m_flowGraph; }
+
+    /// Attach a game module to be ticked each frame by the engine.
+    /// The caller retains ownership; the Engine only stores a raw pointer.
+    void SetGameModule(module::IGameModule* mod, module::GameModuleContext* ctx);
+    module::IGameModule* GetGameModule() const { return m_gameModule; }
 
     platform::PlatformWindow* GetWindow() { return m_window.get(); }
     ui::UIRenderer* GetRenderer() { return m_renderer.get(); }
@@ -133,6 +143,10 @@ private:
     sim::SaveSystem m_saveSystem;
     ui::UIManager m_uiManager;
     ui::UIEventRouter m_eventRouter;
+    physics::PhysicsWorld m_physics;
+    flow::GameFlowGraph m_flowGraph;
+    module::IGameModule* m_gameModule = nullptr;
+    module::GameModuleContext* m_moduleCtx = nullptr;
     std::unique_ptr<platform::PlatformWindow> m_window;
     std::unique_ptr<ui::UIRenderer> m_renderer;
     std::unique_ptr<render::EditorViewportFramebuffer> m_viewportFB;
