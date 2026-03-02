@@ -1379,6 +1379,15 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 - [x] **Character creation screen** — 3rd person view with race selection and sliders — CharacterCreationScreen component + CharacterCreationScreenSystem with race/faction selection, attribute/appearance sliders, validation, finalization (8 tests)
 - [x] **FPS ↔ RTS transitions** — Cockpit → interior → EVA → RTS overlay seamless transitions — ViewModeState component + ViewModeTransitionSystem with mode adjacency validation, transition progress, cancel support (7 tests)
 
+#### UI Window Framework
+- [x] **DockNode layout system** — Retained-mode window framework with split/leaf DockNode tree for dockable panels — DockNodeLayout component + DockNodeLayoutSystem with root/split/leaf nodes, window add/remove/dock/undock, split direction/ratio, automatic layout recalculation (10 tests)
+
+#### Mission Consequences
+- [x] **Persistent mission consequences** — Mission outcomes affect game world state (standings, security, prices, spawns) — MissionConsequence component + MissionConsequenceSystem with 7 consequence types (StandingChange/SecurityShift/PriceImpact/SpawnChange/ReputationBoost/TerritoryShift/ResourceDepletion), duration-based and permanent consequences, magnitude tracking, decay (10 tests)
+
+#### Server Performance
+- [x] **Server performance monitoring** — Per-system tick timing, budget tracking, hot-path identification, performance alerting — ServerPerformanceMetrics component + ServerPerformanceMonitorSystem with system timing records, tick budget utilization, alert thresholds, slowest-system identification, metric reset (10 tests)
+
 ---
 
 ## Future Considerations
@@ -1387,7 +1396,7 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 
 #### Performance & Scalability
 - [ ] Database persistence (SQLite → PostgreSQL)
-- [ ] Performance profiling and optimization
+- [x] Performance profiling and optimization — ServerPerformanceMetrics component + ServerPerformanceMonitorSystem with per-system timing, tick budget tracking, hot-path identification, alert thresholds (10 tests)
 - [ ] Interest management for large player counts
 - [ ] Client-side prediction for responsive movement
 - [x] Spatial partitioning for efficient entity queries — SpatialHashSystem with O(1) queryNear() and queryNeighbours()
