@@ -221,7 +221,10 @@ Data-driven modding without code injection:
 | CloakingSystem | ✅ Complete | 35 assertions |
 | JumpDriveSystem | ✅ Complete | 38 assertions |
 | CargoScanSystem | ✅ Complete | 39 assertions |
-| **Total** | **53 systems** | **2377 assertions** |
+| PlanetaryTraversalSystem | ✅ Complete | 35 assertions |
+| SolarPanelSystem | ✅ Complete | 32 assertions |
+| FarmingDeckSystem | ✅ Complete | 34 assertions |
+| **Total** | **56 systems** | **2478 assertions** |
 
 ### Data Loaders Status
 
