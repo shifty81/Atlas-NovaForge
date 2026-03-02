@@ -1082,6 +1082,33 @@ void test_npc_editor_validate_all();
 void test_npc_editor_export_json();
 void test_npc_editor_hauler_station();
 
+// Warp Performance Budget tests
+void test_warp_perf_budget_defaults();
+void test_warp_perf_total_cost_zeros();
+void test_warp_perf_total_cost_sums();
+void test_warp_perf_total_cost_negative_clamped();
+void test_warp_perf_enforce_under_budget();
+void test_warp_perf_enforce_exact_budget();
+void test_warp_perf_enforce_over_budget_disables_most_expensive();
+void test_warp_perf_enforce_over_budget_disables_multiple();
+void test_warp_perf_enforce_zero_budget();
+void test_warp_perf_enforce_all_zero_costs();
+
+// Fleet Positional Audio tests
+void test_positional_audio_defaults();
+void test_positional_audio_position_origin();
+void test_positional_audio_position_offset();
+void test_positional_audio_atten_within_min();
+void test_positional_audio_atten_at_min();
+void test_positional_audio_atten_beyond_max();
+void test_positional_audio_atten_midpoint();
+void test_positional_audio_atten_invalid_range();
+void test_positional_audio_reverb_not_in_warp();
+void test_positional_audio_reverb_in_warp_low_speed();
+void test_positional_audio_reverb_in_warp_high_speed();
+void test_positional_audio_reverb_in_warp_mid_speed();
+void test_positional_audio_reverb_clamped_high();
+
 int main(int argc, char* argv[]) {
     std::string logPath;
     for (int i = 1; i < argc; ++i) {
@@ -2263,6 +2290,35 @@ int main(int argc, char* argv[]) {
     RUN_TEST(test_npc_editor_validate_all);
     RUN_TEST(test_npc_editor_export_json);
     RUN_TEST(test_npc_editor_hauler_station);
+
+    // Warp Performance Budget
+    log.BeginSection("Warp Performance Budget");
+    RUN_TEST(test_warp_perf_budget_defaults);
+    RUN_TEST(test_warp_perf_total_cost_zeros);
+    RUN_TEST(test_warp_perf_total_cost_sums);
+    RUN_TEST(test_warp_perf_total_cost_negative_clamped);
+    RUN_TEST(test_warp_perf_enforce_under_budget);
+    RUN_TEST(test_warp_perf_enforce_exact_budget);
+    RUN_TEST(test_warp_perf_enforce_over_budget_disables_most_expensive);
+    RUN_TEST(test_warp_perf_enforce_over_budget_disables_multiple);
+    RUN_TEST(test_warp_perf_enforce_zero_budget);
+    RUN_TEST(test_warp_perf_enforce_all_zero_costs);
+
+    // Fleet Positional Audio
+    log.BeginSection("Fleet Positional Audio");
+    RUN_TEST(test_positional_audio_defaults);
+    RUN_TEST(test_positional_audio_position_origin);
+    RUN_TEST(test_positional_audio_position_offset);
+    RUN_TEST(test_positional_audio_atten_within_min);
+    RUN_TEST(test_positional_audio_atten_at_min);
+    RUN_TEST(test_positional_audio_atten_beyond_max);
+    RUN_TEST(test_positional_audio_atten_midpoint);
+    RUN_TEST(test_positional_audio_atten_invalid_range);
+    RUN_TEST(test_positional_audio_reverb_not_in_warp);
+    RUN_TEST(test_positional_audio_reverb_in_warp_low_speed);
+    RUN_TEST(test_positional_audio_reverb_in_warp_high_speed);
+    RUN_TEST(test_positional_audio_reverb_in_warp_mid_speed);
+    RUN_TEST(test_positional_audio_reverb_clamped_high);
 
     if (!logPath.empty()) {
         log.WriteLogFile(logPath);

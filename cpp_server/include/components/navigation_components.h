@@ -241,6 +241,33 @@ public:
     COMPONENT_TYPE(WarpAudioProgression)
 };
 
+// ==================== Phase 8: Warp Performance Budget ====================
+
+/**
+ * @brief GPU performance budget tracking for warp visual layers
+ *
+ * Tracks per-layer GPU cost in milliseconds and enforces a total
+ * budget (default ≤1.2 ms).  The system disables the most expensive
+ * layers first and provides a scale_factor for shaders.
+ *
+ * Layers (index order):
+ *   0 = radial distortion
+ *   1 = starfield velocity bloom
+ *   2 = tunnel skin / noise
+ *   3 = vignette
+ *   4 = ship silhouette anchor
+ */
+class WarpPerformanceBudget : public ecs::Component {
+public:
+    float layer_costs[5] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};  // measured GPU ms per layer
+    bool  layer_enabled[5] = {true, true, true, true, true};   // which layers are active
+    float budget_ms = 1.2f;       // max allowed total GPU cost
+    float total_cost_ms = 0.0f;   // last-frame total cost
+    float scale_factor = 1.0f;    // 0–1 utilisation of budget (for shader LOD)
+
+    COMPONENT_TYPE(WarpPerformanceBudget)
+};
+
 class JumpDriveState : public ecs::Component {
 public:
     enum class JumpPhase { Idle, SpoolingUp, Jumping, Cooldown };

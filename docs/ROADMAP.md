@@ -992,7 +992,7 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 - [x] **Ship-mass-driven intensity** — Heavier ships bend space harder, deeper bass, slower tunnel oscillation — computeCompositeIntensity() uses mass_norm
 - [x] **Warp entry/exit choreography** — Alignment phase → FOV tighten → tunnel cruise → deceleration bloom → arrival — WarpState::WarpPhase enum (None, Align, Entry, Cruise, Event, Exit)
 - [x] **Meditative breathing effect** — Slow pulsing during cruise phase (~12.5s cycle for frigates, ~20s for capitals), subtle color temperature shift, syncs with audio system via getBreathingIntensity()
-- [ ] **Performance budget** — ≤1.2ms total GPU cost (single fullscreen pass, no dynamic branching)
+- [x] **Performance budget** — ≤1.2ms total GPU cost (single fullscreen pass, no dynamic branching) — WarpPerformanceBudget component + WarpPerformanceBudgetSystem with per-layer cost tracking, budget enforcement, and layer disable ordering (10 tests)
 
 #### Warp Audio System
 - [x] **Engine core sub-bass** (30–60 Hz sine, controller rumble sync) — WarpAudioProfile engine_core_volume/pitch
@@ -1046,7 +1046,7 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 - [x] **Interruptible chatter** — Higher-priority events (combat alerts, anomalies) naturally cut off lower-priority small talk — FleetChatterSystem::interruptChatter() with priority comparison
 - [x] **Timing rules** — One line every 20–45s max, no overlap, cooldowns between speakers — isAnyoneSpeaking() overlap prevention + std::clamp(cooldown, 20, 45)
 - [x] **Combat memory references** — Captains reference actual encounters (ships destroyed, close calls, who saved who) — CaptainMemory component with MemoryEntry records
-- [ ] **Positional audio** — Voices originate from ship position in formation, warp tunnel reverb effects
+- [x] **Positional audio** — Voices originate from ship position in formation, warp tunnel reverb effects — PositionalAudioSource component + FleetPositionalAudioSystem with 3D position from formation offset, inverse-distance attenuation, and speed-based warp reverb (13 tests)
 
 #### Fleet Morale & Memory
 - [x] **Persistent fleet memory** — Each captain tracks missions together, wins, losses, ships lost, saves — FleetMorale component + CaptainMemory component
