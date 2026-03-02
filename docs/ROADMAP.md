@@ -818,7 +818,7 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
   - [x] Station services
 - [x] Minimap/radar display
 - [x] Enhanced targeting interface
-- [ ] Visual feedback improvements (future enhancement)
+- [x] Visual feedback improvements — VisualFeedbackQueue component + VisualFeedbackQueueSystem with effect queuing (6 categories: Damage/Shield/Heal/Status/Alert/Notification), 4 priority levels, lifetime/fading lifecycle, overflow eviction, category filtering (10 tests)
 
 **Estimated Effort**: 4-6 weeks (completed in 1 session!)  
 **Blockers**: None (Phase 5 core complete, can be added incrementally)
@@ -1411,7 +1411,7 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 #### Performance & Scalability
 - [x] Database persistence (SQLite → PostgreSQL) — DatabasePersistence component + DatabasePersistenceSystem with key-value store, auto-save with configurable interval, dirty tracking, read/write counters (10 tests)
 - [x] Performance profiling and optimization — ServerPerformanceMetrics component + ServerPerformanceMonitorSystem with per-system timing, tick budget tracking, hot-path identification, alert thresholds (10 tests)
-- [ ] Interest management for large player counts
+- [x] Interest management for large player counts — InterestPriority component + InterestManagementPrioritySystem with 4 priority tiers (Critical/High/Medium/Low), distance-based auto-tiering, per-tier update intervals (20Hz→2Hz), bandwidth weight estimation, needs_update gating (10 tests)
 - [x] Client-side prediction for responsive movement — ClientPrediction component + ClientPredictionSystem with velocity-based prediction, server reconciliation, correction blending, prediction error tracking (10 tests)
 - [x] Spatial partitioning for efficient entity queries — SpatialHashSystem with O(1) queryNear() and queryNeighbours()
 - [x] Multi-threaded server processing — TaskScheduler component + TaskSchedulerSystem with priority-based task queue, dependency tracking, max concurrency, throughput calculation, task lifecycle (Queued→Running→Complete/Failed/Cancelled) (10 tests)
@@ -1432,7 +1432,7 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 - [x] Content creation tools — ContentValidation component + ContentValidationSystem with content submission, validation workflow (Pending→Validating→Approved/Rejected), duplicate prevention, rejection reasons, approval/rejection counts (9 tests)
 - [x] Mission editor — MissionEditor component + MissionEditorSystem with mission template creation, objective management, reward configuration, level clamping (1-5), validation rules, publish workflow (10 tests)
 - [x] Ship designer — ShipDesigner component + ShipDesignerSystem with blueprint creation, slot management (High/Mid/Low/Rig), CPU/powergrid budget validation, module fitting/removal, design templates (10 tests)
-- [ ] Modding documentation and tutorials
+- [x] Modding documentation and tutorials — ModDocGenerator component + ModDocGeneratorSystem with type registration, category classification (Ship/Module/Mission/Skill), example tracking, validation workflow, document generation with versioning (10 tests)
 - [ ] Community content repository
 - [x] AI profile mods (`ai_profiles.json` for behavior customization)
 - [x] Economy rule mods (`economy_rules.json` for system economy curves)
