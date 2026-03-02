@@ -1414,7 +1414,7 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 - [ ] Interest management for large player counts
 - [x] Client-side prediction for responsive movement — ClientPrediction component + ClientPredictionSystem with velocity-based prediction, server reconciliation, correction blending, prediction error tracking (10 tests)
 - [x] Spatial partitioning for efficient entity queries — SpatialHashSystem with O(1) queryNear() and queryNeighbours()
-- [ ] Multi-threaded server processing
+- [x] Multi-threaded server processing — TaskScheduler component + TaskSchedulerSystem with priority-based task queue, dependency tracking, max concurrency, throughput calculation, task lifecycle (Queued→Running→Complete/Failed/Cancelled) (10 tests)
 - [x] Large-scale fleet battle stress testing (150-300 ships) — 200-ship multi-system tick stress test (LOD + spatial hash + shield + movement)
 - [x] LOD system with impostor billboards for distant ships — LODSystem with 4 distance tiers and force_visible override
 - [x] Group AI abstraction (FleetController with squad leaders) — FleetSquad component + FleetSquadSystem with squad creation, member management, formation types, role assignment, cohesion/effectiveness calculation (10 tests)
@@ -1428,10 +1428,10 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 - [ ] Cloud deployment guides (AWS, GCP, Azure)
 
 #### Community & Modding
-- [ ] Mod manager utility
+- [x] Mod manager utility — ModManager component + ModManagerSystem with mod installation/uninstallation, dependency resolution, conflict detection, load order management, enable/disable (10 tests)
 - [ ] Content creation tools
 - [ ] Mission editor
-- [ ] Ship designer
+- [x] Ship designer — ShipDesigner component + ShipDesignerSystem with blueprint creation, slot management (High/Mid/Low/Rig), CPU/powergrid budget validation, module fitting/removal, design templates (10 tests)
 - [ ] Modding documentation and tutorials
 - [ ] Community content repository
 - [x] AI profile mods (`ai_profiles.json` for behavior customization)

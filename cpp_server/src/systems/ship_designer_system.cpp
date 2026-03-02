@@ -90,8 +90,6 @@ bool ShipDesignerSystem::fitModule(const std::string& entity_id, const std::stri
     entry.cpu_cost = cpu_cost;
     entry.power_cost = power_cost;
     sd->fitted_modules.push_back(entry);
-    sd->used_cpu += cpu_cost;
-    sd->used_powergrid += power_cost;
     return true;
 }
 
@@ -104,8 +102,6 @@ bool ShipDesignerSystem::removeModule(const std::string& entity_id, const std::s
 
     for (auto it = sd->fitted_modules.begin(); it != sd->fitted_modules.end(); ++it) {
         if (it->module_name == module_name) {
-            sd->used_cpu -= it->cpu_cost;
-            sd->used_powergrid -= it->power_cost;
             sd->fitted_modules.erase(it);
             return true;
         }
@@ -119,6 +115,15 @@ bool ShipDesignerSystem::validateDesign(const std::string& entity_id) {
 
     auto* sd = entity->getComponent<components::ShipDesigner>();
     if (!sd) return false;
+
+    // Recalculate resources before validation
+    float cpu = 0.0f, power = 0.0f;
+    for (const auto& m : sd->fitted_modules) {
+        cpu += m.cpu_cost;
+        power += m.power_cost;
+    }
+    sd->used_cpu = cpu;
+    sd->used_powergrid = power;
 
     sd->valid = !sd->blueprint_name.empty() &&
                 sd->used_cpu <= sd->total_cpu &&

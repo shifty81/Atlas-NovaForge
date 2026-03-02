@@ -3,6 +3,7 @@
 #include "ecs/entity.h"
 #include "components/game_components.h"
 #include <algorithm>
+#include <unordered_map>
 
 namespace atlas {
 namespace systems {
@@ -19,20 +20,25 @@ void TaskSchedulerSystem::update(float delta_time) {
 
         sched->total_time += delta_time;
 
+        // Build task ID → state map for O(1) dependency lookups
+        std::unordered_map<int, int> task_state_map;
+        for (const auto& task : sched->tasks) {
+            task_state_map[task.id] = task.state;
+        }
+
         // Mark tasks as Failed if a dependency is Failed or Cancelled
         for (auto& task : sched->tasks) {
             if (task.state == components::TaskScheduler::Queued) {
                 for (int dep_id : task.dependencies) {
-                    for (const auto& other : sched->tasks) {
-                        if (other.id == dep_id &&
-                            (other.state == components::TaskScheduler::Failed ||
-                             other.state == components::TaskScheduler::Cancelled)) {
-                            task.state = components::TaskScheduler::Failed;
-                            sched->total_failed++;
-                            break;
-                        }
+                    auto it = task_state_map.find(dep_id);
+                    if (it != task_state_map.end() &&
+                        (it->second == components::TaskScheduler::Failed ||
+                         it->second == components::TaskScheduler::Cancelled)) {
+                        task.state = components::TaskScheduler::Failed;
+                        task_state_map[task.id] = task.state;
+                        sched->total_failed++;
+                        break;
                     }
-                    if (task.state == components::TaskScheduler::Failed) break;
                 }
             }
         }
@@ -44,20 +50,17 @@ void TaskSchedulerSystem::update(float delta_time) {
         }
 
         // Start queued tasks whose dependencies are all Complete (higher priority first)
-        // Collect startable tasks
         std::vector<int> startable;
         for (size_t i = 0; i < sched->tasks.size(); i++) {
             auto& task = sched->tasks[i];
             if (task.state != components::TaskScheduler::Queued) continue;
             bool deps_met = true;
             for (int dep_id : task.dependencies) {
-                for (const auto& other : sched->tasks) {
-                    if (other.id == dep_id && other.state != components::TaskScheduler::Complete) {
-                        deps_met = false;
-                        break;
-                    }
+                auto it = task_state_map.find(dep_id);
+                if (it == task_state_map.end() || it->second != components::TaskScheduler::Complete) {
+                    deps_met = false;
+                    break;
                 }
-                if (!deps_met) break;
             }
             if (deps_met) startable.push_back(static_cast<int>(i));
         }

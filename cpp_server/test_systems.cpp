@@ -29262,6 +29262,7 @@ void testShipDesignerFitModule() {
     sys.createDesigner("ship1");
     assertTrue(sys.fitModule("ship1", "Autocannon", 0, 30.0f, 10.0f), "Fit module succeeds");
     assertTrue(sys.getFittedCount("ship1") == 1, "Fitted count is 1");
+    sys.update(0.0f);
     assertTrue(approxEqual(sys.getCpuUsage("ship1"), 30.0f / 300.0f), "CPU usage correct");
 }
 
@@ -29300,6 +29301,7 @@ void testShipDesignerOverbudget() {
     sd->total_cpu = 50.0f;
     sys.setBlueprint("ship1", "Rifter", "Frigate", "Minmatar");
     sys.fitModule("ship1", "BigGun", 0, 100.0f, 10.0f);
+    sys.update(0.0f);
     assertTrue(!sys.validateDesign("ship1"), "Validate fails when over CPU");
     assertTrue(!sys.isValid("ship1"), "Design is not valid");
     assertTrue(approxEqual(sys.getCpuUsage("ship1"), 100.0f / 50.0f), "CPU usage ratio > 1");
@@ -29342,6 +29344,7 @@ void testShipDesignerMultipleModules() {
     assertTrue(sys.fitModule("ship1", "Shield", 1, 20.0f, 80.0f), "Fit mid slot");
     assertTrue(sys.fitModule("ship1", "Armor", 2, 15.0f, 40.0f), "Fit low slot");
     assertTrue(sys.getFittedCount("ship1") == 3, "3 modules fitted");
+    sys.update(0.0f);
     assertTrue(approxEqual(sys.getCpuUsage("ship1"), 65.0f / 300.0f), "CPU usage from all modules");
     assertTrue(sys.getSlotsFree("ship1", 0) == 3, "3 high slots free");
 }
