@@ -742,6 +742,40 @@ public:
     COMPONENT_TYPE(CaptainBackground)
 };
 
+// ==================== Phase 9: Positional Audio ====================
+
+/**
+ * @brief 3D positional audio source for fleet member voices
+ *
+ * Stores the computed 3D position (derived from formation offset),
+ * attenuation parameters, and warp tunnel reverb settings.
+ * FleetPositionalAudioSystem writes source_x/y/z, attenuation,
+ * reverb_wet_mix, and reverb_decay each frame.
+ */
+class PositionalAudioSource : public ecs::Component {
+public:
+    // Listener (player/camera) position — set externally
+    float listener_x = 0.0f;
+    float listener_y = 0.0f;
+    float listener_z = 0.0f;
+
+    // Computed source position (from formation offset)
+    float source_x = 0.0f;
+    float source_y = 0.0f;
+    float source_z = 0.0f;
+
+    // Attenuation model
+    float min_range = 5.0f;     // full volume within this distance (metres)
+    float max_range = 200.0f;   // silent beyond this distance (metres)
+    float attenuation = 1.0f;   // computed attenuation (0–1)
+
+    // Warp tunnel reverb (set by system when in warp)
+    float reverb_wet_mix = 0.0f;  // 0=dry, 1=fully wet
+    float reverb_decay = 0.0f;    // decay time in seconds
+
+    COMPONENT_TYPE(PositionalAudioSource)
+};
+
 } // namespace components
 } // namespace atlas
 
