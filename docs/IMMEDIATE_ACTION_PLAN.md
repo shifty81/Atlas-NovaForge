@@ -122,9 +122,9 @@ All 27 baseline server systems are complete with 832/832 tests passing. The proj
 **Why Fifth**: Improves UX, but HUD is more critical  
 **Prerequisites**: Ship HUD complete  
 **Work Required**:
-- [ ] Design retained-mode window framework
-- [ ] Implement DockNode tree (split/leaf nodes)
-- [ ] Add window docking/undocking
+- [x] Design retained-mode window framework
+- [x] Implement DockNode tree (split/leaf nodes)
+- [x] Add window docking/undocking
 - [ ] Port existing panels to Atlas UI (inventory, fitting, market)
 - [ ] Add keyboard-first navigation
 - [ ] Implement data binding (observer pattern)
@@ -148,11 +148,11 @@ All 27 baseline server systems are complete with 832/832 tests passing. The proj
 **Why Sixth**: Content variety, but static missions work for now  
 **Prerequisites**: None (can work in parallel)  
 **Work Required**:
-- [ ] Design procedural mission templates
-- [ ] Add dynamic objective generation
-- [ ] Implement difficulty scaling (player skills, ship class)
-- [ ] Add branching mission chains
-- [ ] Create persistent mission consequences
+- [x] Design procedural mission templates
+- [x] Add dynamic objective generation
+- [x] Implement difficulty scaling (player skills, ship class)
+- [x] Add branching mission chains
+- [x] Create persistent mission consequences
 
 **Success Criteria**:
 - 100+ unique missions from 20 templates
@@ -172,10 +172,10 @@ All 27 baseline server systems are complete with 832/832 tests passing. The proj
 **Why Seventh**: Good to do before scaling up  
 **Prerequisites**: AI actors and custom UI complete  
 **Work Required**:
-- [ ] Profile server tick performance
-- [ ] Identify hot paths (likely entity queries)
-- [ ] Add spatial partitioning (grid or quadtree)
-- [ ] Optimize frequent queries (targeting, nearby entities)
+- [x] Profile server tick performance
+- [x] Identify hot paths (likely entity queries)
+- [x] Add spatial partitioning (grid or quadtree)
+- [x] Optimize frequent queries (targeting, nearby entities)
 - [ ] Test with 500+ entities
 
 **Success Criteria**:
