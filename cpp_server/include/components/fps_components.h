@@ -603,6 +603,59 @@ public:
     COMPONENT_TYPE(FoodProcessor)
 };
 
+
+// ==================== Rig Locker Preset ====================
+
+/**
+ * @brief Rig locker preset management component (Phase 13)
+ *
+ * Stores saved suit/rig presets for quick equipping in the rig locker.
+ * Each preset stores a named module loadout that can be saved, loaded,
+ * renamed, favorited, and equipped.
+ */
+class RigLockerPreset : public ecs::Component {
+public:
+    struct Preset {
+        std::string preset_id;
+        std::string name;
+        std::vector<std::string> module_ids;  // equipped module IDs
+        bool is_favorite = false;
+        float total_mass = 0.0f;
+        int slot_count = 0;
+    };
+
+    std::string owner_id;
+    std::vector<Preset> presets;
+    std::string active_preset_id;
+    int max_presets = 10;
+    int total_equips = 0;
+    int next_preset_seq = 0;
+
+    const Preset* findPreset(const std::string& id) const {
+        for (const auto& p : presets) {
+            if (p.preset_id == id) return &p;
+        }
+        return nullptr;
+    }
+
+    Preset* findPreset(const std::string& id) {
+        for (auto& p : presets) {
+            if (p.preset_id == id) return &p;
+        }
+        return nullptr;
+    }
+
+    int favoriteCount() const {
+        int count = 0;
+        for (const auto& p : presets) {
+            if (p.is_favorite) count++;
+        }
+        return count;
+    }
+
+    COMPONENT_TYPE(RigLockerPreset)
+};
+
 } // namespace components
 } // namespace atlas
 
