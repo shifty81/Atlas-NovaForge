@@ -397,6 +397,36 @@ public:
     COMPONENT_TYPE(MythBossEncounter)
 };
 
+/**
+ * @brief Incomplete intel leaks that propagate across star systems
+ *
+ * Rumors carry partial information about events like titan assembly,
+ * pirate activity, and trade shifts. Accuracy decays as rumors spread.
+ */
+class RumorPropagation : public ecs::Component {
+public:
+    struct Rumor {
+        std::string rumor_id;
+        std::string category;  // TitanAssembly, PirateActivity, TradeShift, FactionConflict
+        float accuracy = 1.0f; // 0.0 (fabrication) to 1.0 (confirmed fact)
+        float age = 0.0f;
+        float decay_rate = 0.02f;
+        int spread_count = 0;
+        bool confirmed = false;
+        bool expired = false;
+        std::vector<std::string> reached_systems;
+    };
+
+    std::vector<Rumor> rumors;
+    int max_rumors = 100;
+    float expiry_threshold = 0.05f; // below this accuracy, rumor expires
+    int total_confirmed = 0;
+    int total_expired = 0;
+    bool active = true;
+
+    COMPONENT_TYPE(RumorPropagation)
+};
+
 
 } // namespace components
 } // namespace atlas

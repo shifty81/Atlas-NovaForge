@@ -178,8 +178,8 @@ If it fails any one → it doesn't ship.
 - [x] `SimTitanAssemblyProgressComponent` — progress, secrecy, resource pressure
 - [x] `AtlasTitanAssemblyPressureSystem` — pirate resources → assembly progress
 - [x] `AtlasOuterRimLogisticsDistortionSystem` — trade route distortion
-- [ ] `AtlasRumorPropagationSystem` — incomplete intel leaks
-- [ ] `AtlasGalacticResponseCurveSystem` — AI faction response escalation
+- [x] `AtlasRumorPropagationSystem` — incomplete intel leaks
+- [x] `AtlasGalacticResponseCurveSystem` — AI faction response escalation
 - [x] Warp anomalies & rare mid-warp events
   - Visual-only phenomena (common)
   - Sensory distortions (uncommon)
@@ -187,7 +187,7 @@ If it fails any one → it doesn't ship.
   - Legendary warp events (ultra-rare, screenshot-worthy)
 - [x] Pirate coalition doctrine
 - [x] Evidence-based player discovery (no UI reveals)
-- [ ] Galactic response curves (empire reinforcement, trade rerouting)
+- [x] Galactic response curves (empire reinforcement, trade rerouting)
 
 ---
 

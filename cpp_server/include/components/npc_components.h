@@ -289,6 +289,33 @@ public:
     COMPONENT_TYPE(EntityIntel)
 };
 
+/**
+ * @brief AI faction response escalation to galactic threats
+ *
+ * Tracks threat level, response tiers (0-4), reinforcement dispatches,
+ * and trade rerouting for a faction responding to escalating threats.
+ */
+class GalacticResponseCurve : public ecs::Component {
+public:
+    std::string faction_id;
+    float threat_level = 0.0f;       // accumulated threat 0.0+
+    float escalation_rate = 1.0f;    // multiplier for threat accumulation
+    float decay_rate = 0.1f;         // threat decay per second
+    int response_tier = 0;           // 0=None, 1=Alert, 2=Mobilize, 3=Reinforce, 4=FullMobilization
+    int reinforcements_dispatched = 0;
+    std::vector<std::string> rerouted_systems;
+    int max_rerouted = 20;
+    bool active = true;
+
+    // Tier thresholds
+    static constexpr float TIER_1_THRESHOLD = 10.0f;  // Alert
+    static constexpr float TIER_2_THRESHOLD = 25.0f;  // Mobilize
+    static constexpr float TIER_3_THRESHOLD = 50.0f;  // Reinforce
+    static constexpr float TIER_4_THRESHOLD = 80.0f;  // Full Mobilization
+
+    COMPONENT_TYPE(GalacticResponseCurve)
+};
+
 
 } // namespace components
 } // namespace atlas

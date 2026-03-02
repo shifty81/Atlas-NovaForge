@@ -231,6 +231,8 @@ set(CORE_SOURCES
     src/systems/fleet_morale_resolution_system.cpp
     src/systems/persistence_delta_system.cpp
     src/systems/outer_rim_logistics_distortion_system.cpp
+    src/systems/rumor_propagation_system.cpp
+    src/systems/galactic_response_curve_system.cpp
     src/data/ship_database.cpp
     src/data/npc_database.cpp
     src/data/wormhole_database.cpp
@@ -520,6 +522,8 @@ set(SERVER_HEADERS
     include/systems/fleet_morale_resolution_system.h
     include/systems/persistence_delta_system.h
     include/systems/outer_rim_logistics_distortion_system.h
+    include/systems/rumor_propagation_system.h
+    include/systems/galactic_response_curve_system.h
 )
 
 # Steam SDK configuration

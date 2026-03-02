@@ -104,6 +104,8 @@
 #include "systems/fleet_morale_resolution_system.h"
 #include "systems/persistence_delta_system.h"
 #include "systems/outer_rim_logistics_distortion_system.h"
+#include "systems/rumor_propagation_system.h"
+#include "systems/galactic_response_curve_system.h"
 #include "network/protocol_handler.h"
 #include "ui/server_console.h"
 #include "utils/logger.h"
@@ -31024,6 +31026,278 @@ void testOuterRimMissing() {
     assertTrue(approxEqual(sys.getTotalPriceImpact("nonexistent"), 0.0f), "0 price impact on missing");
 }
 
+// ===== RumorPropagation System Tests =====
+
+void testRumorPropCreate() {
+    std::cout << "\n=== RumorProp: Create ===" << std::endl;
+    ecs::World world;
+    systems::RumorPropagationSystem sys(&world);
+    world.createEntity("network1");
+    assertTrue(sys.initializeNetwork("network1"), "Init network succeeds");
+    assertTrue(sys.getRumorCount("network1") == 0, "No rumors initially");
+    assertTrue(sys.getConfirmedCount("network1") == 0, "No confirmed initially");
+    assertTrue(sys.getExpiredCount("network1") == 0, "No expired initially");
+}
+
+void testRumorPropCreateRumor() {
+    std::cout << "\n=== RumorProp: CreateRumor ===" << std::endl;
+    ecs::World world;
+    systems::RumorPropagationSystem sys(&world);
+    world.createEntity("network1");
+    sys.initializeNetwork("network1");
+    assertTrue(sys.createRumor("network1", "rumor_1", "TitanAssembly", 0.8f), "Create rumor succeeds");
+    assertTrue(sys.getRumorCount("network1") == 1, "Rumor count is 1");
+    assertTrue(approxEqual(sys.getRumorAccuracy("network1", "rumor_1"), 0.8f), "Accuracy is 0.8");
+    assertTrue(sys.isRumorActive("network1", "rumor_1"), "Rumor is active");
+    assertTrue(!sys.createRumor("network1", "rumor_1", "TitanAssembly", 0.5f), "Duplicate rumor fails");
+}
+
+void testRumorPropSpread() {
+    std::cout << "\n=== RumorProp: Spread ===" << std::endl;
+    ecs::World world;
+    systems::RumorPropagationSystem sys(&world);
+    world.createEntity("network1");
+    sys.initializeNetwork("network1");
+    sys.createRumor("network1", "rumor_1", "PirateActivity", 0.9f);
+    assertTrue(sys.spreadRumor("network1", "rumor_1", "system_alpha"), "Spread succeeds");
+    assertTrue(sys.getSpreadCount("network1", "rumor_1") == 1, "Spread count is 1");
+    // Accuracy reduced by spread (0.9 * 0.9 = 0.81)
+    assertTrue(approxEqual(sys.getRumorAccuracy("network1", "rumor_1"), 0.81f), "Accuracy decayed after spread");
+    assertTrue(!sys.spreadRumor("network1", "rumor_1", "system_alpha"), "Duplicate spread fails");
+}
+
+void testRumorPropConfirm() {
+    std::cout << "\n=== RumorProp: Confirm ===" << std::endl;
+    ecs::World world;
+    systems::RumorPropagationSystem sys(&world);
+    world.createEntity("network1");
+    sys.initializeNetwork("network1");
+    sys.createRumor("network1", "rumor_1", "TradeShift", 0.6f);
+    assertTrue(sys.confirmRumor("network1", "rumor_1"), "Confirm succeeds");
+    assertTrue(approxEqual(sys.getRumorAccuracy("network1", "rumor_1"), 1.0f), "Confirmed accuracy is 1.0");
+    assertTrue(sys.getConfirmedCount("network1") == 1, "Confirmed count is 1");
+    assertTrue(!sys.confirmRumor("network1", "rumor_1"), "Re-confirm fails");
+}
+
+void testRumorPropDecay() {
+    std::cout << "\n=== RumorProp: Decay ===" << std::endl;
+    ecs::World world;
+    systems::RumorPropagationSystem sys(&world);
+    world.createEntity("network1");
+    sys.initializeNetwork("network1");
+    sys.createRumor("network1", "rumor_1", "FactionConflict", 0.5f);
+    sys.update(10.0f); // decay: 0.5 - 0.02*10 = 0.3
+    assertTrue(approxEqual(sys.getRumorAccuracy("network1", "rumor_1"), 0.3f), "Accuracy decayed to 0.3");
+    assertTrue(sys.isRumorActive("network1", "rumor_1"), "Rumor still active");
+}
+
+void testRumorPropExpiry() {
+    std::cout << "\n=== RumorProp: Expiry ===" << std::endl;
+    ecs::World world;
+    systems::RumorPropagationSystem sys(&world);
+    world.createEntity("network1");
+    sys.initializeNetwork("network1");
+    sys.createRumor("network1", "rumor_1", "TitanAssembly", 0.1f);
+    sys.update(5.0f); // decay: 0.1 - 0.02*5 = 0.0, below 0.05 threshold
+    assertTrue(!sys.isRumorActive("network1", "rumor_1"), "Rumor expired");
+    assertTrue(sys.getExpiredCount("network1") == 1, "Expired count is 1");
+}
+
+void testRumorPropConfirmedNoDecay() {
+    std::cout << "\n=== RumorProp: ConfirmedNoDecay ===" << std::endl;
+    ecs::World world;
+    systems::RumorPropagationSystem sys(&world);
+    world.createEntity("network1");
+    sys.initializeNetwork("network1");
+    sys.createRumor("network1", "rumor_1", "PirateActivity", 0.8f);
+    sys.confirmRumor("network1", "rumor_1");
+    sys.update(100.0f); // confirmed rumors don't decay
+    assertTrue(approxEqual(sys.getRumorAccuracy("network1", "rumor_1"), 1.0f), "Confirmed rumor stays at 1.0");
+}
+
+void testRumorPropMultipleRumors() {
+    std::cout << "\n=== RumorProp: Multiple ===" << std::endl;
+    ecs::World world;
+    systems::RumorPropagationSystem sys(&world);
+    world.createEntity("network1");
+    sys.initializeNetwork("network1");
+    sys.createRumor("network1", "rumor_1", "TitanAssembly", 0.9f);
+    sys.createRumor("network1", "rumor_2", "PirateActivity", 0.7f);
+    sys.createRumor("network1", "rumor_3", "TradeShift", 0.5f);
+    assertTrue(sys.getRumorCount("network1") == 3, "3 rumors created");
+    sys.confirmRumor("network1", "rumor_2");
+    assertTrue(sys.getConfirmedCount("network1") == 1, "1 confirmed");
+}
+
+void testRumorPropMultiSpread() {
+    std::cout << "\n=== RumorProp: MultiSpread ===" << std::endl;
+    ecs::World world;
+    systems::RumorPropagationSystem sys(&world);
+    world.createEntity("network1");
+    sys.initializeNetwork("network1");
+    sys.createRumor("network1", "rumor_1", "TitanAssembly", 1.0f);
+    sys.spreadRumor("network1", "rumor_1", "system_a");
+    sys.spreadRumor("network1", "rumor_1", "system_b");
+    sys.spreadRumor("network1", "rumor_1", "system_c");
+    assertTrue(sys.getSpreadCount("network1", "rumor_1") == 3, "Spread to 3 systems");
+    // Accuracy: 1.0 * 0.9 * 0.9 * 0.9 = 0.729
+    assertTrue(approxEqual(sys.getRumorAccuracy("network1", "rumor_1"), 0.729f), "Accuracy decayed through 3 spreads");
+}
+
+void testRumorPropMissing() {
+    std::cout << "\n=== RumorProp: Missing ===" << std::endl;
+    ecs::World world;
+    systems::RumorPropagationSystem sys(&world);
+    assertTrue(!sys.initializeNetwork("nonexistent"), "Init fails on missing entity");
+    assertTrue(!sys.createRumor("nonexistent", "r1", "Test", 0.5f), "Create fails on missing");
+    assertTrue(!sys.spreadRumor("nonexistent", "r1", "sys1"), "Spread fails on missing");
+    assertTrue(!sys.confirmRumor("nonexistent", "r1"), "Confirm fails on missing");
+    assertTrue(approxEqual(sys.getRumorAccuracy("nonexistent", "r1"), 0.0f), "0 accuracy on missing");
+    assertTrue(sys.getRumorCount("nonexistent") == 0, "0 rumors on missing");
+    assertTrue(sys.getConfirmedCount("nonexistent") == 0, "0 confirmed on missing");
+    assertTrue(sys.getExpiredCount("nonexistent") == 0, "0 expired on missing");
+    assertTrue(sys.getSpreadCount("nonexistent", "r1") == 0, "0 spread on missing");
+    assertTrue(!sys.isRumorActive("nonexistent", "r1"), "Not active on missing");
+}
+
+// ===== GalacticResponseCurve System Tests =====
+
+void testGalacticResponseCreate() {
+    std::cout << "\n=== GalacticResponse: Create ===" << std::endl;
+    ecs::World world;
+    systems::GalacticResponseCurveSystem sys(&world);
+    world.createEntity("faction1");
+    assertTrue(sys.initializeFaction("faction1", "Solari"), "Init faction succeeds");
+    assertTrue(approxEqual(sys.getThreatLevel("faction1"), 0.0f), "Initial threat is 0");
+    assertTrue(sys.getResponseTier("faction1") == 0, "Initial tier is 0");
+    assertTrue(sys.getReinforcementCount("faction1") == 0, "No reinforcements initially");
+    assertTrue(sys.getReroutedSystemCount("faction1") == 0, "No rerouted systems");
+    assertTrue(approxEqual(sys.getEscalationRate("faction1"), 1.0f), "Default escalation rate is 1.0");
+    assertTrue(!sys.isFullMobilization("faction1"), "No full mobilization initially");
+}
+
+void testGalacticResponseThreat() {
+    std::cout << "\n=== GalacticResponse: Threat ===" << std::endl;
+    ecs::World world;
+    systems::GalacticResponseCurveSystem sys(&world);
+    world.createEntity("faction1");
+    sys.initializeFaction("faction1", "Solari");
+    assertTrue(sys.reportThreat("faction1", 15.0f), "Report threat succeeds");
+    assertTrue(approxEqual(sys.getThreatLevel("faction1"), 15.0f), "Threat is 15");
+    sys.update(0.0f); // update tiers
+    assertTrue(sys.getResponseTier("faction1") == 1, "Tier 1 (Alert) at threat 15");
+}
+
+void testGalacticResponseTierEscalation() {
+    std::cout << "\n=== GalacticResponse: TierEscalation ===" << std::endl;
+    ecs::World world;
+    systems::GalacticResponseCurveSystem sys(&world);
+    world.createEntity("faction1");
+    sys.initializeFaction("faction1", "Veyren");
+    sys.reportThreat("faction1", 30.0f);
+    sys.update(0.0f);
+    assertTrue(sys.getResponseTier("faction1") == 2, "Tier 2 (Mobilize) at threat 30");
+    sys.reportThreat("faction1", 25.0f); // total: 55
+    sys.update(0.0f);
+    assertTrue(sys.getResponseTier("faction1") == 3, "Tier 3 (Reinforce) at threat 55");
+    sys.reportThreat("faction1", 30.0f); // total: 85
+    sys.update(0.0f);
+    assertTrue(sys.getResponseTier("faction1") == 4, "Tier 4 (FullMobilization) at threat 85");
+    assertTrue(sys.isFullMobilization("faction1"), "Full mobilization active");
+}
+
+void testGalacticResponseReinforcement() {
+    std::cout << "\n=== GalacticResponse: Reinforcement ===" << std::endl;
+    ecs::World world;
+    systems::GalacticResponseCurveSystem sys(&world);
+    world.createEntity("faction1");
+    sys.initializeFaction("faction1", "Keldari");
+    sys.reportThreat("faction1", 55.0f);
+    sys.update(0.0f); // tier 3
+    assertTrue(sys.dispatchReinforcement("faction1"), "Dispatch at tier 3 succeeds");
+    assertTrue(sys.getReinforcementCount("faction1") == 1, "1 reinforcement dispatched");
+    assertTrue(sys.dispatchReinforcement("faction1"), "Second dispatch succeeds");
+    assertTrue(sys.getReinforcementCount("faction1") == 2, "2 reinforcements dispatched");
+}
+
+void testGalacticResponseReinforcementBlocked() {
+    std::cout << "\n=== GalacticResponse: ReinforcementBlocked ===" << std::endl;
+    ecs::World world;
+    systems::GalacticResponseCurveSystem sys(&world);
+    world.createEntity("faction1");
+    sys.initializeFaction("faction1", "Aurelian");
+    sys.reportThreat("faction1", 20.0f);
+    sys.update(0.0f); // tier 2
+    assertTrue(!sys.dispatchReinforcement("faction1"), "Dispatch blocked at tier 2");
+    assertTrue(sys.getReinforcementCount("faction1") == 0, "No reinforcements dispatched");
+}
+
+void testGalacticResponseReroute() {
+    std::cout << "\n=== GalacticResponse: Reroute ===" << std::endl;
+    ecs::World world;
+    systems::GalacticResponseCurveSystem sys(&world);
+    world.createEntity("faction1");
+    sys.initializeFaction("faction1", "Solari");
+    assertTrue(sys.rerouteTradeFor("faction1", "system_alpha"), "Reroute succeeds");
+    assertTrue(sys.getReroutedSystemCount("faction1") == 1, "1 system rerouted");
+    assertTrue(!sys.rerouteTradeFor("faction1", "system_alpha"), "Duplicate reroute fails");
+    assertTrue(sys.rerouteTradeFor("faction1", "system_beta"), "Second reroute succeeds");
+    assertTrue(sys.getReroutedSystemCount("faction1") == 2, "2 systems rerouted");
+}
+
+void testGalacticResponseDecay() {
+    std::cout << "\n=== GalacticResponse: Decay ===" << std::endl;
+    ecs::World world;
+    systems::GalacticResponseCurveSystem sys(&world);
+    world.createEntity("faction1");
+    sys.initializeFaction("faction1", "Veyren");
+    sys.reportThreat("faction1", 30.0f);
+    sys.update(10.0f); // decay: 30 - 0.1*10 = 29
+    assertTrue(approxEqual(sys.getThreatLevel("faction1"), 29.0f), "Threat decayed to 29");
+    assertTrue(sys.getResponseTier("faction1") == 2, "Still tier 2 at 29");
+}
+
+void testGalacticResponseDecayToZero() {
+    std::cout << "\n=== GalacticResponse: DecayToZero ===" << std::endl;
+    ecs::World world;
+    systems::GalacticResponseCurveSystem sys(&world);
+    world.createEntity("faction1");
+    sys.initializeFaction("faction1", "Keldari");
+    sys.reportThreat("faction1", 5.0f);
+    sys.update(100.0f); // decay: 5 - 0.1*100 = -5, clamped to 0
+    assertTrue(approxEqual(sys.getThreatLevel("faction1"), 0.0f), "Threat decayed to 0");
+    assertTrue(sys.getResponseTier("faction1") == 0, "Back to tier 0");
+}
+
+void testGalacticResponseMultiThreat() {
+    std::cout << "\n=== GalacticResponse: MultiThreat ===" << std::endl;
+    ecs::World world;
+    systems::GalacticResponseCurveSystem sys(&world);
+    world.createEntity("faction1");
+    sys.initializeFaction("faction1", "Solari");
+    sys.reportThreat("faction1", 5.0f);
+    sys.reportThreat("faction1", 8.0f);
+    assertTrue(approxEqual(sys.getThreatLevel("faction1"), 13.0f), "Threat accumulated to 13");
+    sys.update(0.0f);
+    assertTrue(sys.getResponseTier("faction1") == 1, "Tier 1 at 13");
+}
+
+void testGalacticResponseMissing() {
+    std::cout << "\n=== GalacticResponse: Missing ===" << std::endl;
+    ecs::World world;
+    systems::GalacticResponseCurveSystem sys(&world);
+    assertTrue(!sys.initializeFaction("nonexistent", "Test"), "Init fails on missing entity");
+    assertTrue(!sys.reportThreat("nonexistent", 10.0f), "Report fails on missing");
+    assertTrue(!sys.dispatchReinforcement("nonexistent"), "Dispatch fails on missing");
+    assertTrue(!sys.rerouteTradeFor("nonexistent", "sys1"), "Reroute fails on missing");
+    assertTrue(approxEqual(sys.getThreatLevel("nonexistent"), 0.0f), "0 threat on missing");
+    assertTrue(sys.getResponseTier("nonexistent") == 0, "0 tier on missing");
+    assertTrue(sys.getReinforcementCount("nonexistent") == 0, "0 reinforcements on missing");
+    assertTrue(sys.getReroutedSystemCount("nonexistent") == 0, "0 rerouted on missing");
+    assertTrue(approxEqual(sys.getEscalationRate("nonexistent"), 0.0f), "0 escalation on missing");
+    assertTrue(!sys.isFullMobilization("nonexistent"), "No mobilization on missing");
+}
+
 int main() {
     std::cout << "========================================" << std::endl;
     std::cout << "Nova Forge C++ Server System Tests" << std::endl;
@@ -33349,6 +33623,30 @@ int main() {
     testOuterRimDisruptedCount();
     testOuterRimMaxRoutes();
     testOuterRimMissing();
+
+    // RumorPropagation System tests
+    testRumorPropCreate();
+    testRumorPropCreateRumor();
+    testRumorPropSpread();
+    testRumorPropConfirm();
+    testRumorPropDecay();
+    testRumorPropExpiry();
+    testRumorPropConfirmedNoDecay();
+    testRumorPropMultipleRumors();
+    testRumorPropMultiSpread();
+    testRumorPropMissing();
+
+    // GalacticResponseCurve System tests
+    testGalacticResponseCreate();
+    testGalacticResponseThreat();
+    testGalacticResponseTierEscalation();
+    testGalacticResponseReinforcement();
+    testGalacticResponseReinforcementBlocked();
+    testGalacticResponseReroute();
+    testGalacticResponseDecay();
+    testGalacticResponseDecayToZero();
+    testGalacticResponseMultiThreat();
+    testGalacticResponseMissing();
 
     std::cout << "\n========================================" << std::endl;
     std::cout << "Results: " << testsPassed << "/" << testsRun << " tests passed" << std::endl;

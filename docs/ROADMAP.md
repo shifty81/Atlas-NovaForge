@@ -1243,6 +1243,8 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 - [x] **Fleet morale resolution** — FleetMoraleResolution component + FleetMoraleResolutionSystem with ideology-based crisis management, 4 resolution methods (Compromise/AuthorityOverride/Vote/Mediation), auto-fracture when morale drops below threshold, captain departure on unresolved crises, morale recovery scaled by ideology alignment (10 tests)
 - [x] **Persistence delta tracking** — PersistenceDelta component + PersistenceDeltaSystem with long-term action consequence recording, 5 categories (Combat/Trade/Diplomacy/Exploration/Crime), magnitude decay over time, permanent entries, consequence threshold triggers, max entry enforcement with oldest eviction (10 tests)
 - [x] **Outer rim logistics distortion** — OuterRimLogisticsDistortion component + OuterRimLogisticsDistortionSystem with trade route efficiency distortion from titan threat pressure, per-route and global threat levels, instant efficiency drops with gradual recovery, price impact calculation (up to 2x for fully disrupted routes), disrupted route counting (10 tests)
+- [x] **Rumor propagation** — RumorPropagation component + RumorPropagationSystem with incomplete intel leaks propagating across star systems, accuracy decay over time and through spread, rumor confirmation, expiry below accuracy threshold, multi-system spread tracking (10 tests)
+- [x] **Galactic response curves** — GalacticResponseCurve component + GalacticResponseCurveSystem with AI faction response escalation through 5 tiers (None/Alert/Mobilize/Reinforce/FullMobilization), threat accumulation and decay, empire reinforcement dispatching at tier 3+, trade rerouting, escalation rate multipliers (10 tests)
 
 ---
 
