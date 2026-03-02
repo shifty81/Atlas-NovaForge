@@ -160,7 +160,7 @@ class PCG_OT_materialize_ships(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        from . import ship_generator as sg
+        from . import ship_generator
         from . import atlas_exporter
 
         props = context.scene.pcg_props
@@ -183,7 +183,7 @@ class PCG_OT_materialize_ships(bpy.types.Operator):
                 continue
 
             config = atlas_exporter.parse_ship_config(ship_data)
-            sg.generate_spaceship(
+            ship_generator.generate_spaceship(
                 ship_class=config['ship_class'],
                 seed=config['seed'],
                 generate_interior=config.get('generate_interior', True),
