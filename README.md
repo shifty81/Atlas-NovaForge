@@ -356,7 +356,8 @@ See the [Modding Guide](docs/MODDING_GUIDE.md) for details.
 | **Atlas Engine** | [Integration Guide](docs/ATLAS_INTEGRATION.md) · [Atlas Repo](https://github.com/shifty81/Atlas) |
 | **Atlas UI** | [Atlas UI Docs](docs/atlas-ui/README.md) · [Widget Reference](docs/atlas-ui/WIDGETS.md) |
 | **Development** | [Roadmap](docs/ROADMAP.md) · [Contributing](docs/CONTRIBUTING.md) |
-| **Design** | [Game Design](docs/design/DESIGN.md) · [Ship Modeling](docs/SHIP_MODELING.md) |
+| **Design** | [Design Bible](docs/design/MASTER_DESIGN_BIBLE.md) · [Game Design](docs/design/DESIGN.md) · [Ship Modeling](docs/SHIP_MODELING.md) |
+| **Systems** | [Procedural Pipeline](docs/design/PROCEDURAL_SYSTEMS.md) · [Vehicles & Equipment](docs/design/VEHICLES_AND_EQUIPMENT.md) · [Salvage & Legends](docs/design/SALVAGE_AND_LEGENDS.md) |
 | **Technical** | [C++ Client](docs/cpp_client/) · [Networking](docs/cpp_client/) |
 
 ---

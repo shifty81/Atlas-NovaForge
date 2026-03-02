@@ -39,7 +39,7 @@ Nova Forge is a PVE-focused space simulator designed for solo play or small grou
 
 ## Master Implementation Plan
 
-> Based on comprehensive baseline design document (February 2026) and `scopeforprojectsofar.rtf` project planning document
+> Based on comprehensive baseline design document (February 2026), `scopeforprojectsofar.rtf` project planning document, and the [Master Design Bible](design/MASTER_DESIGN_BIBLE.md) (consolidated from iterative AI–human design sessions)
 
 ### Architecture Pillars
 
@@ -1191,7 +1191,8 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 ### 📋 Phase 12: Procedural Ship Generation Overhaul (In Progress)
 **Timeline**: 2027  
 **Priority**: High  
-**Goal**: Ships that read in silhouette — spine-based hull grammar replacing blob-assembly
+**Goal**: Ships that read in silhouette — spine-based hull grammar replacing blob-assembly  
+**Design Reference**: [Master Design Bible — Ship Construction](design/MASTER_DESIGN_BIBLE.md#ship-construction-system) · [Procedural Pipeline](design/PROCEDURAL_SYSTEMS.md)
 
 #### Hull Grammar System
 - [x] **Spine selection** — Needle, Wedge, Hammer, Slab, Ring — defines ship purpose — SpineHullGenerator with hull-class-biased archetype selection (8 tests)
@@ -1227,7 +1228,8 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 ### 📋 Phase 13: FPS & Interior Systems (In Progress)
 **Timeline**: 2027  
 **Priority**: High  
-**Goal**: Full FPS gameplay inside ships, stations, and on planets with modular interiors and survival mechanics
+**Goal**: Full FPS gameplay inside ships, stations, and on planets with modular interiors and survival mechanics  
+**Design Reference**: [Master Design Bible — FPS & Interiors](design/MASTER_DESIGN_BIBLE.md#fps--interior-combat) · [Salvage & Legends](design/SALVAGE_AND_LEGENDS.md)
 
 #### Character & Race System
 - [x] **4 playable races** — TerranDescendant (balanced, fast learner), SynthBorn (AI hybrid, drone bonus), PureAlien (resilient, exotic), HybridEvolutionary (high-risk, mutating) — RaceInfo component with applyRaceDefaults() + CharacterMeshSystem PCG (3 tests)
@@ -1309,7 +1311,8 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 ### 📋 Phase 14: Vehicles & Planetary Systems (In Progress)
 **Timeline**: 2027–2028  
 **Priority**: Medium  
-**Goal**: Planetary exploration with rovers, grav bikes, and procedural terrain
+**Goal**: Planetary exploration with rovers, grav bikes, and procedural terrain  
+**Design Reference**: [Vehicles & Equipment](design/VEHICLES_AND_EQUIPMENT.md) · [Master Design Bible — Planet Landing](design/MASTER_DESIGN_BIBLE.md#planet-landing--surface-systems)
 
 #### Planet Generation
 - [x] **8 planet types** — Rocky, Gas, Ice, Lava, Ocean, Desert, Forest, Barren — PlanetGenerator with gravity, temperature, atmosphere, terraformability (4 tests)
@@ -1341,7 +1344,8 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 ### 📋 Phase 15: Turrets, Market, & Legends (In Progress)
 **Timeline**: 2027–2028  
 **Priority**: Medium  
-**Goal**: Procedural weapons, enhanced economy, and player legend system
+**Goal**: Procedural weapons, enhanced economy, and player legend system  
+**Design Reference**: [Salvage & Legends](design/SALVAGE_AND_LEGENDS.md) · [Vehicles & Equipment — Weapons](design/VEHICLES_AND_EQUIPMENT.md#weapon-system)
 
 #### Turret Generation
 - [x] **Procedural turrets** — 4 sizes × 5 types with faction style modifiers — TurretGenerator with range, tracking, damage, barrel count (3 tests)
