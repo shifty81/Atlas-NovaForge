@@ -106,10 +106,15 @@ bool EntityStressTestSystem::recordTick(const std::string& entity_id, float tick
 
     test->tick_times.push_back(tick_time_ms);
 
-    // Update running stats
-    float n = static_cast<float>(test->tick_times.size());
-    test->avg_tick_ms = test->avg_tick_ms * ((n - 1.0f) / n) + tick_time_ms / n;
-    test->max_tick_ms = std::max(test->max_tick_ms, tick_time_ms);
+    // Recompute stats from full vector for consistency with update()
+    float sum = 0.0f;
+    float max_val = 0.0f;
+    for (float t : test->tick_times) {
+        sum += t;
+        max_val = std::max(max_val, t);
+    }
+    test->avg_tick_ms = sum / static_cast<float>(test->tick_times.size());
+    test->max_tick_ms = max_val;
 
     // Transition from Creating to Running once we have entities
     using SP = components::EntityStressTest::StressPhase;
