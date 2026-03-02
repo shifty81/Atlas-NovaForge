@@ -156,7 +156,7 @@ NovaForge/
 │   ├── notes/             #   Design notes & chat logs
 │   └── ...                #   Design, features, development notes
 ├── tools/                 # Utilities (ship creator, JSON validator, Blender addon)
-│   └── BlenderSpaceshipGenerator/  # Blender addon for procedural ship/station generation
+│   └── BlenderSpaceshipGenerator/  # AtlasForge Generator — procedural ship/station/asteroid generation
 ├── archive/               # Legacy code & deprecated files
 ├── CMakeLists.txt         # Root build configuration
 ├── Makefile               # Development task shortcuts
@@ -297,7 +297,7 @@ data/
 └── ...                 # Industry, exploration, corps, security
 ```
 
-**Tools**: `tools/validate_json.py` (validate data) · `tools/create_ship.py` (ship wizard) · `tools/BlenderSpaceshipGenerator/` (procedural 3D ship generation)
+**Tools**: `tools/validate_json.py` (validate data) · `tools/create_ship.py` (ship wizard) · `tools/BlenderSpaceshipGenerator/` (AtlasForge Generator — procedural 3D ship/station/asteroid generation)
 
 See the [Modding Guide](docs/MODDING_GUIDE.md) for details.
 

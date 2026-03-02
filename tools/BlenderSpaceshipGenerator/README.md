@@ -1,8 +1,8 @@
-# BlenderSpaceshipGenerator
+# AtlasForge Generator
 
 A comprehensive Blender addon for procedurally generating spaceships with modular parts and interiors. Inspired by games like X4 Foundations, Elite Dangerous, and Eve Online.
 
-Built as the ship generator for the [Nova Forge](https://github.com/shifty81/NOVAFORGE) project — a PVE space simulator powered by the custom Atlas Engine and Atlas UI.
+Built as the asset generator for the [Nova Forge](https://github.com/shifty81/NOVAFORGE) project — a PVE space simulator powered by the custom Atlas Engine and Atlas UI.
 
 ## Nova Forge / Atlas Integration
 
@@ -117,18 +117,29 @@ This addon integrates directly with the Nova Forge project:
   - Procedural deformation for natural rocky shapes
   - PBR materials matching ore visual data
 
+- **Game Engine Integration**:
+  - LOD generation (LOD0-LOD3) with per-class switch distances
+  - Collision mesh generation (box, convex hull, multi-convex)
+  - Animation system (turret rotation, bay doors, landing gear, radar spin)
+  - Damage propagation and structural integrity simulation
+  - Power flow and capacitor mechanics
+  - Build validation (grid snapping, hardpoint compatibility, connectivity)
+  - Catalog render setup (camera, three-point lighting, thumbnails)
+  - NovaForge ship JSON import with race/class mapping
+  - Batch generation and full pipeline export
+
 ## Installation
 
 1. Download or clone this repository
 2. In Blender, go to Edit → Preferences → Add-ons
 3. Click "Install" and select the downloaded folder or ZIP file
-4. Enable the "Spaceship Generator" addon
+4. Enable the "AtlasForge Generator" addon
 
 ## Usage
 
 1. Open Blender and go to the 3D Viewport
 2. Open the sidebar (press N if not visible)
-3. Navigate to the "Spaceship" tab
+3. Navigate to the "AtlasForge" tab
 4. Configure your ship:
    - Select ship class (Shuttle to Capital)
    - Choose design style
