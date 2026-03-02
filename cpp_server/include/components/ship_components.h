@@ -861,6 +861,50 @@ public:
     COMPONENT_TYPE(VisualCoupling)
 };
 
+class ShipCapabilityRating : public ecs::Component {
+public:
+    float combat_score = 0.0f;       // 0.0 - 5.0 stars
+    float mining_score = 0.0f;       
+    float exploration_score = 0.0f;  
+    float cargo_score = 0.0f;        
+    float defense_score = 0.0f;      
+    float fabrication_score = 0.0f;  
+    
+    int weapon_count = 0;
+    int mining_module_count = 0;
+    int scanner_count = 0;
+    float cargo_capacity = 0.0f;     // m3
+    float total_ehp = 0.0f;         // effective HP (shield+armor+hull)
+    int industry_module_count = 0;
+    
+    float overall_rating = 0.0f;     // average of all 6 categories
+    bool needs_recalculation = true;
+    bool active = true;
+    
+    COMPONENT_TYPE(ShipCapabilityRating)
+};
+
+class ModuleCascadingFailure : public ecs::Component {
+public:
+    struct ModuleState {
+        std::string module_id;
+        std::string module_type;  // "Weapon", "Engine", "Shield", "Power", "Sensor", "Cargo"
+        float hp = 100.0f;
+        float max_hp = 100.0f;
+        bool online = true;
+        bool destroyed = false;
+        std::vector<std::string> depends_on;  // module_ids this depends on
+    };
+    
+    std::vector<ModuleState> modules;
+    int max_modules = 20;
+    int total_failures = 0;
+    int cascade_events = 0;
+    bool active = true;
+    
+    COMPONENT_TYPE(ModuleCascadingFailure)
+};
+
 } // namespace components
 } // namespace atlas
 

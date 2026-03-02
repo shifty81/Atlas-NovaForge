@@ -233,6 +233,8 @@ set(CORE_SOURCES
     src/systems/outer_rim_logistics_distortion_system.cpp
     src/systems/rumor_propagation_system.cpp
     src/systems/galactic_response_curve_system.cpp
+    src/systems/ship_capability_rating_system.cpp
+    src/systems/module_cascading_failure_system.cpp
     src/data/ship_database.cpp
     src/data/npc_database.cpp
     src/data/wormhole_database.cpp
@@ -524,6 +526,8 @@ set(SERVER_HEADERS
     include/systems/outer_rim_logistics_distortion_system.h
     include/systems/rumor_propagation_system.h
     include/systems/galactic_response_curve_system.h
+    include/systems/ship_capability_rating_system.h
+    include/systems/module_cascading_failure_system.h
 )
 
 # Steam SDK configuration
