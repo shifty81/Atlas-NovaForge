@@ -285,6 +285,92 @@ public:
     COMPONENT_TYPE(ShipDesigner)
 };
 
+// ==================== Mission Editor ====================
+
+class MissionEditor : public ecs::Component {
+public:
+    enum ObjectiveType { Kill = 0, Deliver = 1, Escort = 2, Scan = 3, Mine = 4, Salvage = 5, Defend = 6 };
+    enum MissionType { Combat = 0, Mining = 1, Courier = 2, Exploration = 3, Rescue = 4 };
+
+    struct Objective {
+        int id = 0;
+        std::string description;
+        int type = Kill;
+    };
+
+    std::string mission_name;
+    int mission_level = 1;
+    int mission_type = Combat;
+    std::vector<Objective> objectives;
+    float reward_credits = 0.0f;
+    float reward_standing = 0.0f;
+    int next_objective_id = 1;
+    int published_count = 0;
+    std::string validation_error;
+    bool active = true;
+
+    COMPONENT_TYPE(MissionEditor)
+};
+
+// ==================== Content Validation ====================
+
+class ContentValidation : public ecs::Component {
+public:
+    enum ContentType { Ship = 0, Module = 1, Mission = 2, Skill = 3 };
+    enum ContentState { Pending = 0, Validating = 1, Approved = 2, Rejected = 3 };
+
+    struct ContentEntry {
+        std::string content_id;
+        std::string name;
+        int content_type = Ship;
+        int state = Pending;
+        std::string rejection_reason;
+    };
+
+    std::vector<ContentEntry> entries;
+    int total_validations = 0;
+    int approved_count = 0;
+    int rejected_count = 0;
+    bool active = true;
+
+    ContentEntry* findEntry(const std::string& content_id) {
+        for (auto& e : entries) {
+            if (e.content_id == content_id) return &e;
+        }
+        return nullptr;
+    }
+
+    const ContentEntry* findEntry(const std::string& content_id) const {
+        for (const auto& e : entries) {
+            if (e.content_id == content_id) return &e;
+        }
+        return nullptr;
+    }
+
+    COMPONENT_TYPE(ContentValidation)
+};
+
+// ==================== Cloud Deployment Config ====================
+
+class CloudDeploymentConfig : public ecs::Component {
+public:
+    enum Provider { AWS = 0, GCP = 1, Azure = 2 };
+
+    int provider = AWS;
+    std::string region;
+    std::string instance_type;
+    int max_players = 20;
+    float health_check_interval = 30.0f;
+    bool health_check_enabled = false;
+    bool deployed = false;
+    float uptime = 0.0f;
+    int health_check_count = 0;
+    float estimated_monthly_cost = 0.0f;
+    bool active = true;
+
+    COMPONENT_TYPE(CloudDeploymentConfig)
+};
+
 } // namespace components
 } // namespace atlas
 
