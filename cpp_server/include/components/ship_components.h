@@ -530,7 +530,7 @@ public:
     float fine_per_contraband = 1000.0f; // Credits fine per contraband item
     double total_fines_issued = 0.0;     // total Credits in fines issued
     bool is_customs_scanner = false;     // true for gate/station customs
-    std::vector<ContrabandType> detected_types;  // types found in last scan
+    std::vector<ContrabandType> detected_types;  // contraband types present on this entity
 
     static std::string phaseToString(ScanPhase p) {
         switch (p) {
