@@ -213,6 +213,9 @@
 #include "systems/client_prediction_system.h"
 #include "systems/ship_template_mod_system.h"
 #include "systems/database_persistence_system.h"
+#include "systems/mission_editor_system.h"
+#include "systems/content_validation_system.h"
+#include "systems/cloud_deployment_config_system.h"
 #include <iostream>
 #include <cassert>
 #include <string>
@@ -29364,6 +29367,401 @@ void testShipDesignerMissing() {
     assertTrue(!sys.isValid("nonexistent"), "Not valid on missing");
 }
 
+// ==================== MissionEditor System Tests ====================
+
+void testMissionEditorCreate() {
+    std::cout << "\n=== MissionEditor: Create ===" << std::endl;
+    ecs::World world;
+    systems::MissionEditorSystem sys(&world);
+    auto* e = world.createEntity("editor1");
+    assertTrue(sys.createEditor("editor1"), "Create editor succeeds");
+    auto* ed = e->getComponent<components::MissionEditor>();
+    assertTrue(ed != nullptr, "Component exists");
+    assertTrue(ed->active, "Editor is active by default");
+    assertTrue(ed->mission_level == 1, "Default level is 1");
+    assertTrue(ed->published_count == 0, "No published missions");
+}
+
+void testMissionEditorSetName() {
+    std::cout << "\n=== MissionEditor: SetName ===" << std::endl;
+    ecs::World world;
+    systems::MissionEditorSystem sys(&world);
+    world.createEntity("editor1");
+    sys.createEditor("editor1");
+    assertTrue(sys.setMissionName("editor1", "Patrol Alpha"), "Set name succeeds");
+    assertTrue(sys.setMissionLevel("editor1", 3), "Set level succeeds");
+    assertTrue(sys.setMissionType("editor1", 2), "Set type succeeds");
+}
+
+void testMissionEditorAddObjective() {
+    std::cout << "\n=== MissionEditor: AddObjective ===" << std::endl;
+    ecs::World world;
+    systems::MissionEditorSystem sys(&world);
+    world.createEntity("editor1");
+    sys.createEditor("editor1");
+    int id = sys.addObjective("editor1", "Destroy 5 pirates", 0);
+    assertTrue(id > 0, "Objective ID is positive");
+    assertTrue(sys.getObjectiveCount("editor1") == 1, "1 objective");
+    int id2 = sys.addObjective("editor1", "Return to station", 1);
+    assertTrue(id2 > id, "Second ID is higher");
+    assertTrue(sys.getObjectiveCount("editor1") == 2, "2 objectives");
+}
+
+void testMissionEditorRemoveObjective() {
+    std::cout << "\n=== MissionEditor: RemoveObjective ===" << std::endl;
+    ecs::World world;
+    systems::MissionEditorSystem sys(&world);
+    world.createEntity("editor1");
+    sys.createEditor("editor1");
+    int id = sys.addObjective("editor1", "Mine ore", 4);
+    assertTrue(sys.removeObjective("editor1", id), "Remove succeeds");
+    assertTrue(sys.getObjectiveCount("editor1") == 0, "0 objectives after remove");
+    assertTrue(!sys.removeObjective("editor1", id), "Remove again fails");
+}
+
+void testMissionEditorSetReward() {
+    std::cout << "\n=== MissionEditor: SetReward ===" << std::endl;
+    ecs::World world;
+    systems::MissionEditorSystem sys(&world);
+    auto* e = world.createEntity("editor1");
+    sys.createEditor("editor1");
+    assertTrue(sys.setReward("editor1", 50000.0f, 0.5f), "Set reward succeeds");
+    auto* ed = e->getComponent<components::MissionEditor>();
+    assertTrue(ed->reward_credits == 50000.0f, "Credits set correctly");
+    assertTrue(ed->reward_standing == 0.5f, "Standing set correctly");
+}
+
+void testMissionEditorValidate() {
+    std::cout << "\n=== MissionEditor: Validate ===" << std::endl;
+    ecs::World world;
+    systems::MissionEditorSystem sys(&world);
+    world.createEntity("editor1");
+    sys.createEditor("editor1");
+    assertTrue(!sys.validate("editor1"), "Empty mission fails validation");
+    assertTrue(sys.getValidationError("editor1") == "Mission name is required", "Error: name required");
+    sys.setMissionName("editor1", "Test Mission");
+    assertTrue(!sys.validate("editor1"), "No objectives fails validation");
+    assertTrue(sys.getValidationError("editor1") == "At least one objective is required", "Error: objectives required");
+}
+
+void testMissionEditorPublish() {
+    std::cout << "\n=== MissionEditor: Publish ===" << std::endl;
+    ecs::World world;
+    systems::MissionEditorSystem sys(&world);
+    world.createEntity("editor1");
+    sys.createEditor("editor1");
+    assertTrue(!sys.publish("editor1"), "Publish fails without valid mission");
+    sys.setMissionName("editor1", "Patrol Beta");
+    sys.addObjective("editor1", "Kill 3 enemies", 0);
+    sys.setReward("editor1", 10000.0f, 0.1f);
+    assertTrue(sys.publish("editor1"), "Publish succeeds with valid mission");
+    assertTrue(sys.getPublishedCount("editor1") == 1, "Published count is 1");
+}
+
+void testMissionEditorLevelClamp() {
+    std::cout << "\n=== MissionEditor: LevelClamp ===" << std::endl;
+    ecs::World world;
+    systems::MissionEditorSystem sys(&world);
+    auto* e = world.createEntity("editor1");
+    sys.createEditor("editor1");
+    sys.setMissionLevel("editor1", 10);
+    auto* ed = e->getComponent<components::MissionEditor>();
+    assertTrue(ed->mission_level == 5, "Level clamped to 5");
+    sys.setMissionLevel("editor1", -1);
+    assertTrue(ed->mission_level == 1, "Level clamped to 1");
+}
+
+void testMissionEditorEmptyObjective() {
+    std::cout << "\n=== MissionEditor: EmptyObjective ===" << std::endl;
+    ecs::World world;
+    systems::MissionEditorSystem sys(&world);
+    world.createEntity("editor1");
+    sys.createEditor("editor1");
+    int id = sys.addObjective("editor1", "", 0);
+    assertTrue(id == -1, "Empty description rejected");
+    assertTrue(sys.getObjectiveCount("editor1") == 0, "No objectives added");
+}
+
+void testMissionEditorMissing() {
+    std::cout << "\n=== MissionEditor: Missing ===" << std::endl;
+    ecs::World world;
+    systems::MissionEditorSystem sys(&world);
+    assertTrue(!sys.createEditor("nonexistent"), "Create fails on missing");
+    assertTrue(!sys.setMissionName("nonexistent", "X"), "SetName fails on missing");
+    assertTrue(!sys.setMissionLevel("nonexistent", 1), "SetLevel fails on missing");
+    assertTrue(!sys.setMissionType("nonexistent", 0), "SetType fails on missing");
+    assertTrue(sys.addObjective("nonexistent", "X", 0) == -1, "AddObjective fails on missing");
+    assertTrue(!sys.removeObjective("nonexistent", 1), "RemoveObjective fails on missing");
+    assertTrue(!sys.setReward("nonexistent", 100.0f, 0.0f), "SetReward fails on missing");
+    assertTrue(!sys.validate("nonexistent"), "Validate fails on missing");
+    assertTrue(!sys.publish("nonexistent"), "Publish fails on missing");
+    assertTrue(sys.getObjectiveCount("nonexistent") == 0, "0 objectives on missing");
+    assertTrue(sys.getPublishedCount("nonexistent") == 0, "0 published on missing");
+}
+
+// ==================== ContentValidation System Tests ====================
+
+void testContentValidationCreate() {
+    std::cout << "\n=== ContentValidation: Create ===" << std::endl;
+    ecs::World world;
+    systems::ContentValidationSystem sys(&world);
+    auto* e = world.createEntity("val1");
+    assertTrue(sys.createValidator("val1"), "Create validator succeeds");
+    auto* cv = e->getComponent<components::ContentValidation>();
+    assertTrue(cv != nullptr, "Component exists");
+    assertTrue(cv->active, "Validator is active by default");
+    assertTrue(cv->total_validations == 0, "No validations yet");
+}
+
+void testContentValidationSubmit() {
+    std::cout << "\n=== ContentValidation: Submit ===" << std::endl;
+    ecs::World world;
+    systems::ContentValidationSystem sys(&world);
+    world.createEntity("val1");
+    sys.createValidator("val1");
+    assertTrue(sys.submitContent("val1", "ship_001", 0, "Custom Frigate"), "Submit succeeds");
+    assertTrue(sys.getContentState("val1", "ship_001") == 0, "State is Pending (0)");
+    assertTrue(sys.getPendingCount("val1") == 1, "1 pending");
+}
+
+void testContentValidationDuplicate() {
+    std::cout << "\n=== ContentValidation: Duplicate ===" << std::endl;
+    ecs::World world;
+    systems::ContentValidationSystem sys(&world);
+    world.createEntity("val1");
+    sys.createValidator("val1");
+    sys.submitContent("val1", "ship_001", 0, "Custom Frigate");
+    assertTrue(!sys.submitContent("val1", "ship_001", 0, "Duplicate"), "Duplicate rejected");
+    assertTrue(sys.getPendingCount("val1") == 1, "Still 1 pending");
+}
+
+void testContentValidationRun() {
+    std::cout << "\n=== ContentValidation: RunValidation ===" << std::endl;
+    ecs::World world;
+    systems::ContentValidationSystem sys(&world);
+    world.createEntity("val1");
+    sys.createValidator("val1");
+    sys.submitContent("val1", "ship_001", 0, "Custom Frigate");
+    assertTrue(sys.runValidation("val1", "ship_001"), "Validation starts");
+    assertTrue(sys.getContentState("val1", "ship_001") == 1, "State is Validating (1)");
+    assertTrue(sys.getTotalValidations("val1") == 1, "1 total validation");
+}
+
+void testContentValidationApprove() {
+    std::cout << "\n=== ContentValidation: Approve ===" << std::endl;
+    ecs::World world;
+    systems::ContentValidationSystem sys(&world);
+    world.createEntity("val1");
+    sys.createValidator("val1");
+    sys.submitContent("val1", "ship_001", 0, "Custom Frigate");
+    sys.runValidation("val1", "ship_001");
+    assertTrue(sys.approveContent("val1", "ship_001"), "Approve succeeds");
+    assertTrue(sys.getContentState("val1", "ship_001") == 2, "State is Approved (2)");
+    assertTrue(sys.getApprovedCount("val1") == 1, "1 approved");
+}
+
+void testContentValidationReject() {
+    std::cout << "\n=== ContentValidation: Reject ===" << std::endl;
+    ecs::World world;
+    systems::ContentValidationSystem sys(&world);
+    world.createEntity("val1");
+    sys.createValidator("val1");
+    sys.submitContent("val1", "mod_001", 1, "OP Module");
+    sys.runValidation("val1", "mod_001");
+    assertTrue(sys.rejectContent("val1", "mod_001", "Overpowered stats"), "Reject succeeds");
+    assertTrue(sys.getContentState("val1", "mod_001") == 3, "State is Rejected (3)");
+    assertTrue(sys.getRejectedCount("val1") == 1, "1 rejected");
+    assertTrue(sys.getRejectionReason("val1", "mod_001") == "Overpowered stats", "Reason stored");
+}
+
+void testContentValidationWorkflow() {
+    std::cout << "\n=== ContentValidation: Workflow ===" << std::endl;
+    ecs::World world;
+    systems::ContentValidationSystem sys(&world);
+    world.createEntity("val1");
+    sys.createValidator("val1");
+    sys.submitContent("val1", "s1", 0, "Ship A");
+    sys.submitContent("val1", "s2", 0, "Ship B");
+    sys.submitContent("val1", "m1", 2, "Mission X");
+    assertTrue(sys.getPendingCount("val1") == 3, "3 pending");
+    sys.runValidation("val1", "s1");
+    sys.runValidation("val1", "s2");
+    sys.approveContent("val1", "s1");
+    sys.rejectContent("val1", "s2", "Bad stats");
+    assertTrue(sys.getApprovedCount("val1") == 1, "1 approved");
+    assertTrue(sys.getRejectedCount("val1") == 1, "1 rejected");
+    assertTrue(sys.getPendingCount("val1") == 1, "1 still pending");
+    assertTrue(sys.getTotalValidations("val1") == 2, "2 total validations");
+}
+
+void testContentValidationStateTransition() {
+    std::cout << "\n=== ContentValidation: StateTransition ===" << std::endl;
+    ecs::World world;
+    systems::ContentValidationSystem sys(&world);
+    world.createEntity("val1");
+    sys.createValidator("val1");
+    sys.submitContent("val1", "s1", 0, "Ship");
+    assertTrue(!sys.approveContent("val1", "s1"), "Cannot approve from Pending");
+    assertTrue(!sys.rejectContent("val1", "s1", "reason"), "Cannot reject from Pending");
+    sys.runValidation("val1", "s1");
+    assertTrue(!sys.runValidation("val1", "s1"), "Cannot re-validate from Validating");
+}
+
+void testContentValidationMissing() {
+    std::cout << "\n=== ContentValidation: Missing ===" << std::endl;
+    ecs::World world;
+    systems::ContentValidationSystem sys(&world);
+    assertTrue(!sys.createValidator("nonexistent"), "Create fails on missing");
+    assertTrue(!sys.submitContent("nonexistent", "x", 0, "X"), "Submit fails on missing");
+    assertTrue(!sys.runValidation("nonexistent", "x"), "Validate fails on missing");
+    assertTrue(!sys.approveContent("nonexistent", "x"), "Approve fails on missing");
+    assertTrue(!sys.rejectContent("nonexistent", "x", "r"), "Reject fails on missing");
+    assertTrue(sys.getContentState("nonexistent", "x") == -1, "-1 state on missing");
+    assertTrue(sys.getPendingCount("nonexistent") == 0, "0 pending on missing");
+    assertTrue(sys.getApprovedCount("nonexistent") == 0, "0 approved on missing");
+    assertTrue(sys.getRejectedCount("nonexistent") == 0, "0 rejected on missing");
+    assertTrue(sys.getTotalValidations("nonexistent") == 0, "0 validations on missing");
+}
+
+// ==================== CloudDeploymentConfig System Tests ====================
+
+void testCloudDeploymentCreate() {
+    std::cout << "\n=== CloudDeploymentConfig: Create ===" << std::endl;
+    ecs::World world;
+    systems::CloudDeploymentConfigSystem sys(&world);
+    auto* e = world.createEntity("cloud1");
+    assertTrue(sys.createConfig("cloud1"), "Create config succeeds");
+    auto* cfg = e->getComponent<components::CloudDeploymentConfig>();
+    assertTrue(cfg != nullptr, "Component exists");
+    assertTrue(cfg->active, "Config is active by default");
+    assertTrue(cfg->provider == 0, "Default provider is AWS (0)");
+    assertTrue(cfg->max_players == 20, "Default max players is 20");
+    assertTrue(!cfg->deployed, "Not deployed by default");
+}
+
+void testCloudDeploymentProvider() {
+    std::cout << "\n=== CloudDeploymentConfig: Provider ===" << std::endl;
+    ecs::World world;
+    systems::CloudDeploymentConfigSystem sys(&world);
+    auto* e = world.createEntity("cloud1");
+    sys.createConfig("cloud1");
+    assertTrue(sys.setProvider("cloud1", 1), "Set GCP succeeds");
+    assertTrue(sys.getProvider("cloud1") == 1, "Provider is GCP (1)");
+    auto* cfg = e->getComponent<components::CloudDeploymentConfig>();
+    assertTrue(cfg->estimated_monthly_cost > 0.0f, "Cost calculated");
+    assertTrue(!sys.setProvider("cloud1", 5), "Invalid provider rejected");
+}
+
+void testCloudDeploymentRegion() {
+    std::cout << "\n=== CloudDeploymentConfig: Region ===" << std::endl;
+    ecs::World world;
+    systems::CloudDeploymentConfigSystem sys(&world);
+    world.createEntity("cloud1");
+    sys.createConfig("cloud1");
+    assertTrue(sys.setRegion("cloud1", "us-east-1"), "Set region succeeds");
+    assertTrue(sys.getRegion("cloud1") == "us-east-1", "Region stored");
+    assertTrue(!sys.setRegion("cloud1", ""), "Empty region rejected");
+}
+
+void testCloudDeploymentValidate() {
+    std::cout << "\n=== CloudDeploymentConfig: Validate ===" << std::endl;
+    ecs::World world;
+    systems::CloudDeploymentConfigSystem sys(&world);
+    world.createEntity("cloud1");
+    sys.createConfig("cloud1");
+    assertTrue(!sys.validate("cloud1"), "Empty config fails validation");
+    sys.setRegion("cloud1", "eu-west-1");
+    assertTrue(!sys.validate("cloud1"), "Missing instance type fails");
+    sys.setInstanceType("cloud1", "t3.medium");
+    assertTrue(sys.validate("cloud1"), "Complete config validates");
+}
+
+void testCloudDeploymentDeploy() {
+    std::cout << "\n=== CloudDeploymentConfig: Deploy ===" << std::endl;
+    ecs::World world;
+    systems::CloudDeploymentConfigSystem sys(&world);
+    world.createEntity("cloud1");
+    sys.createConfig("cloud1");
+    assertTrue(!sys.deploy("cloud1"), "Deploy fails without valid config");
+    sys.setRegion("cloud1", "us-west-2");
+    sys.setInstanceType("cloud1", "c5.large");
+    assertTrue(sys.deploy("cloud1"), "Deploy succeeds with valid config");
+    assertTrue(sys.isDeployed("cloud1"), "Is deployed");
+}
+
+void testCloudDeploymentUptime() {
+    std::cout << "\n=== CloudDeploymentConfig: Uptime ===" << std::endl;
+    ecs::World world;
+    systems::CloudDeploymentConfigSystem sys(&world);
+    world.createEntity("cloud1");
+    sys.createConfig("cloud1");
+    sys.setRegion("cloud1", "us-east-1");
+    sys.setInstanceType("cloud1", "t3.large");
+    sys.deploy("cloud1");
+    sys.update(10.0f);
+    assertTrue(sys.getUptime("cloud1") > 9.0f, "Uptime tracked");
+}
+
+void testCloudDeploymentHealthCheck() {
+    std::cout << "\n=== CloudDeploymentConfig: HealthCheck ===" << std::endl;
+    ecs::World world;
+    systems::CloudDeploymentConfigSystem sys(&world);
+    world.createEntity("cloud1");
+    sys.createConfig("cloud1");
+    sys.setRegion("cloud1", "us-east-1");
+    sys.setInstanceType("cloud1", "t3.large");
+    sys.enableHealthCheck("cloud1", 10.0f);
+    sys.deploy("cloud1");
+    sys.update(25.0f);
+    assertTrue(sys.getHealthCheckCount("cloud1") == 2, "2 health checks after 25s with 10s interval");
+}
+
+void testCloudDeploymentMaxPlayers() {
+    std::cout << "\n=== CloudDeploymentConfig: MaxPlayers ===" << std::endl;
+    ecs::World world;
+    systems::CloudDeploymentConfigSystem sys(&world);
+    auto* e = world.createEntity("cloud1");
+    sys.createConfig("cloud1");
+    sys.setMaxPlayers("cloud1", 50);
+    assertTrue(sys.getMaxPlayers("cloud1") == 50, "Max players set to 50");
+    auto* cfg = e->getComponent<components::CloudDeploymentConfig>();
+    assertTrue(cfg->estimated_monthly_cost > 0.0f, "Cost recalculated");
+    sys.setMaxPlayers("cloud1", 200);
+    assertTrue(sys.getMaxPlayers("cloud1") == 100, "Max clamped to 100");
+}
+
+void testCloudDeploymentCost() {
+    std::cout << "\n=== CloudDeploymentConfig: Cost ===" << std::endl;
+    ecs::World world;
+    systems::CloudDeploymentConfigSystem sys(&world);
+    world.createEntity("cloud1");
+    sys.createConfig("cloud1");
+    sys.setProvider("cloud1", 0);  // AWS
+    sys.setMaxPlayers("cloud1", 20);
+    float aws_cost = sys.getEstimatedMonthlyCost("cloud1");
+    assertTrue(aws_cost > 0.0f, "AWS cost is positive");
+    sys.setProvider("cloud1", 1);  // GCP
+    float gcp_cost = sys.getEstimatedMonthlyCost("cloud1");
+    assertTrue(gcp_cost > 0.0f, "GCP cost is positive");
+    assertTrue(gcp_cost != aws_cost, "Different providers have different costs");
+}
+
+void testCloudDeploymentMissing() {
+    std::cout << "\n=== CloudDeploymentConfig: Missing ===" << std::endl;
+    ecs::World world;
+    systems::CloudDeploymentConfigSystem sys(&world);
+    assertTrue(!sys.createConfig("nonexistent"), "Create fails on missing");
+    assertTrue(!sys.setProvider("nonexistent", 0), "SetProvider fails on missing");
+    assertTrue(!sys.setRegion("nonexistent", "us-east-1"), "SetRegion fails on missing");
+    assertTrue(!sys.setInstanceType("nonexistent", "t3"), "SetInstanceType fails on missing");
+    assertTrue(!sys.setMaxPlayers("nonexistent", 20), "SetMaxPlayers fails on missing");
+    assertTrue(!sys.validate("nonexistent"), "Validate fails on missing");
+    assertTrue(!sys.deploy("nonexistent"), "Deploy fails on missing");
+    assertTrue(sys.getProvider("nonexistent") == -1, "-1 provider on missing");
+    assertTrue(sys.getMaxPlayers("nonexistent") == 0, "0 max players on missing");
+    assertTrue(!sys.isDeployed("nonexistent"), "Not deployed on missing");
+}
+
 int main() {
     std::cout << "========================================" << std::endl;
     std::cout << "Nova Forge C++ Server System Tests" << std::endl;
@@ -31545,6 +31943,41 @@ int main() {
     testShipDesignerClear();
     testShipDesignerMultipleModules();
     testShipDesignerMissing();
+
+    // MissionEditor System tests
+    testMissionEditorCreate();
+    testMissionEditorSetName();
+    testMissionEditorAddObjective();
+    testMissionEditorRemoveObjective();
+    testMissionEditorSetReward();
+    testMissionEditorValidate();
+    testMissionEditorPublish();
+    testMissionEditorLevelClamp();
+    testMissionEditorEmptyObjective();
+    testMissionEditorMissing();
+
+    // ContentValidation System tests
+    testContentValidationCreate();
+    testContentValidationSubmit();
+    testContentValidationDuplicate();
+    testContentValidationRun();
+    testContentValidationApprove();
+    testContentValidationReject();
+    testContentValidationWorkflow();
+    testContentValidationStateTransition();
+    testContentValidationMissing();
+
+    // CloudDeploymentConfig System tests
+    testCloudDeploymentCreate();
+    testCloudDeploymentProvider();
+    testCloudDeploymentRegion();
+    testCloudDeploymentValidate();
+    testCloudDeploymentDeploy();
+    testCloudDeploymentUptime();
+    testCloudDeploymentHealthCheck();
+    testCloudDeploymentMaxPlayers();
+    testCloudDeploymentCost();
+    testCloudDeploymentMissing();
 
     std::cout << "\n========================================" << std::endl;
     std::cout << "Results: " << testsPassed << "/" << testsRun << " tests passed" << std::endl;
