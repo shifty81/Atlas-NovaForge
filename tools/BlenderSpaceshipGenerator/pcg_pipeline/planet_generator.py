@@ -127,7 +127,7 @@ def generate_planet(seed, planet_id, star_type="G", orbit_index=0,
         sea_level = round(rng.uniform(0.02, 0.15), 3)
         liquids = {
             "sea_level": sea_level,
-            "composition": "H2O" if temp_k < 320 else "NH3",
+            "composition": "H2O" if temp_k >= 250 else "NH3",
             "coverage_pct": round(rng.uniform(10, 80), 1),
         }
 
