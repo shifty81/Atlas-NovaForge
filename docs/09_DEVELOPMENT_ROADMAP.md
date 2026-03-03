@@ -250,6 +250,75 @@ One-command desync reproduction, priority-based packet scheduling, and server-si
 
 ---
 
+---
+
+## Next Phases (New Direction)
+
+> These phases reflect the project's pivot toward tri-modal gameplay and in-game editor tooling.
+> See [GAME_DESIGN_VISION.md](GAME_DESIGN_VISION.md) and [EDITOR_CONVERSION_PLAN.md](EDITOR_CONVERSION_PLAN.md) for full details.
+
+## Phase 21 — Spaghetti Code Cleanup 🔧
+
+Active refactoring of server codebase to reduce technical debt. See [SPAGHETTI_CODE_AUDIT.md](SPAGHETTI_CODE_AUDIT.md).
+
+- [ ] Split monolithic test file (`test_systems.cpp` — 31K lines → per-system test files)
+- [ ] Create `TestFixture` base class to eliminate 1,644 instances of boilerplate
+- [ ] Create system template bases (`SingleComponentSystem<C>`, `StateMachineSystem<C>`, `RechargeSystem<C>`)
+- [ ] Decompose GameSession god object into domain-specific handlers (Combat, Station, Movement, Mission, Scanner)
+- [ ] Extract shared sources into `novaforge_core` static library (CMake deduplication)
+- [ ] Consolidate JSON parsing duplication across data layer
+
+## Phase 22 — Editor Conversion 📋
+
+Convert standalone AtlasEditor into an in-game ToolingLayer. See [EDITOR_CONVERSION_PLAN.md](EDITOR_CONVERSION_PLAN.md).
+
+- [ ] Unify RuntimeBootstrap across Game/Editor/Server modes
+- [ ] Implement ToolingLayer framework (ITool interface, tool manager, hotkey toggle)
+- [ ] Implement EditorCommandBus (command queue, execute, undo/redo)
+- [ ] Migrate existing editor panels to ToolingLayer tools
+- [ ] Add new game-specific tools (MapEditor, ShipModuleEditor, NPCSpawner, AssetGenerator)
+- [ ] Multiplayer authority model for editor access
+
+## Phase 23 — Tri-Modal Gameplay 📋
+
+FPS + Flight + Fleet Command with hard mode boundaries. See [GAME_DESIGN_VISION.md](GAME_DESIGN_VISION.md).
+
+- [ ] PlayerModeController (FPS/Flight/Fleet Command state machine)
+- [ ] IPlayerMode interface (OnEnter/OnExit/Tick, input/camera/UI ownership)
+- [ ] Mode transition system (fade, authority transfer, camera swap, input remap)
+- [ ] Fleet Command intent system (6 orders: Engage, Defend, Escort, Retreat, Hold, Regroup)
+- [ ] FPS combat state machine (Exploring → Alert → Engaged → Wounded → Breached → Downed)
+- [ ] FPS enemy archetypes (Grunt, Breacher, Technician) and squad roles
+- [ ] Procedural FPS interior generation with grammar-based room flow
+- [ ] Low-poly visual style enforcement (flat shading, poly budgets, palette system)
+
+## Phase 24 — Legend & World Simulation 📋
+
+Player reputation and dynamic faction ecosystem. See [GAME_DESIGN_VISION.md](GAME_DESIGN_VISION.md).
+
+- [ ] Player reputation model (aggression, stealth, precision, authority, chaos profiles)
+- [ ] Legend taxonomy (persistent legends, campaign memory, run memory)
+- [ ] Boss mutation system (procedural bosses that adapt to legend pressure)
+- [ ] Campaign chapter structure (Incursion → Escalation → Fracture → Confrontation → Aftermath)
+- [ ] Sector simulation (stability, hostility, resource wealth per sector)
+- [ ] Faction doctrine system (aggression, expansion, lawfulness per faction)
+- [ ] Heat propagation (player actions create pressure that diffuses through sectors)
+- [ ] Drift stabilizers (faction fatigue, economic elasticity, era resets)
+
+## Phase 25 — Vertical Slice: "Derelict Intercept" 📋
+
+One complete mission proving all three modes work end-to-end.
+
+- [ ] Accept contract (station UI)
+- [ ] Flight travel to asteroid field
+- [ ] Fleet contact → enter Fleet Command → issue ENGAGE order
+- [ ] Flight combat → disable target ship
+- [ ] Dock / EVA → FPS boarding
+- [ ] FPS objective (secure core module)
+- [ ] Extract → debrief → rewards
+
+---
+
 ## Implementation Summary
 
 | Area | Status | Notes |
@@ -261,17 +330,22 @@ One-command desync reproduction, priority-based packet scheduling, and server-si
 | Gameplay | ✅ Complete | Camera, input, physics, audio, mechanics |
 | Interaction/Voice | ✅ Complete | Unified intent pipeline |
 | Project/Plugin | ✅ Complete | Multi-project, schema validation, plugins, game modules |
-| Editor Framework | ✅ Complete | All panels have functional Draw() implementations with UIDrawList; GL bitmap font rendering; viewport framebuffer; self-hosted editor DSL layout |
-| Networking | ✅ Complete | API, lockstep/rollback, replication, production hardening (timeouts, reconnect, bandwidth, heartbeat) |
-| Production Tools | ✅ Complete | Game packager pipeline (Validate → Cook → Bundle → Emit), asset cooker, build profiles, platform targeting |
+| Editor Framework | ✅ Complete | All panels with UIDrawList; GL bitmap font rendering; self-hosted DSL layout |
+| Networking | ✅ Complete | API, lockstep/rollback, replication, production hardening |
+| Production Tools | ✅ Complete | Game packager pipeline, asset cooker, build profiles, platform targeting |
 | Polish | ✅ Complete | Undo/redo, visual diff, profiler, replay recorder, crash analysis |
-| Game Module System | ✅ Complete | IGameModule interface, ModuleLoader, AtlasGameplay library, EveOffline (shipped in-repo), SDK export |
-| GUI System & Editor Hardening | ✅ Complete | DSL and layout solver complete; editor self-hosted via DSL; Unreal-grade dark theme (UIStyle); all interaction managers wired |
-| Replay & Formal Verification | ✅ Complete | TLA+ specs, TLC CI, proof viewer, replay→proof export, ShaderIR |
-| Flow Graph & Procedural Content | ✅ Complete | Flow Graph IR/VM/debugger, procedural mesh/material/LOD, deterministic animation, collaborative editing |
-| AtlasAI & Game GUI Authoring | ✅ Complete | HttpLLMBackend wired to EditorAssistant and AssetGraphAssistant; Game GUI DSL, bindings, and authoring panels complete |
-| CI, Build & Template System | 🔧 Functional | CI gates and build scripts work, certified build pipeline scaffolded |
-| Determinism Debug Tooling | ✅ Complete | TickStepDebugger, SimulationStateAuditor, FPDriftDetector — all tested |
-| Desync Reproduction & Network QoS | ✅ Complete | DesyncReproducer, QoSScheduler, ServerAssetValidator — all tested |
-| Deterministic Scripting VM | ✅ Complete | Stack-based bytecode VM, sandboxed builtins, tick-integrated execution, budget enforcement |
-| Binary Compatibility Layer | ✅ Complete | ABIVersion, ABICapsule, ABIRegistry, project binding, compatible version resolution |
+| Game Module System | ✅ Complete | IGameModule, AtlasGameplay, EveOffline, SDK export |
+| GUI & Editor Hardening | ✅ Complete | DSL, layout solver, dark theme, self-hosting |
+| Replay & Verification | ✅ Complete | TLA+ specs, proof viewer, replay→proof export, ShaderIR |
+| Flow Graph & Procedural | ✅ Complete | Flow Graph IR/VM/debugger, procedural mesh/material/LOD |
+| AtlasAI & Game GUI | ✅ Complete | HttpLLMBackend, Game GUI DSL and bindings |
+| CI & Build | 🔧 Functional | CI gates and build scripts work |
+| Determinism Debug Tooling | ✅ Complete | TickStepDebugger, SimulationStateAuditor, FPDriftDetector |
+| Desync & Network QoS | ✅ Complete | DesyncReproducer, QoSScheduler, ServerAssetValidator |
+| Scripting VM | ✅ Complete | Stack-based bytecode VM, sandboxed builtins |
+| Binary Compatibility | ✅ Complete | ABIVersion, ABICapsule, ABIRegistry |
+| **Spaghetti Code Cleanup** | **🔧 Active** | **Monolith splits, boilerplate reduction, GameSession decomposition** |
+| **Editor Conversion** | **📋 Planned** | **Standalone → in-game ToolingLayer with EditorCommandBus** |
+| **Tri-Modal Gameplay** | **📋 Planned** | **FPS + Flight + Fleet Command with mode controller** |
+| **Legend System** | **📋 Planned** | **Reputation-driven world bias, boss mutations, campaigns** |
+| **Vertical Slice** | **🔧 Active** | **"Derelict Intercept" proving all modes end-to-end** |

@@ -8,295 +8,150 @@
 ║      ██║  ██║   ██║   ███████╗██║  ██║███████║                   ║
 ║      ╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚══════╝                   ║
 ║                                                                  ║
+║      ███╗   ██╗ ██████╗ ██╗   ██╗ █████╗                         ║
+║      ████╗  ██║██╔═══██╗██║   ██║██╔══██╗                        ║
+║      ██╔██╗ ██║██║   ██║██║   ██║███████║                        ║
+║      ██║╚██╗██║██║   ██║╚██╗ ██╔╝██╔══██║                        ║
+║      ██║ ╚████║╚██████╔╝ ╚████╔╝ ██║  ██║                        ║
+║      ╚═╝  ╚═══╝ ╚═════╝   ╚═══╝  ╚═╝  ╚═╝                        ║
+║                                                                  ║
+║      ███████╗ ██████╗ ██████╗  ██████╗ ███████╗                  ║
+║      ██╔════╝██╔═══██╗██╔══██╗██╔════╝ ██╔════╝                  ║
+║      █████╗  ██║   ██║██████╔╝██║  ███╗█████╗                    ║
+║      ██╔══╝  ██║   ██║██╔══██╗██║   ██║██╔══╝                    ║
+║      ██║     ╚██████╔╝██║  ██║╚██████╔╝███████╗                  ║
+║      ╚═╝      ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝                  ║
+║                                                                  ║
 ║          ⚙️  Modular · Data-Driven · Deterministic  ⚙️           ║
 ║                   G A M E   E N G I N E                          ║
 ║                                                                  ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-# Atlas Game Engine
+# Atlas NovaForge
 
-Atlas is a modular, data-driven game engine and simulation platform built in C++20. All gameplay is authored as data and executable graphs — the engine contains no hardcoded gameplay logic.
+Atlas NovaForge is a modular, data-driven game engine and PvE space simulator built in C++20. The **Atlas Engine** provides deterministic simulation, 14+ graph systems, networking, and a custom GUI framework. **Nova Forge** is the game built on top — a tri-modal (FPS + Flight + Fleet Command) space sim with procedural worlds, legend-driven AI, and an in-game editor.
+
+> **Project Status: Active Development — Refactoring & Integration Phase**
+
+---
 
 ### Key Features
 
-- **Deterministic Simulation** — Bit-exact reproducible ticks with hash-ladder verification and CI determinism gate
-- **Standalone Editor** — Blender-style authoring environment with 14+ dockable panels and AI assistant framework
-- **Runtime Client & Server** — Lean player runtime and headless authoritative server sharing one engine core
+- **Deterministic Simulation** — Bit-exact reproducible ticks with hash-ladder verification
+- **Editor → In-Game Tooling** — Converting standalone editor to toggleable in-game ToolingLayer (see [Editor Conversion Plan](docs/EDITOR_CONVERSION_PLAN.md))
+- **Tri-Modal Gameplay** — FPS boarding, ship flight, and RTS fleet command with hard mode boundaries
 - **Graph VM** — Deterministic bytecode virtual machine with compile/execute, hot-reload, and serialization
-- **Graph-Based Systems** — 14 domain-specific graph types for world gen, animation, AI, audio, UI, and more
-- **Procedural Generation** — Planet-scale terrain, galaxies, tiles, weapons, characters, and narrative
+- **14 Graph Systems** — World gen, animation, AI, audio, UI, story, and more
+- **Procedural Generation** — Planets, galaxies, ship hulls, FPS interiors, low-poly style enforcement
 - **AI Systems** — Behavior graphs, memory with decay, faction relationships, strategy decisions
 - **Networking** — Client-server and P2P with lockstep/rollback, replication rules, and replay
-- **Project & Plugin System** — Multi-project support with schema-validated `.atlas` files, mod loader, and plugin registry
-- **Replay & Verification** — Full replay recording, divergence detection, and TLA+ formal specifications
+- **Legend System** — Player behavior shapes future worlds through reputation and world bias (planned)
+- **Project & Plugin System** — Schema-validated `.atlas` files, mod loader, plugin registry
 
 ---
 
-## 🗺️ Development Roadmap
+## 🗺️ Project Status
 
-> See [docs/09_DEVELOPMENT_ROADMAP.md](docs/09_DEVELOPMENT_ROADMAP.md) for full details.
+> See [docs/09_DEVELOPMENT_ROADMAP.md](docs/09_DEVELOPMENT_ROADMAP.md) for engine roadmap.
+> See [docs/ROADMAP.md](docs/ROADMAP.md) for game roadmap.
+> See [docs/GAME_DESIGN_VISION.md](docs/GAME_DESIGN_VISION.md) for the full game design vision.
+
+### Engine Systems (Atlas Engine)
 
 ```
-  Phase 1       Phase 2       Phase 3       Phase 4       Phase 5      Phase 5b      Phase 5c
- Core Engine     Editor      Networking    World Gen     Gameplay     Graph Sys     AI Systems
-──────────────────────────────────────────────────────────────────────────────────────────────────
- ██████████    ██████████    ██████████    ██████████    ██████████    ██████████    ██████████
-   100%          100%          100%          100%          100%          100%          100%
-  ✅ Done       ✅ Done       ✅ Done       ✅ Done       ✅ Done       ✅ Done       ✅ Done
-
-  Phase 5d      Phase 5e      Phase 6       Phase 7       Phase 8       Phase 9       Phase 10
- Interaction   Proj/Plugin   Production     Polish       GUI Harden   Replay/Verify  Flow Graph
-──────────────────────────────────────────────────────────────────────────────────────────────────
- ██████████    ██████████    ██████████    ██████████    ██████████    ██████████    ██████████
-   100%          100%          100%          100%          100%          100%          100%
-  ✅ Done       ✅ Done       ✅ Done       ✅ Done       ✅ Done       ✅ Done       ✅ Done
-
-  Phase 11      Phase 12
- AtlasAI/GUI   CI & Build
-──────────────────────────
- ██████████    ██████████
-    100%          100%
-  ✅ Done       ✅ Done
+  Phase 1       Phase 2       Phase 3       Phase 4       Phase 5      Phase 5b
+ Core Engine     Editor      Networking    World Gen     Gameplay     Graph Sys
+──────────────────────────────────────────────────────────────────────────────────
+ ██████████    ██████████    ██████████    ██████████    ██████████    ██████████
+   100%          100%          100%          100%          100%          100%
+  ✅ Done       ✅ Done       ✅ Done       ✅ Done       ✅ Done       ✅ Done
 ```
 
-<table>
-<tr>
-<td width="25%">
+### Game Systems (Nova Forge)
 
-**Phase 1 — Core Engine** ✅ 100%
+```
+  Server         Client       Vertical      Editor       FPS/Flight    Legend
+  Systems       Integration    Slice       Conversion     /Fleet       System
+──────────────────────────────────────────────────────────────────────────────────
+ ██████████    ████░░░░░░    ██░░░░░░░░    ░░░░░░░░░░    ░░░░░░░░░░    ░░░░░░░░░░
+   100%          40%           20%            0%            0%            0%
+  ✅ Done     🔧 Active     🔧 Active     📋 Planned    📋 Planned    📋 Planned
+```
 
-- ✅ Bootstrap & config
-- ✅ ECS framework
-- ✅ Graph VM & compiler
-- ✅ Asset registry
-- ✅ Binary asset format
-- ✅ Hot reload
+### Active Work
 
-</td>
-<td width="25%">
-
-**Phase 2 — Editor** ✅ 100%
-
-- ✅ UI framework
-- ✅ Panel docking system
-- ✅ 14+ panels with logic
-- ✅ Console, inspector, graph editor
-- ✅ Layout persistence (save/restore)
-- ✅ Play-In-Editor (simulate, possess, loopback)
-- ✅ Rendering layer (UIDrawList + bitmap font)
-- ✅ UI backend integration (GL + viewport FB)
-
-</td>
-<td width="25%">
-
-**Phase 3 — Networking** ✅ 100%
-
-- ✅ NetContext API
-- ✅ Dedicated server loop
-- ✅ P2P support
-- ✅ Lockstep sync
-- ✅ Rollback/replay
-- ✅ Production hardening (timeouts, reconnect, bandwidth, heartbeat)
-- ✅ Packet loss simulation & QoS scheduler
-- ✅ CRC32 checksums, reliable/unreliable delta
-
-</td>
-<td width="25%">
-
-**Phase 4 — World Gen** ✅ 100%
-
-- ✅ WorldLayout interface
-- ✅ Cube-sphere math
-- ✅ Voxel grid layout
-- ✅ Terrain mesh gen
-- ✅ Noise nodes
-- ✅ World streaming
-- ✅ Galaxy generation
-
-</td>
-</tr>
-<tr>
-<td width="25%">
-
-**Phase 5 — Gameplay** ✅ 100%
-
-- ✅ Mechanic assets
-- ✅ Camera system
-- ✅ Input mapping
-- ✅ Physics integration
-- ✅ Audio system
-
-</td>
-<td width="25%">
-
-**Phase 5b — Graph Systems** ✅ 100%
-
-- ✅ All 14 graph types
-- ✅ Compile & execute paths
-- ✅ Serialization
-- ✅ Graph VM integration
-
-</td>
-<td width="25%">
-
-**Phase 5c — AI Systems** ✅ 100%
-
-- ✅ Behavior graphs
-- ✅ Memory with decay
-- ✅ Faction relationships
-- ✅ Strategy decisions
-- ✅ Conversation graphs
-
-</td>
-<td width="25%">
-
-**Phase 5d — Interaction** ✅ 100%
-
-- ✅ Intent/utterance system
-- ✅ Voice command registry
-- ✅ Console command parsing
-- ✅ Interaction debugger
-
-</td>
-</tr>
-<tr>
-<td width="25%">
-
-**Phase 5e — Project/Plugin** ✅ 100%
-
-- ✅ Project loading & validation
-- ✅ Schema validation system
-- ✅ Plugin registry
-- ✅ Mod asset loader
-
-</td>
-<td width="25%">
-
-**Phase 6 — Production** ✅ 100%
-
-- ✅ Game packager (full pipeline: Validate → Cook → Bundle → Emit)
-- ✅ Asset cooker (source → binary cooking)
-- ✅ Build profiles
-- ✅ Mod loader
-- ✅ Platform targeting
-- ✅ Certified build pipeline
-- ✅ Build audit log & manifest
-
-</td>
-<td width="25%">
-
-**Phase 7 — Polish** ✅ 100%
-
-- ✅ Undo/redo system
-- ✅ Visual diff tools
-- ✅ Profiler panel
-- ✅ Replay recorder
-- ✅ Crash analysis
-
-</td>
-<td width="25%">
-
-**Phase 8 — GUI & Editor Hardening** ✅ 100%
-
-- ✅ GUI DSL & layout solver
-- ✅ Panel framework
-- ✅ Layout persistence
-- ✅ Play-In-Editor
-- ✅ Editor self-hosting (DSL-defined layout)
-- ✅ Unreal-grade dark theme & typography
-
-</td>
-</tr>
-<tr>
-<td width="25%">
-
-**Phase 9 — Replay & Verification** ✅ 100%
-
-- ✅ Hash-ladder replay
-- ✅ Divergence detection
-- ✅ TLA+ formal specs
-- ✅ Replay recorder (save-points, v3 format)
-
-</td>
-<td width="25%">
-
-**Phase 10 — Flow Graph & Procedural** ✅ 100%
-
-- ✅ Blueprint-like flow graph
-- ✅ IR & debugger
-- ✅ Procedural modeling
-- ✅ Mesh/material graphs
-
-</td>
-<td width="25%">
-
-**Phase 11 — AtlasAI & Game GUI** ✅ 100%
-
-- ✅ AI assistant framework
-- ✅ Web aggregation design
-- ✅ Template AI backend (offline)
-- ✅ LLM backend integration (HttpLLMBackend)
-- ✅ Game GUI widget DSL & bindings
-
-</td>
-<td width="25%">
-
-**Phase 12 — CI & Build** ✅ 100%
-
-- ✅ CI determinism gate
-- ✅ Build system & scripts
-- ✅ Certified build pipeline
-- ✅ First-run experience (`atlas_init.py`, `run.sh`)
-
-</td>
-</tr>
-</table>
+```
+  Spaghetti     Code          Build
+  Cleanup      Refactor      Integration
+──────────────────────────────────────────
+ ████░░░░░░    ██░░░░░░░░    ██░░░░░░░░
+    40%           20%           20%
+ 🔧 Active    🔧 Active     🔧 Active
+```
 
 | Status | Meaning |
 |--------|---------|
-| ✅ Complete | Fully implemented and tested |
-| 🔧 Functional | Core logic works, some features need polish |
-| 📋 Scaffolded | Headers/interfaces exist, implementation in progress |
+| ✅ Done | Fully implemented and tested |
+| 🔧 Active | Core logic works, actively being developed |
+| 📋 Planned | Designed, not yet implemented |
 
 ---
 
-## 🖥️ Editor Status
-
-| Area | Status |
-|------|--------|
-| **Panel count** | 14+ panels with functional logic (Console, ECS Inspector, Graph Editor, World Graph, Net Inspector, Profiler, etc.) |
-| **Rendering layer** | ✅ UIDrawList rendering with bitmap font; `Draw()` implemented for all panels |
-| **Docking infrastructure** | ✅ Layout serialization, split/tab docking framework exists |
-| **AI assistant** | ✅ Framework present (explain, suggest, generate) with HttpLLMBackend wired |
-| **GUI DSL** | ✅ Custom DSL and layout solver implemented; editor is self-hosted via DSL |
-
-## ✅ What Works Today
+### What Works Today
 
 These systems are implemented, tested, and functional:
 
-- **Deterministic simulation engine** — bit-exact tick execution with hash-ladder verification
-- **14 graph system types** — all have compile, execute, and serialization paths
-- **Full save/load** — binary asset format with hash integrity checking
-- **Replay recording** — record/playback with divergence detection
-- **ECS framework** — entity management with serialization and rollback support
-- **Networking** — lockstep and rollback foundations with client-server and P2P
-- **1971 unit tests pass** — comprehensive coverage across all engine systems
-- **CI determinism gate** — automated verification that simulation is bit-exact
-- **Play-In-Editor** — simulate, pause, step, possess entity, loopback, state restore
-- **Editor layout persistence** — save/restore panel arrangements to/from JSON
-- **Network hardening** — connection timeouts, reconnection, bandwidth throttling, heartbeat monitoring
-- **Game packager pipeline** — full Validate → Cook → Bundle → Emit workflow
-- **Undo/redo** — command-pattern history across editor operations
-- **Project system** — schema-validated `.atlas` project files with multi-project support
-- **World generation** — cube-sphere, voxel, terrain, galaxy, noise, and streaming
-- **AI systems** — behavior graphs, faction memory, strategy decisions, conversation graphs
+**Atlas Engine (418 C++ source files)**
+- ✅ Deterministic simulation engine with hash-ladder verification
+- ✅ 14 graph system types with compile, execute, and serialization paths
+- ✅ ECS framework with serialization and rollback support
+- ✅ Binary asset format with hash integrity checking
+- ✅ Replay recording with divergence detection
+- ✅ Networking with lockstep/rollback, client-server and P2P
+- ✅ Custom GUI DSL and layout solver
+- ✅ Editor with 14+ dockable panels and AI assistant framework
+- ✅ Game packager pipeline (Validate → Cook → Bundle → Emit)
+- ✅ Project system with schema-validated `.atlas` files
+- ✅ World generation (cube-sphere, voxel, terrain, galaxy, noise, streaming)
+- ✅ TLA+ formal specifications and CI determinism gate
+
+**Nova Forge Server (537 C++ files, 164 game systems)**
+- ✅ 27 baseline server systems with 5,263+ test assertions passing
+- ✅ 102 ships, 159+ modules, 137 skills — all data-driven
+- ✅ Combat, fleet, economy, mining, missions, exploration systems
+- ✅ Procedural ship generation with faction shape language
+- ✅ AI NPCs (miners, haulers, pirates, traders, security)
+
+**Nova Forge Client (156 C++ files)**
+- ✅ OpenGL deferred rendering pipeline
+- ✅ Atlas UI widget system with EVE-style dark theme
+- ✅ Ship HUD (shield/armor/hull arcs, capacitor, module rack)
+- 🔧 Client-server integration (in progress)
+
+### What's In Progress
+
+- **Spaghetti Code Cleanup** — Splitting monolithic test file (31K lines), reducing system boilerplate, decomposing GameSession god object (see [docs/SPAGHETTI_CODE_AUDIT.md](docs/SPAGHETTI_CODE_AUDIT.md))
+- **Code Refactoring** — JSON helper consolidation, file splits, naming consistency (see [docs/REFACTORING_PLAN.md](docs/REFACTORING_PLAN.md))
+- **Vertical Slice** — One full star system: fly, dock, mine, trade, fight, warp — end-to-end playable
+- **Client Integration** — Wiring all server systems to C++ client rendering and UI
+
+### What's Planned
+
+- **Editor Conversion** — Convert standalone AtlasEditor to in-game ToolingLayer with EditorCommandBus (see [docs/EDITOR_CONVERSION_PLAN.md](docs/EDITOR_CONVERSION_PLAN.md))
+- **FPS + Flight + Fleet Command** — Tri-modal gameplay with PlayerModeController and hard mode boundaries (see [docs/GAME_DESIGN_VISION.md](docs/GAME_DESIGN_VISION.md))
+- **Legend System** — Player reputation driving world bias across runs
+- **Procedural FPS Interiors** — Low-poly style with grammar-based room generation
 
 ---
 
 ## Architecture
 
-Atlas ships as four executables, all linked against the same engine core:
+The project has two major layers:
+
+### Atlas Engine (Core)
+
+Shared engine library powering all executables:
 
 | Binary          | Purpose                                       |
 |-----------------|-----------------------------------------------|
@@ -305,87 +160,73 @@ Atlas ships as four executables, all linked against the same engine core:
 | `AtlasClient`   | Player runtime                                |
 | `AtlasServer`   | Headless authoritative server                 |
 
-## Game Modules
+### Nova Forge (Game)
 
-EveOffline ships permanently inside this repository as a first-party game example. Both the engine and EveOffline are actively developed together, and EveOffline will serve as the shipped reference game once the engine is complete. For the module architecture and interface details, see [docs/10_REPO_SPLIT_PLAN.md](docs/10_REPO_SPLIT_PLAN.md).
+PvE space simulator built on Atlas Engine:
+
+| Binary              | Purpose                                    |
+|---------------------|--------------------------------------------|
+| `nova_forge_server` | Authoritative game server (tick-based sim) |
+| `nova_forge_client` | Player client (rendering, UI, audio)       |
+
+### Layer Responsibilities
+
+| Layer | Responsibility |
+|-------|---------------|
+| **Engine Core** | ECS, Graph VM, determinism, assets, networking foundations |
+| **Server (Authoritative)** | Tick-based simulation, AI, economy, combat, persistence |
+| **Client (Display)** | Rendering, interpolation, UI, input, audio — no game logic authority |
+| **ToolingLayer (Planned)** | In-game editor overlay, command bus, live editing |
+
+---
 
 ## Repository Structure
 
 ```
-Atlas/
-├── engine/              # Core engine static library
-│   ├── core/            # Engine bootstrap, logging, config
-│   │   └── contract/    # Determinism contract enforcement headers
+Atlas-NovaForge/
+├── engine/              # Atlas Engine — core static library (418 files)
+│   ├── core/            # Engine bootstrap, logging, config, determinism contract
 │   ├── ecs/             # Entity-Component-System framework
-│   ├── graphvm/         # Deterministic Graph VM + compiler + serialization + cache
+│   ├── graphvm/         # Deterministic Graph VM + compiler + serialization
 │   ├── assets/          # Asset registry, binary format, hot reload
 │   ├── net/             # Networking (client-server + P2P)
-│   ├── sim/             # Tick scheduler, deterministic simulation, replay recorder
-│   ├── world/           # World generation (cube-sphere, voxel, terrain, galaxy, streaming)
-│   ├── input/           # Input mapping system
-│   ├── camera/          # Camera system with world mode policies
-│   ├── physics/         # Physics simulation (rigid bodies, AABB collision)
-│   ├── audio/           # Audio engine
-│   ├── gameplay/        # Mechanic assets & skill trees
+│   ├── sim/             # Tick scheduler, simulation, replay recorder
+│   ├── world/           # World generation (cube-sphere, voxel, terrain, galaxy)
 │   ├── ai/              # AI signals, memory, relationships, behavior graphs
-│   ├── interaction/     # Intent/utterance system (voice, AI, console)
-│   ├── voice/           # Voice command registry and matching
-│   ├── conversation/    # Dialogue and memory graphs
-│   ├── strategygraph/   # Strategy decision graphs (influence, threat, scoring)
-│   ├── animation/       # Animation graph + modifier system
-│   ├── character/       # Character generation graph
-│   ├── weapon/          # Weapon construction graph
-│   ├── tile/            # 2D tileset generation graph
-│   ├── sound/           # Procedural audio/synth graph
-│   ├── story/           # Story/narrative graph
-│   ├── flow/            # Game flow graph (boot → credits)
 │   ├── ui/              # UI composition graph
-│   ├── asset_graph/     # Asset graph executor
-│   ├── command/         # Undo/redo command history
-│   ├── project/         # Project loading and validation
-│   ├── schema/          # Schema validation system
-│   ├── plugin/          # Plugin system (validation, registry)
-│   ├── mod/             # Mod asset registry and mod loader
-│   ├── module/          # Game module interface and dynamic loader
-│   ├── production/      # Asset cooker, game packager, build profiles, platform targeting
-│   └── rules/           # Server rules (live parameter tuning)
+│   └── ...              # 30+ subsystem directories
 │
-├── modules/
-│   └── atlas_gameplay/  # AtlasGameplay static lib (factions, combat, economy)
-│
-├── editor/              # Standalone editor application
+├── editor/              # Standalone editor application (121 files)
 │   ├── ui/              # Docking, layout, panel framework
-│   ├── panels/          # Console, ECS Inspector, Net Inspector, World Graph,
-│   │                    # Project Picker, Voice Commands, Interaction Debugger, Profiler
+│   ├── panels/          # 14+ panels (Console, ECS Inspector, Graph Editor, etc.)
 │   ├── tools/           # Game packager panel, visual diff tools
-│   ├── ai/              # AI aggregator for asset generation
-│   └── assistant/       # Editor assistant (explain, suggest)
+│   └── assistant/       # Editor AI assistant
 │
-├── runtime/             # Standalone runtime (CLI project loading)
-├── client/              # Player runtime client
-├── server/              # Headless dedicated server
+├── cpp_server/          # Nova Forge dedicated server (537 files)
+│   ├── src/systems/     # 164 game systems
+│   ├── src/data/        # Game data loading (ships, modules, skills)
+│   └── include/         # Server headers
 │
-├── tests/               # Unit tests (90 test files)
+├── cpp_client/          # Nova Forge game client (156 files)
+│   ├── src/             # Rendering, UI, networking, audio
+│   └── include/         # Client headers
 │
-├── tools/               # Development tools and scripts
-│   └── contract_scan.py # Determinism contract violation scanner
+├── modules/             # Game module libraries
+│   └── atlas_gameplay/  # Factions, combat, economy
 │
+├── tests/               # Engine unit tests (203 test files)
+├── atlas_tests/         # Additional test suite (51 test files)
+│
+├── data/                # Game data (JSON ships, modules, skills, missions)
 ├── schemas/             # Versioned JSON schemas
-│   ├── atlas.project.v1.json
-│   ├── atlas.worldgraph.v1.json
-│   ├── atlas.strategygraph.v1.json
-│   └── atlas.conversation.v1.json
-│
 ├── projects/            # Sample game projects
-│   ├── eveoffline/      # Space strategy reference project
-│   │   └── module/      # EveOfflineModule (IGameModule implementation)
-│   ├── arena2d/         # 2D arena reference project
-│   └── atlas-sample/    # Minimal sample project
-│
-├── docs/                # Documentation
-├── logs/                # Build and runtime logs (gitignored contents)
+├── docs/                # Documentation (90+ files)
+├── tools/               # Development tools and scripts
+├── archive/             # Historical planning notes and reference material
 └── CMakeLists.txt       # Root build configuration
 ```
+
+---
 
 ## Building
 
@@ -396,10 +237,8 @@ Atlas/
 
 ### Build
 
-The easiest way to build is with the included build script:
-
 ```bash
-# Build all targets (server, client, editor, runtime) in Release mode
+# Build all targets in Release mode
 ./build.sh
 
 # Build specific targets
@@ -409,75 +248,30 @@ The easiest way to build is with the included build script:
 
 # Build options
 ./build.sh -b Debug all           # Debug build
-./build.sh -b Development editor  # Development build (optimized + debug symbols)
 ./build.sh --clean --test all     # Clean rebuild with tests
-./build.sh -o ./my-output server  # Custom output directory
-./build.sh --install              # Install SDK (headers + libs + cmake configs) to dist/sdk/
+./build.sh --install              # Install SDK to dist/sdk/
 
 # See all options
 ./build.sh --help
 ```
 
-Executables are placed in `dist/` by default. SDK artifacts (for external game modules) are installed to `dist/sdk/` with the `--install` flag.
-
-You can also build manually with CMake:
-
-```bash
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-cmake --build .
-```
+Executables are placed in `dist/` by default.
 
 ### Run
 
 ```bash
-# Editor / developer client (authoring + testing)
-./dist/AtlasEditor
-
-# Runtime (standalone with project loading)
-./dist/AtlasRuntime --project projects/atlas-sample/sample.atlas
-
-# Client (player runtime)
-./dist/AtlasClient
-
-# Server (headless)
-./dist/AtlasServer
+./dist/AtlasEditor                                              # Editor
+./dist/AtlasRuntime --project projects/atlas-sample/sample.atlas # Runtime
+./dist/AtlasClient                                              # Client
+./dist/AtlasServer                                              # Server
 ```
 
 ### Tests
 
 ```bash
-# Via build script
-./build.sh --test
-
-# Or manually
-cd build
-ctest
-# or
-./tests/AtlasTests
+./build.sh --test        # Via build script
+cd build && ctest        # Or manually
 ```
-
-### AI Assistant Configuration (Optional)
-
-Atlas includes an AI-powered editor assistant that can help with content generation. By default, it runs in offline mode with no network access. To enable the HTTP LLM backend:
-
-```bash
-# Configure environment variables
-export ATLAS_LLM_ENDPOINT="https://api.openai.com/v1/chat/completions"
-export ATLAS_LLM_MODEL="gpt-4"
-export ATLAS_LLM_API_KEY="your-api-key-here"
-
-# Then run the editor
-./dist/AtlasEditor
-```
-
-Supported backends:
-- OpenAI (GPT-3.5, GPT-4)
-- Azure OpenAI
-- Local LLMs (llama.cpp, Ollama)
-- Any OpenAI-compatible API
-
-For detailed configuration options, see [docs/16_ATLAS_AI.md](docs/16_ATLAS_AI.md).
 
 ---
 
@@ -486,9 +280,9 @@ For detailed configuration options, see [docs/16_ATLAS_AI.md](docs/16_ATLAS_AI.m
 1. **Engine Is Not a Game** — The engine contains no gameplay logic; all behavior is data
 2. **Everything Is Data** — All behavior is authored as assets and executable graphs
 3. **One Engine, Four Roles** — Editor, Runtime, Client, and Server share the same core
-4. **Editor Is Primary** — The editor is a first-class engine runtime, not a separate tool
-5. **Determinism First** — All simulation is deterministic for networking and replay
-6. **Graphs Everywhere** — 14+ domain-specific graph types power world gen, AI, animation, audio, and more
+4. **Determinism First** — All simulation is deterministic for networking and replay
+5. **Editor Becomes Tooling** — Editor converts to in-game ToolingLayer, not a separate application
+6. **Graphs Everywhere** — 14+ domain-specific graph types power world gen, AI, animation, and more
 
 ## Graph Systems
 
@@ -511,9 +305,21 @@ Atlas uses a DAG-based graph execution model across many domains:
 | StoryGraph | Narrative generation and branching |
 | AssetGraph | Asset pipeline execution |
 
+---
+
 ## Documentation
 
-See the [docs/](docs/) directory for detailed documentation:
+### Key Documents
+
+| Document | Description |
+|----------|-------------|
+| [Game Design Vision](docs/GAME_DESIGN_VISION.md) | **NEW** — FPS/Flight/Fleet Command design, legend system, visual style |
+| [Editor Conversion Plan](docs/EDITOR_CONVERSION_PLAN.md) | **NEW** — Converting standalone editor to in-game ToolingLayer |
+| [Spaghetti Code Audit](docs/SPAGHETTI_CODE_AUDIT.md) | Server code cleanup plan (5 critical issues) |
+| [Refactoring Plan](docs/REFACTORING_PLAN.md) | Codebase-wide refactoring (8 phases) |
+| [Nova Forge Roadmap](docs/ROADMAP.md) | Game-specific development phases |
+
+### Engine Documentation
 
 | Document | Description |
 |----------|-------------|
@@ -524,50 +330,30 @@ See the [docs/](docs/) directory for detailed documentation:
 | [Graph VM](docs/04_GRAPH_VM.md) | Bytecode VM, instruction set, compilation |
 | [Networking](docs/05_NETWORKING.md) | NetContext, replication, lockstep/rollback |
 | [World Generation](docs/06_WORLD_GENERATION.md) | Terrain, planets, galaxies, streaming |
-| [Gameplay Mechanics](docs/07_GAMEPLAY_MECHANICS.md) | Mechanic assets, skill trees, cameras |
-| [AI Editor Assist](docs/08_AI_EDITOR_ASSIST.md) | AI-assisted content generation |
-| [Development Roadmap](docs/09_DEVELOPMENT_ROADMAP.md) | Phase-by-phase development status |
+| [Development Roadmap](docs/09_DEVELOPMENT_ROADMAP.md) | Engine phase-by-phase status |
+| [Core Contract](docs/ATLAS_CORE_CONTRACT.md) | Non-negotiable engine invariants |
+| [Determinism Enforcement](docs/ATLAS_DETERMINISM_ENFORCEMENT.md) | Compile-time, runtime, CI enforcement |
+| [Building](docs/BUILDING.md) | Build prerequisites, script usage, troubleshooting |
+
+### Reference
+
+| Document | Description |
+|----------|-------------|
 | [GUI System](docs/12_GUI_SYSTEM.md) | Custom GUI architecture, DSL, layout solver |
-| [Editor UI](docs/13_EDITOR_UI.md) | Unreal-grade editor aesthetics, panels, self-hosting |
+| [Editor UI](docs/13_EDITOR_UI.md) | Editor aesthetics, panels, self-hosting |
 | [Replay & Proofs](docs/14_REPLAY_AND_PROOFS.md) | Replay system, hash ladder, TLA+ verification |
 | [Flow Graph](docs/15_FLOW_GRAPH.md) | Blueprint-like visual scripting, IR, debugger |
 | [AtlasAI](docs/16_ATLAS_AI.md) | AI assistant, web aggregation, context-aware prompts |
-| [Procedural Modeling](docs/17_PROCEDURAL_MODELING.md) | Blender-like modeling, mesh/material graphs |
-| [Game GUI Authoring](docs/18_GAME_GUI_AUTHORING.md) | Game UI as authored data, widget DSL |
-| [Template Repository](docs/19_TEMPLATE_REPO.md) | Forkable template system, atlas init |
-| [CI & Build](docs/20_CI_AND_BUILD.md) | CI policies, build system, first-run experience |
-| [Formal Specifications](docs/21_FORMAL_SPECIFICATIONS.md) | TLA+ specs for ECS, replay, layout |
-| [Core Contract](docs/ATLAS_CORE_CONTRACT.md) | Non-negotiable engine invariants |
-| [Determinism Enforcement](docs/ATLAS_DETERMINISM_ENFORCEMENT.md) | Compile-time, runtime, CI enforcement |
-| [Lockdown Checklist](docs/ATLAS_LOCKDOWN_CHECKLIST.md) | Engine feature-freeze gate |
-| [Editor Status](docs/EDITOR_STATUS.md) | Editor completion status and gap analysis |
-| [Building](docs/BUILDING.md) | Build prerequisites, script usage, logs, troubleshooting |
 | [Architecture Reference](docs/ARCHITECTURE.md) | Detailed module-by-module reference |
 | [Naming Conventions](docs/ATLAS_NAMING_CONVENTIONS.md) | Code style and naming rules |
-| [Simulation Philosophy](docs/ATLAS_SIMULATION_PHILOSOPHY.md) | Determinism and simulation design |
-| [Next Implementation Tasks](docs/NEXT_IMPLEMENTATION_TASKS.md) | Remaining tasks and priority order |
 
 ## Development Tools
 
-Atlas includes several powerful development and debugging tools:
-
 | Tool | Purpose |
 |------|---------|
-| **Replay Minimizer** (`tools/replay_minimizer.py`) | Automatically reduces failing replays to minimal reproduction cases using binary search. Essential for debugging determinism issues. |
-| **Contract Scanner** (`tools/contract_scan.py`) | Scans simulation code for forbidden APIs that violate the Atlas Core Contract (wall-clock time, non-deterministic RNG, etc.). |
-| **CMake Contract Enforcement** (`cmake/AtlasContractEnforcement.cmake`) | Enforces architectural layer dependencies at build time. Prevents core/ from depending on higher layers, ensures simulation isolation. |
-
-Example usage:
-```bash
-# Minimize a failing replay
-python tools/replay_minimizer.py \
-    --replay tests/replays/failing.atlasreplay \
-    --test-command "./build/tests/AtlasTests --replay {replay}" \
-    --output tests/replays/minimal.atlasreplay
-
-# Scan for contract violations
-python tools/contract_scan.py --path engine
-```
+| **Replay Minimizer** (`tools/replay_minimizer.py`) | Reduces failing replays to minimal reproduction cases |
+| **Contract Scanner** (`tools/contract_scan.py`) | Scans for forbidden APIs that violate the Core Contract |
+| **CMake Contract Enforcement** (`engine/cmake/AtlasContractEnforcement.cmake`) | Enforces layer dependencies at build time |
 
 ## License
 
