@@ -210,6 +210,39 @@ issues.
 
 ---
 
+## Phase 9 — RuntimeBootstrap Unification
+
+### 9.1 Duplicated entry-point logic (CRITICAL)
+
+Three nearly-identical `main()` functions existed in `client/main.cpp`,
+`server/main.cpp`, and `runtime/main.cpp`.  Each contained duplicated
+command-line parsing, project loading, module context creation, and module
+lifecycle management.
+
+**Fix**: ✅ Created `engine/bootstrap/RuntimeBootstrap.h/.cpp` with:
+- `ParseCommandLine()` — shared argv parsing
+- `ApplyProjectConfig()` — project → EngineConfig mapping
+- `MakeModuleContext()` — GameModuleContext factory
+- `LoadAndStartModule()` — full module lifecycle
+- `ShutdownModule()` — clean teardown
+
+All three `main.cpp` files refactored to use these shared functions,
+reducing code duplication by ~120 lines across the entry points.
+
+### 9.2 Monolithic test file (CRITICAL)
+
+`cpp_server/test_systems.cpp` was 35 785 lines containing 1 924 test
+functions and 244 test sections in a single compilation unit.
+
+**Fix**: ✅ Split into `cpp_server/tests/` with:
+- `test_framework.h` — shared `assertTrue`, `approxEqual`, `addComp` utilities
+- `test_main.cpp` — test runner with global counters
+- 23 per-domain test files (`test_core_systems.cpp`, `test_fleet.cpp`,
+  `test_combat.cpp`, `test_economy.cpp`, etc.)
+- CMakeLists.txt updated to build from split files
+
+---
+
 ## Acceptance Criteria
 
 - [ ] All 3 812 existing tests continue to pass after every phase
