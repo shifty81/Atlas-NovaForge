@@ -1,4 +1,5 @@
 #include "../editor/tools/GamePackagerPanel.h"
+#include "../engine/production/GamePackager.h"
 #include <iostream>
 #include <cassert>
 #include <string>
@@ -45,4 +46,12 @@ void test_game_packager_modify_settings() {
     assert(summary.find("/tmp/dist") != std::string::npos);
 
     std::cout << "[PASS] test_game_packager_modify_settings" << std::endl;
+}
+
+void test_package_config_strip_tools_default() {
+    atlas::production::PackageConfig config;
+    assert(config.stripTools == true);
+    assert(config.stripEditorData == true);
+
+    std::cout << "[PASS] test_package_config_strip_tools_default" << std::endl;
 }

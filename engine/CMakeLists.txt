@@ -78,7 +78,6 @@ add_library(AtlasEngine STATIC
     ui/WidgetDSL.cpp
     ui/GameGUIBinding.cpp
     ui/FontBootstrap.cpp
-    ui/DiagnosticsOverlay.cpp
     ui/TextRenderer.cpp
     ui/UIEventRouter.cpp
     ui/MenuManager.cpp
@@ -171,13 +170,21 @@ add_library(AtlasEngine STATIC
     assets/ServerAssetValidator.cpp
     ai/LLMBackend.cpp
     production/BuildAuditLog.cpp
-    tools/ProjectNamespaceRewriter.cpp
     script/ScriptVM.cpp
     script/ScriptSystem.cpp
     script/ScriptSandbox.cpp
     abi/ABICapsule.cpp
     abi/ABIRegistry.cpp
 )
+
+# Conditionally include dev tools (diagnostics overlay, namespace rewriter)
+if(ATLAS_INCLUDE_TOOLS)
+    target_sources(AtlasEngine PRIVATE
+        ui/DiagnosticsOverlay.cpp
+        tools/ProjectNamespaceRewriter.cpp
+    )
+    target_compile_definitions(AtlasEngine PUBLIC ATLAS_INCLUDE_TOOLS)
+endif()
 
 # Conditionally add platform/render sources that require X11, Win32, or OpenGL
 if(UNIX AND NOT APPLE)

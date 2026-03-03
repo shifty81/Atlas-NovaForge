@@ -16,6 +16,7 @@ struct BuildProfileConfig {
     bool debugSymbols = true;
     bool assertionsEnabled = true;
     bool stripEditorData = false;
+    bool stripTools = false;
     bool enableProfiling = true;
     bool enableLogging = true;
     std::string compilerFlags;
