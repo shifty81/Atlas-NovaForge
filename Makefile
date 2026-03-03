@@ -39,6 +39,16 @@ build-client: ## Build C++ client only
 	@mkdir -p cpp_client/build
 	(cd cpp_client/build && cmake .. -DCMAKE_BUILD_TYPE=Release -DUSE_SYSTEM_LIBS=ON && cmake --build . --config Release) 2>&1 | tee $(LOG_DIR)/build-client_$(TIMESTAMP).log
 
+.PHONY: build-release-client
+build-release-client: ## Build C++ client for release (tools stripped)
+	@mkdir -p $(LOG_DIR)
+	@mkdir -p build
+	(cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ATLAS_ENGINE=ON -DBUILD_CLIENT=ON -DBUILD_SERVER=OFF -DBUILD_ATLAS_EDITOR=OFF -DBUILD_ATLAS_TESTS=OFF -DATLAS_INCLUDE_TOOLS=OFF && cmake --build . --config Release --target AtlasClient -j$$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)) 2>&1 | tee $(LOG_DIR)/build-release-client_$(TIMESTAMP).log
+	@echo ""
+	@echo "Release client built (dev tools stripped)."
+	@echo "Run with: ./build/bin/AtlasClient"
+	@echo ""
+
 .PHONY: build-server
 build-server: ## Build C++ server only
 	@mkdir -p $(LOG_DIR)

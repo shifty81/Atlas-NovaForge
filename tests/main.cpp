@@ -723,6 +723,7 @@ void test_net_inspector_mode_names();
 void test_game_packager_defaults();
 void test_game_packager_summary();
 void test_game_packager_modify_settings();
+void test_package_config_strip_tools_default();
 
 // Game Module tests
 void test_game_module_describe();
@@ -2917,6 +2918,7 @@ int main() {
     test_game_packager_defaults();
     test_game_packager_summary();
     test_game_packager_modify_settings();
+    test_package_config_strip_tools_default();
 
     // Game Module System
     std::cout << "\n--- Game Module System ---" << std::endl;

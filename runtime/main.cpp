@@ -1,11 +1,11 @@
-#include "../engine/core/Engine.h"
-#include "../engine/core/Logger.h"
-#include "../engine/project/ProjectManager.h"
-#include "../engine/module/ModuleLoader.h"
-#include "../engine/module/IGameModule.h"
-#include "../engine/net/Replication.h"
-#include "../engine/rules/ServerRules.h"
-#include "../engine/assets/AssetRegistry.h"
+#include "core/Engine.h"
+#include "core/Logger.h"
+#include "project/ProjectManager.h"
+#include "module/ModuleLoader.h"
+#include "module/IGameModule.h"
+#include "net/Replication.h"
+#include "rules/ServerRules.h"
+#include "assets/AssetRegistry.h"
 #include <iostream>
 #include <string>
 

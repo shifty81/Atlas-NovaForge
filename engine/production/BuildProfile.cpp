@@ -11,6 +11,7 @@ BuildProfileConfig BuildProfile::DefaultFor(ProfileType type) {
             config.debugSymbols = true;
             config.assertionsEnabled = true;
             config.stripEditorData = false;
+            config.stripTools = false;
             config.enableProfiling = true;
             config.enableLogging = true;
             config.compilerFlags = "-O0 -g";
@@ -21,6 +22,7 @@ BuildProfileConfig BuildProfile::DefaultFor(ProfileType type) {
             config.debugSymbols = true;
             config.assertionsEnabled = true;
             config.stripEditorData = false;
+            config.stripTools = false;
             config.enableProfiling = true;
             config.enableLogging = true;
             config.compilerFlags = "-O2 -g";
@@ -31,6 +33,7 @@ BuildProfileConfig BuildProfile::DefaultFor(ProfileType type) {
             config.debugSymbols = false;
             config.assertionsEnabled = false;
             config.stripEditorData = true;
+            config.stripTools = true;
             config.enableProfiling = false;
             config.enableLogging = false;
             config.compilerFlags = "-O3";

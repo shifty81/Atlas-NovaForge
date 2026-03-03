@@ -1,5 +1,7 @@
 #include "HeadlessGUI.h"
+#ifdef ATLAS_INCLUDE_TOOLS
 #include "DiagnosticsOverlay.h"
+#endif
 #include <sstream>
 #include <algorithm>
 
@@ -288,22 +290,38 @@ GUIQueryResult HeadlessGUI::CmdStatus(const std::vector<std::string>& /*args*/) 
 }
 
 GUIQueryResult HeadlessGUI::CmdDiagToggle(const std::vector<std::string>& /*args*/) {
+#ifdef ATLAS_INCLUDE_TOOLS
     DiagnosticsOverlay::Toggle();
     return {true, DiagnosticsOverlay::IsEnabled() ? "on" : "off"};
+#else
+    return {false, "diagnostics not available (tools stripped)"};
+#endif
 }
 
 GUIQueryResult HeadlessGUI::CmdDiagShow(const std::vector<std::string>& /*args*/) {
+#ifdef ATLAS_INCLUDE_TOOLS
     DiagnosticsOverlay::SetEnabled(true);
     return {true, "on"};
+#else
+    return {false, "diagnostics not available (tools stripped)"};
+#endif
 }
 
 GUIQueryResult HeadlessGUI::CmdDiagHide(const std::vector<std::string>& /*args*/) {
+#ifdef ATLAS_INCLUDE_TOOLS
     DiagnosticsOverlay::SetEnabled(false);
     return {true, "off"};
+#else
+    return {false, "diagnostics not available (tools stripped)"};
+#endif
 }
 
 GUIQueryResult HeadlessGUI::CmdDiagStatus(const std::vector<std::string>& /*args*/) {
+#ifdef ATLAS_INCLUDE_TOOLS
     return {true, DiagnosticsOverlay::IsEnabled() ? "on" : "off"};
+#else
+    return {false, "diagnostics not available (tools stripped)"};
+#endif
 }
 
 } // namespace atlas::ui

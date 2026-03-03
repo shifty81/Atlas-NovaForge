@@ -12,6 +12,7 @@ void test_profile_default_debug() {
     assert(config.debugSymbols == true);
     assert(config.assertionsEnabled == true);
     assert(config.stripEditorData == false);
+    assert(config.stripTools == false);
     assert(config.enableProfiling == true);
     assert(config.enableLogging == true);
     assert(config.compilerFlags == "-O0 -g");
@@ -27,6 +28,7 @@ void test_profile_default_development() {
     assert(config.debugSymbols == true);
     assert(config.assertionsEnabled == true);
     assert(config.stripEditorData == false);
+    assert(config.stripTools == false);
     assert(config.compilerFlags == "-O2 -g");
 
     std::cout << "[PASS] test_profile_default_development" << std::endl;
@@ -40,6 +42,7 @@ void test_profile_default_release() {
     assert(config.debugSymbols == false);
     assert(config.assertionsEnabled == false);
     assert(config.stripEditorData == true);
+    assert(config.stripTools == true);
     assert(config.enableProfiling == false);
     assert(config.enableLogging == false);
     assert(config.linkerFlags == "-s");
@@ -61,10 +64,12 @@ void test_profile_set_active() {
     profile.SetActive(ProfileType::Release);
     assert(profile.ActiveType() == ProfileType::Release);
     assert(profile.ActiveConfig().stripEditorData == true);
+    assert(profile.ActiveConfig().stripTools == true);
 
     profile.SetActive(ProfileType::Debug);
     assert(profile.ActiveType() == ProfileType::Debug);
     assert(profile.ActiveConfig().stripEditorData == false);
+    assert(profile.ActiveConfig().stripTools == false);
 
     std::cout << "[PASS] test_profile_set_active" << std::endl;
 }

@@ -30,6 +30,7 @@ struct PackageConfig {
     std::string outputDir = "./build/package";
     bool includeMods = false;
     bool stripEditorData = true;
+    bool stripTools = true;
     bool singleExecutable = false;
 };
 

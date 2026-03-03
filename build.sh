@@ -11,13 +11,14 @@
 #   ./build.sh [options] [targets...]
 #
 # Targets:
-#   server    Build AtlasServer
-#   client    Build AtlasClient
-#   editor    Build AtlasEditor (developer client)
-#   runtime   Build AtlasRuntime
-#   engine    Build AtlasEngine and AtlasGameplay libraries
-#   tests     Build and run tests
-#   all       Build all targets (default)
+#   server          Build AtlasServer
+#   client          Build AtlasClient
+#   release-client  Build AtlasClient without dev tools (diagnostics, rewriter)
+#   editor          Build AtlasEditor (developer client)
+#   runtime         Build AtlasRuntime
+#   engine          Build AtlasEngine and AtlasGameplay libraries
+#   tests           Build and run tests
+#   all             Build all targets (default)
 #
 # Options:
 #   -b, --build-type TYPE   Build type: Debug, Release, Development (default: Release)
@@ -49,6 +50,7 @@ OUTPUT_DIR="$SOURCE_DIR/dist"
 CLEAN=false
 RUN_TESTS=false
 INSTALL_SDK=false
+STRIP_TOOLS=false
 RUN_TARGET=""
 RUN_ARGS=()
 JOBS=""
@@ -144,14 +146,15 @@ BUILD_TESTS=false
 
 for target in "${TARGETS[@]}"; do
     case "$target" in
-        server)   CMAKE_TARGETS+=("AtlasServer") ;;
-        client)   CMAKE_TARGETS+=("AtlasClient") ;;
-        editor)   CMAKE_TARGETS+=("AtlasEditor") ;;
-        runtime)  CMAKE_TARGETS+=("AtlasRuntime") ;;
-        engine)   CMAKE_TARGETS+=("AtlasEngine" "AtlasGameplay") ;;
-        tests)    CMAKE_TARGETS+=("AtlasTests"); BUILD_TESTS=true; RUN_TESTS=true ;;
-        all)      CMAKE_TARGETS=("AtlasServer" "AtlasClient" "AtlasEditor" "AtlasRuntime"); BUILD_TESTS=false ;;
-        *)        error "Unknown target: $target"; exit 1 ;;
+        server)          CMAKE_TARGETS+=("AtlasServer") ;;
+        client)          CMAKE_TARGETS+=("AtlasClient") ;;
+        release-client)  CMAKE_TARGETS+=("AtlasClient"); STRIP_TOOLS=true ;;
+        editor)          CMAKE_TARGETS+=("AtlasEditor") ;;
+        runtime)         CMAKE_TARGETS+=("AtlasRuntime") ;;
+        engine)          CMAKE_TARGETS+=("AtlasEngine" "AtlasGameplay") ;;
+        tests)           CMAKE_TARGETS+=("AtlasTests"); BUILD_TESTS=true; RUN_TESTS=true ;;
+        all)             CMAKE_TARGETS=("AtlasServer" "AtlasClient" "AtlasEditor" "AtlasRuntime"); BUILD_TESTS=false ;;
+        *)               error "Unknown target: $target"; exit 1 ;;
     esac
 done
 
@@ -202,10 +205,18 @@ fi
 # --- Configure ---
 info "Configuring CMake..."
 mkdir -p "$BUILD_DIR"
+
+CMAKE_EXTRA_ARGS=()
+if [ "$STRIP_TOOLS" = true ]; then
+    CMAKE_EXTRA_ARGS+=("-DATLAS_INCLUDE_TOOLS=OFF")
+    info "Tools stripped:  yes (release-client mode)"
+fi
+
 cmake -S "$SOURCE_DIR" -B "$BUILD_DIR" \
     -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_INSTALL_PREFIX="$OUTPUT_DIR/sdk" \
+    "${CMAKE_EXTRA_ARGS[@]+"${CMAKE_EXTRA_ARGS[@]}"}" \
     2>&1 | while IFS= read -r line; do echo "  $line"; done
 
 ok "CMake configured"

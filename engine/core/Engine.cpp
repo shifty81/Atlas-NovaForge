@@ -3,7 +3,9 @@
 #include "../render/VulkanRenderer.h"
 #include "../sim/StateHasher.h"
 #include "../sim/ReplayRecorder.h"
+#ifdef ATLAS_INCLUDE_TOOLS
 #include "../ui/DiagnosticsOverlay.h"
+#endif
 
 #ifdef ATLAS_HAS_X11
 #include "../platform/X11Window.h"
@@ -225,11 +227,13 @@ void Engine::ProcessWindowEvents() {
                 }
                 break;
             case platform::WindowEvent::Type::KeyDown: {
+#ifdef ATLAS_INCLUDE_TOOLS
                 // Ctrl+Backtick or F3 toggles diagnostics overlay
                 if ((event.keyCode == '`' && (event.modifiers & platform::kModCtrl)) ||
                     event.keyCode == platform::kKeyF3) {
                     ui::DiagnosticsOverlay::Toggle();
                 }
+#endif
                 ui::UIEvent uiEvent;
                 uiEvent.type = ui::UIEvent::Type::KeyDown;
                 uiEvent.keyCode = event.keyCode;
@@ -379,8 +383,10 @@ void Engine::RunEditor() {
             }
             overlayCtx.deltaTime = m_timeModel.Context().sim.fixedDeltaTime;
             overlayCtx.tick = static_cast<uint32_t>(m_timeModel.Context().sim.tick);
+#ifdef ATLAS_INCLUDE_TOOLS
             ui::DiagnosticsOverlay::Render(m_renderer.get(), overlayCtx, 1.0f,
                                            m_mouseX, m_mouseY);
+#endif
             m_renderer->EndFrame();
             m_window->SwapBuffers();
         }
@@ -424,8 +430,10 @@ void Engine::RunClient() {
             }
             overlayCtx.deltaTime = m_timeModel.Context().sim.fixedDeltaTime;
             overlayCtx.tick = static_cast<uint32_t>(m_timeModel.Context().sim.tick);
+#ifdef ATLAS_INCLUDE_TOOLS
             ui::DiagnosticsOverlay::Render(m_renderer.get(), overlayCtx, 1.0f,
                                            m_mouseX, m_mouseY);
+#endif
             m_renderer->EndFrame();
             m_window->SwapBuffers();
         }

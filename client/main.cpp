@@ -6,7 +6,9 @@
 #include "net/Replication.h"
 #include "rules/ServerRules.h"
 #include "assets/AssetRegistry.h"
+#ifdef ATLAS_INCLUDE_TOOLS
 #include "ui/DiagnosticsOverlay.h"
+#endif
 #include <iostream>
 #include <string>
 
