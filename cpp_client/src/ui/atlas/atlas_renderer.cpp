@@ -504,7 +504,12 @@ void AtlasRenderer::flush() {
 
     glBindVertexArray(0);
     glUseProgram(0);
-    glDisable(GL_BLEND);
+
+    // Restore the GL state expected by the 3D renderer so the next
+    // frame's scene pass isn't affected by the UI overlay.  The 3D
+    // renderer assumes blending is ON (set once in Renderer::initialize).
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // GL_BLEND stays enabled — no need to toggle it.
     glEnable(GL_DEPTH_TEST);
 
     m_vertices.clear();

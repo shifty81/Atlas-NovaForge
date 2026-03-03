@@ -368,15 +368,7 @@ void Application::setupUICallbacks() {
     });
     
     m_contextMenu->SetLockTargetCallback([this](const std::string& entityId) {
-        if (std::find(m_targetList.begin(), m_targetList.end(), entityId) == m_targetList.end()) {
-            m_targetList.push_back(entityId);
-            std::cout << "[Targeting] Locked target: " << entityId << std::endl;
-            // Send target lock to server
-            auto* networkMgr = m_gameClient->getNetworkManager();
-            if (networkMgr && networkMgr->isConnected()) {
-                networkMgr->sendTargetLock(entityId);
-            }
-        }
+        targetEntity(entityId, true);  // reuse shared lock logic
     });
     
     m_contextMenu->SetUnlockTargetCallback([this](const std::string& entityId) {
@@ -384,7 +376,6 @@ void Application::setupUICallbacks() {
         if (it != m_targetList.end()) {
             m_targetList.erase(it);
             std::cout << "[Targeting] Unlocked target: " << entityId << std::endl;
-            // Send target unlock to server
             auto* networkMgr = m_gameClient->getNetworkManager();
             if (networkMgr && networkMgr->isConnected()) {
                 networkMgr->sendTargetUnlock(entityId);
@@ -426,23 +417,21 @@ void Application::setupUICallbacks() {
     // === Setup Radial Menu Callbacks ===
     m_radialMenu->SetActionCallback([this](UI::RadialMenu::Action action, const std::string& entityId) {
         switch (action) {
+            // ── Space mode actions ────────────────────────────────────
             case UI::RadialMenu::Action::APPROACH:
                 commandApproach(entityId);
                 break;
             case UI::RadialMenu::Action::ORBIT:
-                commandOrbit(entityId, DEFAULT_ORBIT_DISTANCE);  // Default orbit distance
+                commandOrbit(entityId, DEFAULT_ORBIT_DISTANCE);
                 break;
             case UI::RadialMenu::Action::KEEP_AT_RANGE:
-                commandKeepAtRange(entityId, DEFAULT_KEEP_AT_RANGE);  // Default range
+                commandKeepAtRange(entityId, DEFAULT_KEEP_AT_RANGE);
                 break;
             case UI::RadialMenu::Action::WARP_TO:
                 commandWarpTo(entityId);
                 break;
             case UI::RadialMenu::Action::LOCK_TARGET:
-                if (std::find(m_targetList.begin(), m_targetList.end(), entityId) == m_targetList.end()) {
-                    m_targetList.push_back(entityId);
-                    std::cout << "[Targeting] Locked target: " << entityId << std::endl;
-                }
+                targetEntity(entityId, true);  // reuse shared lock logic
                 break;
             case UI::RadialMenu::Action::ALIGN_TO:
                 commandAlignTo(entityId);
@@ -457,19 +446,12 @@ void Application::setupUICallbacks() {
                 }
                 break;
             case UI::RadialMenu::Action::SHOW_INFO:
-                {
-                    std::cout << "[Info] Show info for: " << entityId << std::endl;
-                    openInfoPanelForEntity(entityId);
-                }
+                openInfoPanelForEntity(entityId);
                 break;
-            default:
-                break;
-        }
 
-        // ── FPS mode actions ───────────────────────────────────────
-        // These are dispatched to the server via network messages.
-        // For now, log the action; full server integration follows.
-        switch (action) {
+            // ── FPS mode actions ──────────────────────────────────────
+            // Dispatched to the server via network messages.
+            // For now, log the action; full server integration follows.
             case UI::RadialMenu::Action::FPS_USE:
                 std::cout << "[FPS] Use: " << entityId << std::endl;
                 break;
