@@ -241,6 +241,9 @@ set(CORE_SOURCES
     src/systems/asteroid_belt_system.cpp
     src/systems/scan_probe_system.cpp
     src/systems/autopilot_system.cpp
+    src/systems/jump_gate_system.cpp
+    src/systems/snapshot_replication_system2.cpp
+    src/systems/procedural_mission_generator_system.cpp
     src/data/ship_database.cpp
     src/data/npc_database.cpp
     src/data/wormhole_database.cpp
@@ -540,6 +543,9 @@ set(SERVER_HEADERS
     include/systems/asteroid_belt_system.h
     include/systems/scan_probe_system.h
     include/systems/autopilot_system.h
+    include/systems/jump_gate_system.h
+    include/systems/snapshot_replication_system2.h
+    include/systems/procedural_mission_generator_system.h
 )
 
 # Steam SDK configuration

@@ -235,6 +235,9 @@
 #include "systems/community_content_repository_system.h"
 #include "systems/pvp_toggle_system.h"
 #include "systems/dynamic_event_system.h"
+#include "systems/jump_gate_system.h"
+#include "systems/snapshot_replication_system2.h"
+#include "systems/procedural_mission_generator_system.h"
 #include <iostream>
 #include <cassert>
 #include <string>
@@ -32396,6 +32399,415 @@ void testAutopilotMissing() {
     assertTrue(!sys.isRouteComplete("nonexistent"), "Not complete on missing");
 }
 
+// ==================== JumpGate System Tests ====================
+
+void testJumpGateCreate() {
+    std::cout << "\n=== JumpGate: Create ===" << std::endl;
+    ecs::World world;
+    systems::JumpGateSystem sys(&world);
+    world.createEntity("gate1");
+    assertTrue(sys.initializeGateNetwork("gate1", "system_jita"), "Init gate network succeeds");
+    assertTrue(sys.getGateCount("gate1") == 0, "No gates initially");
+    assertTrue(sys.getTotalJumps("gate1") == 0, "No jumps initially");
+}
+
+void testJumpGateAdd() {
+    std::cout << "\n=== JumpGate: Add ===" << std::endl;
+    ecs::World world;
+    systems::JumpGateSystem sys(&world);
+    world.createEntity("gate1");
+    sys.initializeGateNetwork("gate1", "system_jita");
+    assertTrue(sys.addGate("gate1", "g1", "system_amarr", "g_amarr1", 50.0f, 0.9f), "Add gate succeeds");
+    assertTrue(sys.getGateCount("gate1") == 1, "1 gate");
+    assertTrue(sys.getOnlineGateCount("gate1") == 1, "1 online gate");
+}
+
+void testJumpGateDuplicate() {
+    std::cout << "\n=== JumpGate: Duplicate ===" << std::endl;
+    ecs::World world;
+    systems::JumpGateSystem sys(&world);
+    world.createEntity("gate1");
+    sys.initializeGateNetwork("gate1", "system_jita");
+    sys.addGate("gate1", "g1", "system_amarr", "g_amarr1", 50.0f, 0.9f);
+    assertTrue(!sys.addGate("gate1", "g1", "system_dodixie", "g_dod1", 60.0f, 0.7f), "Duplicate rejected");
+    assertTrue(sys.getGateCount("gate1") == 1, "Still 1 gate");
+}
+
+void testJumpGateActivate() {
+    std::cout << "\n=== JumpGate: Activate ===" << std::endl;
+    ecs::World world;
+    systems::JumpGateSystem sys(&world);
+    world.createEntity("gate1");
+    sys.initializeGateNetwork("gate1", "system_jita");
+    sys.addGate("gate1", "g1", "system_amarr", "g_amarr1", 50.0f, 0.9f);
+    assertTrue(sys.isGateReady("gate1", "g1"), "Gate ready before activation");
+    assertTrue(sys.activateGate("gate1", "g1"), "Activation succeeds");
+    assertTrue(!sys.isGateReady("gate1", "g1"), "Gate not ready during activation");
+    assertTrue(!sys.activateGate("gate1", "g1"), "Double activation rejected");
+}
+
+void testJumpGateJump() {
+    std::cout << "\n=== JumpGate: Jump ===" << std::endl;
+    ecs::World world;
+    systems::JumpGateSystem sys(&world);
+    world.createEntity("gate1");
+    sys.initializeGateNetwork("gate1", "system_jita");
+    sys.addGate("gate1", "g1", "system_amarr", "g_amarr1", 50.0f, 0.9f);
+    sys.activateGate("gate1", "g1");
+    // Advance time to complete activation (default 10s)
+    sys.update(10.0f);
+    assertTrue(approxEqual(sys.getActivationProgress("gate1", "g1"), 1.0f), "Activation complete");
+    assertTrue(sys.completeJump("gate1", "g1"), "Jump completes");
+    assertTrue(sys.getTotalJumps("gate1") == 1, "1 total jump");
+}
+
+void testJumpGateCooldown() {
+    std::cout << "\n=== JumpGate: Cooldown ===" << std::endl;
+    ecs::World world;
+    systems::JumpGateSystem sys(&world);
+    world.createEntity("gate1");
+    sys.initializeGateNetwork("gate1", "system_jita");
+    sys.addGate("gate1", "g1", "system_amarr", "g_amarr1", 50.0f, 0.9f);
+    sys.activateGate("gate1", "g1");
+    sys.update(10.0f); // complete activation
+    sys.completeJump("gate1", "g1");
+    assertTrue(!sys.isGateReady("gate1", "g1"), "Gate on cooldown");
+    assertTrue(sys.getCooldownRemaining("gate1", "g1") > 0.0f, "Cooldown > 0");
+    assertTrue(!sys.activateGate("gate1", "g1"), "Can't activate on cooldown");
+    sys.update(30.0f); // wait out cooldown
+    assertTrue(sys.isGateReady("gate1", "g1"), "Gate ready after cooldown");
+}
+
+void testJumpGateOffline() {
+    std::cout << "\n=== JumpGate: Offline ===" << std::endl;
+    ecs::World world;
+    systems::JumpGateSystem sys(&world);
+    world.createEntity("gate1");
+    sys.initializeGateNetwork("gate1", "system_jita");
+    sys.addGate("gate1", "g1", "system_amarr", "g_amarr1", 50.0f, 0.9f);
+    assertTrue(sys.setGateOnline("gate1", "g1", false), "Set offline succeeds");
+    assertTrue(!sys.activateGate("gate1", "g1"), "Can't activate offline gate");
+    assertTrue(sys.getOnlineGateCount("gate1") == 0, "0 online gates");
+    assertTrue(sys.setGateOnline("gate1", "g1", true), "Set online succeeds");
+    assertTrue(sys.getOnlineGateCount("gate1") == 1, "1 online gate");
+}
+
+void testJumpGateRemove() {
+    std::cout << "\n=== JumpGate: Remove ===" << std::endl;
+    ecs::World world;
+    systems::JumpGateSystem sys(&world);
+    world.createEntity("gate1");
+    sys.initializeGateNetwork("gate1", "system_jita");
+    sys.addGate("gate1", "g1", "system_amarr", "g_amarr1", 50.0f, 0.9f);
+    sys.addGate("gate1", "g2", "system_dodixie", "g_dod1", 60.0f, 0.7f);
+    assertTrue(sys.removeGate("gate1", "g1"), "Remove succeeds");
+    assertTrue(sys.getGateCount("gate1") == 1, "1 gate remaining");
+    assertTrue(!sys.removeGate("gate1", "g1"), "Remove nonexistent fails");
+}
+
+void testJumpGateMaxLimit() {
+    std::cout << "\n=== JumpGate: MaxLimit ===" << std::endl;
+    ecs::World world;
+    systems::JumpGateSystem sys(&world);
+    world.createEntity("gate1");
+    sys.initializeGateNetwork("gate1", "system_jita");
+    auto* entity = world.getEntity("gate1");
+    auto* jg = entity->getComponent<components::JumpGate>();
+    jg->max_gates = 2;
+    sys.addGate("gate1", "g1", "sys_a", "ga", 50.0f, 1.0f);
+    sys.addGate("gate1", "g2", "sys_b", "gb", 50.0f, 1.0f);
+    assertTrue(!sys.addGate("gate1", "g3", "sys_c", "gc", 50.0f, 1.0f), "Max limit enforced");
+    assertTrue(sys.getGateCount("gate1") == 2, "Still 2 gates");
+}
+
+void testJumpGateMissing() {
+    std::cout << "\n=== JumpGate: Missing ===" << std::endl;
+    ecs::World world;
+    systems::JumpGateSystem sys(&world);
+    assertTrue(!sys.initializeGateNetwork("nonexistent", "s1"), "Init fails on missing");
+    assertTrue(!sys.addGate("nonexistent", "g1", "s", "g", 50.0f, 1.0f), "Add fails on missing");
+    assertTrue(!sys.removeGate("nonexistent", "g1"), "Remove fails on missing");
+    assertTrue(!sys.activateGate("nonexistent", "g1"), "Activate fails on missing");
+    assertTrue(!sys.completeJump("nonexistent", "g1"), "Jump fails on missing");
+    assertTrue(sys.getGateCount("nonexistent") == 0, "0 count on missing");
+    assertTrue(sys.getOnlineGateCount("nonexistent") == 0, "0 online on missing");
+    assertTrue(sys.getTotalJumps("nonexistent") == 0, "0 jumps on missing");
+    assertTrue(!sys.isGateReady("nonexistent", "g1"), "Not ready on missing");
+    assertTrue(approxEqual(sys.getActivationProgress("nonexistent", "g1"), 0.0f), "0 progress on missing");
+}
+
+// ==================== SnapshotReplication System Tests ====================
+
+void testSnapshotRepCreate() {
+    std::cout << "\n=== SnapshotReplication: Create ===" << std::endl;
+    ecs::World world;
+    systems::SnapshotReplicationSystem2 sys(&world);
+    world.createEntity("rep1");
+    assertTrue(sys.initialize("rep1", "server_main"), "Init succeeds");
+    assertTrue(sys.getCurrentFrame("rep1") == 0, "Frame 0 initially");
+    assertTrue(sys.getHistorySize("rep1") == 0, "Empty history");
+    assertTrue(sys.getClientCount("rep1") == 0, "No clients");
+}
+
+void testSnapshotRepCapture() {
+    std::cout << "\n=== SnapshotReplication: Capture ===" << std::endl;
+    ecs::World world;
+    systems::SnapshotReplicationSystem2 sys(&world);
+    world.createEntity("rep1");
+    sys.initialize("rep1", "server_main");
+    assertTrue(sys.captureSnapshot("rep1"), "Capture succeeds");
+    assertTrue(sys.getCurrentFrame("rep1") == 1, "Frame advanced to 1");
+    assertTrue(sys.getHistorySize("rep1") == 1, "1 frame in history");
+    assertTrue(sys.getTotalSnapshotsSent("rep1") == 1, "1 snapshot sent");
+}
+
+void testSnapshotRepAddEntity() {
+    std::cout << "\n=== SnapshotReplication: AddEntity ===" << std::endl;
+    ecs::World world;
+    systems::SnapshotReplicationSystem2 sys(&world);
+    world.createEntity("rep1");
+    sys.initialize("rep1", "server_main");
+    sys.captureSnapshot("rep1");
+    assertTrue(sys.addEntityToSnapshot("rep1", "ship1", 100.0f, 200.0f, 300.0f, 100.0f, 100.0f, 50.0f), "Add entity succeeds");
+    assertTrue(!sys.addEntityToSnapshot("rep1", "ship1", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f), "Duplicate rejected");
+}
+
+void testSnapshotRepRegisterClient() {
+    std::cout << "\n=== SnapshotReplication: RegisterClient ===" << std::endl;
+    ecs::World world;
+    systems::SnapshotReplicationSystem2 sys(&world);
+    world.createEntity("rep1");
+    sys.initialize("rep1", "server_main");
+    assertTrue(sys.registerClient("rep1", "client1"), "Register client succeeds");
+    assertTrue(sys.getClientCount("rep1") == 1, "1 client");
+    assertTrue(!sys.registerClient("rep1", "client1"), "Duplicate client rejected");
+    assertTrue(sys.registerClient("rep1", "client2"), "Second client succeeds");
+    assertTrue(sys.getClientCount("rep1") == 2, "2 clients");
+}
+
+void testSnapshotRepUnregisterClient() {
+    std::cout << "\n=== SnapshotReplication: UnregisterClient ===" << std::endl;
+    ecs::World world;
+    systems::SnapshotReplicationSystem2 sys(&world);
+    world.createEntity("rep1");
+    sys.initialize("rep1", "server_main");
+    sys.registerClient("rep1", "client1");
+    assertTrue(sys.unregisterClient("rep1", "client1"), "Unregister succeeds");
+    assertTrue(sys.getClientCount("rep1") == 0, "0 clients after unregister");
+    assertTrue(!sys.unregisterClient("rep1", "client1"), "Unregister nonexistent fails");
+}
+
+void testSnapshotRepAcknowledge() {
+    std::cout << "\n=== SnapshotReplication: Acknowledge ===" << std::endl;
+    ecs::World world;
+    systems::SnapshotReplicationSystem2 sys(&world);
+    world.createEntity("rep1");
+    sys.initialize("rep1", "server_main");
+    sys.registerClient("rep1", "client1");
+    sys.captureSnapshot("rep1");
+    assertTrue(sys.acknowledgeFrame("rep1", "client1", 1), "Ack succeeds");
+    assertTrue(sys.getClientLastAck("rep1", "client1") == 1, "Last ack is frame 1");
+    // Old frame ack should not regress
+    assertTrue(sys.acknowledgeFrame("rep1", "client1", 0), "Old ack accepted");
+    assertTrue(sys.getClientLastAck("rep1", "client1") == 1, "Last ack still frame 1");
+}
+
+void testSnapshotRepDelta() {
+    std::cout << "\n=== SnapshotReplication: Delta ===" << std::endl;
+    ecs::World world;
+    systems::SnapshotReplicationSystem2 sys(&world);
+    world.createEntity("rep1");
+    sys.initialize("rep1", "server_main");
+    sys.registerClient("rep1", "client1");
+    // Frame 1: add ship1
+    sys.captureSnapshot("rep1");
+    sys.addEntityToSnapshot("rep1", "ship1", 100.0f, 200.0f, 300.0f, 100.0f, 100.0f, 50.0f);
+    sys.acknowledgeFrame("rep1", "client1", 1);
+    // Frame 2: ship1 moves
+    sys.captureSnapshot("rep1");
+    sys.addEntityToSnapshot("rep1", "ship1", 110.0f, 210.0f, 310.0f, 100.0f, 100.0f, 50.0f);
+    int delta = sys.getDeltaEntityCount("rep1", "client1");
+    assertTrue(delta == 1, "1 entity changed in delta");
+}
+
+void testSnapshotRepAutoCapture() {
+    std::cout << "\n=== SnapshotReplication: AutoCapture ===" << std::endl;
+    ecs::World world;
+    systems::SnapshotReplicationSystem2 sys(&world);
+    world.createEntity("rep1");
+    sys.initialize("rep1", "server_main");
+    // Default interval 0.05s (20Hz)
+    sys.update(0.05f);
+    assertTrue(sys.getCurrentFrame("rep1") == 1, "Auto-captured frame 1");
+    sys.update(0.05f);
+    assertTrue(sys.getCurrentFrame("rep1") == 2, "Auto-captured frame 2");
+    assertTrue(sys.getTotalSnapshotsSent("rep1") == 2, "2 snapshots sent");
+}
+
+void testSnapshotRepHistoryLimit() {
+    std::cout << "\n=== SnapshotReplication: HistoryLimit ===" << std::endl;
+    ecs::World world;
+    systems::SnapshotReplicationSystem2 sys(&world);
+    world.createEntity("rep1");
+    sys.initialize("rep1", "server_main");
+    auto* entity = world.getEntity("rep1");
+    auto* sr = entity->getComponent<components::SnapshotReplication>();
+    sr->max_history = 3;
+    for (int i = 0; i < 5; i++) sys.captureSnapshot("rep1");
+    assertTrue(sys.getHistorySize("rep1") == 3, "History trimmed to max");
+    assertTrue(sys.getCurrentFrame("rep1") == 5, "Frame counter at 5");
+}
+
+void testSnapshotRepMissing() {
+    std::cout << "\n=== SnapshotReplication: Missing ===" << std::endl;
+    ecs::World world;
+    systems::SnapshotReplicationSystem2 sys(&world);
+    assertTrue(!sys.initialize("nonexistent", "s1"), "Init fails on missing");
+    assertTrue(!sys.captureSnapshot("nonexistent"), "Capture fails on missing");
+    assertTrue(!sys.addEntityToSnapshot("nonexistent", "e1", 0, 0, 0, 0, 0, 0), "Add entity fails on missing");
+    assertTrue(!sys.registerClient("nonexistent", "c1"), "Register fails on missing");
+    assertTrue(!sys.unregisterClient("nonexistent", "c1"), "Unregister fails on missing");
+    assertTrue(!sys.acknowledgeFrame("nonexistent", "c1", 1), "Ack fails on missing");
+    assertTrue(sys.getCurrentFrame("nonexistent") == 0, "0 frame on missing");
+    assertTrue(sys.getHistorySize("nonexistent") == 0, "0 history on missing");
+    assertTrue(sys.getClientCount("nonexistent") == 0, "0 clients on missing");
+    assertTrue(sys.getTotalSnapshotsSent("nonexistent") == 0, "0 sent on missing");
+}
+
+// ==================== ProceduralMissionGenerator System Tests ====================
+
+void testProcMissionCreate() {
+    std::cout << "\n=== ProceduralMissionGenerator: Create ===" << std::endl;
+    ecs::World world;
+    systems::ProceduralMissionGeneratorSystem sys(&world);
+    world.createEntity("gen1");
+    assertTrue(sys.initialize("gen1", "gen_caldari", "caldari_navy"), "Init succeeds");
+    assertTrue(sys.getAvailableCount("gen1") == 0, "No missions initially");
+    assertTrue(sys.getCompletedCount("gen1") == 0, "No completed initially");
+    assertTrue(sys.getTotalGenerated("gen1") == 0, "No generated initially");
+}
+
+void testProcMissionGenerate() {
+    std::cout << "\n=== ProceduralMissionGenerator: Generate ===" << std::endl;
+    ecs::World world;
+    systems::ProceduralMissionGeneratorSystem sys(&world);
+    world.createEntity("gen1");
+    sys.initialize("gen1", "gen_caldari", "caldari_navy");
+    assertTrue(sys.generateMission("gen1", "m1", "Combat", 3, "system_jita"), "Generate succeeds");
+    assertTrue(sys.getAvailableCount("gen1") == 1, "1 available mission");
+    assertTrue(sys.getTotalGenerated("gen1") == 1, "1 total generated");
+    assertTrue(sys.getMissionDifficulty("gen1", "m1") == 3, "Difficulty is 3");
+}
+
+void testProcMissionDuplicate() {
+    std::cout << "\n=== ProceduralMissionGenerator: Duplicate ===" << std::endl;
+    ecs::World world;
+    systems::ProceduralMissionGeneratorSystem sys(&world);
+    world.createEntity("gen1");
+    sys.initialize("gen1", "gen_caldari", "caldari_navy");
+    sys.generateMission("gen1", "m1", "Combat", 3, "system_jita");
+    assertTrue(!sys.generateMission("gen1", "m1", "Mining", 2, "system_jita"), "Duplicate rejected");
+    assertTrue(sys.getAvailableCount("gen1") == 1, "Still 1 mission");
+}
+
+void testProcMissionAccept() {
+    std::cout << "\n=== ProceduralMissionGenerator: Accept ===" << std::endl;
+    ecs::World world;
+    systems::ProceduralMissionGeneratorSystem sys(&world);
+    world.createEntity("gen1");
+    sys.initialize("gen1", "gen_caldari", "caldari_navy");
+    sys.generateMission("gen1", "m1", "Combat", 3, "system_jita");
+    assertTrue(sys.acceptMission("gen1", "m1"), "Accept succeeds");
+    assertTrue(sys.isMissionAccepted("gen1", "m1"), "Mission is accepted");
+    assertTrue(!sys.acceptMission("gen1", "m1"), "Double accept rejected");
+}
+
+void testProcMissionComplete() {
+    std::cout << "\n=== ProceduralMissionGenerator: Complete ===" << std::endl;
+    ecs::World world;
+    systems::ProceduralMissionGeneratorSystem sys(&world);
+    world.createEntity("gen1");
+    sys.initialize("gen1", "gen_caldari", "caldari_navy");
+    sys.generateMission("gen1", "m1", "Combat", 3, "system_jita");
+    sys.acceptMission("gen1", "m1");
+    assertTrue(sys.completeMission("gen1", "m1"), "Complete succeeds");
+    assertTrue(sys.getCompletedCount("gen1") == 1, "1 completed");
+    assertTrue(!sys.completeMission("gen1", "m1"), "Double complete rejected");
+}
+
+void testProcMissionExpire() {
+    std::cout << "\n=== ProceduralMissionGenerator: Expire ===" << std::endl;
+    ecs::World world;
+    systems::ProceduralMissionGeneratorSystem sys(&world);
+    world.createEntity("gen1");
+    sys.initialize("gen1", "gen_caldari", "caldari_navy");
+    sys.generateMission("gen1", "m1", "Courier", 1, "system_jita");
+    sys.acceptMission("gen1", "m1");
+    // Advance past time limit to expire
+    sys.update(5000.0f);
+    assertTrue(!sys.completeMission("gen1", "m1"), "Can't complete expired mission");
+}
+
+void testProcMissionReward() {
+    std::cout << "\n=== ProceduralMissionGenerator: Reward ===" << std::endl;
+    ecs::World world;
+    systems::ProceduralMissionGeneratorSystem sys(&world);
+    world.createEntity("gen1");
+    sys.initialize("gen1", "gen_caldari", "caldari_navy");
+    sys.generateMission("gen1", "m1", "Combat", 1, "system_jita");
+    sys.generateMission("gen1", "m2", "Mining", 5, "system_jita");
+    float r1 = sys.getMissionReward("gen1", "m1");
+    float r2 = sys.getMissionReward("gen1", "m2");
+    assertTrue(r1 > 0.0f, "Reward L1 > 0");
+    assertTrue(r2 > r1, "Higher difficulty = higher reward");
+}
+
+void testProcMissionDifficultyBias() {
+    std::cout << "\n=== ProceduralMissionGenerator: DifficultyBias ===" << std::endl;
+    ecs::World world;
+    systems::ProceduralMissionGeneratorSystem sys(&world);
+    world.createEntity("gen1");
+    sys.initialize("gen1", "gen_caldari", "caldari_navy");
+    auto* entity = world.getEntity("gen1");
+    auto* gen = entity->getComponent<components::ProceduralMissionGenerator>();
+    gen->difficulty_bias = 2;
+    sys.generateMission("gen1", "m1", "Combat", 2, "system_jita");
+    assertTrue(sys.getMissionDifficulty("gen1", "m1") == 4, "Bias adds 2 to difficulty");
+}
+
+void testProcMissionMaxLimit() {
+    std::cout << "\n=== ProceduralMissionGenerator: MaxLimit ===" << std::endl;
+    ecs::World world;
+    systems::ProceduralMissionGeneratorSystem sys(&world);
+    world.createEntity("gen1");
+    sys.initialize("gen1", "gen_caldari", "caldari_navy");
+    auto* entity = world.getEntity("gen1");
+    auto* gen = entity->getComponent<components::ProceduralMissionGenerator>();
+    gen->max_available = 2;
+    sys.generateMission("gen1", "m1", "Combat", 1, "s1");
+    sys.generateMission("gen1", "m2", "Mining", 2, "s1");
+    assertTrue(!sys.generateMission("gen1", "m3", "Courier", 3, "s1"), "Max limit enforced");
+    assertTrue(sys.getAvailableCount("gen1") == 2, "Still 2 missions");
+}
+
+void testProcMissionMissing() {
+    std::cout << "\n=== ProceduralMissionGenerator: Missing ===" << std::endl;
+    ecs::World world;
+    systems::ProceduralMissionGeneratorSystem sys(&world);
+    assertTrue(!sys.initialize("nonexistent", "g1", "f1"), "Init fails on missing");
+    assertTrue(!sys.generateMission("nonexistent", "m1", "Combat", 1, "s1"), "Generate fails on missing");
+    assertTrue(!sys.acceptMission("nonexistent", "m1"), "Accept fails on missing");
+    assertTrue(!sys.completeMission("nonexistent", "m1"), "Complete fails on missing");
+    assertTrue(!sys.expireMission("nonexistent", "m1"), "Expire fails on missing");
+    assertTrue(!sys.removeMission("nonexistent", "m1"), "Remove fails on missing");
+    assertTrue(sys.getAvailableCount("nonexistent") == 0, "0 available on missing");
+    assertTrue(sys.getCompletedCount("nonexistent") == 0, "0 completed on missing");
+    assertTrue(approxEqual(sys.getMissionReward("nonexistent", "m1"), 0.0f), "0 reward on missing");
+    assertTrue(sys.getMissionDifficulty("nonexistent", "m1") == 0, "0 difficulty on missing");
+    assertTrue(!sys.isMissionAccepted("nonexistent", "m1"), "Not accepted on missing");
+    assertTrue(sys.getTotalGenerated("nonexistent") == 0, "0 generated on missing");
+}
+
 int main() {
     std::cout << "========================================" << std::endl;
     std::cout << "Nova Forge C++ Server System Tests" << std::endl;
@@ -34843,6 +35255,42 @@ int main() {
     testAutopilotRemoveWaypoint();
     testAutopilotMaxWaypoints();
     testAutopilotMissing();
+
+    // JumpGate System tests
+    testJumpGateCreate();
+    testJumpGateAdd();
+    testJumpGateDuplicate();
+    testJumpGateActivate();
+    testJumpGateJump();
+    testJumpGateCooldown();
+    testJumpGateOffline();
+    testJumpGateRemove();
+    testJumpGateMaxLimit();
+    testJumpGateMissing();
+
+    // SnapshotReplication System tests
+    testSnapshotRepCreate();
+    testSnapshotRepCapture();
+    testSnapshotRepAddEntity();
+    testSnapshotRepRegisterClient();
+    testSnapshotRepUnregisterClient();
+    testSnapshotRepAcknowledge();
+    testSnapshotRepDelta();
+    testSnapshotRepAutoCapture();
+    testSnapshotRepHistoryLimit();
+    testSnapshotRepMissing();
+
+    // ProceduralMissionGenerator System tests
+    testProcMissionCreate();
+    testProcMissionGenerate();
+    testProcMissionDuplicate();
+    testProcMissionAccept();
+    testProcMissionComplete();
+    testProcMissionExpire();
+    testProcMissionReward();
+    testProcMissionDifficultyBias();
+    testProcMissionMaxLimit();
+    testProcMissionMissing();
 
     std::cout << "\n========================================" << std::endl;
     std::cout << "Results: " << testsPassed << "/" << testsRun << " tests passed" << std::endl;

@@ -3,6 +3,7 @@
 
 #include "ecs/system.h"
 #include <string>
+#include <cstdint>
 
 namespace atlas {
 namespace systems {
