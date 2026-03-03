@@ -53,5 +53,10 @@ void test_package_config_strip_tools_default() {
     assert(config.stripTools == true);
     assert(config.stripEditorData == true);
 
+    // Verify stripTools can be toggled independently
+    config.stripTools = false;
+    assert(config.stripTools == false);
+    assert(config.stripEditorData == true);
+
     std::cout << "[PASS] test_package_config_strip_tools_default" << std::endl;
 }
