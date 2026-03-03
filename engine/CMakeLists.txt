@@ -245,4 +245,11 @@ elseif(WIN32)
     target_link_libraries(AtlasEngine PUBLIC opengl32 gdi32 user32)
 endif()
 
+# --- Install / Export (needed by AtlasGameplay export set) ---
+install(TARGETS AtlasEngine
+    EXPORT AtlasGameplayTargets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+)
+
 # =====================================================
