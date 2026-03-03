@@ -195,6 +195,149 @@ fi
 info "Build log:     $BUILD_LOG"
 echo ""
 
+# --- Check prerequisites ---
+info "Checking prerequisites..."
+
+MISSING_PKGS=()
+
+if command -v cmake &>/dev/null; then
+    ok "cmake found: $(cmake --version | head -n1)"
+else
+    warn "cmake not found"
+    MISSING_PKGS+=("cmake")
+fi
+
+if command -v g++ &>/dev/null; then
+    ok "C++ compiler found: $(g++ --version | head -n1)"
+elif command -v clang++ &>/dev/null; then
+    ok "C++ compiler found: $(clang++ --version | head -n1)"
+else
+    warn "No C++ compiler found"
+    MISSING_PKGS+=("compiler")
+fi
+
+if command -v ninja &>/dev/null; then
+    ok "Build tool: ninja"
+elif command -v make &>/dev/null; then
+    ok "Build tool: make"
+else
+    warn "No build tool found"
+    MISSING_PKGS+=("build-tool")
+fi
+
+if [ ${#MISSING_PKGS[@]} -gt 0 ]; then
+    echo ""
+    info "Missing prerequisites: ${MISSING_PKGS[*]}"
+    info "Attempting to install automatically..."
+
+    if command -v apt-get &>/dev/null; then
+        APT_PKGS=()
+        for pkg in "${MISSING_PKGS[@]}"; do
+            case "$pkg" in
+                cmake)      APT_PKGS+=("cmake") ;;
+                compiler)   APT_PKGS+=("g++") ;;
+                build-tool) APT_PKGS+=("make") ;;
+            esac
+        done
+        info "  Installing via apt: ${APT_PKGS[*]}"
+        sudo apt-get update -qq 2>&1 | while IFS= read -r line; do echo "    $line"; done
+        sudo apt-get install -y -qq "${APT_PKGS[@]}" 2>&1 | while IFS= read -r line; do echo "    $line"; done
+        ok "  Packages installed via apt"
+
+    elif command -v dnf &>/dev/null; then
+        DNF_PKGS=()
+        for pkg in "${MISSING_PKGS[@]}"; do
+            case "$pkg" in
+                cmake)      DNF_PKGS+=("cmake") ;;
+                compiler)   DNF_PKGS+=("gcc-c++") ;;
+                build-tool) DNF_PKGS+=("make") ;;
+            esac
+        done
+        info "  Installing via dnf: ${DNF_PKGS[*]}"
+        sudo dnf install -y "${DNF_PKGS[@]}" 2>&1 | while IFS= read -r line; do echo "    $line"; done
+        ok "  Packages installed via dnf"
+
+    elif command -v brew &>/dev/null; then
+        BREW_PKGS=()
+        for pkg in "${MISSING_PKGS[@]}"; do
+            case "$pkg" in
+                cmake)      BREW_PKGS+=("cmake") ;;
+                compiler)
+                    warn "  On macOS, install Xcode Command Line Tools: xcode-select --install"
+                    ;;
+                build-tool) BREW_PKGS+=("make") ;;
+            esac
+        done
+        if [ ${#BREW_PKGS[@]} -gt 0 ]; then
+            info "  Installing via brew: ${BREW_PKGS[*]}"
+            brew install "${BREW_PKGS[@]}" 2>&1 | while IFS= read -r line; do echo "    $line"; done
+            ok "  Packages installed via brew"
+        fi
+
+    elif command -v pacman &>/dev/null; then
+        PAC_PKGS=()
+        for pkg in "${MISSING_PKGS[@]}"; do
+            case "$pkg" in
+                cmake)      PAC_PKGS+=("cmake") ;;
+                compiler)   PAC_PKGS+=("gcc") ;;
+                build-tool) PAC_PKGS+=("make") ;;
+            esac
+        done
+        info "  Installing via pacman: ${PAC_PKGS[*]}"
+        sudo pacman -S --noconfirm "${PAC_PKGS[@]}" 2>&1 | while IFS= read -r line; do echo "    $line"; done
+        ok "  Packages installed via pacman"
+
+    else
+        echo ""
+        error "Could not detect a supported package manager (apt, dnf, brew, pacman)."
+        error "Please install the following manually:"
+        for pkg in "${MISSING_PKGS[@]}"; do
+            case "$pkg" in
+                cmake)      error "  - CMake 3.22+  (https://cmake.org/download/)" ;;
+                compiler)   error "  - C++ compiler: g++ or clang++" ;;
+                build-tool) error "  - Build tool: make or ninja" ;;
+            esac
+        done
+        exit 1
+    fi
+
+    # Re-verify after install
+    echo ""
+    info "Verifying installed tools..."
+    HAS_ERRORS=false
+
+    if ! command -v cmake &>/dev/null; then
+        error "  cmake still not found after install"
+        HAS_ERRORS=true
+    else
+        ok "  cmake: $(cmake --version | head -n1)"
+    fi
+
+    if ! command -v g++ &>/dev/null && ! command -v clang++ &>/dev/null; then
+        error "  C++ compiler still not found after install"
+        HAS_ERRORS=true
+    else
+        ok "  C++ compiler: $(g++ --version 2>/dev/null | head -n1 || clang++ --version 2>/dev/null | head -n1)"
+    fi
+
+    if ! command -v make &>/dev/null && ! command -v ninja &>/dev/null; then
+        error "  Build tool still not found after install"
+        HAS_ERRORS=true
+    else
+        ok "  Build tool: $(make --version 2>/dev/null | head -n1 || ninja --version 2>/dev/null)"
+    fi
+
+    if [ "$HAS_ERRORS" = true ]; then
+        echo ""
+        error "Some prerequisites could not be installed. Please install them manually and re-run."
+        exit 1
+    fi
+fi
+
+echo ""
+ok "All prerequisites satisfied."
+echo ""
+
 # --- Clean ---
 if [ "$CLEAN" = true ]; then
     info "Cleaning build directory..."
