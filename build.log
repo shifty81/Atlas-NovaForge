@@ -1,0 +1,53 @@
+
+=== Atlas Build Log ===
+Started: 2026-03-02 23:38:13
+
+
+[1m╔══════════════════════════════════════╗[0m
+[1m║        Atlas Engine Build Script      ║[0m
+[1m╚══════════════════════════════════════╝[0m
+
+[0;36m[INFO][0m  Build type:    Release (Release)
+[0;36m[INFO][0m  Parallel jobs: 8
+[0;36m[INFO][0m  Output dir:    /c/GIT PROJECTS/Atlas-NovaForge/dist
+[0;36m[INFO][0m  Targets:       AtlasServer AtlasClient AtlasEditor AtlasRuntime
+[0;36m[INFO][0m  Run tests:     false
+[0;36m[INFO][0m  Install SDK:   false
+[0;36m[INFO][0m  Build log:     /c/GIT PROJECTS/Atlas-NovaForge/logs/build.log
+
+[0;36m[INFO][0m  Configuring CMake...
+  -- Building for: Visual Studio 17 2022
+  -- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.19045.
+  -- The C compiler identification is MSVC 19.38.33145.0
+  -- The CXX compiler identification is MSVC 19.38.33145.0
+  -- Detecting C compiler ABI info
+  -- Detecting C compiler ABI info - done
+  -- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/bin/Hostx64/x64/cl.exe - skipped
+  -- Detecting C compile features
+  -- Detecting C compile features - done
+  -- Detecting CXX compiler ABI info
+  -- Detecting CXX compiler ABI info - done
+  -- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/bin/Hostx64/x64/cl.exe - skipped
+  -- Detecting CXX compile features
+  -- Detecting CXX compile features - done
+  -- Adding Atlas Engine library...
+  -- Adding Atlas Editor...
+  -- Found OpenGL: opengl32
+  CMake Error at editor/CMakeLists.txt:5 (find_package):
+    By not providing "Findglfw3.cmake" in CMAKE_MODULE_PATH this project has
+    asked CMake to find a package configuration file provided by "glfw3", but
+    CMake did not find one.
+  
+    Could not find a package configuration file provided by "glfw3" (requested
+    version 3.3) with any of the following names:
+  
+      glfw3Config.cmake
+      glfw3-config.cmake
+  
+    Add the installation prefix of "glfw3" to CMAKE_PREFIX_PATH or set
+    "glfw3_DIR" to a directory containing one of the above files.  If "glfw3"
+    provides a separate development package or SDK, be sure it has been
+    installed.
+  
+  
+  -- Configuring incomplete, errors occurred!
