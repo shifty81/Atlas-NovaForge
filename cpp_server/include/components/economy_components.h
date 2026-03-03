@@ -580,6 +580,86 @@ public:
     COMPONENT_TYPE(OuterRimLogisticsDistortion)
 };
 
+// ==================== Incursion Events ====================
+
+/**
+ * @brief Dynamic group PVE incursion event spawning in a star system
+ *
+ * Tracks waves of NPCs, influence level, participant roster,
+ * and reward pool for incursion encounters.
+ */
+class Incursion : public ecs::Component {
+public:
+    enum class IncursionState { Pending, Active, Withdrawing, Defeated };
+
+    struct Wave {
+        int wave_number = 0;
+        std::string npc_type;
+        int count = 0;
+        bool spawned = false;
+        bool defeated = false;
+    };
+
+    std::string incursion_id;
+    std::string system_id;
+    std::vector<Wave> waves;
+    IncursionState state = IncursionState::Pending;
+    float influence = 1.0f;
+    float reward_pool = 0.0f;
+    float duration = 3600.0f;
+    float elapsed = 0.0f;
+    int tier = 1;
+    std::vector<std::string> participants;
+    int total_waves_spawned = 0;
+    int total_waves_defeated = 0;
+    int max_waves = 10;
+    int max_participants = 20;
+    bool active = true;
+
+    COMPONENT_TYPE(Incursion)
+};
+
+// ==================== Loyalty Point Store ====================
+
+/**
+ * @brief LP rewards from missions and LP stores for unique items
+ *
+ * Tracks store inventory, player LP balances, and purchase history
+ * for a faction loyalty point store.
+ */
+class LoyaltyPointStore : public ecs::Component {
+public:
+    struct StoreItem {
+        std::string item_id;
+        std::string name;
+        std::string category;
+        int lp_cost = 0;
+        float isk_cost = 0.0f;
+        int tier = 1;
+        bool in_stock = true;
+        int times_purchased = 0;
+    };
+
+    struct LPBalance {
+        std::string player_id;
+        int balance = 0;
+        int total_earned = 0;
+        int total_spent = 0;
+    };
+
+    std::string store_id;
+    std::string faction_id;
+    std::vector<StoreItem> items;
+    std::vector<LPBalance> balances;
+    int max_items = 50;
+    int max_players = 100;
+    int total_purchases = 0;
+    float isk_collected = 0.0f;
+    bool active = true;
+
+    COMPONENT_TYPE(LoyaltyPointStore)
+};
+
 } // namespace components
 } // namespace atlas
 

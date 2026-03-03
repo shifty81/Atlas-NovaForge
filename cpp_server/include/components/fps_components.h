@@ -817,6 +817,48 @@ public:
     COMPONENT_TYPE(EVAAirlockExit)
 };
 
+// ==================== Clone Bay ====================
+
+/**
+ * @brief Clone and medical bay management for death consequences
+ *
+ * Tracks clones with grade-based stats, implants, and death processing
+ * for skill point loss mechanics.
+ */
+class CloneBay : public ecs::Component {
+public:
+    struct Clone {
+        std::string clone_id;
+        int grade = 1;
+        float sp_limit = 900000.0f;
+        int implant_slots = 1;
+        float cost = 5000000.0f;
+        bool installed = false;
+        bool active = false;
+    };
+
+    struct Implant {
+        std::string implant_id;
+        int slot = 0;
+        std::string attribute;
+        float bonus = 0.0f;
+        std::string installed_in_clone;
+    };
+
+    std::string clone_bay_id;
+    std::string station_id;
+    std::vector<Clone> clones;
+    std::vector<Implant> implants;
+    int max_clones = 5;
+    int max_implants = 10;
+    int total_activations = 0;
+    int total_deaths = 0;
+    float skill_points_at_risk = 0.0f;
+    bool active = true;
+
+    COMPONENT_TYPE(CloneBay)
+};
+
 } // namespace components
 } // namespace atlas
 
