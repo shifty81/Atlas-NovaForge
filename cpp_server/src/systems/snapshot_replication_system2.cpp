@@ -22,7 +22,7 @@ void SnapshotReplicationSystem2::update(float delta_time) {
             sr->current_frame++;
             components::SnapshotReplication::SnapshotFrame frame;
             frame.frame_number = sr->current_frame;
-            frame.timestamp = delta_time; // placeholder
+            frame.timestamp = static_cast<float>(sr->current_frame) * sr->snapshot_interval;
             sr->history.push_back(frame);
             sr->total_snapshots_sent++;
 
