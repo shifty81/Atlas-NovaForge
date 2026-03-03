@@ -376,6 +376,7 @@ void Application::setupUICallbacks() {
         if (it != m_targetList.end()) {
             m_targetList.erase(it);
             std::cout << "[Targeting] Unlocked target: " << entityId << std::endl;
+            // Send target unlock to server
             auto* networkMgr = m_gameClient->getNetworkManager();
             if (networkMgr && networkMgr->isConnected()) {
                 networkMgr->sendTargetUnlock(entityId);

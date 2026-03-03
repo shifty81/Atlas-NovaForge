@@ -286,10 +286,6 @@ private:
     void handleMouseMove(double x, double y, double deltaX, double deltaY);
     void handleScroll(double xoffset, double yoffset);
     
-    // Astralis-style right-click context menu
-    // (Context menus are now opened directly via m_contextMenu in handleMouseButton
-    //  and via overview callbacks in setupUICallbacks — these helpers are retired.)
-    
     // Build a list of non-player entities for entity picking
     std::vector<std::shared_ptr<Entity>> buildPickableEntityList() const;
     
