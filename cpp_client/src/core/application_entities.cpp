@@ -1,14 +1,21 @@
 #include "core/application.h"
 #include "core/game_client.h"
 #include "core/entity.h"
-#include "ui/entity_picker.h"
 #include "ui/atlas/atlas_hud.h"
-#include "rendering/window.h"
-#include "rendering/camera.h"
 #include <iostream>
 #include <algorithm>
 
 namespace atlas {
+
+std::vector<std::shared_ptr<Entity>> Application::buildPickableEntityList() const {
+    std::vector<std::shared_ptr<Entity>> entityList;
+    for (const auto& pair : m_gameClient->getEntityManager().getAllEntities()) {
+        if (pair.first != m_localPlayerId) {
+            entityList.push_back(pair.second);
+        }
+    }
+    return entityList;
+}
 
 void Application::targetEntity(const std::string& entityId, bool addToTargets) {
     if (entityId.empty()) {
@@ -95,33 +102,6 @@ void Application::activateModule(int slotNumber) {
     } else {
         std::cout << "[Modules] Not connected to server, activation not sent" << std::endl;
     }
-}
-
-void Application::showSpaceContextMenu(double x, double y) {
-    // Check if clicking on an entity
-    auto entities = m_gameClient->getEntityManager().getAllEntities();
-    std::vector<std::shared_ptr<Entity>> entityList;
-    for (const auto& pair : entities) {
-        if (pair.first != m_localPlayerId) {
-            entityList.push_back(pair.second);
-        }
-    }
-    
-    std::string pickedId = m_entityPicker->pickEntity(
-        x, y, m_window->getWidth(), m_window->getHeight(),
-        *m_camera, entityList);
-    
-    m_contextMenuEntityId = pickedId;
-    m_contextMenuX = x;
-    m_contextMenuY = y;
-    m_showContextMenu = true;
-}
-
-void Application::showEntityContextMenu(const std::string& entityId, double x, double y) {
-    m_contextMenuEntityId = entityId;
-    m_contextMenuX = x;
-    m_contextMenuY = y;
-    m_showContextMenu = true;
 }
 
 void Application::openInfoPanelForEntity(const std::string& entityId) {

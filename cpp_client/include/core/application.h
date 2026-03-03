@@ -17,6 +17,7 @@ class EmbeddedServer;
 class SessionManager;
 class SolarSystemScene;
 class ShipPhysics;
+class Entity;
 
 } // namespace atlas
 
@@ -285,9 +286,8 @@ private:
     void handleMouseMove(double x, double y, double deltaX, double deltaY);
     void handleScroll(double xoffset, double yoffset);
     
-    // Astralis-style right-click context menu
-    void showSpaceContextMenu(double x, double y);
-    void showEntityContextMenu(const std::string& entityId, double x, double y);
+    // Build a list of non-player entities for entity picking
+    std::vector<std::shared_ptr<Entity>> buildPickableEntityList() const;
     
     // Astralis-style movement commands
     void commandApproach(const std::string& entityId);
@@ -358,12 +358,6 @@ private:
     bool m_approachActive = false;
     bool m_orbitActive = false;
     bool m_keepRangeActive = false;
-    
-    // Context menu state
-    bool m_showContextMenu = false;
-    std::string m_contextMenuEntityId;
-    double m_contextMenuX = 0.0;
-    double m_contextMenuY = 0.0;
     
     // Radial menu state
     bool m_radialMenuOpen = false;

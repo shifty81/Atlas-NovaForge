@@ -138,17 +138,9 @@ void Application::handleMouseButton(int button, int action, int mods, double x, 
                     if (dist < 5.0) {
                         // Quick right-click — show context menu
                         // Pick entity at mouse position
-                        auto entities = m_gameClient->getEntityManager().getAllEntities();
-                        std::vector<std::shared_ptr<Entity>> entityList;
-                        for (const auto& pair : entities) {
-                            if (pair.first != m_localPlayerId) {
-                                entityList.push_back(pair.second);
-                            }
-                        }
-                        
                         std::string pickedId = m_entityPicker->pickEntity(
                             x, y, m_window->getWidth(), m_window->getHeight(),
-                            *m_camera, entityList);
+                            *m_camera, buildPickableEntityList());
                         
                         if (!pickedId.empty()) {
                             // Show entity context menu
@@ -203,19 +195,11 @@ void Application::handleMouseButton(int button, int action, int mods, double x, 
         if (m_atlasConsumedMouse) return;
         
         // Pick entity at mouse position
-        auto entities = m_gameClient->getEntityManager().getAllEntities();
-        std::vector<std::shared_ptr<Entity>> entityList;
-        for (const auto& pair : entities) {
-            if (pair.first != m_localPlayerId) {  // Don't pick yourself
-                entityList.push_back(pair.second);
-            }
-        }
-        
         std::string pickedEntityId = m_entityPicker->pickEntity(
             x, y,
             m_window->getWidth(), m_window->getHeight(),
             *m_camera,
-            entityList
+            buildPickableEntityList()
         );
         
         if (!pickedEntityId.empty()) {
@@ -354,18 +338,10 @@ void Application::handleMouseMove(double x, double y, double deltaX, double delt
                 // ── Space mode: open standard space radial menu ────────
                 else {
                 // Pick entity at hold position
-                auto entities = m_gameClient->getEntityManager().getAllEntities();
-                std::vector<std::shared_ptr<Entity>> entityList;
-                for (const auto& pair : entities) {
-                    if (pair.first != m_localPlayerId) {
-                        entityList.push_back(pair.second);
-                    }
-                }
-                
                 std::string pickedId = m_entityPicker->pickEntity(
                     m_radialMenuStartX, m_radialMenuStartY,
                     m_window->getWidth(), m_window->getHeight(),
-                    *m_camera, entityList);
+                    *m_camera, buildPickableEntityList());
                 
                 if (!pickedId.empty()) {
                     // Compute distance to target for warp eligibility check

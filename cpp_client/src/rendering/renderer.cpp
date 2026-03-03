@@ -65,13 +65,10 @@ Renderer::~Renderer() {
 bool Renderer::initialize() {
     std::cout << "Initializing renderer..." << std::endl;
     
-    // Initialize GLEW
-    glewExperimental = GL_TRUE;
-    GLenum err = glewInit();
-    if (err != GLEW_OK) {
-        std::cerr << "Failed to initialize GLEW: " << glewGetErrorString(err) << std::endl;
-        return false;
-    }
+    // GLEW is already initialized by the Window constructor — no need to
+    // call glewInit() a second time.  Double-init can leave stale
+    // GL_INVALID_ENUM errors in the error queue and corrupt state on
+    // some drivers, which can result in a grey/blank screen.
     
     std::cout << "OpenGL " << glGetString(GL_VERSION) << std::endl;
     std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
