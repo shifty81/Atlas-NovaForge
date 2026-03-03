@@ -15,6 +15,7 @@ void ViewportPanel::Draw() {
     if (!GetContext()) return;
 
     auto& ctx = *GetContext();
+    ApplyDockBounds(m_viewportPanelState);
     if (!atlas::panelBeginStateful(ctx, "Viewport", m_viewportPanelState)) {
         atlas::panelEnd(ctx);
         return;
