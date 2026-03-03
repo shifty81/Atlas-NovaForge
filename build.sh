@@ -317,14 +317,22 @@ if [ ${#MISSING_PKGS[@]} -gt 0 ]; then
         error "  C++ compiler still not found after install"
         HAS_ERRORS=true
     else
-        ok "  C++ compiler: $(g++ --version 2>/dev/null | head -n1 || clang++ --version 2>/dev/null | head -n1)"
+        if command -v g++ &>/dev/null; then
+            ok "  C++ compiler: $(g++ --version | head -n1)"
+        else
+            ok "  C++ compiler: $(clang++ --version | head -n1)"
+        fi
     fi
 
     if ! command -v make &>/dev/null && ! command -v ninja &>/dev/null; then
         error "  Build tool still not found after install"
         HAS_ERRORS=true
     else
-        ok "  Build tool: $(make --version 2>/dev/null | head -n1 || ninja --version 2>/dev/null)"
+        if command -v make &>/dev/null; then
+            ok "  Build tool: $(make --version | head -n1)"
+        else
+            ok "  Build tool: ninja $(ninja --version)"
+        fi
     fi
 
     if [ "$HAS_ERRORS" = true ]; then
