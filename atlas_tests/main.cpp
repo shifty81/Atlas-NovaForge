@@ -1115,6 +1115,29 @@ void test_positional_audio_reverb_in_warp_high_speed();
 void test_positional_audio_reverb_in_warp_mid_speed();
 void test_positional_audio_reverb_clamped_high();
 
+// Tooling Layer tests
+void test_registry_empty();
+void test_registry_register_one();
+void test_registry_register_duplicate_rejected();
+void test_registry_register_null_rejected();
+void test_registry_unregister();
+void test_registry_unregister_calls_on_unregister();
+void test_registry_unregister_nonexistent();
+void test_registry_broadcast_input();
+void test_registry_broadcast_input_not_consumed();
+void test_registry_update_all();
+void test_registry_render_all();
+void test_registry_clear();
+void test_registry_multiple_modules();
+void test_tooling_layer_default_inactive();
+void test_tooling_layer_activate_deactivate();
+void test_tooling_layer_toggle();
+void test_tooling_layer_inactive_skips_update();
+void test_tooling_layer_inactive_skips_render();
+void test_tooling_layer_inactive_skips_input();
+void test_tooling_layer_toggle_key();
+void test_tooling_layer_registry_access();
+
 int main(int argc, char* argv[]) {
     std::string logPath;
     for (int i = 1; i < argc; ++i) {
@@ -2331,6 +2354,30 @@ int main(int argc, char* argv[]) {
     RUN_TEST(test_positional_audio_reverb_in_warp_high_speed);
     RUN_TEST(test_positional_audio_reverb_in_warp_mid_speed);
     RUN_TEST(test_positional_audio_reverb_clamped_high);
+
+    // Tooling Layer
+    log.BeginSection("Tooling Layer");
+    RUN_TEST(test_registry_empty);
+    RUN_TEST(test_registry_register_one);
+    RUN_TEST(test_registry_register_duplicate_rejected);
+    RUN_TEST(test_registry_register_null_rejected);
+    RUN_TEST(test_registry_unregister);
+    RUN_TEST(test_registry_unregister_calls_on_unregister);
+    RUN_TEST(test_registry_unregister_nonexistent);
+    RUN_TEST(test_registry_broadcast_input);
+    RUN_TEST(test_registry_broadcast_input_not_consumed);
+    RUN_TEST(test_registry_update_all);
+    RUN_TEST(test_registry_render_all);
+    RUN_TEST(test_registry_clear);
+    RUN_TEST(test_registry_multiple_modules);
+    RUN_TEST(test_tooling_layer_default_inactive);
+    RUN_TEST(test_tooling_layer_activate_deactivate);
+    RUN_TEST(test_tooling_layer_toggle);
+    RUN_TEST(test_tooling_layer_inactive_skips_update);
+    RUN_TEST(test_tooling_layer_inactive_skips_render);
+    RUN_TEST(test_tooling_layer_inactive_skips_input);
+    RUN_TEST(test_tooling_layer_toggle_key);
+    RUN_TEST(test_tooling_layer_registry_access);
 
     if (!logPath.empty()) {
         log.WriteLogFile(logPath);

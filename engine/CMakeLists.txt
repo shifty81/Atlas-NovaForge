@@ -183,6 +183,8 @@ if(ATLAS_INCLUDE_TOOLS)
     target_sources(AtlasEngine PRIVATE
         ui/DiagnosticsOverlay.cpp
         tools/ProjectNamespaceRewriter.cpp
+        tools/ToolModuleRegistry.cpp
+        tools/ToolingLayer.cpp
     )
     target_compile_definitions(AtlasEngine PUBLIC ATLAS_INCLUDE_TOOLS)
 endif()

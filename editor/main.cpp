@@ -11,6 +11,8 @@
 #include "ui/DiagnosticsOverlay.h"
 #include "ui/LauncherScreen.h"
 #include "tools/PlayInEditor.h"
+#include "tools/IToolModule.h"
+#include "tools/ToolingLayer.h"
 #include <filesystem>
 #include <iostream>
 
@@ -475,6 +477,365 @@ static EditorWidgetIds BuildEditorUI(atlas::ui::UIScreen& screen) {
     return ids;
 }
 
+// ============================================================
+// Helper: populate Asset Browser scroll view with project entries
+// ============================================================
+static void PopulateAssetBrowser(atlas::Engine& engine,
+                                 const EditorWidgetIds& ids,
+                                 const atlas::editor::LauncherScreen& launcher,
+                                 const std::string& projectsDir,
+                                 const std::string& assetRoot) {
+    auto& screen = engine.GetUIManager().GetScreen();
+    const atlas::ui::UIWidget* scrollW = screen.GetWidget(ids.assetScroll);
+    if (!scrollW || projectsDir.empty()) return;
+
+    std::error_code ec;
+    float entryY = scrollW->y + 4.0f;
+    for (auto& proj : launcher.Projects()) {
+        uint32_t entry = screen.AddWidget(atlas::ui::UIWidgetType::Text,
+            "[Project] " + proj.name,
+            scrollW->x + 8.0f, entryY,
+            scrollW->width - 16.0f, 20.0f);
+        screen.SetParent(entry, ids.assetScroll);
+        entryY += 22.0f;
+    }
+    if (std::filesystem::is_directory(assetRoot, ec)) {
+        for (auto& entry : std::filesystem::directory_iterator(assetRoot, ec)) {
+            std::string name = entry.path().filename().string();
+            std::string prefix = entry.is_directory(ec) ? "[Dir] " : "[File] ";
+            uint32_t wid = screen.AddWidget(atlas::ui::UIWidgetType::Text,
+                prefix + name,
+                scrollW->x + 8.0f, entryY,
+                scrollW->width - 16.0f, 20.0f);
+            screen.SetParent(wid, ids.assetScroll);
+            entryY += 22.0f;
+        }
+    }
+}
+
+// ============================================================
+// Helper: configure Tab and Scroll managers
+// ============================================================
+static void SetupTabsAndScrolling(atlas::Engine& engine,
+                                  const EditorWidgetIds& ids) {
+    auto& tabMgr = engine.GetUIManager().GetTabManager();
+    if (ids.tabScene != 0) {
+        tabMgr.SetTabContent(ids.tabScene, ids.scenePanel);
+        tabMgr.SetTabContent(ids.tabGame, ids.gamePanel);
+    }
+    if (ids.consoleTab != 0) {
+        tabMgr.SetTabContent(ids.consoleTab, ids.consoleContentPanel);
+        tabMgr.SetTabContent(ids.systemTab, ids.systemContentPanel);
+    }
+
+    auto& scrollMgr = engine.GetUIManager().GetScrollManager();
+    if (ids.assetScroll != 0) {
+        scrollMgr.RegisterScrollView(ids.assetScroll, 1000.0f);
+        scrollMgr.RegisterScrollView(ids.entityScroll, 800.0f);
+        scrollMgr.RegisterScrollView(ids.consoleScroll, 500.0f);
+    }
+    if (ids.systemScroll != 0) {
+        scrollMgr.RegisterScrollView(ids.systemScroll, 2000.0f);
+    }
+}
+
+// ============================================================
+// Helper: install logger sink that feeds Console and System scroll areas
+// ============================================================
+static void SetupLoggerSink(atlas::Engine& engine,
+                            const EditorWidgetIds& ids) {
+    atlas::ui::UIScreen* screenPtr = &engine.GetUIManager().GetScreen();
+    uint32_t sysScrollId = ids.systemScroll;
+    uint32_t consScrollId = ids.consoleScroll;
+    atlas::Logger::SetSink([screenPtr, sysScrollId, consScrollId](const std::string& line) {
+        const atlas::ui::UIWidget* scrollW = screenPtr->GetWidget(sysScrollId);
+        if (scrollW) {
+            auto children = screenPtr->GetChildren(sysScrollId);
+            float baseY = scrollW->y + 2.0f;
+            float lineY = baseY + static_cast<float>(children.size()) * atlas::ui::kLogLineSpacing;
+            uint32_t textId = screenPtr->AddWidget(
+                atlas::ui::UIWidgetType::Text, line,
+                scrollW->x + 4.0f, lineY,
+                scrollW->width - 8.0f, atlas::ui::kLogEntryHeight);
+            screenPtr->SetParent(textId, sysScrollId);
+        }
+        const atlas::ui::UIWidget* consW = screenPtr->GetWidget(consScrollId);
+        if (consW) {
+            auto children = screenPtr->GetChildren(consScrollId);
+            float baseY = consW->y + 2.0f;
+            float lineY = baseY + static_cast<float>(children.size()) * atlas::ui::kLogLineSpacing;
+            uint32_t textId = screenPtr->AddWidget(
+                atlas::ui::UIWidgetType::Text, line,
+                consW->x + 4.0f, lineY,
+                consW->width - 8.0f, atlas::ui::kLogEntryHeight);
+            screenPtr->SetParent(textId, consScrollId);
+        }
+    });
+}
+
+// ============================================================
+// Helper: wire toolbar buttons (Play / Pause / Stop / Save)
+// ============================================================
+static void SetupToolbar(atlas::Engine& engine,
+                         const EditorWidgetIds& ids,
+                         atlas::editor::PlayInEditor& playInEditor,
+                         std::function<void(const std::string&)> updateStatus) {
+    engine.GetUIManager().GetToolbarManager().SetButtonCallback(
+        [&engine, &ids, &playInEditor, updateStatus](uint32_t /*toolbarId*/, uint32_t buttonId) {
+            if (buttonId == ids.tbPlay) {
+                if (playInEditor.Mode() == atlas::editor::PIEMode::Paused) {
+                    playInEditor.Resume();
+                    atlas::Logger::Info("Simulation resumed");
+                    updateStatus("Simulating...");
+                } else if (playInEditor.Mode() == atlas::editor::PIEMode::Stopped) {
+                    playInEditor.StartSimulation(engine);
+                    atlas::Logger::Info("Simulation started");
+                    updateStatus("Simulating...");
+                }
+            } else if (buttonId == ids.tbPause) {
+                if (playInEditor.Mode() == atlas::editor::PIEMode::Simulating) {
+                    playInEditor.Pause();
+                    atlas::Logger::Info("Simulation paused");
+                    updateStatus("Paused");
+                }
+            } else if (buttonId == ids.tbStop) {
+                if (playInEditor.Mode() != atlas::editor::PIEMode::Stopped) {
+                    playInEditor.StopSimulation(engine);
+                    atlas::Logger::Info("Simulation stopped");
+                    updateStatus("Ready");
+                }
+            } else if (buttonId == ids.tbSaveBtn) {
+                atlas::Logger::Info("Project saved");
+                updateStatus("Project saved");
+            }
+        }
+    );
+}
+
+// ============================================================
+// Helper: wire menu item callbacks (File / Edit / View / Tools / Help)
+// ============================================================
+static void SetupMenuCallbacks(atlas::Engine& engine,
+                               const EditorWidgetIds& ids,
+                               atlas::editor::PlayInEditor& playInEditor,
+                               atlas::editor::LauncherScreen& launcher,
+                               const std::string& projectsDir,
+                               std::function<void(const std::string&)> updateStatus) {
+    engine.GetUIManager().GetMenuManager().SetMenuItemCallback(
+        [&engine, &ids, &playInEditor, updateStatus, &launcher, &projectsDir](uint32_t /*menuId*/, uint32_t itemId) {
+            auto& screen = engine.GetUIManager().GetScreen();
+
+            // File menu
+            if (itemId == ids.fileNew) {
+                atlas::Logger::Info("File > New Project");
+                updateStatus("New project created");
+            } else if (itemId == ids.fileOpen) {
+                atlas::Logger::Info("File > Open Project — scanning " + projectsDir);
+                launcher.ScanProjects(projectsDir);
+                if (launcher.Projects().empty()) {
+                    atlas::Logger::Warn("No projects found in " + projectsDir);
+                } else {
+                    for (size_t i = 0; i < launcher.Projects().size(); ++i) {
+                        atlas::Logger::Info("  [" + std::to_string(i) + "] " + launcher.Projects()[i].name
+                                            + " (" + launcher.Projects()[i].path + ")");
+                    }
+                    launcher.SelectProject(0);
+                    launcher.ConfirmSelection();
+                    if (auto* proj = launcher.SelectedProject()) {
+                        atlas::Logger::Info("Opened project: " + proj->name);
+                        updateStatus("Project: " + proj->name);
+                    }
+                }
+            } else if (itemId == ids.fileSave) {
+                atlas::Logger::Info("File > Save Project");
+                updateStatus("Project saved");
+            } else if (itemId == ids.fileExit) {
+                atlas::Logger::Info("File > Exit");
+                engine.RequestExit();
+
+            // Edit menu
+            } else if (itemId == ids.editUndo) {
+                atlas::Logger::Info("Edit > Undo");
+                updateStatus("Undo");
+            } else if (itemId == ids.editRedo) {
+                atlas::Logger::Info("Edit > Redo");
+                updateStatus("Redo");
+            } else if (itemId == ids.editCut) {
+                atlas::Logger::Info("Edit > Cut");
+            } else if (itemId == ids.editCopy) {
+                atlas::Logger::Info("Edit > Copy");
+            } else if (itemId == ids.editPaste) {
+                atlas::Logger::Info("Edit > Paste");
+
+            // View menu (toggle panel visibility)
+            } else if (itemId == ids.viewAssets) {
+                const atlas::ui::UIWidget* w = screen.GetWidget(ids.leftPanel);
+                if (w) {
+                    bool newVis = !w->visible;
+                    screen.SetVisible(ids.leftPanel, newVis);
+                    atlas::Logger::Info(std::string("View > Asset Browser: ") + (newVis ? "shown" : "hidden"));
+                    updateStatus(std::string("Asset Browser ") + (newVis ? "shown" : "hidden"));
+                }
+            } else if (itemId == ids.viewInspector) {
+                const atlas::ui::UIWidget* w = screen.GetWidget(ids.rightPanel);
+                if (w) {
+                    bool newVis = !w->visible;
+                    screen.SetVisible(ids.rightPanel, newVis);
+                    atlas::Logger::Info(std::string("View > Inspector: ") + (newVis ? "shown" : "hidden"));
+                    updateStatus(std::string("Inspector ") + (newVis ? "shown" : "hidden"));
+                }
+            } else if (itemId == ids.viewConsole) {
+                const atlas::ui::UIWidget* w = screen.GetWidget(ids.bottomPanel);
+                if (w) {
+                    bool newVis = !w->visible;
+                    screen.SetVisible(ids.bottomPanel, newVis);
+                    atlas::Logger::Info(std::string("View > Console: ") + (newVis ? "shown" : "hidden"));
+                    updateStatus(std::string("Console ") + (newVis ? "shown" : "hidden"));
+                }
+
+            // Tools menu
+            } else if (itemId == ids.toolsGraphEditor) {
+                atlas::Logger::Info("Tools > Graph Editor");
+                updateStatus("Graph Editor");
+            } else if (itemId == ids.toolsWorldGen) {
+                atlas::Logger::Info("Tools > World Generator");
+                updateStatus("World Generator");
+            } else if (itemId == ids.toolsProfiler) {
+                atlas::Logger::Info("Tools > Profiler");
+                updateStatus("Profiler");
+            } else if (itemId == ids.toolsSettings) {
+                atlas::Logger::Info("Tools > Settings");
+                updateStatus("Settings");
+
+            // Help menu
+            } else if (itemId == ids.helpDocs) {
+                atlas::Logger::Info("Help > Documentation (F1)");
+                updateStatus("Documentation");
+            } else if (itemId == ids.helpAbout) {
+                atlas::Logger::Info("Help > About Atlas Engine v0.1");
+                updateStatus("About Atlas");
+            }
+        }
+    );
+}
+
+// ============================================================
+// Helper: wire console input field commands
+// ============================================================
+static void SetupConsoleInput(atlas::Engine& engine,
+                              const EditorWidgetIds& ids,
+                              atlas::editor::PlayInEditor& playInEditor,
+                              std::function<void(const std::string&)> updateStatus) {
+    auto& inputMgr = engine.GetUIManager().GetInputFieldManager();
+    if (ids.consoleInput == 0) return;
+
+    inputMgr.RegisterField(ids.consoleInput, "command...");
+    inputMgr.SetTextSubmitCallback(
+        [&engine, &playInEditor, updateStatus](uint32_t /*fieldId*/, const std::string& text) {
+            if (text == "help") {
+                atlas::Logger::Info("Available commands: help, clear, status, exit/quit, play, pause, stop");
+            } else if (text == "exit" || text == "quit") {
+                atlas::Logger::Info("Exit requested via console");
+                engine.RequestExit();
+            } else if (text == "status") {
+                std::string mode;
+                switch (playInEditor.Mode()) {
+                    case atlas::editor::PIEMode::Stopped:    mode = "Stopped"; break;
+                    case atlas::editor::PIEMode::Simulating: mode = "Simulating"; break;
+                    case atlas::editor::PIEMode::Paused:     mode = "Paused"; break;
+                    case atlas::editor::PIEMode::Possessed:  mode = "Possessed"; break;
+                }
+                atlas::Logger::Info("Status: PIE=" + mode
+                                   + " Ticks=" + std::to_string(playInEditor.TicksSimulated()));
+            } else if (text == "play") {
+                if (playInEditor.Mode() == atlas::editor::PIEMode::Stopped) {
+                    playInEditor.StartSimulation(engine);
+                    atlas::Logger::Info("Simulation started via console");
+                    updateStatus("Simulating...");
+                } else if (playInEditor.Mode() == atlas::editor::PIEMode::Paused) {
+                    playInEditor.Resume();
+                    atlas::Logger::Info("Simulation resumed via console");
+                    updateStatus("Simulating...");
+                }
+            } else if (text == "pause") {
+                if (playInEditor.Mode() == atlas::editor::PIEMode::Simulating) {
+                    playInEditor.Pause();
+                    atlas::Logger::Info("Simulation paused via console");
+                    updateStatus("Paused");
+                }
+            } else if (text == "stop") {
+                if (playInEditor.Mode() != atlas::editor::PIEMode::Stopped) {
+                    playInEditor.StopSimulation(engine);
+                    atlas::Logger::Info("Simulation stopped via console");
+                    updateStatus("Ready");
+                }
+            } else if (text == "clear") {
+                atlas::Logger::Info("Console cleared");
+            } else if (!text.empty()) {
+                atlas::Logger::Info("Unknown command: " + text + " (type 'help' for available commands)");
+            }
+        }
+    );
+}
+
+// ============================================================
+// Helper: wire miscellaneous UI managers (Dock, Focus, Tooltip, etc.)
+// ============================================================
+static void SetupMiscManagers(atlas::Engine& engine,
+                              const EditorWidgetIds& ids) {
+    auto& dockMgr = engine.GetUIManager().GetDockManager();
+    if (ids.dockArea != 0)
+        dockMgr.RegisterDockArea(ids.dockArea);
+
+    engine.GetUIManager().GetFocusManager().SetFocusChangedCallback(
+        [](uint32_t newId, uint32_t oldId) {
+            atlas::Logger::Info("Focus changed: " + std::to_string(oldId)
+                                + " -> " + std::to_string(newId));
+        }
+    );
+
+    auto& tooltipMgr = engine.GetUIManager().GetTooltipManager();
+    if (ids.tbSaveBtn != 0) {
+        auto& screen = engine.GetUIManager().GetScreen();
+        uint32_t saveTip = screen.AddWidget(atlas::ui::UIWidgetType::Tooltip,
+                                             "Save project (Ctrl+S)", 0, 0, 140, 20);
+        tooltipMgr.SetTooltip(ids.tbSaveBtn, saveTip);
+    }
+
+    engine.GetUIManager().GetCheckboxManager().SetCheckboxChangedCallback(
+        [](uint32_t widgetId, bool checked) {
+            atlas::Logger::Info("Checkbox toggled: widget=" + std::to_string(widgetId)
+                                + " checked=" + std::to_string(checked));
+        }
+    );
+
+    engine.GetUIManager().GetTreeNodeManager().SetTreeNodeToggledCallback(
+        [](uint32_t widgetId, bool expanded) {
+            atlas::Logger::Info("TreeNode toggled: widget=" + std::to_string(widgetId)
+                                + " expanded=" + std::to_string(expanded));
+        }
+    );
+
+    engine.GetUIManager().GetSplitterManager().SetSplitterMovedCallback(
+        [](uint32_t widgetId, float position) {
+            atlas::Logger::Info("Splitter moved: widget=" + std::to_string(widgetId)
+                                + " position=" + std::to_string(position));
+        }
+    );
+
+    engine.GetUIManager().GetColorPickerManager().SetColorChangedCallback(
+        [](uint32_t widgetId, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+            atlas::Logger::Info("Color changed: widget=" + std::to_string(widgetId)
+                                + " rgba=(" + std::to_string(r) + "," + std::to_string(g)
+                                + "," + std::to_string(b) + "," + std::to_string(a) + ")");
+        }
+    );
+}
+
+// ============================================================
+// main — Editor entry point
+// ============================================================
+
 int main() {
     atlas::EngineConfig cfg;
     cfg.mode = atlas::EngineMode::Editor;
@@ -521,102 +882,14 @@ int main() {
 
     auto ids = BuildEditorUI(engine.GetUIManager().GetScreen());
 
-    // --- Populate Asset Browser with project files ---
-    {
-        auto& screen = engine.GetUIManager().GetScreen();
-        const atlas::ui::UIWidget* scrollW = screen.GetWidget(ids.assetScroll);
-        if (scrollW && !projectsDir.empty()) {
-            std::error_code ec;
-            float entryY = scrollW->y + 4.0f;
-            // List project directories
-            for (auto& proj : launcher.Projects()) {
-                uint32_t entry = screen.AddWidget(atlas::ui::UIWidgetType::Text,
-                    "[Project] " + proj.name,
-                    scrollW->x + 8.0f, entryY,
-                    scrollW->width - 16.0f, 20.0f);
-                screen.SetParent(entry, ids.assetScroll);
-                entryY += 22.0f;
-            }
-            // List asset files from asset root
-            if (std::filesystem::is_directory(assetRoot, ec)) {
-                for (auto& entry : std::filesystem::directory_iterator(assetRoot, ec)) {
-                    std::string name = entry.path().filename().string();
-                    std::string prefix = entry.is_directory(ec) ? "[Dir] " : "[File] ";
-                    uint32_t wid = screen.AddWidget(atlas::ui::UIWidgetType::Text,
-                        prefix + name,
-                        scrollW->x + 8.0f, entryY,
-                        scrollW->width - 16.0f, 20.0f);
-                    screen.SetParent(wid, ids.assetScroll);
-                    entryY += 22.0f;
-                }
-            }
-        }
-    }
+    // --- Tooling layer: activate for the editor session ---
+    atlas::tools::ToolingLayer toolingLayer;
+    toolingLayer.Activate();
 
-    // --- Set up Tab Manager ---
-    auto& tabMgr = engine.GetUIManager().GetTabManager();
-    if (ids.tabScene != 0) {
-        tabMgr.SetTabContent(ids.tabScene, ids.scenePanel);
-        tabMgr.SetTabContent(ids.tabGame, ids.gamePanel);
-    }
-    // Console / System tabs
-    if (ids.consoleTab != 0) {
-        tabMgr.SetTabContent(ids.consoleTab, ids.consoleContentPanel);
-        tabMgr.SetTabContent(ids.systemTab, ids.systemContentPanel);
-    }
-
-    // --- Set up Scroll Manager ---
-    auto& scrollMgr = engine.GetUIManager().GetScrollManager();
-    if (ids.assetScroll != 0) {
-        scrollMgr.RegisterScrollView(ids.assetScroll, 1000.0f);
-        scrollMgr.RegisterScrollView(ids.entityScroll, 800.0f);
-        scrollMgr.RegisterScrollView(ids.consoleScroll, 500.0f);
-    }
-    if (ids.systemScroll != 0) {
-        scrollMgr.RegisterScrollView(ids.systemScroll, 2000.0f);
-    }
-
-    // --- Logger sink: feed log lines into both Console and System scroll areas ---
-    // NOTE: In the current architecture Logger is only called from the main
-    // thread (event callbacks, toolbar/menu handlers, etc.), so direct UI
-    // modification is safe.  If Logger is ever called from worker threads,
-    // a queuing mechanism should be added.
-    {
-        atlas::ui::UIScreen* screenPtr = &engine.GetUIManager().GetScreen();
-        uint32_t sysScrollId = ids.systemScroll;
-        uint32_t consScrollId = ids.consoleScroll;
-        atlas::Logger::SetSink([screenPtr, sysScrollId, consScrollId](const std::string& line) {
-            // Feed System tab
-            const atlas::ui::UIWidget* scrollW = screenPtr->GetWidget(sysScrollId);
-            if (scrollW) {
-                auto children = screenPtr->GetChildren(sysScrollId);
-                float baseY = scrollW->y + 2.0f;
-                float lineY = baseY + static_cast<float>(children.size()) * atlas::ui::kLogLineSpacing;
-                uint32_t textId = screenPtr->AddWidget(
-                    atlas::ui::UIWidgetType::Text, line,
-                    scrollW->x + 4.0f, lineY,
-                    scrollW->width - 8.0f, atlas::ui::kLogEntryHeight);
-                screenPtr->SetParent(textId, sysScrollId);
-            }
-            // Feed Console scroll area
-            const atlas::ui::UIWidget* consW = screenPtr->GetWidget(consScrollId);
-            if (consW) {
-                auto children = screenPtr->GetChildren(consScrollId);
-                float baseY = consW->y + 2.0f;
-                float lineY = baseY + static_cast<float>(children.size()) * atlas::ui::kLogLineSpacing;
-                uint32_t textId = screenPtr->AddWidget(
-                    atlas::ui::UIWidgetType::Text, line,
-                    consW->x + 4.0f, lineY,
-                    consW->width - 8.0f, atlas::ui::kLogEntryHeight);
-                screenPtr->SetParent(textId, consScrollId);
-            }
-        });
-    }
-
-    // --- Set up Play-In-Editor controller ---
+    // --- Play-In-Editor controller ---
     atlas::editor::PlayInEditor playInEditor;
 
-    // Helper: update status bar text
+    // Status-bar update helper
     auto updateStatus = [&engine, &ids](const std::string& text) {
         if (ids.statusBar != 0) {
             atlas::ui::UIWidget* w = engine.GetUIManager().GetScreen().GetWidgetMutable(ids.statusBar);
@@ -624,252 +897,21 @@ int main() {
         }
     };
 
-    // --- Set up Toolbar Manager ---
-    auto& toolbarMgr = engine.GetUIManager().GetToolbarManager();
-    toolbarMgr.SetButtonCallback(
-        [&engine, &ids, &playInEditor, &updateStatus](uint32_t /*toolbarId*/, uint32_t buttonId) {
-            if (buttonId == ids.tbPlay) {
-                if (playInEditor.Mode() == atlas::editor::PIEMode::Paused) {
-                    playInEditor.Resume();
-                    atlas::Logger::Info("Simulation resumed");
-                    updateStatus("Simulating...");
-                } else if (playInEditor.Mode() == atlas::editor::PIEMode::Stopped) {
-                    playInEditor.StartSimulation(engine);
-                    atlas::Logger::Info("Simulation started");
-                    updateStatus("Simulating...");
-                }
-            } else if (buttonId == ids.tbPause) {
-                if (playInEditor.Mode() == atlas::editor::PIEMode::Simulating) {
-                    playInEditor.Pause();
-                    atlas::Logger::Info("Simulation paused");
-                    updateStatus("Paused");
-                }
-            } else if (buttonId == ids.tbStop) {
-                if (playInEditor.Mode() != atlas::editor::PIEMode::Stopped) {
-                    playInEditor.StopSimulation(engine);
-                    atlas::Logger::Info("Simulation stopped");
-                    updateStatus("Ready");
-                }
-            } else if (buttonId == ids.tbSaveBtn) {
-                atlas::Logger::Info("Project saved");
-                updateStatus("Project saved");
-            }
-        }
-    );
-
-    // --- Set up Menu Item Callback ---
-    engine.GetUIManager().GetMenuManager().SetMenuItemCallback(
-        [&engine, &ids, &playInEditor, &updateStatus, &launcher, &projectsDir](uint32_t /*menuId*/, uint32_t itemId) {
-            auto& screen = engine.GetUIManager().GetScreen();
-
-            // --- File menu ---
-            if (itemId == ids.fileNew) {
-                atlas::Logger::Info("File > New Project");
-                updateStatus("New project created");
-            } else if (itemId == ids.fileOpen) {
-                atlas::Logger::Info("File > Open Project — scanning " + projectsDir);
-                launcher.ScanProjects(projectsDir);
-                if (launcher.Projects().empty()) {
-                    atlas::Logger::Warn("No projects found in " + projectsDir);
-                } else {
-                    for (size_t i = 0; i < launcher.Projects().size(); ++i) {
-                        atlas::Logger::Info("  [" + std::to_string(i) + "] " + launcher.Projects()[i].name
-                                            + " (" + launcher.Projects()[i].path + ")");
-                    }
-                    // Select the first project found
-                    launcher.SelectProject(0);
-                    launcher.ConfirmSelection();
-                    if (auto* proj = launcher.SelectedProject()) {
-                        atlas::Logger::Info("Opened project: " + proj->name);
-                        updateStatus("Project: " + proj->name);
-                    }
-                }
-            } else if (itemId == ids.fileSave) {
-                atlas::Logger::Info("File > Save Project");
-                updateStatus("Project saved");
-            } else if (itemId == ids.fileExit) {
-                atlas::Logger::Info("File > Exit");
-                engine.RequestExit();
-
-            // --- Edit menu ---
-            } else if (itemId == ids.editUndo) {
-                atlas::Logger::Info("Edit > Undo");
-                updateStatus("Undo");
-            } else if (itemId == ids.editRedo) {
-                atlas::Logger::Info("Edit > Redo");
-                updateStatus("Redo");
-            } else if (itemId == ids.editCut) {
-                atlas::Logger::Info("Edit > Cut");
-            } else if (itemId == ids.editCopy) {
-                atlas::Logger::Info("Edit > Copy");
-            } else if (itemId == ids.editPaste) {
-                atlas::Logger::Info("Edit > Paste");
-
-            // --- View menu (toggle panel visibility) ---
-            } else if (itemId == ids.viewAssets) {
-                const atlas::ui::UIWidget* w = screen.GetWidget(ids.leftPanel);
-                if (w) {
-                    bool newVis = !w->visible;
-                    screen.SetVisible(ids.leftPanel, newVis);
-                    atlas::Logger::Info(std::string("View > Asset Browser: ") + (newVis ? "shown" : "hidden"));
-                    updateStatus(std::string("Asset Browser ") + (newVis ? "shown" : "hidden"));
-                }
-            } else if (itemId == ids.viewInspector) {
-                const atlas::ui::UIWidget* w = screen.GetWidget(ids.rightPanel);
-                if (w) {
-                    bool newVis = !w->visible;
-                    screen.SetVisible(ids.rightPanel, newVis);
-                    atlas::Logger::Info(std::string("View > Inspector: ") + (newVis ? "shown" : "hidden"));
-                    updateStatus(std::string("Inspector ") + (newVis ? "shown" : "hidden"));
-                }
-            } else if (itemId == ids.viewConsole) {
-                const atlas::ui::UIWidget* w = screen.GetWidget(ids.bottomPanel);
-                if (w) {
-                    bool newVis = !w->visible;
-                    screen.SetVisible(ids.bottomPanel, newVis);
-                    atlas::Logger::Info(std::string("View > Console: ") + (newVis ? "shown" : "hidden"));
-                    updateStatus(std::string("Console ") + (newVis ? "shown" : "hidden"));
-                }
-
-            // --- Tools menu ---
-            } else if (itemId == ids.toolsGraphEditor) {
-                atlas::Logger::Info("Tools > Graph Editor");
-                updateStatus("Graph Editor");
-            } else if (itemId == ids.toolsWorldGen) {
-                atlas::Logger::Info("Tools > World Generator");
-                updateStatus("World Generator");
-            } else if (itemId == ids.toolsProfiler) {
-                atlas::Logger::Info("Tools > Profiler");
-                updateStatus("Profiler");
-            } else if (itemId == ids.toolsSettings) {
-                atlas::Logger::Info("Tools > Settings");
-                updateStatus("Settings");
-
-            // --- Help menu ---
-            } else if (itemId == ids.helpDocs) {
-                atlas::Logger::Info("Help > Documentation (F1)");
-                updateStatus("Documentation");
-            } else if (itemId == ids.helpAbout) {
-                atlas::Logger::Info("Help > About Atlas Engine v0.1");
-                updateStatus("About Atlas");
-            }
-        }
-    );
-
-    // --- Set up Dock Manager ---
-    auto& dockMgr = engine.GetUIManager().GetDockManager();
-    if (ids.dockArea != 0) {
-        dockMgr.RegisterDockArea(ids.dockArea);
-    }
-
-    // --- Set up Focus Manager ---
-    auto& focusMgr = engine.GetUIManager().GetFocusManager();
-    focusMgr.SetFocusChangedCallback(
-        [](uint32_t newId, uint32_t oldId) {
-            atlas::Logger::Info("Focus changed: " + std::to_string(oldId)
-                               + " -> " + std::to_string(newId));
-        }
-    );
-
-    // --- Set up Input Field Manager ---
-    auto& inputMgr = engine.GetUIManager().GetInputFieldManager();
-    if (ids.consoleInput != 0) {
-        inputMgr.RegisterField(ids.consoleInput, "command...");
-        inputMgr.SetTextSubmitCallback(
-            [&engine, &playInEditor, &updateStatus](uint32_t /*fieldId*/, const std::string& text) {
-                if (text == "help") {
-                    atlas::Logger::Info("Available commands: help, clear, status, exit/quit, play, pause, stop");
-                } else if (text == "exit" || text == "quit") {
-                    atlas::Logger::Info("Exit requested via console");
-                    engine.RequestExit();
-                } else if (text == "status") {
-                    std::string mode;
-                    switch (playInEditor.Mode()) {
-                        case atlas::editor::PIEMode::Stopped:    mode = "Stopped"; break;
-                        case atlas::editor::PIEMode::Simulating: mode = "Simulating"; break;
-                        case atlas::editor::PIEMode::Paused:     mode = "Paused"; break;
-                        case atlas::editor::PIEMode::Possessed:  mode = "Possessed"; break;
-                    }
-                    atlas::Logger::Info("Status: PIE=" + mode
-                                       + " Ticks=" + std::to_string(playInEditor.TicksSimulated()));
-                } else if (text == "play") {
-                    if (playInEditor.Mode() == atlas::editor::PIEMode::Stopped) {
-                        playInEditor.StartSimulation(engine);
-                        atlas::Logger::Info("Simulation started via console");
-                        updateStatus("Simulating...");
-                    } else if (playInEditor.Mode() == atlas::editor::PIEMode::Paused) {
-                        playInEditor.Resume();
-                        atlas::Logger::Info("Simulation resumed via console");
-                        updateStatus("Simulating...");
-                    }
-                } else if (text == "pause") {
-                    if (playInEditor.Mode() == atlas::editor::PIEMode::Simulating) {
-                        playInEditor.Pause();
-                        atlas::Logger::Info("Simulation paused via console");
-                        updateStatus("Paused");
-                    }
-                } else if (text == "stop") {
-                    if (playInEditor.Mode() != atlas::editor::PIEMode::Stopped) {
-                        playInEditor.StopSimulation(engine);
-                        atlas::Logger::Info("Simulation stopped via console");
-                        updateStatus("Ready");
-                    }
-                } else if (text == "clear") {
-                    atlas::Logger::Info("Console cleared");
-                } else if (!text.empty()) {
-                    atlas::Logger::Info("Unknown command: " + text + " (type 'help' for available commands)");
-                }
-            }
-        );
-    }
-
-    // --- Set up Tooltip Manager ---
-    auto& tooltipMgr = engine.GetUIManager().GetTooltipManager();
-    if (ids.tbSaveBtn != 0) {
-        auto& screen = engine.GetUIManager().GetScreen();
-        uint32_t saveTip = screen.AddWidget(atlas::ui::UIWidgetType::Tooltip,
-                                             "Save project (Ctrl+S)", 0, 0, 140, 20);
-        tooltipMgr.SetTooltip(ids.tbSaveBtn, saveTip);
-    }
-
-    // --- Set up Checkbox Manager ---
-    engine.GetUIManager().GetCheckboxManager().SetCheckboxChangedCallback(
-        [](uint32_t widgetId, bool checked) {
-            atlas::Logger::Info("Checkbox toggled: widget=" + std::to_string(widgetId)
-                               + " checked=" + std::to_string(checked));
-        }
-    );
-
-    // --- Set up TreeNode Manager ---
-    engine.GetUIManager().GetTreeNodeManager().SetTreeNodeToggledCallback(
-        [](uint32_t widgetId, bool expanded) {
-            atlas::Logger::Info("TreeNode toggled: widget=" + std::to_string(widgetId)
-                               + " expanded=" + std::to_string(expanded));
-        }
-    );
-
-    // --- Set up Splitter Manager ---
-    engine.GetUIManager().GetSplitterManager().SetSplitterMovedCallback(
-        [](uint32_t widgetId, float position) {
-            atlas::Logger::Info("Splitter moved: widget=" + std::to_string(widgetId)
-                               + " position=" + std::to_string(position));
-        }
-    );
-
-    // --- Set up ColorPicker Manager ---
-    engine.GetUIManager().GetColorPickerManager().SetColorChangedCallback(
-        [](uint32_t widgetId, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
-            atlas::Logger::Info("Color changed: widget=" + std::to_string(widgetId)
-                               + " rgba=(" + std::to_string(r) + "," + std::to_string(g)
-                               + "," + std::to_string(b) + "," + std::to_string(a) + ")");
-        }
-    );
+    // Wire UI subsystems via extracted helpers
+    PopulateAssetBrowser(engine, ids, launcher, projectsDir, assetRoot);
+    SetupTabsAndScrolling(engine, ids);
+    SetupLoggerSink(engine, ids);
+    SetupToolbar(engine, ids, playInEditor, updateStatus);
+    SetupMenuCallbacks(engine, ids, playInEditor, launcher, projectsDir, updateStatus);
+    SetupConsoleInput(engine, ids, playInEditor, updateStatus);
+    SetupMiscManagers(engine, ids);
 
     // Enable diagnostics overlay by default in editor
     atlas::ui::DiagnosticsOverlay::SetEnabled(true);
 
     engine.Run();
 
+    toolingLayer.Registry().Clear();
     fontBootstrap.Shutdown();
 
     return 0;
