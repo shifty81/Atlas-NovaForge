@@ -5,12 +5,38 @@ dist/
 bin/
 obj/
 out/
+build_cpp/
+build_test/
+build_client/
+build_server/
+build_vs/
 
 # Dependencies
 node_modules/
 vendor/
 .venv/
 venv/
+ENV/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
 # IDE and editor files
 .vscode/
@@ -18,28 +44,50 @@ venv/
 *.swp
 *.swo
 *~
+.vs/
 
 # Compiled files
 *.o
+*.obj
+*.out
 *.so
 *.dll
 *.exe
 *.dylib
+*.a
+*.lib
 *.class
 *.pyc
 *.pyo
+*.app
+*.dmg
+# Allow OBJ ship module parts (small tracked assets)
+!cpp_client/assets/reference_models/modules/*.obj
 
 # Logs and databases
 *.log
+logs/
 logs/*
 !logs/.gitkeep
 *.sqlite
+*.sqlite3
 *.db
+errorlog*.txt
+error_log*.txt
+errors*.txt
+upload.txt
+
+# Game Data (runtime generated)
+saves/
+screenshots/
+replays/
+screenshot_*.png
 
 # Temporary files
 *.tmp
 .cache/
 tmp/
+temp/
 
 # OS files
 Thumbs.db
@@ -56,11 +104,10 @@ cmake_install.cmake
 compile_commands.json
 *.cmake
 !CMakeLists.txt
+!Makefile
 !engine/cmake/*.cmake
 
 # Visual Studio
-.vs/
-build_vs/
 *.sln
 *.vcxproj
 *.vcxproj.filters
@@ -75,11 +122,36 @@ build_vs/
 engine/build/
 editor/build/
 runtime/build/
+atlas_tests/build/
 
-# Additional C++ build artifacts
-*.a
-*.lib
-*.obj
-!*.obj
-*.out
+# NovaForge-specific build artifacts
+cpp_server/build/
+cpp_server/external/steamworks_sdk/
+cpp_server/saves/
+cpp_server/logs/
+cpp_client/build/
+cpp_client/build_*/
+cpp_client/external/*
+!cpp_client/external/stb/
+!cpp_client/external/stb/stb_image.h
+!cpp_client/external/tinyobjloader/
+!cpp_client/external/tinyobjloader/tiny_obj_loader.h
+!cpp_client/external/tinygltf/
+!cpp_client/external/tinygltf/tiny_gltf.h
+!cpp_client/external/nlohmann/
+!cpp_client/external/nlohmann/json.hpp
+cpp_client/build_atlas_test/
+
+# Extracted OBJ ship models (large files)
+cpp_client/models/ships/*.obj
+cpp_client/assets/reference_models/*.obj
+cpp_client/assets/reference_models/*.mtl
+cpp_client/assets/reference_models/Vulcan Dkyr Class/
+!cpp_client/assets/reference_models/modules/
+
+# UI layout presets (user-generated)
+ui_layouts/
+
+# Misc
+3drenderon.png
 /tmp/
