@@ -159,13 +159,13 @@ Data-driven modding without code injection:
 2. ✅ Core ECS systems (combat, movement, targeting, AI)
 3. ✅ Ship/module/skill data pipeline
 4. ✅ Drone, Insurance, Bounty, Market systems
-5. 🔄 Snapshot replication & client interpolation
+5. 🔄 Snapshot replication & client interpolation — SnapshotReplicationSystem2 complete (server-side snapshot management)
 6. 🔄 Custom UI windows (floating, then docking) — Chat, Drone, Notification panels added
 7. 🔄 Ship HUD (control ring, module rack, brackets)
 8. 🔄 AI economic actors (miners, haulers, traders) — AI mining behavior complete
 9. 🔄 Full economy simulation — Refining system complete, market pricing validated
-10. 🔄 Advanced mission generation
-11. 🔄 Universe map & travel
+10. 🔄 Advanced mission generation — ProceduralMissionGeneratorSystem complete (server-side procedural missions)
+11. 🔄 Universe map & travel — JumpGateSystem complete (server-side jump gate network)
 12. 🔄 Polish & modding tools — AIProfileLoader + EconomyRulesLoader complete
 
 ### C++ Server Systems Status
@@ -1452,6 +1452,9 @@ Phase 5 core features (Panda3D client, ship models, performance optimization, pa
 - [x] Asteroid belt management — AsteroidBelt component + AsteroidBeltSystem with per-asteroid ore types (Veldspar/Scordite/Pyroxeres/Kernite/Omber), richness-based yield multiplier, depletion tracking, timer-based respawn (configurable interval), max asteroids limit, mined/respawned counters (10 tests)
 - [x] Scan probe exploration — ScanProbe component + ScanProbeSystem with 3 probe types (Core/Combat/Survey), 4 probe states (Idle/Scanning/Complete/Expired), scan progress with strength multiplier, lifetime-based expiry, result tracking with signature types, max probes limit (10 tests)
 - [x] Autopilot navigation — Autopilot component + AutopilotSystem with waypoint-based routes, engage/disengage control, arrival distance detection, automatic waypoint progression, optional route looping, configurable speed, max waypoints limit, route completion detection (10 tests)
+- [x] Jump gate network — JumpGate component + JumpGateSystem with per-gate destination pairing, activation progress tracking, cooldown enforcement, fuel cost, security level, online/offline state, gate readiness checks, max gates limit (10 tests)
+- [x] Snapshot replication — SnapshotReplication component + SnapshotReplicationSystem2 with EntitySnapshot capture, SnapshotFrame history buffer (configurable max 60), auto-capture at 20Hz, per-client acknowledgment tracking, delta entity counting, max clients limit (10 tests)
+- [x] Procedural mission generation — ProceduralMissionGenerator component + ProceduralMissionGeneratorSystem with 5 mission types, difficulty 1-5 with bias modifier, reward/standing scaling, accept/complete/expire lifecycle, time limit auto-expiry, max available limit (10 tests)
 - [ ] In-game web browser (dotlan-style maps)
 - [ ] Voice chat integration
 - [ ] Mobile companion app
