@@ -75,8 +75,12 @@ if(BUILD_ATLAS_TESTS AND BUILD_ATLAS_ENGINE)
 endif()
 
 # --- Legacy Tests ---
-enable_testing()
-add_subdirectory(tests)
+# Only build legacy tests when the newer atlas_tests suite is disabled,
+# because both targets share the "AtlasTests" name.
+if(NOT BUILD_ATLAS_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
 
 # --- Nova Forge Game Client ---
 if(BUILD_CLIENT)

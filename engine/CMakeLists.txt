@@ -183,6 +183,8 @@ if(ATLAS_INCLUDE_TOOLS)
     target_sources(AtlasEngine PRIVATE
         ui/DiagnosticsOverlay.cpp
         tools/ProjectNamespaceRewriter.cpp
+        tools/ToolModuleRegistry.cpp
+        tools/ToolingLayer.cpp
     )
     target_compile_definitions(AtlasEngine PUBLIC ATLAS_INCLUDE_TOOLS)
 endif()
@@ -242,5 +244,12 @@ elseif(WIN32)
     target_compile_definitions(AtlasEngine PRIVATE ATLAS_HAS_WIN32)
     target_link_libraries(AtlasEngine PUBLIC opengl32 gdi32 user32)
 endif()
+
+# --- Install / Export (needed by AtlasGameplay export set) ---
+install(TARGETS AtlasEngine
+    EXPORT AtlasGameplayTargets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+)
 
 # =====================================================

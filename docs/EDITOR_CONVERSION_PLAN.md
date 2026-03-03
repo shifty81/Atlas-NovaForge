@@ -1,6 +1,6 @@
 # Atlas NovaForge — Editor System Conversion Plan
 
-> **Status**: Planning  
+> **Status**: Phase 1 In Progress  
 > **Date**: March 2026  
 > **Scope**: Convert standalone AtlasEditor into an in-game ToolingLayer accessible from within the client runtime
 
@@ -143,14 +143,14 @@ public:
 
 ### Phase 2 — ToolingLayer Framework (2–3 weeks)
 
-| Step | Action | Effort |
-|------|--------|--------|
-| 2.1 | Implement `ITool` interface and `ToolingLayer` manager | 2 days |
-| 2.2 | Implement `EditorCommandBus` with execute/undo/redo | 3 days |
-| 2.3 | Add hotkey toggle (e.g., F1) for ToolingLayer overlay | 1 day |
-| 2.4 | Gate editor access by build flag / dev authentication | 1 day |
-| 2.5 | Migrate Console panel as first tool (proof of concept) | 3 days |
-| 2.6 | Wire tool updates into game loop | 1 day |
+| Step | Action | Effort | Status |
+|------|--------|--------|--------|
+| 2.1 | Implement `ITool` interface and `ToolingLayer` manager | 2 days | ✅ Done (IToolModule, ToolModuleRegistry, ToolingLayer) |
+| 2.2 | Implement `EditorCommandBus` with execute/undo/redo | 3 days | |
+| 2.3 | Add hotkey toggle (e.g., F1) for ToolingLayer overlay | 1 day | ✅ Done (SetToggleKey) |
+| 2.4 | Gate editor access by build flag / dev authentication | 1 day | ✅ Done (ATLAS_INCLUDE_TOOLS) |
+| 2.5 | Migrate Console panel as first tool (proof of concept) | 3 days | |
+| 2.6 | Wire tool updates into game loop | 1 day | |
 
 **Outcome**: Working in-game editor overlay with console.
 
