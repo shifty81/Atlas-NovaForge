@@ -146,7 +146,7 @@ public:
 | Step | Action | Effort | Status |
 |------|--------|--------|--------|
 | 2.1 | Implement `ITool` interface and `ToolingLayer` manager | 2 days | ✅ Done (IToolModule, ToolModuleRegistry, ToolingLayer) |
-| 2.2 | Implement `EditorCommandBus` with execute/undo/redo | 3 days | |
+| 2.2 | Implement `EditorCommandBus` with execute/undo/redo | 3 days | ✅ Done (EditorCommandBus.h/.cpp, 9 tests passing) |
 | 2.3 | Add hotkey toggle (e.g., F1) for ToolingLayer overlay | 1 day | ✅ Done (SetToggleKey) |
 | 2.4 | Gate editor access by build flag / dev authentication | 1 day | ✅ Done (ATLAS_INCLUDE_TOOLS) |
 | 2.5 | Migrate Console panel as first tool (proof of concept) | 3 days | |

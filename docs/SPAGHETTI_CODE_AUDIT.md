@@ -233,13 +233,14 @@ This is a custom JSON tokenizer duplicated across files instead of using a share
 ## Recommended Execution Order
 
 ```
-Phase 4: CMakeLists.txt cleanup          (3-5 days)  ← Unblocks everything
+Phase 4: CMakeLists.txt cleanup          (3-5 days)  ✅ DONE (CORE_SOURCES extracted)
     ↓
-Phase 1: Split test file                 (2-3 weeks) ← Biggest daily pain
+Phase 1: Split test file                 (2-3 weeks) ✅ DONE (23 domain files, monolith deleted)
     ↓
-Phase 5: Data layer dedup               (2-3 days)  ← Quick win
+Phase 5: Data layer dedup               (2-3 days)  ✅ DONE (json_helpers.h)
     ↓
-Phase 2: System template bases          (3-4 weeks) ← Largest code reduction
+Phase 2: System template bases          (3-4 weeks) 🔧 STARTED (SingleComponentSystem<C> template,
+                                                       CapacitorSystem + ShieldRechargeSystem migrated)
     ↓
 Phase 3: GameSession decomposition      (1-2 weeks) ← Coupling fix
 ```
@@ -253,11 +254,11 @@ Phase 3: GameSession decomposition      (1-2 weeks) ← Coupling fix
 
 | Metric | Current | Target |
 |--------|---------|--------|
-| Largest file (lines) | 31,554 (test_systems.cpp) | < 500 |
-| Test recompile time (single system change) | ~60s+ | < 5s |
-| CMakeLists.txt lines | 814 | < 250 |
-| Source lists to update for new system | 2 | 1 |
-| Average system boilerplate (lines) | ~80 | ~20 |
+| Largest file (lines) | ~500 (per-domain test files) | < 500 |
+| Test recompile time (single system change) | ~5s | < 5s |
+| CMakeLists.txt lines | 668 | < 250 |
+| Source lists to update for new system | 1 | 1 |
+| Average system boilerplate (lines) | ~80 (~20 for migrated) | ~20 |
 | GameSession forward declarations | 15+ | 0 |
 
 ---
@@ -272,4 +273,5 @@ Phase 3: GameSession decomposition      (1-2 weeks) ← Coupling fix
 ---
 
 *Audit completed: March 2, 2026*
-*Next review: After Phase 4 (CMakeLists.txt cleanup) completion*
+*Last updated: March 3, 2026 — Phases 1/4/5 done, Phase 2 started (SingleComponentSystem template)*
+*Next review: After Phase 2 (system template migration) completion*
