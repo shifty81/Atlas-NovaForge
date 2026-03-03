@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Build directories
 build/
 build_*/
@@ -13,11 +14,41 @@ vendor/
 venv/
 
 # IDE and editor files
+=======
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+
+# IDE
+>>>>>>> novaforge/main
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+<<<<<<< HEAD
 
 # Compiled files
 *.o
@@ -61,6 +92,83 @@ compile_commands.json
 # Visual Studio
 .vs/
 build_vs/
+=======
+.DS_Store
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+errorlog*.txt
+error_log*.txt
+errors*.txt
+upload.txt
+
+# Game Data (runtime generated)
+saves/
+screenshots/
+replays/
+screenshot_*.png
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Build artifacts
+*.exe
+*.app
+*.dmg
+
+# C++ build artifacts
+build/
+build_cpp/
+build_test/
+build_client/
+build_server/
+cpp_server/build/
+cpp_server/external/steamworks_sdk/
+cpp_client/build/
+cpp_client/build_*/
+cpp_client/external/*
+!cpp_client/external/stb/
+!cpp_client/external/stb/stb_image.h
+!cpp_client/external/tinyobjloader/
+!cpp_client/external/tinyobjloader/tiny_obj_loader.h
+!cpp_client/external/tinygltf/
+!cpp_client/external/tinygltf/tiny_gltf.h
+!cpp_client/external/nlohmann/
+!cpp_client/external/nlohmann/json.hpp
+build_vs/
+*.o
+*.obj
+*.out
+# Allow OBJ ship module parts (small tracked assets, < 1KB each)
+!cpp_client/assets/reference_models/modules/*.obj
+*.dll
+*.a
+*.lib
+*.so
+*.dylib
+
+# CMake (generated files, not CMakeLists.txt or our Makefile)
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+!CMakeLists.txt
+!Makefile
+cpp_server/saves/
+cpp_server/logs/
+compile_commands.json
+*.cmake
+
+# Visual Studio
+.vs/
+>>>>>>> novaforge/main
 *.sln
 *.vcxproj
 *.vcxproj.filters
@@ -70,6 +178,7 @@ build_vs/
 *.pdb
 *.ilk
 *.idb
+<<<<<<< HEAD
 
 # Engine build artifacts
 engine/build/
@@ -83,3 +192,33 @@ runtime/build/
 !*.obj
 *.out
 /tmp/
+=======
+_codeql_build_dir/
+_codeql_detected_source_root
+
+# Atlas Engine build artifacts
+engine/build/
+editor/build/
+atlas_tests/build/
+
+# Extracted OBJ ship models (large files, extract locally from data/ships/obj_models/obj_models.7z)
+cpp_client/models/ships/*.obj
+
+# Extracted reference models — large OBJ/texture files from testing/ archives
+# These are extracted at build time by extract_reference_models.sh
+cpp_client/assets/reference_models/*.obj
+cpp_client/assets/reference_models/*.mtl
+cpp_client/assets/reference_models/Vulcan Dkyr Class/
+# Keep the small modular OBJ ship parts (< 1KB each) tracked in git
+!cpp_client/assets/reference_models/modules/
+
+# External downloaded dependencies
+
+3drenderon.png
+
+# UI layout presets (user-generated, not tracked)
+ui_layouts/
+cpp_client/build_atlas_test/
+cpp_server/build/
+build/
+>>>>>>> novaforge/main
