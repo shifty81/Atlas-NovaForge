@@ -1,11 +1,6 @@
 #include "core/Engine.h"
 #include "core/Logger.h"
-#include "project/ProjectManager.h"
-#include "module/ModuleLoader.h"
-#include "module/IGameModule.h"
-#include "net/Replication.h"
-#include "rules/ServerRules.h"
-#include "assets/AssetRegistry.h"
+#include "bootstrap/RuntimeBootstrap.h"
 #include <iostream>
 #include <string>
 
@@ -22,37 +17,23 @@ static void PrintUsage() {
 }
 
 int main(int argc, char* argv[]) {
-    std::string projectPath;
-    std::string modulePath;
-    std::string modeStr = "client";
-    bool validateOnly = false;
+    auto args = atlas::bootstrap::ParseCommandLine(argc, argv);
 
-    for (int i = 1; i < argc; ++i) {
-        std::string arg = argv[i];
-        if (arg == "--project" && i + 1 < argc) {
-            projectPath = argv[++i];
-        } else if (arg == "--module" && i + 1 < argc) {
-            modulePath = argv[++i];
-        } else if (arg == "--mode" && i + 1 < argc) {
-            modeStr = argv[++i];
-        } else if (arg == "--validate-only") {
-            validateOnly = true;
-        } else if (arg == "--help") {
-            PrintUsage();
-            return 0;
-        }
+    if (args.showHelp) {
+        PrintUsage();
+        return 0;
     }
 
     atlas::Logger::Init();
 
     // Load project if specified
-    if (!projectPath.empty()) {
-        if (!atlas::project::ProjectManager::Get().Load(projectPath)) {
-            std::cerr << "Failed to load project: " << projectPath << std::endl;
+    if (!args.projectPath.empty()) {
+        if (!atlas::project::ProjectManager::Get().Load(args.projectPath)) {
+            std::cerr << "Failed to load project: " << args.projectPath << std::endl;
             return 1;
         }
 
-        if (validateOnly) {
+        if (args.validateOnly) {
             std::cout << "Project validation passed: "
                       << atlas::project::ProjectManager::Get().Descriptor().name << std::endl;
             return 0;
@@ -61,18 +42,13 @@ int main(int argc, char* argv[]) {
 
     // Determine engine mode
     atlas::EngineMode engineMode = atlas::EngineMode::Client;
-    if (modeStr == "server") {
+    if (args.modeStr == "server") {
         engineMode = atlas::EngineMode::Server;
     }
 
     // Configure engine
     atlas::EngineConfig cfg;
-    cfg.mode = engineMode;
-
-    if (atlas::project::ProjectManager::Get().IsLoaded()) {
-        cfg.tickRate = atlas::project::ProjectManager::Get().Descriptor().runtime.tickRate;
-        cfg.assetRoot = atlas::project::ProjectManager::Get().Descriptor().assets.root;
-    }
+    atlas::bootstrap::ApplyProjectConfig(cfg, engineMode);
 
     // Initialize and run
     atlas::Engine engine(cfg);
@@ -86,44 +62,17 @@ int main(int argc, char* argv[]) {
     atlas::asset::AssetRegistry assetRegistry;
     replication.SetWorld(&engine.GetWorld());
 
-    if (!modulePath.empty()) {
-        auto result = moduleLoader.Load(modulePath);
-        if (result != atlas::module::ModuleLoadResult::Success) {
-            std::cerr << "Failed to load game module: " << modulePath << std::endl;
+    if (!args.modulePath.empty()) {
+        if (!atlas::bootstrap::LoadAndStartModule(
+                moduleLoader, args.modulePath, engine, replication, assetRegistry)) {
             return 1;
         }
-    }
-
-    auto makeModuleContext = [&]() -> atlas::module::GameModuleContext {
-        return {
-            engine.GetWorld(),
-            engine.GetNet(),
-            replication,
-            atlas::rules::ServerRules::Get(),
-            assetRegistry,
-            atlas::project::ProjectManager::Get().Descriptor()
-        };
-    };
-
-    if (moduleLoader.IsLoaded()) {
-        auto ctx = makeModuleContext();
-        auto* mod = moduleLoader.GetModule();
-        mod->RegisterTypes(ctx);
-        mod->ConfigureReplication(ctx);
-        mod->ConfigureServerRules(ctx);
-        mod->OnStart(ctx);
-
-        auto desc = mod->Describe();
-        atlas::Logger::Info(std::string("Game module loaded: ") + desc.name);
     }
 
     atlas::Logger::Info("Atlas Runtime starting...");
     engine.Run();
 
-    if (moduleLoader.IsLoaded()) {
-        auto ctx = makeModuleContext();
-        moduleLoader.GetModule()->OnShutdown(ctx);
-    }
+    atlas::bootstrap::ShutdownModule(moduleLoader, engine, replication, assetRegistry);
 
     return 0;
 }

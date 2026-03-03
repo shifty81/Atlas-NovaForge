@@ -261,8 +261,9 @@ One-command desync reproduction, priority-based packet scheduling, and server-si
 
 Active refactoring of server codebase to reduce technical debt. See [SPAGHETTI_CODE_AUDIT.md](SPAGHETTI_CODE_AUDIT.md).
 
-- [ ] Split monolithic test file (`test_systems.cpp` — 31K lines → per-system test files)
-- [ ] Create `TestFixture` base class to eliminate 1,644 instances of boilerplate
+- [x] Split monolithic test file (`test_systems.cpp` — 35K lines → 23 per-domain test files in `cpp_server/tests/`)
+- [x] Create `test_framework.h` with shared `assertTrue`, `approxEqual`, `addComp` utilities
+- [ ] Create `TestFixture` base class to eliminate remaining boilerplate
 - [ ] Create system template bases (`SingleComponentSystem<C>`, `StateMachineSystem<C>`, `RechargeSystem<C>`)
 - [ ] Decompose GameSession god object into domain-specific handlers (Combat, Station, Movement, Mission, Scanner)
 - [ ] Extract shared sources into `novaforge_core` static library (CMake deduplication)
@@ -272,7 +273,7 @@ Active refactoring of server codebase to reduce technical debt. See [SPAGHETTI_C
 
 Convert standalone AtlasEditor into an in-game ToolingLayer. See [EDITOR_CONVERSION_PLAN.md](EDITOR_CONVERSION_PLAN.md).
 
-- [ ] Unify RuntimeBootstrap across Game/Editor/Server modes
+- [x] Unify RuntimeBootstrap across Game/Editor/Server modes (`engine/bootstrap/RuntimeBootstrap.h`)
 - [ ] Implement ToolingLayer framework (ITool interface, tool manager, hotkey toggle)
 - [ ] Implement EditorCommandBus (command queue, execute, undo/redo)
 - [ ] Migrate existing editor panels to ToolingLayer tools

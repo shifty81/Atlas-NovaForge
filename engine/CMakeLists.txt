@@ -175,6 +175,7 @@ add_library(AtlasEngine STATIC
     script/ScriptSandbox.cpp
     abi/ABICapsule.cpp
     abi/ABIRegistry.cpp
+    bootstrap/RuntimeBootstrap.cpp
 )
 
 # Conditionally include dev tools (diagnostics overlay, namespace rewriter)

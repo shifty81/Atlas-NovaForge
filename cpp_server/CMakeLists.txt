@@ -629,11 +629,37 @@ message(STATUS "  Steam Integration: ${USE_STEAM_SDK}")
 message(STATUS "  Build Tests: ${BUILD_TESTS}")
 message(STATUS "")
 
-# Test executable
+# Test executable (split per-domain test files)
 if(BUILD_TESTS)
     add_executable(test_systems
-        test_systems.cpp
+        tests/test_main.cpp
+        tests/test_character.cpp
+        tests/test_chat.cpp
+        tests/test_combat.cpp
+        tests/test_core_systems.cpp
+        tests/test_data.cpp
+        tests/test_economy.cpp
+        tests/test_fleet.cpp
+        tests/test_fps.cpp
+        tests/test_infrastructure.cpp
+        tests/test_inventory.cpp
+        tests/test_misc.cpp
+        tests/test_mission.cpp
+        tests/test_movement.cpp
+        tests/test_navigation.cpp
+        tests/test_pcg.cpp
+        tests/test_persistence.cpp
+        tests/test_social.cpp
+        tests/test_special_systems.cpp
+        tests/test_station.cpp
+        tests/test_targeting.cpp
+        tests/test_tournament.cpp
+        tests/test_ui_tools.cpp
+        tests/test_wormhole.cpp
         ${CORE_SOURCES}
+    )
+    target_include_directories(test_systems PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests
     )
     target_link_libraries(test_systems Threads::Threads ZLIB::ZLIB)
     if(WIN32)
