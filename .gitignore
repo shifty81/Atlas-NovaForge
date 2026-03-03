@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Build directories
 build/
 build_*/
@@ -6,23 +5,26 @@ dist/
 bin/
 obj/
 out/
+build_cpp/
+build_test/
+build_client/
+build_server/
+build_vs/
 
 # Dependencies
 node_modules/
 vendor/
 .venv/
 venv/
+ENV/
+env/
 
-# IDE and editor files
-=======
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
 .Python
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -36,41 +38,56 @@ wheels/
 .installed.cfg
 *.egg
 
-# Virtual Environment
-venv/
-ENV/
-env/
-
-# IDE
->>>>>>> novaforge/main
+# IDE and editor files
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-<<<<<<< HEAD
+.vs/
 
 # Compiled files
 *.o
+*.obj
+*.out
 *.so
 *.dll
 *.exe
 *.dylib
+*.a
+*.lib
 *.class
 *.pyc
 *.pyo
+*.app
+*.dmg
+# Allow OBJ ship module parts (small tracked assets)
+!cpp_client/assets/reference_models/modules/*.obj
 
 # Logs and databases
 *.log
+logs/
 logs/*
 !logs/.gitkeep
 *.sqlite
+*.sqlite3
 *.db
+errorlog*.txt
+error_log*.txt
+errors*.txt
+upload.txt
+
+# Game Data (runtime generated)
+saves/
+screenshots/
+replays/
+screenshot_*.png
 
 # Temporary files
 *.tmp
 .cache/
 tmp/
+temp/
 
 # OS files
 Thumbs.db
@@ -87,51 +104,31 @@ cmake_install.cmake
 compile_commands.json
 *.cmake
 !CMakeLists.txt
+!Makefile
 !engine/cmake/*.cmake
 
 # Visual Studio
-.vs/
-build_vs/
-=======
-.DS_Store
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.suo
+*.user
+*.pdb
+*.ilk
+*.idb
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
+# Engine build artifacts
+engine/build/
+editor/build/
+runtime/build/
+atlas_tests/build/
 
-# Logs
-*.log
-logs/
-errorlog*.txt
-error_log*.txt
-errors*.txt
-upload.txt
-
-# Game Data (runtime generated)
-saves/
-screenshots/
-replays/
-screenshot_*.png
-
-# Temporary files
-tmp/
-temp/
-*.tmp
-
-# Build artifacts
-*.exe
-*.app
-*.dmg
-
-# C++ build artifacts
-build/
-build_cpp/
-build_test/
-build_client/
-build_server/
+# NovaForge-specific build artifacts
 cpp_server/build/
 cpp_server/external/steamworks_sdk/
+cpp_server/saves/
+cpp_server/logs/
 cpp_client/build/
 cpp_client/build_*/
 cpp_client/external/*
@@ -143,82 +140,18 @@ cpp_client/external/*
 !cpp_client/external/tinygltf/tiny_gltf.h
 !cpp_client/external/nlohmann/
 !cpp_client/external/nlohmann/json.hpp
-build_vs/
-*.o
-*.obj
-*.out
-# Allow OBJ ship module parts (small tracked assets, < 1KB each)
-!cpp_client/assets/reference_models/modules/*.obj
-*.dll
-*.a
-*.lib
-*.so
-*.dylib
+cpp_client/build_atlas_test/
 
-# CMake (generated files, not CMakeLists.txt or our Makefile)
-CMakeCache.txt
-CMakeFiles/
-cmake_install.cmake
-!CMakeLists.txt
-!Makefile
-cpp_server/saves/
-cpp_server/logs/
-compile_commands.json
-*.cmake
-
-# Visual Studio
-.vs/
->>>>>>> novaforge/main
-*.sln
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
-*.suo
-*.user
-*.pdb
-*.ilk
-*.idb
-<<<<<<< HEAD
-
-# Engine build artifacts
-engine/build/
-editor/build/
-runtime/build/
-
-# Additional C++ build artifacts
-*.a
-*.lib
-*.obj
-!*.obj
-*.out
-/tmp/
-=======
-_codeql_build_dir/
-_codeql_detected_source_root
-
-# Atlas Engine build artifacts
-engine/build/
-editor/build/
-atlas_tests/build/
-
-# Extracted OBJ ship models (large files, extract locally from data/ships/obj_models/obj_models.7z)
+# Extracted OBJ ship models (large files)
 cpp_client/models/ships/*.obj
-
-# Extracted reference models — large OBJ/texture files from testing/ archives
-# These are extracted at build time by extract_reference_models.sh
 cpp_client/assets/reference_models/*.obj
 cpp_client/assets/reference_models/*.mtl
 cpp_client/assets/reference_models/Vulcan Dkyr Class/
-# Keep the small modular OBJ ship parts (< 1KB each) tracked in git
 !cpp_client/assets/reference_models/modules/
 
-# External downloaded dependencies
-
-3drenderon.png
-
-# UI layout presets (user-generated, not tracked)
+# UI layout presets (user-generated)
 ui_layouts/
-cpp_client/build_atlas_test/
-cpp_server/build/
-build/
->>>>>>> novaforge/main
+
+# Misc
+3drenderon.png
+/tmp/
