@@ -503,6 +503,17 @@ void test_command_bus_dispatch();
 void test_command_bus_dispatch_unhandled();
 void test_command_bus_move_enqueue();
 
+// EditorCommandBus tests
+void test_editor_command_bus_post_and_process();
+void test_editor_command_bus_undo();
+void test_editor_command_bus_redo();
+void test_editor_command_bus_redo_cleared_on_new_command();
+void test_editor_command_bus_multiple_undo_redo();
+void test_editor_command_bus_undo_empty();
+void test_editor_command_bus_clear();
+void test_editor_command_bus_listener();
+void test_editor_command_bus_null_command();
+
 // UIManager tests
 void test_ui_manager_init();
 void test_ui_manager_context_switch();
@@ -2723,6 +2734,18 @@ int main() {
     test_command_bus_dispatch();
     test_command_bus_dispatch_unhandled();
     test_command_bus_move_enqueue();
+
+    // Editor Command Bus
+    std::cout << "\n--- Editor Command Bus ---" << std::endl;
+    test_editor_command_bus_post_and_process();
+    test_editor_command_bus_undo();
+    test_editor_command_bus_redo();
+    test_editor_command_bus_redo_cleared_on_new_command();
+    test_editor_command_bus_multiple_undo_redo();
+    test_editor_command_bus_undo_empty();
+    test_editor_command_bus_clear();
+    test_editor_command_bus_listener();
+    test_editor_command_bus_null_command();
 
     // UI Manager
     std::cout << "\n--- UI Manager ---" << std::endl;

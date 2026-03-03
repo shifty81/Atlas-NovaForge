@@ -185,6 +185,7 @@ if(ATLAS_INCLUDE_TOOLS)
         tools/ProjectNamespaceRewriter.cpp
         tools/ToolModuleRegistry.cpp
         tools/ToolingLayer.cpp
+        tools/EditorCommandBus.cpp
     )
     target_compile_definitions(AtlasEngine PUBLIC ATLAS_INCLUDE_TOOLS)
 endif()

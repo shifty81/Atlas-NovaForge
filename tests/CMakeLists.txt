@@ -199,6 +199,8 @@ add_executable(AtlasTests
     test_ship_hull_graph.cpp
     test_ship_editor_panel.cpp
     test_character_viewer.cpp
+    test_editor_command_bus.cpp
+    ${CMAKE_SOURCE_DIR}/engine/tools/EditorCommandBus.cpp
     ${CMAKE_SOURCE_DIR}/editor/panels/ConsolePanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/panels/InteractionDebugger.cpp
     ${CMAKE_SOURCE_DIR}/editor/panels/ECSInspectorPanel.cpp

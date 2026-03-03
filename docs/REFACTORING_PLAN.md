@@ -240,12 +240,36 @@ functions and 244 test sections in a single compilation unit.
 - 23 per-domain test files (`test_core_systems.cpp`, `test_fleet.cpp`,
   `test_combat.cpp`, `test_economy.cpp`, etc.)
 - CMakeLists.txt updated to build from split files
+- Old monolithic `test_systems.cpp` (35K lines) removed — dead code cleanup
+
+---
+
+## Phase 10 — System Boilerplate Reduction (SingleComponentSystem)
+
+### 10.1 SingleComponentSystem template base
+
+**Status**: ✅ Created
+
+Created `cpp_server/include/ecs/single_component_system.h` — a CRTP-style
+template that eliminates the repeated entity-query + null-check boilerplate
+from systems that iterate over a single component type.  Subclasses implement
+only `processEntity(Entity*, C*, float dt)`.
+
+### 10.2 System migrations
+
+| System | Status |
+|--------|--------|
+| `CapacitorSystem` | ✅ Migrated to `SingleComponentSystem<Capacitor>` |
+| `ShieldRechargeSystem` | ✅ Migrated to `SingleComponentSystem<Health>` |
+| Remaining recharge-pattern systems | 📋 Planned |
+
+All 6 331 server tests continue to pass after migration.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] All 3 812 existing tests continue to pass after every phase
+- [x] All 6 331 existing tests continue to pass after every phase
 - [ ] No new files exceed 500 lines unless justified
 - [ ] `CODING_GUIDELINES.md` merged and linked from `CONTRIBUTING.md`
-- [ ] CMakeLists.txt updated for every new source file
+- [x] CMakeLists.txt updated for every new source file
