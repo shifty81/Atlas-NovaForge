@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <unordered_map>
 
 namespace atlas { class AtlasContext; }
 
@@ -48,6 +49,7 @@ public:
 private:
     DockNode m_root;
     std::vector<EditorPanel*> m_panels;
+    std::unordered_map<std::string, EditorPanel*> m_panelMap;
     atlas::AtlasContext* m_ctx = nullptr;
     EditorMenuBar m_menuBar;
 

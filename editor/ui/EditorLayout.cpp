@@ -9,6 +9,7 @@ namespace atlas::editor {
 
 void EditorLayout::RegisterPanel(EditorPanel* panel) {
     m_panels.push_back(panel);
+    if (panel) m_panelMap[panel->Name()] = panel;
     m_menuBar.RegisterPanel(panel);
 }
 
@@ -138,10 +139,8 @@ std::string EditorLayout::serializeNode(const DockNode& node, int ind) const {
 }
 
 EditorPanel* EditorLayout::findPanelByName(const std::string& name) const {
-    for (auto* p : m_panels) {
-        if (p && name == p->Name()) return p;
-    }
-    return nullptr;
+    auto it = m_panelMap.find(name);
+    return it != m_panelMap.end() ? it->second : nullptr;
 }
 
 std::string EditorLayout::extractString(const std::string& json, const std::string& key,
