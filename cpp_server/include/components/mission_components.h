@@ -232,6 +232,42 @@ public:
     COMPONENT_TYPE(MissionConsequence)
 };
 
+// ==================== Procedural Mission Generator ====================
+
+class ProceduralMissionGenerator : public ecs::Component {
+public:
+    struct GeneratedMission {
+        std::string mission_id;
+        std::string title;
+        std::string type;       // "Combat", "Mining", "Courier", "Exploration", "Salvage"
+        int difficulty = 1;     // 1-5
+        float reward_credits = 10000.0f;
+        float reward_standing = 0.1f;
+        int objective_count = 1;
+        float time_limit = 3600.0f;  // seconds, 0 = no limit
+        std::string target_system;
+        bool accepted = false;
+        bool completed = false;
+        bool expired = false;
+    };
+
+    std::string generator_id;
+    std::string faction_id;
+    std::vector<GeneratedMission> available_missions;
+    std::vector<GeneratedMission> completed_missions;
+    int max_available = 10;
+    int difficulty_bias = 0;         // -2 to +2, added to base difficulty
+    float reward_multiplier = 1.0f;  // faction standing bonus
+    int total_generated = 0;
+    int total_completed = 0;
+    int total_expired = 0;
+    float generation_cooldown = 0.0f;
+    float generation_interval = 300.0f;  // seconds between auto-generation
+    uint32_t seed = 42;
+    bool active = true;
+
+    COMPONENT_TYPE(ProceduralMissionGenerator)
+};
 
 } // namespace components
 } // namespace atlas
