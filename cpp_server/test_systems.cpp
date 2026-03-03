@@ -238,6 +238,9 @@
 #include "systems/jump_gate_system.h"
 #include "systems/snapshot_replication_system2.h"
 #include "systems/procedural_mission_generator_system.h"
+#include "systems/incursion_system.h"
+#include "systems/clone_bay_system.h"
+#include "systems/loyalty_point_store_system.h"
 #include <iostream>
 #include <cassert>
 #include <string>
@@ -32808,6 +32811,452 @@ void testProcMissionMissing() {
     assertTrue(sys.getTotalGenerated("nonexistent") == 0, "0 generated on missing");
 }
 
+// ==================== Incursion System Tests ====================
+
+void testIncursionCreate() {
+    std::cout << "\n=== Incursion: Create ===" << std::endl;
+    ecs::World world;
+    systems::IncursionSystem sys(&world);
+    world.createEntity("inc1");
+    assertTrue(sys.initialize("inc1", "incursion_alpha", "system_jita", 2), "Init succeeds");
+    assertTrue(sys.getInfluence("inc1") > 0.9f, "Influence starts at 1.0");
+    assertTrue(sys.getParticipantCount("inc1") == 0, "No participants initially");
+    assertTrue(sys.getState("inc1") == 0, "State is Pending");
+    assertTrue(approxEqual(sys.getRewardPool("inc1"), 0.0f), "Reward pool is 0");
+    assertTrue(sys.getTotalWavesDefeated("inc1") == 0, "No waves defeated");
+}
+
+void testIncursionAddWave() {
+    std::cout << "\n=== Incursion: AddWave ===" << std::endl;
+    ecs::World world;
+    systems::IncursionSystem sys(&world);
+    world.createEntity("inc1");
+    sys.initialize("inc1", "incursion_alpha", "system_jita", 1);
+    assertTrue(sys.addWave("inc1", 1, "Frigate", 5), "Add wave 1 succeeds");
+    assertTrue(sys.addWave("inc1", 2, "Cruiser", 3), "Add wave 2 succeeds");
+    assertTrue(sys.addWave("inc1", 3, "Battleship", 1), "Add wave 3 succeeds");
+}
+
+void testIncursionDuplicate() {
+    std::cout << "\n=== Incursion: Duplicate ===" << std::endl;
+    ecs::World world;
+    systems::IncursionSystem sys(&world);
+    world.createEntity("inc1");
+    sys.initialize("inc1", "incursion_alpha", "system_jita", 1);
+    sys.addWave("inc1", 1, "Frigate", 5);
+    assertTrue(!sys.addWave("inc1", 1, "Cruiser", 3), "Duplicate wave rejected");
+    sys.joinIncursion("inc1", "player1");
+    assertTrue(!sys.joinIncursion("inc1", "player1"), "Duplicate participant rejected");
+}
+
+void testIncursionSpawn() {
+    std::cout << "\n=== Incursion: Spawn ===" << std::endl;
+    ecs::World world;
+    systems::IncursionSystem sys(&world);
+    world.createEntity("inc1");
+    sys.initialize("inc1", "incursion_alpha", "system_jita", 1);
+    sys.addWave("inc1", 1, "Frigate", 5);
+    assertTrue(sys.spawnWave("inc1", 1), "Spawn wave succeeds");
+    assertTrue(!sys.spawnWave("inc1", 1), "Double spawn rejected");
+    assertTrue(!sys.spawnWave("inc1", 99), "Spawn nonexistent wave fails");
+}
+
+void testIncursionDefeat() {
+    std::cout << "\n=== Incursion: Defeat ===" << std::endl;
+    ecs::World world;
+    systems::IncursionSystem sys(&world);
+    world.createEntity("inc1");
+    sys.initialize("inc1", "incursion_alpha", "system_jita", 1);
+    sys.addWave("inc1", 1, "Frigate", 5);
+    sys.spawnWave("inc1", 1);
+    float before = sys.getInfluence("inc1");
+    assertTrue(sys.defeatWave("inc1", 1), "Defeat wave succeeds");
+    assertTrue(sys.getInfluence("inc1") < before, "Influence decreased");
+    assertTrue(sys.getTotalWavesDefeated("inc1") == 1, "1 wave defeated");
+    assertTrue(!sys.defeatWave("inc1", 1), "Double defeat rejected");
+}
+
+void testIncursionJoin() {
+    std::cout << "\n=== Incursion: Join ===" << std::endl;
+    ecs::World world;
+    systems::IncursionSystem sys(&world);
+    world.createEntity("inc1");
+    sys.initialize("inc1", "incursion_alpha", "system_jita", 1);
+    assertTrue(sys.joinIncursion("inc1", "player1"), "Join succeeds");
+    assertTrue(sys.joinIncursion("inc1", "player2"), "Join second succeeds");
+    assertTrue(sys.getParticipantCount("inc1") == 2, "2 participants");
+    assertTrue(sys.leaveIncursion("inc1", "player1"), "Leave succeeds");
+    assertTrue(sys.getParticipantCount("inc1") == 1, "1 participant after leave");
+    assertTrue(!sys.leaveIncursion("inc1", "player1"), "Double leave fails");
+}
+
+void testIncursionRewards() {
+    std::cout << "\n=== Incursion: Rewards ===" << std::endl;
+    ecs::World world;
+    systems::IncursionSystem sys(&world);
+    world.createEntity("inc1");
+    sys.initialize("inc1", "incursion_alpha", "system_jita", 1);
+    assertTrue(sys.contributeRewards("inc1", 1000.0f), "Contribute succeeds");
+    assertTrue(sys.contributeRewards("inc1", 500.0f), "Contribute again succeeds");
+    assertTrue(approxEqual(sys.getRewardPool("inc1"), 1500.0f), "Pool is 1500");
+}
+
+void testIncursionStateTransition() {
+    std::cout << "\n=== Incursion: StateTransition ===" << std::endl;
+    ecs::World world;
+    systems::IncursionSystem sys(&world);
+    world.createEntity("inc1");
+    sys.initialize("inc1", "incursion_alpha", "system_jita", 1);
+
+    auto* entity = world.getEntity("inc1");
+    auto* inc = entity->getComponent<components::Incursion>();
+    inc->max_waves = 2;
+    inc->state = components::Incursion::IncursionState::Active;
+
+    sys.addWave("inc1", 1, "Frigate", 5);
+    sys.addWave("inc1", 2, "Cruiser", 3);
+
+    sys.defeatWave("inc1", 1);
+    sys.update(0.1f);
+    assertTrue(sys.getState("inc1") == 1, "Still Active after 1 wave defeated");
+
+    sys.defeatWave("inc1", 2);
+    sys.update(0.1f);
+    assertTrue(sys.getState("inc1") == 2, "Withdrawing after all waves defeated");
+
+    inc->influence = 0.0f;
+    sys.update(0.1f);
+    assertTrue(sys.getState("inc1") == 3, "Defeated when influence is 0");
+}
+
+void testIncursionMaxLimit() {
+    std::cout << "\n=== Incursion: MaxLimit ===" << std::endl;
+    ecs::World world;
+    systems::IncursionSystem sys(&world);
+    world.createEntity("inc1");
+    sys.initialize("inc1", "incursion_alpha", "system_jita", 1);
+
+    auto* entity = world.getEntity("inc1");
+    auto* inc = entity->getComponent<components::Incursion>();
+    inc->max_waves = 2;
+    inc->max_participants = 2;
+
+    sys.addWave("inc1", 1, "Frigate", 5);
+    sys.addWave("inc1", 2, "Cruiser", 3);
+    assertTrue(!sys.addWave("inc1", 3, "Battleship", 1), "Max waves enforced");
+
+    sys.joinIncursion("inc1", "p1");
+    sys.joinIncursion("inc1", "p2");
+    assertTrue(!sys.joinIncursion("inc1", "p3"), "Max participants enforced");
+}
+
+void testIncursionMissing() {
+    std::cout << "\n=== Incursion: Missing ===" << std::endl;
+    ecs::World world;
+    systems::IncursionSystem sys(&world);
+    assertTrue(!sys.initialize("nonexistent", "i1", "s1", 1), "Init fails on missing");
+    assertTrue(!sys.addWave("nonexistent", 1, "Frigate", 5), "AddWave fails on missing");
+    assertTrue(!sys.spawnWave("nonexistent", 1), "SpawnWave fails on missing");
+    assertTrue(!sys.defeatWave("nonexistent", 1), "DefeatWave fails on missing");
+    assertTrue(!sys.joinIncursion("nonexistent", "p1"), "Join fails on missing");
+    assertTrue(!sys.leaveIncursion("nonexistent", "p1"), "Leave fails on missing");
+    assertTrue(!sys.contributeRewards("nonexistent", 100.0f), "Contribute fails on missing");
+    assertTrue(approxEqual(sys.getInfluence("nonexistent"), 0.0f), "0 influence on missing");
+    assertTrue(sys.getParticipantCount("nonexistent") == 0, "0 participants on missing");
+    assertTrue(sys.getState("nonexistent") == 0, "0 state on missing");
+    assertTrue(approxEqual(sys.getRewardPool("nonexistent"), 0.0f), "0 pool on missing");
+    assertTrue(sys.getTotalWavesDefeated("nonexistent") == 0, "0 defeated on missing");
+}
+
+// ==================== CloneBay System Tests ====================
+
+void testCloneBayCreate() {
+    std::cout << "\n=== CloneBay: Create ===" << std::endl;
+    ecs::World world;
+    systems::CloneBaySystem sys(&world);
+    world.createEntity("bay1");
+    assertTrue(sys.initialize("bay1", "cb_01", "station_jita"), "Init succeeds");
+    assertTrue(sys.getCloneCount("bay1") == 0, "No clones initially");
+    assertTrue(sys.getImplantCount("bay1") == 0, "No implants initially");
+    assertTrue(sys.getActiveClone("bay1") == 0, "No active clone");
+    assertTrue(sys.getTotalDeaths("bay1") == 0, "No deaths initially");
+}
+
+void testCloneBayAddClone() {
+    std::cout << "\n=== CloneBay: AddClone ===" << std::endl;
+    ecs::World world;
+    systems::CloneBaySystem sys(&world);
+    world.createEntity("bay1");
+    sys.initialize("bay1", "cb_01", "station_jita");
+    assertTrue(sys.addClone("bay1", "clone_a", 1), "Add Alpha clone");
+    assertTrue(sys.addClone("bay1", "clone_b", 3), "Add Gamma clone");
+    assertTrue(sys.getCloneCount("bay1") == 2, "2 clones");
+}
+
+void testCloneBayDuplicate() {
+    std::cout << "\n=== CloneBay: Duplicate ===" << std::endl;
+    ecs::World world;
+    systems::CloneBaySystem sys(&world);
+    world.createEntity("bay1");
+    sys.initialize("bay1", "cb_01", "station_jita");
+    sys.addClone("bay1", "clone_a", 1);
+    assertTrue(!sys.addClone("bay1", "clone_a", 2), "Duplicate clone rejected");
+    sys.addClone("bay1", "clone_b", 2);
+    sys.installImplant("bay1", "imp1", 1, "perception", 3.0f, "clone_b");
+    assertTrue(!sys.installImplant("bay1", "imp1", 2, "memory", 3.0f, "clone_b"), "Duplicate implant rejected");
+}
+
+void testCloneBayActivate() {
+    std::cout << "\n=== CloneBay: Activate ===" << std::endl;
+    ecs::World world;
+    systems::CloneBaySystem sys(&world);
+    world.createEntity("bay1");
+    sys.initialize("bay1", "cb_01", "station_jita");
+    sys.addClone("bay1", "clone_a", 1);
+    sys.addClone("bay1", "clone_b", 3);
+    assertTrue(sys.activateClone("bay1", "clone_a"), "Activate clone_a");
+    assertTrue(sys.getActiveClone("bay1") == 1, "Active clone is grade 1");
+    assertTrue(sys.activateClone("bay1", "clone_b"), "Activate clone_b");
+    assertTrue(sys.getActiveClone("bay1") == 3, "Active clone is grade 3");
+}
+
+void testCloneBayImplant() {
+    std::cout << "\n=== CloneBay: Implant ===" << std::endl;
+    ecs::World world;
+    systems::CloneBaySystem sys(&world);
+    world.createEntity("bay1");
+    sys.initialize("bay1", "cb_01", "station_jita");
+    sys.addClone("bay1", "clone_a", 3);
+    assertTrue(sys.installImplant("bay1", "imp1", 1, "perception", 3.0f, "clone_a"), "Install implant");
+    assertTrue(sys.getImplantCount("bay1") == 1, "1 implant");
+    assertTrue(sys.removeImplant("bay1", "imp1"), "Remove implant");
+    assertTrue(sys.getImplantCount("bay1") == 0, "0 implants after remove");
+}
+
+void testCloneBayImplantSlot() {
+    std::cout << "\n=== CloneBay: ImplantSlot ===" << std::endl;
+    ecs::World world;
+    systems::CloneBaySystem sys(&world);
+    world.createEntity("bay1");
+    sys.initialize("bay1", "cb_01", "station_jita");
+    sys.addClone("bay1", "clone_a", 2);  // grade 2 = 2 implant slots
+    assertTrue(sys.installImplant("bay1", "imp1", 1, "perception", 3.0f, "clone_a"), "Slot 1");
+    assertTrue(sys.installImplant("bay1", "imp2", 2, "memory", 3.0f, "clone_a"), "Slot 2");
+    assertTrue(!sys.installImplant("bay1", "imp3", 3, "willpower", 3.0f, "clone_a"), "Slot limit reached");
+    assertTrue(sys.getImplantCount("bay1") == 2, "2 implants");
+}
+
+void testCloneBayDeath() {
+    std::cout << "\n=== CloneBay: Death ===" << std::endl;
+    ecs::World world;
+    systems::CloneBaySystem sys(&world);
+    world.createEntity("bay1");
+    sys.initialize("bay1", "cb_01", "station_jita");
+    sys.addClone("bay1", "clone_a", 1);  // sp_limit = 900000
+    sys.activateClone("bay1", "clone_a");
+    float loss = sys.processDeath("bay1", 1500000.0f);
+    assertTrue(loss > 500000.0f, "SP loss is above 500k");
+    assertTrue(approxEqual(loss, 600000.0f), "SP loss is 600000");
+    assertTrue(sys.getTotalDeaths("bay1") == 1, "1 death recorded");
+}
+
+void testCloneBayGrades() {
+    std::cout << "\n=== CloneBay: Grades ===" << std::endl;
+    ecs::World world;
+    systems::CloneBaySystem sys(&world);
+    world.createEntity("bay1");
+    sys.initialize("bay1", "cb_01", "station_jita");
+    sys.addClone("bay1", "clone_a", 1);
+    sys.addClone("bay1", "clone_b", 5);
+    auto* entity = world.getEntity("bay1");
+    auto* bay = entity->getComponent<components::CloneBay>();
+    assertTrue(approxEqual(bay->clones[0].sp_limit, 900000.0f), "Grade 1 sp_limit 900k");
+    assertTrue(approxEqual(bay->clones[1].sp_limit, 4500000.0f), "Grade 5 sp_limit 4500k");
+    assertTrue(approxEqual(bay->clones[0].cost, 5000000.0f), "Grade 1 cost 5M");
+    assertTrue(approxEqual(bay->clones[1].cost, 25000000.0f), "Grade 5 cost 25M");
+}
+
+void testCloneBayMaxLimit() {
+    std::cout << "\n=== CloneBay: MaxLimit ===" << std::endl;
+    ecs::World world;
+    systems::CloneBaySystem sys(&world);
+    world.createEntity("bay1");
+    sys.initialize("bay1", "cb_01", "station_jita");
+    auto* entity = world.getEntity("bay1");
+    auto* bay = entity->getComponent<components::CloneBay>();
+    bay->max_clones = 2;
+    bay->max_implants = 1;
+    sys.addClone("bay1", "c1", 3);
+    sys.addClone("bay1", "c2", 3);
+    assertTrue(!sys.addClone("bay1", "c3", 3), "Max clones enforced");
+    sys.installImplant("bay1", "i1", 1, "perception", 3.0f, "c1");
+    assertTrue(!sys.installImplant("bay1", "i2", 2, "memory", 3.0f, "c1"), "Max implants enforced");
+}
+
+void testCloneBayMissing() {
+    std::cout << "\n=== CloneBay: Missing ===" << std::endl;
+    ecs::World world;
+    systems::CloneBaySystem sys(&world);
+    assertTrue(!sys.initialize("nonexistent", "cb1", "s1"), "Init fails on missing");
+    assertTrue(!sys.addClone("nonexistent", "c1", 1), "AddClone fails on missing");
+    assertTrue(!sys.removeClone("nonexistent", "c1"), "RemoveClone fails on missing");
+    assertTrue(!sys.activateClone("nonexistent", "c1"), "Activate fails on missing");
+    assertTrue(!sys.installImplant("nonexistent", "i1", 1, "perception", 3.0f, "c1"), "InstallImplant fails on missing");
+    assertTrue(!sys.removeImplant("nonexistent", "i1"), "RemoveImplant fails on missing");
+    assertTrue(approxEqual(sys.processDeath("nonexistent", 1000.0f), 0.0f), "0 SP loss on missing");
+    assertTrue(sys.getActiveClone("nonexistent") == 0, "0 active on missing");
+    assertTrue(sys.getCloneCount("nonexistent") == 0, "0 clones on missing");
+    assertTrue(sys.getImplantCount("nonexistent") == 0, "0 implants on missing");
+    assertTrue(sys.getTotalDeaths("nonexistent") == 0, "0 deaths on missing");
+    assertTrue(approxEqual(sys.getSkillPointsAtRisk("nonexistent", 1000.0f), 0.0f), "0 SP at risk on missing");
+}
+
+// ==================== LoyaltyPointStore System Tests ====================
+
+void testLPStoreCreate() {
+    std::cout << "\n=== LPStore: Create ===" << std::endl;
+    ecs::World world;
+    systems::LoyaltyPointStoreSystem sys(&world);
+    world.createEntity("lp1");
+    assertTrue(sys.initialize("lp1", "store_caldari", "caldari_navy"), "Init succeeds");
+    assertTrue(sys.getItemCount("lp1") == 0, "No items initially");
+    assertTrue(sys.getPlayerCount("lp1") == 0, "No players initially");
+    assertTrue(sys.getTotalPurchases("lp1") == 0, "No purchases initially");
+    assertTrue(approxEqual(sys.getTotalISKCollected("lp1"), 0.0f), "No ISK collected");
+}
+
+void testLPStoreAddItem() {
+    std::cout << "\n=== LPStore: AddItem ===" << std::endl;
+    ecs::World world;
+    systems::LoyaltyPointStoreSystem sys(&world);
+    world.createEntity("lp1");
+    sys.initialize("lp1", "store_caldari", "caldari_navy");
+    assertTrue(sys.addItem("lp1", "item1", "Navy Raven", "Ship", 500000, 200000000.0f, 3), "Add Ship");
+    assertTrue(sys.addItem("lp1", "item2", "Navy BCU", "Module", 50000, 5000000.0f, 2), "Add Module");
+    assertTrue(sys.getItemCount("lp1") == 2, "2 items in store");
+}
+
+void testLPStoreDuplicate() {
+    std::cout << "\n=== LPStore: Duplicate ===" << std::endl;
+    ecs::World world;
+    systems::LoyaltyPointStoreSystem sys(&world);
+    world.createEntity("lp1");
+    sys.initialize("lp1", "store_caldari", "caldari_navy");
+    sys.addItem("lp1", "item1", "Navy Raven", "Ship", 500000, 200000000.0f, 3);
+    assertTrue(!sys.addItem("lp1", "item1", "Other", "Module", 100, 100.0f, 1), "Duplicate item rejected");
+    sys.registerPlayer("lp1", "player1");
+    assertTrue(!sys.registerPlayer("lp1", "player1"), "Duplicate player rejected");
+}
+
+void testLPStoreEarnLP() {
+    std::cout << "\n=== LPStore: EarnLP ===" << std::endl;
+    ecs::World world;
+    systems::LoyaltyPointStoreSystem sys(&world);
+    world.createEntity("lp1");
+    sys.initialize("lp1", "store_caldari", "caldari_navy");
+    sys.registerPlayer("lp1", "player1");
+    assertTrue(sys.earnLP("lp1", "player1", 10000), "Earn LP succeeds");
+    assertTrue(sys.getBalance("lp1", "player1") == 10000, "Balance is 10000");
+    assertTrue(sys.earnLP("lp1", "player1", 5000), "Earn more LP");
+    assertTrue(sys.getBalance("lp1", "player1") == 15000, "Balance is 15000");
+}
+
+void testLPStorePurchase() {
+    std::cout << "\n=== LPStore: Purchase ===" << std::endl;
+    ecs::World world;
+    systems::LoyaltyPointStoreSystem sys(&world);
+    world.createEntity("lp1");
+    sys.initialize("lp1", "store_caldari", "caldari_navy");
+    sys.addItem("lp1", "item1", "Navy BCU", "Module", 50000, 5000000.0f, 2);
+    sys.registerPlayer("lp1", "player1");
+    sys.earnLP("lp1", "player1", 100000);
+    assertTrue(sys.purchaseItem("lp1", "player1", "item1"), "Purchase succeeds");
+    assertTrue(sys.getBalance("lp1", "player1") == 50000, "Balance reduced by 50000");
+    assertTrue(sys.getTotalPurchases("lp1") == 1, "1 total purchase");
+    assertTrue(approxEqual(sys.getTotalISKCollected("lp1"), 5000000.0f), "ISK collected 5M");
+}
+
+void testLPStorePurchaseFail() {
+    std::cout << "\n=== LPStore: PurchaseFail ===" << std::endl;
+    ecs::World world;
+    systems::LoyaltyPointStoreSystem sys(&world);
+    world.createEntity("lp1");
+    sys.initialize("lp1", "store_caldari", "caldari_navy");
+    sys.addItem("lp1", "item1", "Navy Raven", "Ship", 500000, 200000000.0f, 3);
+    sys.registerPlayer("lp1", "player1");
+    sys.earnLP("lp1", "player1", 100);
+    assertTrue(!sys.purchaseItem("lp1", "player1", "item1"), "Insufficient LP rejected");
+    assertTrue(sys.getBalance("lp1", "player1") == 100, "Balance unchanged");
+    assertTrue(sys.getTotalPurchases("lp1") == 0, "No purchases");
+}
+
+void testLPStoreCategory() {
+    std::cout << "\n=== LPStore: Category ===" << std::endl;
+    ecs::World world;
+    systems::LoyaltyPointStoreSystem sys(&world);
+    world.createEntity("lp1");
+    sys.initialize("lp1", "store_caldari", "caldari_navy");
+    sys.addItem("lp1", "i1", "Navy Raven", "Ship", 500000, 200000000.0f, 3);
+    sys.addItem("lp1", "i2", "Navy Caracal", "Ship", 200000, 50000000.0f, 2);
+    sys.addItem("lp1", "i3", "Navy BCU", "Module", 50000, 5000000.0f, 2);
+    sys.addItem("lp1", "i4", "Ammo Pack", "Ammunition", 1000, 100000.0f, 1);
+    assertTrue(sys.getItemsByCategory("lp1", "Ship") == 2, "2 ships");
+    assertTrue(sys.getItemsByCategory("lp1", "Module") == 1, "1 module");
+    assertTrue(sys.getItemsByCategory("lp1", "Ammunition") == 1, "1 ammo");
+    assertTrue(sys.getItemsByCategory("lp1", "Blueprint") == 0, "0 blueprints");
+}
+
+void testLPStoreMultiPlayer() {
+    std::cout << "\n=== LPStore: MultiPlayer ===" << std::endl;
+    ecs::World world;
+    systems::LoyaltyPointStoreSystem sys(&world);
+    world.createEntity("lp1");
+    sys.initialize("lp1", "store_caldari", "caldari_navy");
+    sys.registerPlayer("lp1", "player1");
+    sys.registerPlayer("lp1", "player2");
+    sys.earnLP("lp1", "player1", 5000);
+    sys.earnLP("lp1", "player2", 10000);
+    assertTrue(sys.getBalance("lp1", "player1") == 5000, "Player1 has 5000");
+    assertTrue(sys.getBalance("lp1", "player2") == 10000, "Player2 has 10000");
+    assertTrue(sys.getPlayerCount("lp1") == 2, "2 players");
+}
+
+void testLPStoreMaxLimit() {
+    std::cout << "\n=== LPStore: MaxLimit ===" << std::endl;
+    ecs::World world;
+    systems::LoyaltyPointStoreSystem sys(&world);
+    world.createEntity("lp1");
+    sys.initialize("lp1", "store_caldari", "caldari_navy");
+    auto* entity = world.getEntity("lp1");
+    auto* store = entity->getComponent<components::LoyaltyPointStore>();
+    store->max_items = 2;
+    store->max_players = 2;
+    sys.addItem("lp1", "i1", "Item1", "Ship", 100, 100.0f, 1);
+    sys.addItem("lp1", "i2", "Item2", "Module", 100, 100.0f, 1);
+    assertTrue(!sys.addItem("lp1", "i3", "Item3", "Ship", 100, 100.0f, 1), "Max items enforced");
+    sys.registerPlayer("lp1", "p1");
+    sys.registerPlayer("lp1", "p2");
+    assertTrue(!sys.registerPlayer("lp1", "p3"), "Max players enforced");
+}
+
+void testLPStoreMissing() {
+    std::cout << "\n=== LPStore: Missing ===" << std::endl;
+    ecs::World world;
+    systems::LoyaltyPointStoreSystem sys(&world);
+    assertTrue(!sys.initialize("nonexistent", "s1", "f1"), "Init fails on missing");
+    assertTrue(!sys.addItem("nonexistent", "i1", "N", "C", 1, 1.0f, 1), "AddItem fails on missing");
+    assertTrue(!sys.removeItem("nonexistent", "i1"), "RemoveItem fails on missing");
+    assertTrue(!sys.registerPlayer("nonexistent", "p1"), "RegisterPlayer fails on missing");
+    assertTrue(!sys.earnLP("nonexistent", "p1", 100), "EarnLP fails on missing");
+    assertTrue(!sys.purchaseItem("nonexistent", "p1", "i1"), "Purchase fails on missing");
+    assertTrue(sys.getBalance("nonexistent", "p1") == 0, "0 balance on missing");
+    assertTrue(sys.getItemCount("nonexistent") == 0, "0 items on missing");
+    assertTrue(sys.getPlayerCount("nonexistent") == 0, "0 players on missing");
+    assertTrue(sys.getTotalPurchases("nonexistent") == 0, "0 purchases on missing");
+    assertTrue(approxEqual(sys.getTotalISKCollected("nonexistent"), 0.0f), "0 ISK on missing");
+    assertTrue(sys.getItemsByCategory("nonexistent", "Ship") == 0, "0 category on missing");
+}
+
 int main() {
     std::cout << "========================================" << std::endl;
     std::cout << "Nova Forge C++ Server System Tests" << std::endl;
@@ -35291,6 +35740,42 @@ int main() {
     testProcMissionDifficultyBias();
     testProcMissionMaxLimit();
     testProcMissionMissing();
+
+    // Incursion System tests
+    testIncursionCreate();
+    testIncursionAddWave();
+    testIncursionDuplicate();
+    testIncursionSpawn();
+    testIncursionDefeat();
+    testIncursionJoin();
+    testIncursionRewards();
+    testIncursionStateTransition();
+    testIncursionMaxLimit();
+    testIncursionMissing();
+
+    // CloneBay System tests
+    testCloneBayCreate();
+    testCloneBayAddClone();
+    testCloneBayDuplicate();
+    testCloneBayActivate();
+    testCloneBayImplant();
+    testCloneBayImplantSlot();
+    testCloneBayDeath();
+    testCloneBayGrades();
+    testCloneBayMaxLimit();
+    testCloneBayMissing();
+
+    // LoyaltyPointStore System tests
+    testLPStoreCreate();
+    testLPStoreAddItem();
+    testLPStoreDuplicate();
+    testLPStoreEarnLP();
+    testLPStorePurchase();
+    testLPStorePurchaseFail();
+    testLPStoreCategory();
+    testLPStoreMultiPlayer();
+    testLPStoreMaxLimit();
+    testLPStoreMissing();
 
     std::cout << "\n========================================" << std::endl;
     std::cout << "Results: " << testsPassed << "/" << testsRun << " tests passed" << std::endl;
