@@ -4,6 +4,15 @@
 namespace atlas::editor {
 
 void NetInspectorPanel::Draw() {
+    // Clear selection if peer no longer exists
+    if (m_selectedPeer != 0) {
+        bool found = false;
+        for (const auto& p : m_net.Peers()) {
+            if (p.id == m_selectedPeer && p.connected) { found = true; break; }
+        }
+        if (!found) m_selectedPeer = 0;
+    }
+
     auto mode = m_net.Mode();
     switch (mode) {
         case net::NetMode::Standalone: m_snapshot.modeString = "Standalone"; break;
@@ -73,6 +82,33 @@ void NetInspectorPanel::Draw() {
     } else {
         m_drawList.DrawText({4, y, 590, 16}, "No peers", {160, 160, 160, 255});
     }
+}
+
+void NetInspectorPanel::SelectPeer(uint32_t id) {
+    for (const auto& p : m_net.Peers()) {
+        if (p.id == id) { m_selectedPeer = id; return; }
+    }
+    m_selectedPeer = 0;
+}
+
+NetStats NetInspectorPanel::GetStats() const {
+    NetStats stats;
+    stats.modeString = ModeToString(m_net.Mode());
+    for (const auto& p : m_net.Peers()) {
+        if (p.connected) ++stats.connectedPeerCount;
+    }
+    return stats;
+}
+
+std::string NetInspectorPanel::ModeToString(net::NetMode mode) {
+    switch (mode) {
+        case net::NetMode::Standalone: return "Standalone";
+        case net::NetMode::Client:     return "Client";
+        case net::NetMode::Server:     return "Server";
+        case net::NetMode::P2P_Host:   return "P2P_Host";
+        case net::NetMode::P2P_Peer:   return "P2P_Peer";
+    }
+    return "Unknown";
 }
 
 }

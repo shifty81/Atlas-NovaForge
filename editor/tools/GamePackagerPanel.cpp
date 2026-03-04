@@ -81,4 +81,80 @@ production::PackageReport GamePackagerPanel::Build() {
     return m_lastReport;
 }
 
+bool GamePackagerPanel::IsPackaging() const {
+    auto s = m_status.currentStep;
+    return s == PackageStep::Validate || s == PackageStep::CookAssets ||
+           s == PackageStep::Compile  || s == PackageStep::Bundle;
+}
+
+void GamePackagerPanel::StartPackage() {
+    if (m_settings.outputPath.empty()) {
+        m_status.currentStep = PackageStep::Failed;
+        m_status.hasErrors = true;
+        m_status.log.push_back("Empty output path");
+        return;
+    }
+    m_status.currentStep = PackageStep::Validate;
+    m_status.hasErrors = false;
+    m_status.log.push_back("Started packaging");
+}
+
+void GamePackagerPanel::AdvanceStep() {
+    switch (m_status.currentStep) {
+        case PackageStep::Validate:
+            m_status.currentStep = PackageStep::CookAssets;
+            m_status.log.push_back("Validation passed");
+            break;
+        case PackageStep::CookAssets:
+            m_status.currentStep = PackageStep::Compile;
+            m_status.log.push_back("Assets cooked");
+            break;
+        case PackageStep::Compile:
+            m_status.currentStep = PackageStep::Bundle;
+            m_status.log.push_back("Compilation finished");
+            break;
+        case PackageStep::Bundle:
+            m_status.currentStep = PackageStep::Complete;
+            m_status.log.push_back("Bundle created at " + m_settings.outputPath);
+            break;
+        default:
+            break;
+    }
+}
+
+void GamePackagerPanel::CancelPackage() {
+    m_status.currentStep = PackageStep::Idle;
+    m_status.log.push_back("Packaging cancelled");
+}
+
+std::string GamePackagerPanel::StepToString(PackageStep step) {
+    switch (step) {
+        case PackageStep::Idle:       return "Idle";
+        case PackageStep::Validate:   return "Validate";
+        case PackageStep::CookAssets: return "Cook Assets";
+        case PackageStep::Compile:    return "Compile";
+        case PackageStep::Bundle:     return "Bundle";
+        case PackageStep::Complete:   return "Complete";
+        case PackageStep::Failed:     return "Failed";
+    }
+    return "Unknown";
+}
+
+std::string GamePackagerPanel::TargetToString(BuildTarget target) {
+    switch (target) {
+        case BuildTarget::Client: return "Client";
+        case BuildTarget::Server: return "Server";
+    }
+    return "Unknown";
+}
+
+std::string GamePackagerPanel::ModeToString(BuildMode mode) {
+    switch (mode) {
+        case BuildMode::Debug:       return "Debug";
+        case BuildMode::Development: return "Development";
+        case BuildMode::Release:     return "Release";
+    }
+    return "Unknown";
+}
+
 }

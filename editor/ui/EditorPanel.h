@@ -18,6 +18,10 @@ public:
     virtual bool IsVisible() const { return m_visible; }
     virtual void SetVisible(bool visible) { m_visible = visible; }
 
+    /// Called when an asset is reloaded on disk.
+    virtual void OnAssetReloaded(const std::string& assetId,
+                                 const std::string& path) { (void)assetId; (void)path; }
+
     /// Returns true if this panel cannot be closed by the user.
     /// Non-closable panels may be collapsed or tabbed but never removed
     /// from the dock hierarchy.
