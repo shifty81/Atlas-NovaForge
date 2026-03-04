@@ -134,8 +134,8 @@ See [GAME_DESIGN_VISION.md](GAME_DESIGN_VISION.md) for full design details inclu
 | **Code Cleanup** | 🔧 Active | Split monoliths, reduce boilerplate, decompose god objects |
 | **Vertical Slice** | 🔧 Active | One star system fully playable end-to-end |
 | **Editor Conversion** | ✅ Complete | In-game ToolingLayer with 26 editor tools, EditorCommandBus, undo/redo |
-| **Tri-Modal Gameplay** | 📋 Planned | FPS + Flight + Fleet Command with mode controller |
-| **Legend System** | 📋 Planned | Reputation-driven world bias across runs |
+| **Tri-Modal Gameplay** | ✅ Complete | FPS + Flight + Fleet Command with mode controller |
+| **Legend System** | ✅ Complete | Reputation-driven world bias across runs |
 | **Alpha** | TBD | 2–4 players, smooth networking, core gameplay loop |
 | **Beta** | TBD | Full UI, content variety, performance targets met |
 | **Release** | TBD | Packaged builds, mod support, documentation |

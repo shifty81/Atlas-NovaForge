@@ -96,6 +96,22 @@ set(ATLAS_TEST_SOURCES
     test_camera_view_tool.cpp
     test_material_shader_tool.cpp
     test_hotkey_action_manager.cpp
+    test_player_mode_controller.cpp
+    test_fleet_command.cpp
+    test_fps_combat_state.cpp
+    test_fps_enemy.cpp
+    test_fps_interior_generator.cpp
+    test_lowpoly_style.cpp
+    test_legend_system.cpp
+    test_sector_simulation.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_client/src/gameplay/player_mode_controller.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_client/src/gameplay/fleet_command.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_client/src/gameplay/fps_combat_state.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_client/src/gameplay/fps_enemy.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_client/src/gameplay/fps_interior_generator.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_client/src/gameplay/lowpoly_style.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_client/src/gameplay/legend_system.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_client/src/gameplay/sector_simulation.cpp
     ${CMAKE_SOURCE_DIR}/cpp_client/src/editor/editor_command_bus.cpp
     ${CMAKE_SOURCE_DIR}/cpp_client/src/editor/undoable_command_bus.cpp
     ${CMAKE_SOURCE_DIR}/cpp_client/src/editor/editor_event_bus.cpp

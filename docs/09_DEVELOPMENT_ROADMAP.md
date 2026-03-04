@@ -282,31 +282,31 @@ Standalone AtlasEditor converted to in-game ToolingLayer. All tools ported from 
 - [x] SceneBookmarkManager, LayerTagSystem, HotkeyActionManager
 - [ ] Multiplayer authority model for editor access
 
-## Phase 23 — Tri-Modal Gameplay 📋
+## Phase 23 — Tri-Modal Gameplay ✅ COMPLETE
 
 FPS + Flight + Fleet Command with hard mode boundaries. See [GAME_DESIGN_VISION.md](GAME_DESIGN_VISION.md).
 
-- [ ] PlayerModeController (FPS/Flight/Fleet Command state machine)
-- [ ] IPlayerMode interface (OnEnter/OnExit/Tick, input/camera/UI ownership)
-- [ ] Mode transition system (fade, authority transfer, camera swap, input remap)
-- [ ] Fleet Command intent system (6 orders: Engage, Defend, Escort, Retreat, Hold, Regroup)
-- [ ] FPS combat state machine (Exploring → Alert → Engaged → Wounded → Breached → Downed)
-- [ ] FPS enemy archetypes (Grunt, Breacher, Technician) and squad roles
-- [ ] Procedural FPS interior generation with grammar-based room flow
-- [ ] Low-poly visual style enforcement (flat shading, poly budgets, palette system)
+- [x] PlayerModeController (FPS/Flight/Fleet Command state machine)
+- [x] IPlayerMode interface (OnEnter/OnExit/Tick, input/camera/UI ownership)
+- [x] Mode transition system (fade, authority transfer, camera swap, input remap)
+- [x] Fleet Command intent system (6 orders: Engage, Defend, Escort, Retreat, Hold, Regroup)
+- [x] FPS combat state machine (Exploring → Alert → Engaged → Wounded → Breached → Downed)
+- [x] FPS enemy archetypes (Grunt, Breacher, Technician) and squad roles
+- [x] Procedural FPS interior generation with grammar-based room flow
+- [x] Low-poly visual style enforcement (flat shading, poly budgets, palette system)
 
-## Phase 24 — Legend & World Simulation 📋
+## Phase 24 — Legend & World Simulation ✅ COMPLETE
 
 Player reputation and dynamic faction ecosystem. See [GAME_DESIGN_VISION.md](GAME_DESIGN_VISION.md).
 
-- [ ] Player reputation model (aggression, stealth, precision, authority, chaos profiles)
-- [ ] Legend taxonomy (persistent legends, campaign memory, run memory)
-- [ ] Boss mutation system (procedural bosses that adapt to legend pressure)
-- [ ] Campaign chapter structure (Incursion → Escalation → Fracture → Confrontation → Aftermath)
-- [ ] Sector simulation (stability, hostility, resource wealth per sector)
-- [ ] Faction doctrine system (aggression, expansion, lawfulness per faction)
-- [ ] Heat propagation (player actions create pressure that diffuses through sectors)
-- [ ] Drift stabilizers (faction fatigue, economic elasticity, era resets)
+- [x] Player reputation model (aggression, stealth, precision, authority, chaos profiles)
+- [x] Legend taxonomy (persistent legends, campaign memory, run memory)
+- [x] Boss mutation system (procedural bosses that adapt to legend pressure)
+- [x] Campaign chapter structure (Incursion → Escalation → Fracture → Confrontation → Aftermath)
+- [x] Sector simulation (stability, hostility, resource wealth per sector)
+- [x] Faction doctrine system (aggression, expansion, lawfulness per faction)
+- [x] Heat propagation (player actions create pressure that diffuses through sectors)
+- [x] Drift stabilizers (faction fatigue, economic elasticity, era resets)
 
 ## Phase 25 — Vertical Slice: "Derelict Intercept" 📋
 
@@ -349,6 +349,6 @@ One complete mission proving all three modes work end-to-end.
 | Binary Compatibility | ✅ Complete | ABIVersion, ABICapsule, ABIRegistry |
 | **Spaghetti Code Cleanup** | **🔧 Active** | **Monolith splits, boilerplate reduction, GameSession decomposition** |
 | **Editor Conversion** | **✅ Complete** | **26 editor tools, ToolingLayer, EditorCommandBus, undo/redo** |
-| **Tri-Modal Gameplay** | **📋 Planned** | **FPS + Flight + Fleet Command with mode controller** |
-| **Legend System** | **📋 Planned** | **Reputation-driven world bias, boss mutations, campaigns** |
+| **Tri-Modal Gameplay** | **✅ Complete** | **FPS + Flight + Fleet Command, PlayerModeController, FleetCommandSystem** |
+| **Legend System** | **✅ Complete** | **Reputation model, memory taxonomy, boss mutations, sector simulation** |
 | **Vertical Slice** | **🔧 Active** | **"Derelict Intercept" proving all modes end-to-end** |
