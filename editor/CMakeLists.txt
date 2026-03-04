@@ -58,6 +58,8 @@ add_executable(AtlasEditor
     tools/DataBrowserPanel.cpp
     tools/ModuleEditorPanel.cpp
     tools/NPCEditorPanel.cpp
+    tools/AssetPalettePanel.cpp
+    tools/PhysicsTunerPanel.cpp
     ui/LauncherScreen.cpp
     assistant/EditorAssistant.cpp
     assistant/AssetGraphAssistant.cpp
