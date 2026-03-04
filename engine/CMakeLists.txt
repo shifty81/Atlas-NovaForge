@@ -149,6 +149,7 @@ add_library(AtlasEngine STATIC
     sim/TimeModel.cpp
     sim/WorldState.cpp
     sim/SaveSystem.cpp
+    sim/PirateSecurityCoordinator.cpp
     core/DeterministicAllocator.cpp
     core/PermissionManager.cpp
     ui/HUDOverlay.cpp
