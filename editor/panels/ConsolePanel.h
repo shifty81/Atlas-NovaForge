@@ -10,6 +10,8 @@
 #include <vector>
 #include <sstream>
 
+namespace atlas::ai { class AIAggregator; }
+
 namespace atlas::editor {
 
 class ConsolePanel : public EditorPanel {
@@ -27,6 +29,7 @@ public:
 
     void AddLine(const std::string& line);
     void Execute(const std::string& command);
+    void SetAIAggregator(atlas::ai::AIAggregator* agg);
 
     const std::vector<std::string>& History() const { return m_history; }
 
@@ -41,6 +44,7 @@ private:
     sim::TimeModel* m_timeModel = nullptr;
     sim::SaveSystem* m_saveSystem = nullptr;
     atlas::ui::UIDrawList m_drawList;
+    atlas::ai::AIAggregator* m_aiAggregator = nullptr;
 };
 
 }
