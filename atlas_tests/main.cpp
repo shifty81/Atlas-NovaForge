@@ -1138,6 +1138,140 @@ void test_tooling_layer_inactive_skips_input();
 void test_tooling_layer_toggle_key();
 void test_tooling_layer_registry_access();
 
+// PlayerModeController tests (Phase 23)
+void test_player_mode_names();
+void test_default_ownership_fps();
+void test_default_ownership_flight();
+void test_default_ownership_fleet_command();
+void test_controller_starts_at_flight();
+void test_controller_has_mode_false_before_register();
+void test_controller_register_and_has_mode();
+void test_controller_transition_calls_enter();
+void test_controller_transition_calls_exit_on_prev();
+void test_controller_same_mode_no_retransition();
+void test_controller_transition_to_unregistered_fails();
+void test_controller_tick_dispatches_to_active_mode();
+void test_controller_tick_before_transition_does_nothing();
+void test_controller_transition_callback_fired();
+void test_controller_time_scale_fleet_command();
+void test_controller_transition_count();
+void test_controller_not_transitioning_after_done();
+
+// FleetCommandSystem tests (Phase 23)
+void test_fleet_intent_names();
+void test_fleet_command_initial_state();
+void test_fleet_command_issue_engage();
+void test_fleet_command_issue_hold();
+void test_fleet_command_multiple_orders();
+void test_fleet_command_callback_fired();
+void test_fleet_command_mode_toggle();
+void test_fleet_command_time_scale_constant();
+void test_fleet_command_struct_order();
+void test_fleet_command_no_callback();
+
+// FPS combat state machine tests (Phase 23)
+void test_fps_state_names();
+void test_fps_initial_state();
+void test_fps_threat_detected_transition();
+void test_fps_threat_detected_from_non_exploring_noop();
+void test_fps_combat_entered_from_exploring();
+void test_fps_damage_drains_shield_first();
+void test_fps_damage_spills_to_health();
+void test_fps_wounded_transition();
+void test_fps_breached_transition();
+void test_fps_downed_transition();
+void test_fps_revived_from_downed();
+void test_fps_all_clear_returns_to_exploring();
+void test_fps_injector_heals_in_engaged();
+void test_fps_injector_can_exit_wounded();
+void test_fps_shield_recharges_after_delay();
+void test_fps_state_callback_fired();
+void test_fps_is_engaged_states();
+
+// FPS enemy archetype tests (Phase 23)
+void test_enemy_archetype_names();
+void test_squad_role_names();
+void test_default_stats_grunt();
+void test_default_stats_breacher_has_shield();
+void test_default_stats_technician_low_hp();
+void test_enemy_is_alive();
+void test_squad_standard_difficulty_1();
+void test_squad_standard_difficulty_2_has_flanker();
+void test_squad_support_has_technician();
+void test_squad_all_members_alive_initially();
+void test_squad_apply_damage_kills_member();
+void test_squad_all_down_after_full_wipe();
+void test_squad_find_member_null_for_unknown();
+void test_squad_difficulty_scales_health();
+void test_squad_squad_ids_match();
+
+// FPS interior generator tests (Phase 23)
+void test_interior_room_type_names();
+void test_interior_generate_with_side_room();
+void test_interior_generate_without_side_room();
+void test_interior_starts_with_airlock();
+void test_interior_ends_with_objective();
+void test_interior_rooms_have_valid_entry_angles();
+void test_interior_rooms_within_poly_budget();
+void test_interior_validation_passes();
+void test_interior_validation_fails_no_rooms();
+void test_interior_validation_fails_wrong_start();
+void test_interior_rooms_connected();
+void test_interior_difficulty_3_has_elevation();
+
+// Low-poly style validator tests (Phase 23)
+void test_lowpoly_valid_mesh_passes();
+void test_lowpoly_fails_no_flat_normals();
+void test_lowpoly_fails_bevel_edges();
+void test_lowpoly_fails_over_budget();
+void test_lowpoly_passes_exactly_at_budget();
+void test_lowpoly_fails_too_many_materials();
+void test_lowpoly_fails_roughness_map();
+void test_lowpoly_fails_normal_map();
+void test_lowpoly_fails_cylinder_too_many_sides();
+void test_lowpoly_passes_cylinder_8_sides();
+void test_lowpoly_corridor_budget_tighter();
+void test_lowpoly_door_budget_smallest();
+void test_lowpoly_is_valid_shorthand();
+void test_lowpoly_palette_valid();
+void test_lowpoly_palette_too_few_colours();
+void test_lowpoly_palette_too_many_colours();
+void test_lowpoly_palette_exactly_6_valid();
+void test_lowpoly_palette_exactly_10_valid();
+
+// Legend system tests (Phase 24)
+void test_legend_memory_tier_names();
+void test_legend_reputation_initial();
+void test_legend_record_action_updates_reputation();
+void test_legend_reputation_clamped_to_0_1();
+void test_legend_record_memory_stored();
+void test_legend_record_memory_same_key_accumulates();
+void test_legend_memory_count_by_tier();
+void test_legend_clear_run_memories();
+void test_legend_find_memory_null_for_unknown();
+void test_legend_promote_run_to_campaign();
+void test_legend_promote_campaign_to_legend();
+void test_legend_boss_mutations_none_without_reputation();
+void test_legend_boss_mutation_counter_rush_from_aggression();
+void test_legend_boss_mutation_max_2();
+void test_legend_boss_mutation_names();
+
+// Sector simulation tests (Phase 24)
+void test_faction_names();
+void test_sector_add_and_get();
+void test_sector_emit_heat_increases_heat();
+void test_sector_emit_heat_reduces_stability();
+void test_sector_emit_heat_clamped_at_1();
+void test_sector_emit_heat_unknown_sector_noop();
+void test_sector_tick_heat_decays();
+void test_sector_tick_propagates_to_neighbour();
+void test_sector_galaxy_pressure_nonzero_after_heat();
+void test_sector_doctrine_set_and_get();
+void test_sector_doctrine_unknown_returns_null();
+void test_sector_era_reset_reduces_heat();
+void test_sector_era_reset_improves_stability();
+void test_sector_economic_elasticity_moves_toward_equilibrium();
+
 int main(int argc, char* argv[]) {
     std::string logPath;
     for (int i = 1; i < argc; ++i) {
@@ -2378,6 +2512,148 @@ int main(int argc, char* argv[]) {
     RUN_TEST(test_tooling_layer_inactive_skips_input);
     RUN_TEST(test_tooling_layer_toggle_key);
     RUN_TEST(test_tooling_layer_registry_access);
+
+    // PlayerModeController (Phase 23 — Tri-Modal Gameplay)
+    log.BeginSection("Player Mode Controller");
+    RUN_TEST(test_player_mode_names);
+    RUN_TEST(test_default_ownership_fps);
+    RUN_TEST(test_default_ownership_flight);
+    RUN_TEST(test_default_ownership_fleet_command);
+    RUN_TEST(test_controller_starts_at_flight);
+    RUN_TEST(test_controller_has_mode_false_before_register);
+    RUN_TEST(test_controller_register_and_has_mode);
+    RUN_TEST(test_controller_transition_calls_enter);
+    RUN_TEST(test_controller_transition_calls_exit_on_prev);
+    RUN_TEST(test_controller_same_mode_no_retransition);
+    RUN_TEST(test_controller_transition_to_unregistered_fails);
+    RUN_TEST(test_controller_tick_dispatches_to_active_mode);
+    RUN_TEST(test_controller_tick_before_transition_does_nothing);
+    RUN_TEST(test_controller_transition_callback_fired);
+    RUN_TEST(test_controller_time_scale_fleet_command);
+    RUN_TEST(test_controller_transition_count);
+    RUN_TEST(test_controller_not_transitioning_after_done);
+
+    // Fleet Command System (Phase 23)
+    log.BeginSection("Fleet Command System");
+    RUN_TEST(test_fleet_intent_names);
+    RUN_TEST(test_fleet_command_initial_state);
+    RUN_TEST(test_fleet_command_issue_engage);
+    RUN_TEST(test_fleet_command_issue_hold);
+    RUN_TEST(test_fleet_command_multiple_orders);
+    RUN_TEST(test_fleet_command_callback_fired);
+    RUN_TEST(test_fleet_command_mode_toggle);
+    RUN_TEST(test_fleet_command_time_scale_constant);
+    RUN_TEST(test_fleet_command_struct_order);
+    RUN_TEST(test_fleet_command_no_callback);
+
+    // FPS Combat State Machine (Phase 23)
+    log.BeginSection("FPS Combat State Machine");
+    RUN_TEST(test_fps_state_names);
+    RUN_TEST(test_fps_initial_state);
+    RUN_TEST(test_fps_threat_detected_transition);
+    RUN_TEST(test_fps_threat_detected_from_non_exploring_noop);
+    RUN_TEST(test_fps_combat_entered_from_exploring);
+    RUN_TEST(test_fps_damage_drains_shield_first);
+    RUN_TEST(test_fps_damage_spills_to_health);
+    RUN_TEST(test_fps_wounded_transition);
+    RUN_TEST(test_fps_breached_transition);
+    RUN_TEST(test_fps_downed_transition);
+    RUN_TEST(test_fps_revived_from_downed);
+    RUN_TEST(test_fps_all_clear_returns_to_exploring);
+    RUN_TEST(test_fps_injector_heals_in_engaged);
+    RUN_TEST(test_fps_injector_can_exit_wounded);
+    RUN_TEST(test_fps_shield_recharges_after_delay);
+    RUN_TEST(test_fps_state_callback_fired);
+    RUN_TEST(test_fps_is_engaged_states);
+
+    // FPS Enemy Archetypes (Phase 23)
+    log.BeginSection("FPS Enemy Archetypes");
+    RUN_TEST(test_enemy_archetype_names);
+    RUN_TEST(test_squad_role_names);
+    RUN_TEST(test_default_stats_grunt);
+    RUN_TEST(test_default_stats_breacher_has_shield);
+    RUN_TEST(test_default_stats_technician_low_hp);
+    RUN_TEST(test_enemy_is_alive);
+    RUN_TEST(test_squad_standard_difficulty_1);
+    RUN_TEST(test_squad_standard_difficulty_2_has_flanker);
+    RUN_TEST(test_squad_support_has_technician);
+    RUN_TEST(test_squad_all_members_alive_initially);
+    RUN_TEST(test_squad_apply_damage_kills_member);
+    RUN_TEST(test_squad_all_down_after_full_wipe);
+    RUN_TEST(test_squad_find_member_null_for_unknown);
+    RUN_TEST(test_squad_difficulty_scales_health);
+    RUN_TEST(test_squad_squad_ids_match);
+
+    // FPS Interior Generator (Phase 23)
+    log.BeginSection("FPS Interior Generator");
+    RUN_TEST(test_interior_room_type_names);
+    RUN_TEST(test_interior_generate_with_side_room);
+    RUN_TEST(test_interior_generate_without_side_room);
+    RUN_TEST(test_interior_starts_with_airlock);
+    RUN_TEST(test_interior_ends_with_objective);
+    RUN_TEST(test_interior_rooms_have_valid_entry_angles);
+    RUN_TEST(test_interior_rooms_within_poly_budget);
+    RUN_TEST(test_interior_validation_passes);
+    RUN_TEST(test_interior_validation_fails_no_rooms);
+    RUN_TEST(test_interior_validation_fails_wrong_start);
+    RUN_TEST(test_interior_rooms_connected);
+    RUN_TEST(test_interior_difficulty_3_has_elevation);
+
+    // Low-Poly Style Validator (Phase 23)
+    log.BeginSection("Low-Poly Style Validator");
+    RUN_TEST(test_lowpoly_valid_mesh_passes);
+    RUN_TEST(test_lowpoly_fails_no_flat_normals);
+    RUN_TEST(test_lowpoly_fails_bevel_edges);
+    RUN_TEST(test_lowpoly_fails_over_budget);
+    RUN_TEST(test_lowpoly_passes_exactly_at_budget);
+    RUN_TEST(test_lowpoly_fails_too_many_materials);
+    RUN_TEST(test_lowpoly_fails_roughness_map);
+    RUN_TEST(test_lowpoly_fails_normal_map);
+    RUN_TEST(test_lowpoly_fails_cylinder_too_many_sides);
+    RUN_TEST(test_lowpoly_passes_cylinder_8_sides);
+    RUN_TEST(test_lowpoly_corridor_budget_tighter);
+    RUN_TEST(test_lowpoly_door_budget_smallest);
+    RUN_TEST(test_lowpoly_is_valid_shorthand);
+    RUN_TEST(test_lowpoly_palette_valid);
+    RUN_TEST(test_lowpoly_palette_too_few_colours);
+    RUN_TEST(test_lowpoly_palette_too_many_colours);
+    RUN_TEST(test_lowpoly_palette_exactly_6_valid);
+    RUN_TEST(test_lowpoly_palette_exactly_10_valid);
+
+    // Legend System (Phase 24 — Legend & World Simulation)
+    log.BeginSection("Legend System");
+    RUN_TEST(test_legend_memory_tier_names);
+    RUN_TEST(test_legend_reputation_initial);
+    RUN_TEST(test_legend_record_action_updates_reputation);
+    RUN_TEST(test_legend_reputation_clamped_to_0_1);
+    RUN_TEST(test_legend_record_memory_stored);
+    RUN_TEST(test_legend_record_memory_same_key_accumulates);
+    RUN_TEST(test_legend_memory_count_by_tier);
+    RUN_TEST(test_legend_clear_run_memories);
+    RUN_TEST(test_legend_find_memory_null_for_unknown);
+    RUN_TEST(test_legend_promote_run_to_campaign);
+    RUN_TEST(test_legend_promote_campaign_to_legend);
+    RUN_TEST(test_legend_boss_mutations_none_without_reputation);
+    RUN_TEST(test_legend_boss_mutation_counter_rush_from_aggression);
+    RUN_TEST(test_legend_boss_mutation_max_2);
+    RUN_TEST(test_legend_boss_mutation_names);
+
+    // Sector Simulation (Phase 24)
+    log.BeginSection("Sector Simulation");
+    RUN_TEST(test_faction_names);
+    RUN_TEST(test_sector_add_and_get);
+    RUN_TEST(test_sector_emit_heat_increases_heat);
+    RUN_TEST(test_sector_emit_heat_reduces_stability);
+    RUN_TEST(test_sector_emit_heat_clamped_at_1);
+    RUN_TEST(test_sector_emit_heat_unknown_sector_noop);
+    RUN_TEST(test_sector_tick_heat_decays);
+    RUN_TEST(test_sector_tick_propagates_to_neighbour);
+    RUN_TEST(test_sector_galaxy_pressure_nonzero_after_heat);
+    RUN_TEST(test_sector_doctrine_set_and_get);
+    RUN_TEST(test_sector_doctrine_unknown_returns_null);
+    RUN_TEST(test_sector_era_reset_reduces_heat);
+    RUN_TEST(test_sector_era_reset_improves_stability);
+    RUN_TEST(test_sector_economic_elasticity_moves_toward_equilibrium);
 
     if (!logPath.empty()) {
         log.WriteLogFile(logPath);
