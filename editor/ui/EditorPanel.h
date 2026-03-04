@@ -3,6 +3,13 @@
 
 namespace atlas::editor {
 
+struct DockRect {
+    float x = 0.0f;
+    float y = 0.0f;
+    float w = 0.0f;
+    float h = 0.0f;
+};
+
 class EditorPanel {
 public:
     virtual ~EditorPanel() = default;
@@ -17,9 +24,15 @@ public:
     bool IsClosable() const { return m_closable; }
     void SetClosable(bool closable) { m_closable = closable; }
 
+    bool HasDockBounds() const { return m_hasDockBounds; }
+    const DockRect& DockBounds() const { return m_dockBounds; }
+    void SetDockBounds(const DockRect& bounds) { m_dockBounds = bounds; m_hasDockBounds = true; }
+
 private:
     bool m_visible = true;
     bool m_closable = true;
+    bool m_hasDockBounds = false;
+    DockRect m_dockBounds;
 };
 
 }
