@@ -82,6 +82,7 @@ public:
     // ── Accessors ────────────────────────────────────────────────
 
     const PCGOverrideStore& OverrideStore() const { return m_overrides; }
+    PCGOverrideStore& OverrideStore() { return m_overrides; }
     const std::vector<std::string>& Log() const { return m_log; }
 
     uint64_t CurrentSeed()    const { return m_seed; }
@@ -89,6 +90,34 @@ public:
 
     void SetSeed(uint64_t seed)     { m_seed = seed; }
     void SetVersion(uint32_t ver)   { m_version = ver; }
+
+    // ── Snapshots ────────────────────────────────────────────────
+
+    size_t TakeSnapshot(const std::string& label = "") {
+        Snapshot s;
+        s.label = label.empty() ? ("Snapshot " + std::to_string(m_snapshots.size())) : label;
+        s.seed = m_seed;
+        s.version = m_version;
+        s.overrides = m_overrides;
+        m_snapshots.push_back(std::move(s));
+        return m_snapshots.size() - 1;
+    }
+
+    size_t SnapshotCount() const { return m_snapshots.size(); }
+
+    std::string SnapshotLabel(size_t idx) const {
+        if (idx >= m_snapshots.size()) return {};
+        return m_snapshots[idx].label;
+    }
+
+    bool RollbackToSnapshot(size_t idx) {
+        if (idx >= m_snapshots.size()) return false;
+        const auto& s = m_snapshots[idx];
+        m_seed = s.seed;
+        m_version = s.version;
+        m_overrides = s.overrides;
+        return true;
+    }
 
 private:
     ViewportPanel*    m_viewport;
@@ -100,6 +129,14 @@ private:
     uint32_t m_version   = 1;
 
     std::vector<std::string> m_log;
+
+    struct Snapshot {
+        std::string label;
+        uint64_t seed;
+        uint32_t version;
+        PCGOverrideStore overrides;
+    };
+    std::vector<Snapshot> m_snapshots;
 
     atlas::PanelState m_panelState;
     float m_scrollOffset = 0.0f;

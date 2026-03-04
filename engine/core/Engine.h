@@ -2,6 +2,7 @@
 #include <string>
 #include <cstdint>
 #include <memory>
+#include <functional>
 #include "../ecs/ECS.h"
 #include "../net/NetContext.h"
 #include "../sim/TickScheduler.h"
@@ -116,6 +117,12 @@ public:
     /// Register a named simulation system for execution-order tracking.
     void RegisterSystem(const std::string& name);
 
+    /// Set a callback invoked each tick with the delta time.
+    void SetFrameCallback(std::function<void(float)> cb);
+
+    /// Returns the number of ticks executed so far.
+    uint64_t TickCount() const { return m_tickCount; }
+
 private:
     void ProcessWindowEvents();
     void PerformAutosaveIfNeeded(uint64_t tickCount);
@@ -134,6 +141,8 @@ private:
     std::unique_ptr<ui::UIRenderer> m_renderer;
     std::unique_ptr<render::EditorViewportFramebuffer> m_viewportFB;
     std::vector<std::string> m_systemOrder;
+    std::function<void(float)> m_frameCallback;
+    uint64_t m_tickCount = 0;
     int32_t m_mouseX = 0;
     int32_t m_mouseY = 0;
 };

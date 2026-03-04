@@ -336,7 +336,7 @@ void Engine::ProcessWindowEvents() {
 
 void Engine::RunEditor() {
     Logger::Info("Running Atlas Editor");
-    uint64_t tickCount = 0;
+    m_tickCount = 0;
     while (m_running) {
         ProcessWindowEvents();
         m_net.Poll();
@@ -354,6 +354,7 @@ void Engine::RunEditor() {
             m_uiManager.Update(uiCtx);
             m_uiManager.GetTooltipManager().Update(m_mouseX, m_mouseY,
                                                     timeCtx.sim.fixedDeltaTime);
+            if (m_frameCallback) m_frameCallback(dt);
         });
 
         if (m_renderer && m_window && m_window->IsOpen()) {
@@ -391,8 +392,8 @@ void Engine::RunEditor() {
             m_window->SwapBuffers();
         }
 
-        tickCount++;
-        if (m_config.maxTicks > 0 && tickCount >= m_config.maxTicks) {
+        m_tickCount++;
+        if (m_config.maxTicks > 0 && m_tickCount >= m_config.maxTicks) {
             m_running = false;
         }
     }
@@ -400,7 +401,7 @@ void Engine::RunEditor() {
 
 void Engine::RunClient() {
     Logger::Info("Running Atlas Client");
-    uint64_t tickCount = 0;
+    m_tickCount = 0;
     while (m_running) {
         ProcessWindowEvents();
         m_net.Poll();
@@ -418,6 +419,7 @@ void Engine::RunClient() {
             m_uiManager.Update(uiCtx);
             m_uiManager.GetTooltipManager().Update(m_mouseX, m_mouseY,
                                                     timeCtx.sim.fixedDeltaTime);
+            if (m_frameCallback) m_frameCallback(dt);
         });
 
         if (m_renderer && m_window && m_window->IsOpen()) {
@@ -438,11 +440,11 @@ void Engine::RunClient() {
             m_window->SwapBuffers();
         }
 
-        tickCount++;
+        m_tickCount++;
 
-        PerformAutosaveIfNeeded(tickCount);
+        PerformAutosaveIfNeeded(m_tickCount);
 
-        if (m_config.maxTicks > 0 && tickCount >= m_config.maxTicks) {
+        if (m_config.maxTicks > 0 && m_tickCount >= m_config.maxTicks) {
             m_running = false;
         }
     }
@@ -450,7 +452,7 @@ void Engine::RunClient() {
 
 void Engine::RunServer() {
     Logger::Info("Running Atlas Server");
-    uint64_t tickCount = 0;
+    m_tickCount = 0;
     while (m_running) {
         m_net.Poll();
         m_scheduler.Tick([this](float dt) {
@@ -463,14 +465,15 @@ void Engine::RunServer() {
             auto ecsData = m_world.Serialize();
             auto snapshot = m_worldState.TakeSnapshot(timeCtx.sim.tick, ecsData);
             m_worldState.PushSnapshot(std::move(snapshot));
+            if (m_frameCallback) m_frameCallback(dt);
         });
         m_net.Flush();
 
-        tickCount++;
+        m_tickCount++;
 
-        PerformAutosaveIfNeeded(tickCount);
+        PerformAutosaveIfNeeded(m_tickCount);
 
-        if (m_config.maxTicks > 0 && tickCount >= m_config.maxTicks) {
+        if (m_config.maxTicks > 0 && m_tickCount >= m_config.maxTicks) {
             m_running = false;
         }
     }
@@ -652,6 +655,10 @@ const std::vector<std::string>& Engine::SystemExecutionOrder() const {
 
 void Engine::RegisterSystem(const std::string& name) {
     m_systemOrder.push_back(name);
+}
+
+void Engine::SetFrameCallback(std::function<void(float)> cb) {
+    m_frameCallback = std::move(cb);
 }
 
 }

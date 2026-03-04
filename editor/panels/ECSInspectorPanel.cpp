@@ -5,7 +5,32 @@
 
 namespace atlas::editor {
 
+void ECSInspectorPanel::DestroySelectedEntity() {
+    if (m_selectedEntity != 0 && m_world.IsAlive(m_selectedEntity)) {
+        m_world.DestroyEntity(m_selectedEntity);
+    }
+    m_selectedEntity = 0;
+}
+
+void ECSInspectorPanel::SetSearchFilter(const std::string& filter) {
+    m_searchFilter = filter;
+}
+
+size_t ECSInspectorPanel::EntityCountVisible() const {
+    auto entities = m_world.GetEntities();
+    if (m_searchFilter.empty()) return entities.size();
+    size_t count = 0;
+    for (auto eid : entities) {
+        if (std::to_string(eid).find(m_searchFilter) != std::string::npos) ++count;
+    }
+    return count;
+}
+
 void ECSInspectorPanel::Draw() {
+    // Clear dead selection
+    if (m_selectedEntity != 0 && !m_world.IsAlive(m_selectedEntity))
+        m_selectedEntity = 0;
+
     m_lastSnapshot.clear();
 
     auto entities = m_world.GetEntities();

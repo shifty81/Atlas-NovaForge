@@ -1,4 +1,5 @@
 #include "ConsolePanel.h"
+#include "../ai/AIAggregator.h"
 #include <sstream>
 
 namespace atlas::editor {
@@ -31,6 +32,10 @@ void ConsolePanel::Draw() {
 
 void ConsolePanel::AddLine(const std::string& line) {
     m_history.push_back(line);
+}
+
+void ConsolePanel::SetAIAggregator(atlas::ai::AIAggregator* agg) {
+    m_aiAggregator = agg;
 }
 
 void ConsolePanel::Execute(const std::string& command) {
@@ -124,6 +129,49 @@ void ConsolePanel::Execute(const std::string& command) {
                 + " World: " + std::to_string(ctx.world.elapsed) + "s"
                 + " Dilation: " + std::to_string(ctx.world.dilation));
         }
+    } else if (cmd == "ecs.count") {
+        m_history.push_back("Entity count: " + std::to_string(m_world.EntityCount()));
+    } else if (cmd == "ecs.destroy") {
+        uint32_t id = 0;
+        iss >> id;
+        if (m_world.IsAlive(id)) {
+            m_world.DestroyEntity(id);
+            m_history.push_back("Destroyed entity " + std::to_string(id));
+        } else {
+            m_history.push_back("Invalid or dead entity " + std::to_string(id));
+        }
+    } else if (cmd == "net.stats") {
+        m_history.push_back("Peers total: " + std::to_string(m_net.Peers().size()));
+    } else if (cmd == "net.peers") {
+        m_history.push_back("Connected peers: " + std::to_string(m_net.Peers().size()));
+    } else if (cmd == "clear") {
+        m_history.clear();
+    } else if (cmd == "ai.query") {
+        std::string rest;
+        std::getline(iss >> std::ws, rest);
+        if (rest.empty()) {
+            m_history.push_back("Usage: ai.query <prompt>");
+        } else if (!m_aiAggregator) {
+            m_history.push_back("AI backend not connected");
+        } else {
+            ai::AIContext ctx;
+            auto resp = m_aiAggregator->Execute(ai::AIRequestType::Analysis, rest, ctx);
+            m_history.push_back("[AI] " + resp.content);
+            m_history.push_back("[AI] Confidence: " + std::to_string(resp.confidence));
+        }
+    } else if (cmd == "list") {
+        m_history.push_back("Available panels: Console, Viewport, Inspector, Hierarchy");
+    } else if (cmd == "status") {
+        m_history.push_back("Entities: " + std::to_string(m_world.EntityCount()));
+        std::string modeStr;
+        switch (m_net.Mode()) {
+            case net::NetMode::Standalone: modeStr = "Standalone"; break;
+            case net::NetMode::Client: modeStr = "Client"; break;
+            case net::NetMode::Server: modeStr = "Server"; break;
+            case net::NetMode::P2P_Host: modeStr = "P2P_Host"; break;
+            case net::NetMode::P2P_Peer: modeStr = "P2P_Peer"; break;
+        }
+        m_history.push_back("Net Mode: " + modeStr);
     } else {
         m_history.push_back("Unknown command: " + cmd);
     }

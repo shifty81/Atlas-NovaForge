@@ -53,8 +53,17 @@ public:
     const char* Name() const override { return "ECS Inspector"; }
     void Draw() override;
 
-    void SelectEntity(ecs::EntityID id) { m_selectedEntity = id; }
+    void SelectEntity(ecs::EntityID id) {
+        if (m_world.IsAlive(id)) m_selectedEntity = id;
+    }
     ecs::EntityID SelectedEntity() const { return m_selectedEntity; }
+
+    void DestroySelectedEntity();
+    void ClearSelection() { m_selectedEntity = 0; }
+
+    const std::string& SearchFilter() const { return m_searchFilter; }
+    void SetSearchFilter(const std::string& filter);
+    size_t EntityCountVisible() const;
 
     const std::vector<InspectorEntry>& LastSnapshot() const { return m_lastSnapshot; }
 
@@ -83,6 +92,7 @@ public:
 private:
     ecs::World& m_world;
     ecs::EntityID m_selectedEntity = 0;
+    std::string m_searchFilter;
     std::vector<InspectorEntry> m_lastSnapshot;
     const sim::WorldState* m_worldState = nullptr;
     std::vector<StateBlockEntry> m_stateBlocks;

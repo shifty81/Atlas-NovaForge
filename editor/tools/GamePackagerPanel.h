@@ -3,6 +3,7 @@
 #include "../../engine/production/GamePackager.h"
 #include "../../engine/ui/UIDrawList.h"
 #include <string>
+#include <vector>
 
 namespace atlas::editor {
 
@@ -15,6 +16,22 @@ enum class BuildMode {
     Debug,
     Development,
     Release,
+};
+
+enum class PackageStep {
+    Idle,
+    Validate,
+    CookAssets,
+    Compile,
+    Bundle,
+    Complete,
+    Failed,
+};
+
+struct PackageStatus {
+    PackageStep currentStep = PackageStep::Idle;
+    bool hasErrors = false;
+    std::vector<std::string> log;
 };
 
 struct PackageSettings {
@@ -34,6 +51,18 @@ public:
 
     const PackageSettings& Settings() const { return m_settings; }
     PackageSettings& Settings() { return m_settings; }
+    void SetSettings(const PackageSettings& s) { m_settings = s; }
+
+    const PackageStatus& Status() const { return m_status; }
+    bool IsPackaging() const;
+
+    void StartPackage();
+    void AdvanceStep();
+    void CancelPackage();
+
+    static std::string StepToString(PackageStep step);
+    static std::string TargetToString(BuildTarget target);
+    static std::string ModeToString(BuildMode mode);
 
     std::string SettingsSummary() const;
 
@@ -56,6 +85,7 @@ public:
 
 private:
     PackageSettings m_settings;
+    PackageStatus m_status;
     production::GamePackager m_packager;
     production::PackageReport m_lastReport;
     bool m_building = false;

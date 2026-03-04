@@ -1,5 +1,6 @@
 #pragma once
 #include "DockNode.h"
+#include "EditorMenuBar.h"
 #include <vector>
 #include <memory>
 #include <string>
@@ -22,9 +23,19 @@ public:
     const DockNode& Root() const { return m_root; }
     const std::vector<EditorPanel*>& Panels() const { return m_panels; }
 
+    EditorMenuBar& MenuBar() { return m_menuBar; }
+    const EditorMenuBar& MenuBar() const { return m_menuBar; }
+
+    std::string SerializeToJSON() const;
+    bool DeserializeFromJSON(const std::string& json);
+
+    bool SaveToFile(const std::string& path) const;
+    bool LoadFromFile(const std::string& path);
+
 private:
     DockNode m_root;
     std::vector<EditorPanel*> m_panels;
+    EditorMenuBar m_menuBar;
 
     static void DrawNode(DockNode& node);
 };

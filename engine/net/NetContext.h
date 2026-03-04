@@ -27,6 +27,7 @@ struct Packet {
     uint16_t size = 0;
     uint32_t tick = 0;
     uint32_t checksum = 0;
+    uint32_t sequence = 0;
     std::vector<uint8_t> payload;
 };
 
@@ -139,6 +140,7 @@ private:
     NetHardening* m_hardening = nullptr;
     uint32_t m_droppedSendCount = 0;
     uint32_t m_invalidChecksumCount = 0;
+    uint32_t m_nextSequence = 1;
 };
 
 }

@@ -155,3 +155,6 @@ ui_layouts/
 # Misc
 3drenderon.png
 /tmp/
+build/
+dist/
+logs/

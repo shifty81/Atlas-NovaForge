@@ -142,11 +142,16 @@ AggregatorResponse TemplateAIBackend::MatchTemplate(
         return AggregatorResponse{};
     }
 
+    // Count additional matches for confidence boost
+    int matchCount = 0;
+    for (const auto& entry : m_templates) {
+        if (&entry == bestEntry) continue;
+        if (ComputeMatchScore(prompt, entry.pattern) > 0.0f) ++matchCount;
+    }
+
     AggregatorResponse resp;
     resp.content = ExpandVariables(bestEntry->response, context);
-    // Template confidence is capped at 0.4 so higher-confidence
-    // LLM backends can override when available.
-    resp.confidence = 0.4f * bestScore;
+    resp.confidence = std::min(1.0f, bestEntry->confidence * bestScore + matchCount * 0.05f);
     return resp;
 }
 
@@ -227,7 +232,25 @@ float TemplateAIBackend::ComputeMatchScore(
 void TemplateAIBackend::AddTemplate(
     const std::string& pattern,
     const std::string& response) {
-    m_templates.push_back({pattern, response, AIRequestType::GraphGeneration});
+    m_templates.push_back({pattern, response, AIRequestType::GraphGeneration, 0.4f});
+}
+
+void TemplateAIBackend::AddTemplate(
+    const std::string& keyword,
+    const std::string& response,
+    float confidence) {
+    if (keyword.empty()) return;
+    m_templates.push_back({keyword, response, AIRequestType::GraphGeneration, confidence});
+}
+
+bool TemplateAIBackend::RemoveTemplate(const std::string& keyword) {
+    for (auto it = m_templates.begin(); it != m_templates.end(); ++it) {
+        if (it->pattern == keyword) {
+            m_templates.erase(it);
+            return true;
+        }
+    }
+    return false;
 }
 
 size_t TemplateAIBackend::TemplateCount() const {

@@ -23,6 +23,8 @@ struct AggregatorResponse {
     float confidence = 0.0f;
 };
 
+using AIResponse = AggregatorResponse;
+
 class AIBackend {
 public:
     virtual ~AIBackend() = default;
