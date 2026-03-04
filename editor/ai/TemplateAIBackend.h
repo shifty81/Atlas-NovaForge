@@ -19,6 +19,12 @@ public:
     /// Register a custom template pattern and response
     void AddTemplate(const std::string& pattern, const std::string& response);
 
+    /// Register a template with explicit confidence
+    void AddTemplate(const std::string& keyword, const std::string& response, float confidence);
+
+    /// Remove a template by keyword; returns true if found
+    bool RemoveTemplate(const std::string& keyword);
+
     /// Returns the number of registered templates
     size_t TemplateCount() const;
 
@@ -30,6 +36,7 @@ private:
         std::string pattern;
         std::string response;
         AIRequestType associatedType;
+        float confidence = 0.4f;
     };
 
     std::vector<TemplateEntry> m_templates;

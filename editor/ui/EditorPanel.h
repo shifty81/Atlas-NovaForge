@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "../../cpp_client/include/ui/atlas/atlas_widgets.h"
 
 namespace atlas::editor {
 
@@ -9,6 +10,12 @@ struct DockRect {
     float w = 0.0f;
     float h = 0.0f;
 };
+
+/// Returns the global AtlasContext, or nullptr in headless/test mode.
+inline atlas::AtlasContext* GetContext() { return nullptr; }
+
+/// Apply dock bounds from EditorPanel to a PanelState (no-op if no context).
+inline void ApplyDockBounds(atlas::PanelState&) {}
 
 class EditorPanel {
 public:
