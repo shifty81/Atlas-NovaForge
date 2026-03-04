@@ -87,7 +87,7 @@ If it fails any one → it doesn't ship.
 2. **Code Refactoring** — JSON helper consolidation, file splits, naming consistency (see [REFACTORING_PLAN.md](REFACTORING_PLAN.md))
 3. **Vertical Slice** — One full star system: fly, dock, mine, trade, fight, warp — end-to-end playable
 4. **Client–Server Integration** — Wire up all server systems to C++ client rendering and UI
-5. **Editor Conversion** — Convert standalone editor to in-game ToolingLayer (see [EDITOR_CONVERSION_PLAN.md](EDITOR_CONVERSION_PLAN.md))
+5. ~~**Editor Conversion**~~ — ✅ Complete — All 26 editor tools ported from NovaForge and wired into ToolingLayer (see [EDITOR_CONVERSION_PLAN.md](EDITOR_CONVERSION_PLAN.md))
 6. **FPS/Flight/Fleet Command** — Implement tri-modal gameplay with PlayerModeController (see [GAME_DESIGN_VISION.md](GAME_DESIGN_VISION.md))
 7. **Performance Profiling** — Maintain 20 Hz server tick with 500+ entities; 60 FPS client with 200 visible ships
 
@@ -133,7 +133,7 @@ See [GAME_DESIGN_VISION.md](GAME_DESIGN_VISION.md) for full design details inclu
 | **Atlas Engine Modules** | ✅ Done | 14 graph types, determinism, replay, AI, world gen |
 | **Code Cleanup** | 🔧 Active | Split monoliths, reduce boilerplate, decompose god objects |
 | **Vertical Slice** | 🔧 Active | One star system fully playable end-to-end |
-| **Editor Conversion** | 📋 Planned | In-game ToolingLayer with EditorCommandBus |
+| **Editor Conversion** | ✅ Complete | In-game ToolingLayer with 26 editor tools, EditorCommandBus, undo/redo |
 | **Tri-Modal Gameplay** | 📋 Planned | FPS + Flight + Fleet Command with mode controller |
 | **Legend System** | 📋 Planned | Reputation-driven world bias across runs |
 | **Alpha** | TBD | 2–4 players, smooth networking, core gameplay loop |
