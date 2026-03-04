@@ -11,6 +11,8 @@ add_library(AtlasEngine STATIC
     core/Logger.cpp
     core/CrashHandler.cpp
     ecs/ECS.cpp
+    ecs/System.cpp
+    ecs/DeltaEditStore.cpp
     graphvm/GraphVM.cpp
     graphvm/GraphCompiler.cpp
     graphvm/GraphSerializer.cpp

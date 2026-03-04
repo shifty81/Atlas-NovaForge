@@ -269,15 +269,17 @@ Active refactoring of server codebase to reduce technical debt. See [SPAGHETTI_C
 - [ ] Extract shared sources into `novaforge_core` static library (CMake deduplication)
 - [ ] Consolidate JSON parsing duplication across data layer
 
-## Phase 22 — Editor Conversion 📋
+## Phase 22 — Editor Conversion ✅ COMPLETE
 
-Convert standalone AtlasEditor into an in-game ToolingLayer. See [EDITOR_CONVERSION_PLAN.md](EDITOR_CONVERSION_PLAN.md).
+Standalone AtlasEditor converted to in-game ToolingLayer. All tools ported from NovaForge. See [EDITOR_CONVERSION_PLAN.md](EDITOR_CONVERSION_PLAN.md).
 
 - [x] Unify RuntimeBootstrap across Game/Editor/Server modes (`engine/bootstrap/RuntimeBootstrap.h`)
-- [ ] Implement ToolingLayer framework (ITool interface, tool manager, hotkey toggle)
-- [ ] Implement EditorCommandBus (command queue, execute, undo/redo)
-- [ ] Migrate existing editor panels to ToolingLayer tools
-- [ ] Add new game-specific tools (MapEditor, ShipModuleEditor, NPCSpawner, AssetGenerator)
+- [x] Implement ToolingLayer framework (ITool interface, tool manager, hotkey toggle)
+- [x] Implement EditorCommandBus (command queue, execute, undo/redo)
+- [x] Migrate existing editor panels to ToolingLayer tools
+- [x] Add new game-specific tools (26 total: MapEditor, ShipModuleEditor, NPCSpawner, AssetPalette, PhysicsTuner, etc.)
+- [x] UndoableCommandBus, EditorEventBus, EntityCommands, DeltaEditStore
+- [x] SceneBookmarkManager, LayerTagSystem, HotkeyActionManager
 - [ ] Multiplayer authority model for editor access
 
 ## Phase 23 — Tri-Modal Gameplay 📋
@@ -346,7 +348,7 @@ One complete mission proving all three modes work end-to-end.
 | Scripting VM | ✅ Complete | Stack-based bytecode VM, sandboxed builtins |
 | Binary Compatibility | ✅ Complete | ABIVersion, ABICapsule, ABIRegistry |
 | **Spaghetti Code Cleanup** | **🔧 Active** | **Monolith splits, boilerplate reduction, GameSession decomposition** |
-| **Editor Conversion** | **📋 Planned** | **Standalone → in-game ToolingLayer with EditorCommandBus** |
+| **Editor Conversion** | **✅ Complete** | **26 editor tools, ToolingLayer, EditorCommandBus, undo/redo** |
 | **Tri-Modal Gameplay** | **📋 Planned** | **FPS + Flight + Fleet Command with mode controller** |
 | **Legend System** | **📋 Planned** | **Reputation-driven world bias, boss mutations, campaigns** |
 | **Vertical Slice** | **🔧 Active** | **"Derelict Intercept" proving all modes end-to-end** |

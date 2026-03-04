@@ -60,6 +60,46 @@ set(ATLAS_TEST_SOURCES
     test_warp_performance_budget.cpp
     test_fleet_positional_audio.cpp
     test_tooling_layer.cpp
+    test_editor_tool_layer.cpp
+    test_system_registry.cpp
+    test_entity_commands.cpp
+    test_game_state_manager.cpp
+    test_runtime_bootstrap.cpp
+    test_remove_component_cmd.cpp
+    test_undoable_command_bus.cpp
+    test_editor_event_bus.cpp
+    test_integration.cpp
+    test_delta_edit_store.cpp
+    test_map_editor_tool.cpp
+    test_ship_module_editor_tool.cpp
+    test_asset_palette_panel.cpp
+    test_physics_tuner_panel.cpp
+    test_environment_control_tool.cpp
+    test_npc_spawner_tool.cpp
+    test_resource_balancer_tool.cpp
+    test_live_scene_snapshot.cpp
+    test_event_timeline_tool.cpp
+    test_batch_operations_tool.cpp
+    test_scene_bookmark_manager.cpp
+    test_layer_tag_system.cpp
+    test_snap_align_tool.cpp
+    test_asset_stats_panel.cpp
+    test_prefab_library.cpp
+    test_simulation_step_controller.cpp
+    test_multi_selection_manager.cpp
+    test_function_assignment_tool.cpp
+    test_edit_propagation_tool.cpp
+    test_visual_diff_tool.cpp
+    test_animation_editor_tool.cpp
+    test_lighting_control_tool.cpp
+    test_script_console.cpp
+    test_camera_view_tool.cpp
+    test_material_shader_tool.cpp
+    test_hotkey_action_manager.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_client/src/editor/editor_command_bus.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_client/src/editor/undoable_command_bus.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_client/src/editor/editor_event_bus.cpp
+    ${CMAKE_SOURCE_DIR}/cpp_client/src/editor/scene_bookmark_manager.cpp
     ${CMAKE_SOURCE_DIR}/editor/panels/ConsolePanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/tools/PCGPreviewPanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/tools/GenerationStylePanel.cpp
@@ -76,6 +116,8 @@ set(ATLAS_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/editor/tools/DataBrowserPanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/tools/ModuleEditorPanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/tools/NPCEditorPanel.cpp
+    ${CMAKE_SOURCE_DIR}/editor/tools/AssetPalettePanel.cpp
+    ${CMAKE_SOURCE_DIR}/editor/tools/PhysicsTunerPanel.cpp
     ${CMAKE_SOURCE_DIR}/editor/ai/AIAggregator.cpp
     ${CMAKE_SOURCE_DIR}/editor/ai/TemplateAIBackend.cpp
     ${CMAKE_SOURCE_DIR}/editor/ui/UndoStack.cpp
